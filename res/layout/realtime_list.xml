@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This is the entry of every item in realtime.xml's list. -->
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+    android:orientation="vertical"
+	>
+	
+	<TextView
+		android:id="@+id/line"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_marginLeft="2dip"
+		/>
+		
+	<TextView
+		android:id="@+id/time"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		
+		android:layout_marginRight="6dip"
+		android:layout_alignParentRight="true"
+		/>
+		
+	<TextView
+		android:id="@+id/destination"
+		android:layout_width="wrap_content"
+		android:layout_height="23px"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		
+		android:layout_marginLeft="40dip"
+		android:layout_toLeftOf="@+id/time"
+		android:layout_alignParentLeft="true"
+		android:ellipsize="marquee"
+		android:singleLine="true"
+		/>
+			
+    <TextView android:id="@+id/nextDepartures"
+        android:layout_width="fill_parent"
+        android:layout_height="17px"
+		android:layout_below="@+id/destination"
+				
+		android:paddingLeft="50dip"
+		android:paddingRight="6dip"
+				
+		android:ellipsize="marquee"
+		android:singleLine="true"
+		
+		android:textSize="13px"
+    />
+
+</RelativeLayout>

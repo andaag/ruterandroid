@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This is the entry of every item in route.xml's list. -->
+
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+    android:orientation="vertical"
+	>
+	
+	
+	<TextView
+		android:id="@+id/waittime"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:paddingLeft="40dip"
+		style="?android:attr/listSeparatorTextViewStyle"/>
+	
+	
+	<TextView
+		android:id="@+id/line"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_marginTop="3dip"
+		android:layout_marginLeft="3dip"
+		android:layout_below="@+id/waittime"/>
+		
+	<ImageView
+		android:id="@+id/symbol"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="13dip"
+		android:layout_below="@+id/waittime"/>
+	
+	<TextView
+		android:id="@+id/transportDestination"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_below="@+id/waittime"
+		android:layout_marginLeft="40dip"/>
+	        
+	<TextView
+		android:id="@+id/from"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_marginLeft="50dip" 
+		android:layout_below="@+id/transportDestination"/>
+		
+	<TextView
+		android:id="@+id/fromTime"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		 
+		android:layout_alignTop="@id/from"
+		android:gravity="right"
+		android:layout_marginRight="6dip" />
+		
+	<TextView
+		android:id="@+id/to"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_marginLeft="50dip" 
+		android:layout_below="@+id/from"/>
+		
+	<TextView
+		android:id="@+id/toTime"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		 
+		android:layout_alignTop="@id/to"
+		android:gravity="right"
+		android:layout_marginRight="6dip" />
+</RelativeLayout>

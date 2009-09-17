@@ -1,0 +1,105 @@
+/**
+ *     Copyright (C) 2009 Anders Aagaard <aagaande@gmail.com>
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.neuron.trafikanten.dataSets;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/*
+ * Class for route data, from to and when.
+ * 
+ * This class is shared between actual routes, and search routes, when search routes is active it only uses fromStation/toStation and departure for the search.
+ */
+public class RouteData implements Parcelable {
+	public final static String PARCELABLE = "RouteData";
+	
+	public SearchStationData fromStation;
+	public long departure;
+	
+	public SearchStationData toStation;
+	public long arrival;
+	
+	public String line;
+	public String destination; // line destination = end station
+	public String extra;
+	public int waitTime; // in minutes, waittime for THIS transport, not next transport.
+	/*
+	 * transportType can be train/tram/etc, it's up to the seperate providers to decide what goes in here.
+	 */
+	public int transportType;
+	
+	public RouteData() { }
+	
+	/*
+	 * @see android.os.Parcelable
+	 */
+	@Override
+	public int describeContents() {	return 0; }
+	
+	/*
+	 * Function for reading the parcel
+	 */
+	public RouteData(Parcel in) {
+		fromStation = in.readParcelable(SearchStationData.class.getClassLoader());
+		departure = in.readLong();
+		
+		toStation = in.readParcelable(SearchStationData.class.getClassLoader());
+		arrival = in.readLong();
+		
+		line = in.readString();
+		destination = in.readString();
+		extra = in.readString();
+		waitTime = in.readInt();
+		
+		transportType = in.readInt();
+	}
+	
+	/*
+	 * Writing current data to parcel.
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+	 */
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeParcelable(fromStation, 0);
+		out.writeLong(departure);
+		
+		out.writeParcelable(toStation, 0);
+		out.writeLong(arrival);
+		
+		out.writeString(line);
+		out.writeString(destination);
+		out.writeString(extra);
+		out.writeInt(waitTime);
+		
+		out.writeInt(transportType);
+	}
+	
+	/*
+	 * Used for bundle.getParcel 
+	 */
+    public static final Parcelable.Creator<RouteData> CREATOR = new Parcelable.Creator<RouteData>() {
+		public RouteData createFromParcel(Parcel in) {
+		    return new RouteData(in);
+		}
+		
+		public RouteData[] newArray(int size) {
+		    return new RouteData[size];
+		}
+	};
+}

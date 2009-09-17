@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Offentlig Transport</string>
+    
+    <!-- Package org.offentligtransport -->
+    <string name="realtime">Realtime</string>
+    <string name="route">Route</string>
+    <string name="now">Now</string>
+    
+    <!-- SelectRoute -->
+    <string name="from">From : </string>
+    <string name="to">To : </string>
+    <string name="travelFrom">Travel From</string>
+    <string name="travelTo">Travel To</string>
+    <string name="departingAt">Departing at : </string>
+    <string name="search">Search</string>
+    
+    <!-- SelectRouteView -->
+    <string name="pleaseSelectFrom">Please select station to travel from</string>
+    <string name="pleaseSelectTo">Please select station to travel to</string>
+    
+    <!-- SelectStation -->
+    <string name="search_for_station">Search for station</string>
+    <string name="searchStationHint">Search for a station in the search field.
+\n\n
+You can longpress on a station to mark it as favorite.
+\n\n
+Click menu -> Settings to change language.</string>
+
+	<!-- SelectStationView -->
+	<string name="favorite">Favorite</string>
+	<string name="map">Map</string>
+	<string name="contact">Contact</string>
+
+	<!-- RouteView -->
+	<string name="travelTime">Travel time : </string>
+	<string name="waitTime">Wait time : </string>
+	<string name="walkTime">Walk time : </string>
+	<string name="walk">Walk</string>
+	<string name="noRouteFound">No route found!</string>
+	
+	<!-- GenericMap -->
+	<string name="selectStation">Select a station</string>
+	<string name="noLocationFound">No location found</string>
+	<!-- GenericStationOverlay -->
+	<string name="stationsMissingCoordsWillBeHidden">Some stations missing coordinates and will not be shown</string>
+	
+	<!-- RealtimeView -->
+	<string name="ca">ca </string>
+	<string name="refresh">Refresh</string>
+	<string name="realtimeEmpty">No information found!</string>
+	<string name="late">late</string>
+	
+	<!-- Tasks -->
+	<string name="searchRouteTask">Calculating route...</string>
+	<string name="searchStationTask">Searching...</string>
+	<string name="realtimeDataTask">Loading...</string>
+	
+	<!-- LocationTask -->
+	<string name="locationWaiting">Waiting for location...</string>
+	<string name="current">Accuracy :</string>
+	<string name="noLocationFoundError">No location found, please wait or click back to cancel</string>
+	<string name="locationContinue">Continue</string>
+	
+	<!-- SelectContactTask -->
+	<string name="failedToFindAddress">Failed to locate address on map</string>
+	<string name="multipleAddressesFound">Multiple addresses found, using first</string>
+	
+	<!-- Notifications -->
+	<string name="alarm">Alarm</string> <!-- This is shared by everything that can call notifications -->
+	<string name="fromShort">from</string>
+	
+	<!-- Settings -->
+	<string name="changeLanguage">Change language</string>
+	<string name="languageWarning">When changing language application will reload, notifications will be lost</string>
+	
+	<string name="dataProviders">Data Providers</string>
+	<string name="dataProvidersSummary">Change public transport data provider</string>
+	<string name="dataProvidersSelect">Select data provider</string>
+	
+	<string name="locationProviders">Location Providers</string>
+	<string name="locationProvidersSummary">Change location provider</string>
+	<string name="locationProvidersSelect">Select location provider</string>
+	
+	<!--  Generic -->
+	<string name="exception">Exception</string>
+	<string name="myLocation">My Location</string>
+	<string name="settings">Settings</string>
+	<string name="reset">Reset</string>
+</resources>

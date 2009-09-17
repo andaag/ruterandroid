@@ -1,0 +1,130 @@
+/**
+ *     Copyright (C) 2009 Anders Aagaard <aagaande@gmail.com>
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.neuron.trafikanten.notification;
+
+import java.util.Calendar;
+
+import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.dataSets.NotificationData;
+import com.neuron.trafikanten.dataSets.RealtimeData;
+import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.SearchStationData;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.TimePicker;
+
+/*
+ * Notification dialog, make sure to set realtimeData and station onPrepareDialog
+ */
+public class NotificationDialog {
+	private static final String TAG = "NotificationDialog";
+	private static int notificationCode = 0;
+	/*
+	 * For realtime:
+	 */
+	private static RealtimeData sRealtimeData;
+	private static SearchStationData sStation;
+	
+	/*
+	 * for route:
+	 */
+	private static RouteData sRouteData;
+	private static long sRouteDeparture;
+	
+	/*
+	 * Shared
+	 */
+	private static String sWith;
+	
+	public static void setRealtimeData(RealtimeData realtimeData, SearchStationData station, String with) {
+		sRealtimeData = realtimeData;
+		sStation = station;
+		sWith = with;
+		
+		sRouteData = null;
+	}
+	
+	public static void setRouteData(RouteData routeData, long departure, String with) {
+		sRouteData = routeData;
+		sRouteDeparture = departure;
+		sWith = with;
+		
+		sRealtimeData = null;
+	}
+	
+	public static TimePickerDialog getDialog(final Context context) {
+    	return new TimePickerDialog(context, new OnTimeSetListener() {
+			@Override
+			public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+				/*
+				 * Convert hours/minutes to current date with set presets
+				 */
+				final Calendar calendar = Calendar.getInstance();
+				long departure;
+				if (sRealtimeData != null) {
+					departure = sRealtimeData.realtime ? sRealtimeData.expectedDeparture : sRealtimeData.aimedDeparture;					
+				} else {
+					departure = sRouteDeparture;
+				}
+				assert(departure > 0);
+				calendar.setTimeInMillis(departure);
+				calendar.add(Calendar.HOUR_OF_DAY, -hourOfDay);
+				calendar.add(Calendar.MINUTE, -minute);
+				
+				/*
+				 * Get the data info, construct bundle, and send the data
+				 */
+				final Bundle bundle = new Bundle();
+				
+				NotificationData notificationData;
+				if (sRealtimeData != null) {
+					/*
+					 * Realtime data
+					 */
+					notificationData = new NotificationData(sStation, sRealtimeData, calendar.getTimeInMillis(), sWith);
+				} else {
+					/*
+					 * Route data
+					 */
+					notificationData = new NotificationData(sRouteData, sRouteDeparture, calendar.getTimeInMillis(), sWith);
+				}
+				bundle.putParcelable(NotificationData.PARCELABLE, notificationData);
+				
+	            // Schedule the alarm
+				final Intent intent = new Intent(context, NotificationIntent.class);
+				intent.putExtras(bundle);
+				//intent.putExtra(NotificationData.PARCELABLE, notificationData);
+				
+				Log.i(TAG,"Creating notification at " + HelperFunctions.renderAccurate(notificationData.notifyTime));
+				final PendingIntent notificationIntent = PendingIntent.getBroadcast(context, notificationCode++, intent, PendingIntent.FLAG_ONE_SHOT);
+	            AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	            alarm.set(AlarmManager.RTC_WAKEUP, notificationData.notifyTime, notificationIntent);
+				
+			}
+    		
+    	}, 0, 10, true);
+	}
+}

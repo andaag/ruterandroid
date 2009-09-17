@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.neuron.trafikanten"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".Trafikanten"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    <activity android:name=".views.SelectStationView"></activity>
+<activity android:name=".views.RealtimeView"></activity>
+<activity android:name=".views.SelectRealtimeStationView"></activity>
+<activity android:name=".tasks.SearchStationTask" android:theme="@android:style/Theme.Dialog"></activity>
+<activity android:name=".tasks.RealtimeDataTask" android:theme="@android:style/Theme.Dialog"></activity>
+
+<activity android:name=".views.SelectRouteView"></activity>
+<activity android:name=".tasks.SearchRouteTask" android:theme="@android:style/Theme.Dialog"></activity>
+<activity android:name=".views.RouteView"></activity>
+<activity android:name=".views.map.GenericMap"></activity>
+<uses-library android:name="com.google.android.maps"></uses-library>
+<activity android:name=".views.SettingsView"></activity>
+
+
+<activity android:name=".tasks.LocationTask" android:theme="@android:style/Theme.Dialog"></activity>
+
+<activity android:name=".tasks.SelectContactTask" android:theme="@android:style/Theme.Dialog"></activity>
+
+<receiver android:name=".notification.NotificationIntent"></receiver>
+</application>
+    <uses-sdk android:minSdkVersion="3" />
+
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+
+<uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
+
+<uses-permission android:name="android.permission.RESTART_PACKAGES"></uses-permission>
+</manifest> 

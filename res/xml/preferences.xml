@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:title="Settings">
+            
+        <ListPreference
+                android:key="language"
+                android:title="Language"
+                android:summary="Change Language/Språk"
+                android:dialogTitle="@string/changeLanguage" />
+            
+        <ListPreference
+                android:key="data_provider"
+                android:title="@string/dataProviders"
+                android:summary="@string/dataProvidersSummary"
+                android:dialogTitle="@string/dataProvidersSelect" />
+                
+        <ListPreference
+                android:key="location_provider"
+                android:title="@string/locationProviders"
+                android:summary="@string/locationProvidersSummary"
+                android:dialogTitle="@string/locationProvidersSelect" />
+                
+    </PreferenceCategory>
+    
+</PreferenceScreen>

@@ -1,0 +1,123 @@
+/**
+ *     Copyright (C) 2009 Anders Aagaard <aagaande@gmail.com>
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.neuron.trafikanten.dataSets;
+
+import java.util.ArrayList;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class RealtimeData implements Parcelable,Comparable<RealtimeData> {
+	public final static String PARCELABLE = "RealtimeData";
+	public String line;
+	public String destination;
+	public boolean realtime;
+	public String departurePlatform;
+	public String extra;
+
+	public long aimedArrival;
+	public long expectedArrival;
+
+	public long aimedDeparture;
+	public long expectedDeparture;
+	
+	/*
+	 * List of coming arrivals, this is used for the sliding list under current station in RealtimeView
+	 */
+	public ArrayList<RealtimeData> arrivalList = new ArrayList<RealtimeData>();
+	
+	public RealtimeData() { }
+	
+	@Override
+	public int compareTo(RealtimeData data) {
+		// TODO PERF : this is retarded.
+		if (expectedArrival > 0 && data.expectedArrival > 0) {
+			return Long.valueOf(expectedArrival).compareTo(Long.valueOf(data.expectedArrival));
+		}
+		return Long.valueOf(aimedArrival).compareTo(Long.valueOf(data.aimedArrival));
+	}
+	
+	/*
+	 * @see android.os.Parcelable
+	 */
+	@Override
+	public int describeContents() {	return 0; }
+	
+	/*
+	 * Function for reading the parcel
+	 */
+	public RealtimeData(Parcel in) {
+		line = in.readString();
+		destination = in.readString();
+		realtime = in.readInt() != 0;
+		departurePlatform = in.readString();
+		extra = in.readString();
+		
+		aimedArrival = in.readLong();
+		expectedArrival = in.readLong();
+		
+		aimedDeparture = in.readLong();
+		expectedDeparture = in.readLong();
+
+		final ClassLoader loader = RealtimeData.class.getClassLoader();
+		int size = in.readInt();
+		for (int i = 0; i < size; i++) {
+			final RealtimeData data = in.readParcelable(loader);
+			arrivalList.add(data);
+		}
+	}
+	
+	/*
+	 * Writing current data to parcel.
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+	 */
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(line);
+		out.writeString(destination);
+		out.writeInt(realtime ? 1 : 0);
+		out.writeString(departurePlatform);
+		out.writeString(extra);
+		
+		out.writeLong(aimedArrival);
+		out.writeLong(expectedArrival);
+		
+		out.writeLong(aimedDeparture);
+		out.writeLong(expectedDeparture);
+		
+		out.writeInt(arrivalList.size());
+		for (RealtimeData data : arrivalList) {
+			out.writeParcelable(data, 0);
+		}
+	}
+	
+	/*
+	 * Used for bundle.getParcel 
+	 */
+    public static final Parcelable.Creator<RealtimeData> CREATOR = new Parcelable.Creator<RealtimeData>() {
+		public RealtimeData createFromParcel(Parcel in) {
+		    return new RealtimeData(in);
+		}
+		
+		public RealtimeData[] newArray(int size) {
+		    return new RealtimeData[size];
+		}
+	};
+
+}

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Offentlig Transport</string>
+    
+    <!-- Package org.offentligtransport -->
+    <string name="realtime">Sanntid</string>
+    <string name="route">Rute</string>
+    <string name="now">Nå</string>
+    
+    <!-- SelectRoute -->
+    <string name="from">Fra : </string>
+    <string name="to">Til : </string>
+    <string name="travelFrom">Reis Fra</string>
+    <string name="travelTo">Reis Til</string>
+    <string name="departingAt">Dra klokken : </string>
+    <string name="search">Søk</string>
+    
+    <!-- SelectRouteView -->
+    <string name="pleaseSelectFrom">Velg hvor du skal dra fra</string>
+    <string name="pleaseSelectTo">Velg hvor du skal dra til</string>
+    
+    <!-- SelectStation -->
+    <string name="search_for_station">Søk etter stasjon</string>
+    <string name="searchStationHint">Søk etter stasjon i søk feltet.
+\n\n
+Du kan presse lenge på en stasjon for å legge den til i favoritter.
+\n\n
+Click menu -> Settings to change language.</string>
+
+	<!-- SelectStationView -->
+	<string name="favorite">Favoritt</string>
+	<string name="map">Kart</string>
+	<string name="contact">Kontakt</string>
+
+	<!-- RouteView -->
+	<string name="travelTime">Reisetid : </string>
+	<string name="waitTime">Ventetid : </string>
+	<string name="walkTime">Gå tid : </string>
+	<string name="walk">Gå</string>
+	<string name="noRouteFound">Ingen rute funnet!</string>
+	
+	<!-- GenericMap -->
+	<string name="selectStation">Velg stasjon</string>
+	<string name="noLocationFound">Ingen posisjon funnet</string>
+	<!-- GenericStationOverlay -->
+	<string name="stationsMissingCoordsWillBeHidden">Noen stasjoner mangler koordinater og vil ikke vises</string>
+	
+	<!-- RealtimeView -->
+	<string name="ca">ca </string>
+	<string name="refresh">Oppdater</string>
+	<string name="realtimeEmpty">Ingen informasjon funnet!</string>
+	<string name="late">forsinket</string>
+	
+	<!-- Tasks -->
+	<string name="searchRouteTask">Kalkulerer rute...</string>
+	<string name="searchStationTask">Søker...</string>
+	<string name="realtimeDataTask">Laster...</string>
+	
+	<!-- LocationTask -->
+	<string name="locationWaiting">Venter for posisjon...</string>
+	<string name="current">Nøyaktighet :</string>
+	<string name="noLocationFoundError">Ingen posisjon funnet, vent eller trykk tilbake for å avbryte</string>
+	<string name="locationContinue">Fortsett</string>
+	
+	<!-- SelectContactTask -->
+	<string name="failedToFindAddress">Klarte ikke finne addressen på kartet</string>
+	<string name="multipleAddressesFound">Flere treff funnet, bruker første</string>
+	
+	<!-- Notifications -->
+	<string name="alarm">Alarm</string> <!-- This is shared by everything that can call notifications -->
+	<string name="fromShort">fra</string>
+	
+	<!-- Settings -->
+	<string name="changeLanguage">Endre språk</string>
+	<string name="languageWarning">Hvis du endrer språk vil programmet reloade, alarmer vil bli borte</string>
+	
+	<string name="dataProviders">Data kilde</string>
+	<string name="dataProvidersSummary">Endre offentlig transport data kilde</string>
+	<string name="dataProvidersSelect">Velg data kilde</string>
+	
+	<string name="locationProviders">Posisjon kilde</string>
+	<string name="locationProvidersSummary">Endre posisjon kilde</string>
+	<string name="locationProvidersSelect">Velg posisjon kilde</string>
+
+	<!--  Generic -->
+	<string name="exception">Feil</string>
+	<string name="myLocation">Min Posisjon</string>
+	<string name="settings">Settings</string>
+	<string name="reset">Tilbakestill</string>
+</resources>

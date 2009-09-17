@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+   android:stretchColumns="1">
+
+   <TableRow>
+       <TextView
+           android:gravity="left"
+           android:padding="3dip" 
+
+           android:text="@string/from"
+           android:textStyle="bold"
+           />
+
+       <Button android:id="@+id/fromButton"
+           android:padding="3dip"
+           />
+   </TableRow>
+
+   <TableRow>
+       <TextView
+           android:gravity="left"
+           android:padding="3dip" 
+
+           android:text="@string/to"
+           android:textStyle="bold"
+           />
+
+       <Button android:id="@+id/toButton"
+           android:padding="3dip"
+            />
+   </TableRow>
+
+   <TableRow
+       android:gravity="left">
+       <TextView
+           android:gravity="left"
+           android:padding="3dip" 
+
+           android:text="@string/departingAt"
+           android:textStyle="bold"
+           />
+  </TableRow>
+
+   <TableRow
+       android:gravity="left">
+       
+    <TimePicker android:id="@+id/timePicker"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_span="2"/>
+   </TableRow>
+   
+   <TableRow
+       android:gravity="left">
+       
+	    <Spinner android:id="@+id/departureDay"
+	        android:layout_span="2"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+	        
+	    />
+   </TableRow>
+   
+   <TableRow>
+       <Button android:id="@+id/searchButton"
+           android:padding="3dip"
+           android:layout_span="2"
+           android:drawableLeft="@android:drawable/ic_search_category_default"
+           android:drawablePadding="-16px"
+           android:text="@string/search"
+            />
+   </TableRow>
+ 
+</TableLayout>
