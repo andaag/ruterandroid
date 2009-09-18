@@ -83,7 +83,8 @@ public class TrafikantenRealtime implements IRealtimeProvider {
 class TrafikantenRealtimeThread extends Thread implements Runnable {
 	private static final String TAG = "TrafikantenRealtimeThread";
 	private Handler handler;
-	private int stationId;	
+	private int stationId;
+	private boolean loadingBusUrl = true;
 	
 	public TrafikantenRealtimeThread(Handler handler, int stationId) {
 		this.handler = handler;
@@ -97,7 +98,12 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			URL url = new URL("http://195.1.22.228/topp2009/siri/sm.aspx?id=" + stationId);
+			URL url;
+			if (loadingBusUrl) {
+				url = new URL("http://api.sis.trafikanten.no/xmlrtpi/dis/request?DISID=SN$" + stationId);
+			} else {
+				url = new URL("http://api.sis.trafikanten.no:8088/xmlrtpi/dis/request?DISID=SN$" + stationId);
+			}
 			Log.i(TAG,"Realtime url : " + url);
 			
 			/*
@@ -118,6 +124,13 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 			 */
 			if (e.getClass() == InterruptedException.class)
 				return;
+			
+			// If we get an exception while loading the bus url, switch to tram.
+			if (loadingBusUrl) {
+				loadingBusUrl = false;
+				run();
+				return;
+			}
 
 			final Message msg = handler.obtainMessage(IRealtimeProvider.MESSAGE_EXCEPTION);
 			final Bundle bundle = new Bundle();
