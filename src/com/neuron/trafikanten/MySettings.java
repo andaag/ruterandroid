@@ -95,7 +95,7 @@ public final class MySettings {
 		SETTING_LOCATIONPROVIDER = 0;
 		
 		if (newProvider == null) {
-			setLocationProvider("Android");
+			setLocationProvider("Skyhook");
 			return;
 		}
 		
@@ -111,7 +111,7 @@ public final class MySettings {
 		}
 		
 		Log.e(TAG, "setLocationProvider(" + newProvider + ") failed this should never happen!");
-		setLocationProvider("Android");
+		setLocationProvider(null);
 	}
 	
 	/*

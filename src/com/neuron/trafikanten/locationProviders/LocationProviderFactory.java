@@ -20,6 +20,7 @@ package com.neuron.trafikanten.locationProviders;
 
 import com.neuron.trafikanten.MySettings;
 import com.neuron.trafikanten.locationProviders.android.AndroidLocation;
+import com.neuron.trafikanten.locationProviders.skyhook.SkyhookLocation;
 
 import android.content.Context;
 import android.os.Handler;
@@ -31,7 +32,7 @@ public class LocationProviderFactory {
 	 * Gets all data providers, this is IN ORDER, .get[0] == PROVIDER_<.get[0]>
 	 */
 	public static String[] getLocationProviders() {
-		return new String[] { "Android" };
+		return new String[] { "Skyhook", "Android" };
 	}
 	
 	/*
@@ -54,7 +55,9 @@ public class LocationProviderFactory {
 	 * Get Search Provider
 	 */
 	public static ILocationProvider getLocationProvider(Context context, Handler handler) {
-		if (MySettings.SETTING_LOCATIONPROVIDER == AndroidLocation.PROVIDER_ANDROID) {
+		if (MySettings.SETTING_LOCATIONPROVIDER == SkyhookLocation.PROVIDER_SKYHOOK) {
+			return new SkyhookLocation(context, handler);
+		} else if (MySettings.SETTING_LOCATIONPROVIDER == AndroidLocation.PROVIDER_ANDROID) {
 			return new AndroidLocation(context, handler);
 		}
 		return null;
