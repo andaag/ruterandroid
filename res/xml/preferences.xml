@@ -6,12 +6,6 @@
     <PreferenceCategory
             android:title="Settings">
             
-        <ListPreference
-                android:key="language"
-                android:title="Language"
-                android:summary="Change Language/Språk"
-                android:dialogTitle="@string/changeLanguage" />
-            
         <!--  <ListPreference
                 android:key="data_provider"
                 android:title="@string/dataProviders"

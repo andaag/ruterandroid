@@ -20,6 +20,7 @@ package com.neuron.trafikanten;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -30,7 +31,6 @@ public final class MySettings {
 	private static final String TAG = "MySettings";
 	public static final String KEY_DATA_PROVIDER = "data_provider";
 	public static final String KEY_LOCATION_PROVIDER = "location_provider";
-	public static final String KEY_LANGUAGE = "language";
 	
 	/*
 	 * Settings we store:
@@ -50,10 +50,12 @@ public final class MySettings {
 	 * Refresh all settings, needs to be called on every onResume incase of kill & restart of application.
 	 */
 	public static void refresh(Context context) {
+		Configuration conf = context.getResources().getConfiguration();
+		Log.i("TEMP","Lang : " + conf.locale.toString());
+		
+		
 		context = context.getApplicationContext();
-        LanguageFactory.init(context);
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        preferencesChanged(preferences, KEY_LANGUAGE);
 		if (loaded) return;
 		preferencesChanged(preferences, KEY_DATA_PROVIDER);
         preferencesChanged(preferences, KEY_LOCATION_PROVIDER);
@@ -115,20 +117,6 @@ public final class MySettings {
 	}
 	
 	/*
-	 * Set language
-	 */
-	private static void setLanguage(String newLanguage) {
-		if (newLanguage == null) {
-			setLanguage("Norsk");
-			return;
-		} else if (newLanguage.equals("Norsk")) {
-			LanguageFactory.setLanguage("no","NO");
-		} else if (newLanguage.equals("English")) {
-			LanguageFactory.setLanguage("en","GB");
-		}
-	}
-	
-	/*
 	 * preferencesChanged is called when preferences are updated.
 	 */
 	public static void preferencesChanged(SharedPreferences sharedPreferences, String key) {
@@ -138,9 +126,6 @@ public final class MySettings {
 		} else if (key.equals(KEY_LOCATION_PROVIDER)) {
 			final String locationProvider = sharedPreferences.getString(KEY_LOCATION_PROVIDER, null);
 			setLocationProvider(locationProvider);
-		} else if (key.equals(KEY_LANGUAGE)) {
-			final String language = sharedPreferences.getString(KEY_LANGUAGE, null);
-			setLanguage(language);
 		}
 	}
 }
