@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.neuron.trafikanten.dataProviders.trafikantenInternal;
+package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;

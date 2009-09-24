@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.neuron.trafikanten.dataProviders.trafikantenInternal;
+package com.neuron.trafikanten.dataProviders.trafikanten;
 
 public class Trafikanten {
 	public static final int PROVIDER_TRAFIKANTEN = 1;

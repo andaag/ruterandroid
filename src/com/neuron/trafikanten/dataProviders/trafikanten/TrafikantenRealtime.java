@@ -16,10 +16,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.neuron.trafikanten.dataProviders.trafikantenInternal;
+package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -83,8 +82,7 @@ public class TrafikantenRealtime implements IRealtimeProvider {
 class TrafikantenRealtimeThread extends Thread implements Runnable {
 	private static final String TAG = "TrafikantenRealtimeThread";
 	private Handler handler;
-	private int stationId;
-	private boolean loadingBusUrl = true;
+	private int stationId;	
 	
 	public TrafikantenRealtimeThread(Handler handler, int stationId) {
 		this.handler = handler;
@@ -98,12 +96,7 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			URL url;
-			if (loadingBusUrl) {
-				url = new URL("http://api.sis.trafikanten.no/xmlrtpi/dis/request?DISID=SN$" + stationId);
-			} else {
-				url = new URL("http://api.sis.trafikanten.no:8088/xmlrtpi/dis/request?DISID=SN$" + stationId);
-			}
+			URL url = new URL("http://195.1.22.228/topp2009/siri/sm.aspx?id=" + stationId);
 			Log.i(TAG,"Realtime url : " + url);
 			
 			/*
@@ -115,22 +108,13 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 			final XMLReader reader = parser.getXMLReader();
 			reader.setContentHandler(new RealtimeHandler(handler));
 			
-			final InputSource inputSource = new InputSource(url.openStream());
-			inputSource.setEncoding("iso-8859-1");
-			reader.parse(inputSource);
+			reader.parse(new InputSource(url.openStream()));
 		} catch(Exception e) {
 			/*
 			 * All exceptions except thread interruptions are passed to callback.
 			 */
 			if (e.getClass() == InterruptedException.class)
 				return;
-			
-			// If we get an exception while loading the bus url, switch to tram.
-			if (loadingBusUrl) {
-				loadingBusUrl = false;
-				run();
-				return;
-			}
 
 			final Message msg = handler.obtainMessage(IRealtimeProvider.MESSAGE_EXCEPTION);
 			final Bundle bundle = new Bundle();
@@ -147,22 +131,26 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 class RealtimeHandler extends DefaultHandler {
 	private RealtimeData data;
 	public static ArrayList<RealtimeData> realtimeList;
-	private final static DateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss.SSS");
+	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
 	
 	private Handler handler;
 	
 	/*
 	 * Temporary variables for parsing. 
 	 */
-    private boolean inDISDeviation = false;
-    private boolean inLineText = true;
-    private boolean inDestinationStop = true;
-    private boolean inTripStatus = true;
-    private boolean inScheduledDISArrivalTime = true;
-    private boolean inExpectedDISArrivalTime = true;
-    private boolean inScheduledDISDepartureTime = true;
-    private boolean inExpectedDISDepartureTime = true;
-    private boolean inStopPosition = true;
+	private boolean inMonitoredStopVisit = false;
+	private boolean inPublishedLineName = false;
+	private boolean inDestinationName = false;
+	private boolean inMonitored = false;
+
+	private boolean inAimedArrivalTime = false;
+	private boolean inExpectedArrivalTime = false;
+
+	private boolean inAimedDepartureTime = false;
+	private boolean inExpectedDepartureTime = false;
+	private boolean inDeparturePlatformName = false;
+
+	private boolean inStopVisitNote = false;
 	
 	/*
 	 * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
@@ -220,34 +208,37 @@ class RealtimeHandler extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName, 
 	              String qName, Attributes atts) throws SAXException {
-	    if (!inDISDeviation) {
-	        if (localName.equals("DISDeviation")) {
-	            inDISDeviation = true;
+		tmpData = "";
+	    if (!inMonitoredStopVisit) {
+	        if (localName.equals("MonitoredStopVisit")) {
+	            inMonitoredStopVisit = true;
 	            data = new RealtimeData();
 	        }
-	    } else if (localName.equals("LineText")) {
-	        inLineText = true;
-	    } else if (localName.equals("DestinationStop")) {
-	        inDestinationStop = true;
-	    } else if (localName.equals("TripStatus")) {
-	        inTripStatus = true;
-	    } else if (localName.equals("ScheduledDISArrivalTime")) {
-	        inScheduledDISArrivalTime = true;
-	    } else if (localName.equals("ExpectedDISArrivalTime")) {
-	        inExpectedDISArrivalTime = true;
-	    } else if (localName.equals("ScheduledDISDepartureTime")) {
-	        inScheduledDISDepartureTime = true;
-	    } else if (localName.equals("ExpectedDISDepartureTime")) {
-	        inExpectedDISDepartureTime = true;
-	    } else if (localName.equals("StopPosition")) {
-	        inStopPosition = true;
+	    } else if (localName.equals("PublishedLineName")) {
+	        inPublishedLineName = true;
+	    } else if (localName.equals("DestinationName")) {
+	        inDestinationName = true;
+	    } else if (localName.equals("Monitored")) {
+	        inMonitored = true;
+	    } else if (localName.equals("AimedArrivalTime")) {
+	        inAimedArrivalTime = true;
+	    } else if (localName.equals("ExpectedArrivalTime")) {
+	        inExpectedArrivalTime = true;
+	    } else if (localName.equals("AimedDepartureTime")) {
+	        inAimedDepartureTime = true;
+	    } else if (localName.equals("ExpectedDepartureTime")) {
+	        inExpectedDepartureTime = true;
+	    } else if (localName.equals("DeparturePlatformName")) {
+	        inDeparturePlatformName = true;
+	    } else if (localName.equals("StopVisitNote")) {
+	        inStopVisitNote = true;
 	    }
 	}
 
 
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-	    if (!inDISDeviation) return;
+	    if (!inMonitoredStopVisit) return;
 	    
 	    /*
 	     * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
@@ -258,34 +249,36 @@ class RealtimeHandler extends DefaultHandler {
     		characters(tmpData.toCharArray(), 0, tmpData.length());
     	}
 	    
-	    if (localName.equals("DISDeviation")) {
+	    if (localName.equals("MonitoredStopVisit")) {
 	        /*
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */
-	        inDISDeviation = false;
+	        inMonitoredStopVisit = false;
 	        addData();
-	    } else if (localName.equals("LineText")) {
-	        inLineText = false;
-	    } else if (localName.equals("DestinationStop")) {
-	        inDestinationStop = false;
-	    } else if (localName.equals("TripStatus")) {
-	        inTripStatus = false;
-	    } else if (localName.equals("ScheduledDISArrivalTime")) {
-	        inScheduledDISArrivalTime = false;
-	    } else if (localName.equals("ExpectedDISArrivalTime")) {
-	        inExpectedDISArrivalTime = false;
-	    } else if (localName.equals("ScheduledDISDepartureTime")) {
-	        inScheduledDISDepartureTime = false;
-	    } else if (localName.equals("ExpectedDISDepartureTime")) {
-	        inExpectedDISDepartureTime = false;
-	    } else if (localName.equals("StopPosition")) {
-	        inStopPosition = false;
+	    } else if (localName.equals("PublishedLineName")) {
+	        inPublishedLineName = false;
+	    } else if (localName.equals("DestinationName")) {
+	        inDestinationName = false;
+	    } else if (localName.equals("Monitored")) {
+	        inMonitored = false;
+	    } else if (localName.equals("AimedArrivalTime")) {
+	        inAimedArrivalTime = false;
+	    } else if (localName.equals("ExpectedArrivalTime")) {
+	        inExpectedArrivalTime = false;
+	    } else if (localName.equals("AimedDepartureTime")) {
+	        inAimedDepartureTime = false;
+	    } else if (localName.equals("ExpectedDepartureTime")) {
+	        inExpectedDepartureTime = false;
+	    } else if (localName.equals("DeparturePlatformName")) {
+	        inDeparturePlatformName = false;
+	    } else if (localName.equals("StopVisitNote")) {
+	        inStopVisitNote = false;
 	    }
 	}
 	
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException { 
-	    if (!inDISDeviation) return;
+	    if (!inMonitoredStopVisit) return;
 	    /*
 	     * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
 	     * Until endElemtent is called we only collect the data.
@@ -296,27 +289,29 @@ class RealtimeHandler extends DefaultHandler {
     	}
     	endData = false;
 	    
-	    if (inLineText) {
+	    if (inPublishedLineName) {
 	        data.line = new String(ch, start, length);
-	    } else if (inDestinationStop) {
+	    } else if (inDestinationName) {
 	        data.destination = new String(ch, start, length);
-	    } else if (inTripStatus) {
+	    } else if (inMonitored) {
 	        final String monitored = new String(ch, start, length);
-	        if (monitored.equalsIgnoreCase("Real")) {
+	        if (monitored.equalsIgnoreCase("true") || monitored.equals("1")) {
 	        	data.realtime = true;
 	        } else {
 	        	data.realtime = false;
 	        }
-	    } else if (inScheduledDISArrivalTime) {
+	    } else if (inAimedArrivalTime) {
 	    	data.aimedArrival = parseDateTime(new String(ch, start, length));
-	    } else if (inExpectedDISArrivalTime) {
+	    } else if (inExpectedArrivalTime) {
 	    	data.expectedArrival = parseDateTime(new String(ch, start, length));
-	    } else if (inScheduledDISDepartureTime) {
+	    } else if (inAimedDepartureTime) {
 	    	data.aimedDeparture = parseDateTime(new String(ch, start, length));
-	    } else if (inExpectedDISDepartureTime) {
+	    } else if (inExpectedDepartureTime) {
 	    	data.expectedDeparture = parseDateTime(new String(ch, start, length));
-	    } else if (inStopPosition) {
+	    } else if (inDeparturePlatformName) {
 	        data.departurePlatform = new String(ch, start, length);
+	    } else if (inStopVisitNote) {
+	    	data.extra = new String(ch, start, length);
 	    }
 	}
 	/*
