@@ -18,15 +18,14 @@
 
 package com.neuron.trafikanten.tasks;
 
-import com.neuron.trafikanten.MySettings;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataSets.RouteData;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
 
 public class SearchRouteTask extends GenericTask {
 	public static final int TASK_ROUTE = 103;
@@ -77,7 +76,6 @@ public class SearchRouteTask extends GenericTask {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 		routeProvider.Search(routeData);
 	}
 

@@ -16,7 +16,6 @@ public class Trafikanten extends TabActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
- 	MySettings.refresh(this);
  	final TabHost tabHost = getTabHost();
  	
      tabHost.addTab(tabHost.newTabSpec("RealtimeTab")
@@ -44,6 +43,5 @@ public class Trafikanten extends TabActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 	}
 }

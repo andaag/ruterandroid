@@ -20,18 +20,6 @@ package com.neuron.trafikanten.views;
 
 import java.util.ArrayList;
 
-import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.IGenericProvider;
-import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
-import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
-import com.neuron.trafikanten.dataSets.RealtimeData;
-import com.neuron.trafikanten.dataSets.SearchStationData;
-import com.neuron.trafikanten.notification.NotificationDialog;
-import com.neuron.trafikanten.tasks.GenericTask;
-import com.neuron.trafikanten.tasks.RealtimeDataTask;
-
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -52,6 +40,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+
+import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.IGenericProvider;
+import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
+import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
+import com.neuron.trafikanten.dataSets.RealtimeData;
+import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.notification.NotificationDialog;
+import com.neuron.trafikanten.tasks.GenericTask;
+import com.neuron.trafikanten.tasks.RealtimeDataTask;
 
 public class RealtimeView extends ListActivity {
 	private static final String TAG = "RealtimeView";
@@ -272,7 +271,6 @@ public class RealtimeView extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 		RealtimeView.this.setListAdapter(realtimeList); // Re render times to avoid showing "+5m" when it's 2m left.
 	}
 

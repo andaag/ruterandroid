@@ -18,14 +18,13 @@
 
 package com.neuron.trafikanten.tasks;
 
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataProviders.ISearchProvider;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.DataProviderFactory;
+import com.neuron.trafikanten.dataProviders.ISearchProvider;
 
 public class SearchStationTask extends GenericTask {
 	public static final int TASK_SEARCH = 101;
@@ -104,7 +103,6 @@ public class SearchStationTask extends GenericTask {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 		search();
 	}
 

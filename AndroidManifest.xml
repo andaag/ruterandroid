@@ -21,7 +21,7 @@
 <activity android:name=".views.RouteView"></activity>
 <activity android:name=".views.map.GenericMap"></activity>
 <uses-library android:name="com.google.android.maps"></uses-library>
-<activity android:name=".views.SettingsView"></activity>
+
 
 
 <activity android:name=".tasks.LocationTask" android:theme="@android:style/Theme.Dialog"></activity>

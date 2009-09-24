@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataSets.RouteData;
-import com.neuron.trafikanten.dataSets.SearchStationData;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,12 +38,15 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.SearchStationData;
+
 // TODO FUTURE : TimePicker should be rounded up to nearest 5 minutes.
 public class SelectRouteView extends Activity {
 	private static final String TAG = "SelectRouteView";
 	private static final int ACTIVITY_SELECT_FROM = 1;
 	private static final int ACTIVITY_SELECT_TO = 2;
-	private static final int ACTIVITY_SHOWSETTINGS = 3;
 	
 	private ViewHolder viewHolder = new ViewHolder();
 	private RouteData routeData = new RouteData();
@@ -56,8 +54,7 @@ public class SelectRouteView extends Activity {
 	/*
 	 * Options menu items:
 	 */
-	private final static int SETTINGS_ID = Menu.FIRST;
-	private final static int RESET_ID = Menu.FIRST + 1;
+	private final static int RESET_ID = Menu.FIRST;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -133,9 +130,6 @@ public class SelectRouteView extends Activity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		final MenuItem settings = menu.add(0, SETTINGS_ID, 0, R.string.settings);
-		settings.setIcon(android.R.drawable.ic_menu_preferences);
-		
 		final MenuItem favorites = menu.add(0, RESET_ID, 0, R.string.reset);
 		favorites.setIcon(android.R.drawable.ic_menu_revert);
 		return true;
@@ -162,9 +156,6 @@ public class SelectRouteView extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-        case SETTINGS_ID:
-        	SettingsView.Show(this, ACTIVITY_SHOWSETTINGS);
-            break;
         case RESET_ID:
         	resetView();
         	break;
@@ -236,15 +227,6 @@ public class SelectRouteView extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		/*
-		 * We reset on back from settings, as that could indicate settings was changed.
-		 */
-		if (resultCode == ACTIVITY_SHOWSETTINGS) {
-			resetView();
-			return;
-			
-		}
-		
 		if (resultCode != RESULT_OK) return;
 		
 		switch(requestCode) {
@@ -298,7 +280,6 @@ public class SelectRouteView extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 		
 		/*
 		 * Check current time, if it's too old, reset it.

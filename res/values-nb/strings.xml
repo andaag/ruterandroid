@@ -23,9 +23,7 @@
     <string name="search_for_station">Søk etter stasjon</string>
     <string name="searchStationHint">Søk etter stasjon i søk feltet.
 \n\n
-Du kan presse lenge på en stasjon for å legge den til i favoritter.
-\n\n
-Click menu -> Settings to change language.</string>
+Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
 
 	<!-- SelectStationView -->
 	<string name="favorite">Favoritt</string>

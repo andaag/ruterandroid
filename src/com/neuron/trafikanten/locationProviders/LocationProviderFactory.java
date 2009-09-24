@@ -18,12 +18,10 @@
 
 package com.neuron.trafikanten.locationProviders;
 
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.locationProviders.android.AndroidLocation;
-import com.neuron.trafikanten.locationProviders.skyhook.SkyhookLocation;
-
 import android.content.Context;
 import android.os.Handler;
+
+import com.neuron.trafikanten.locationProviders.skyhook.SkyhookLocation;
 
 // TODO : Settings for locationprovider (including a requirement for accuracy, maybe an option to keep scanning and have a refresh button)
 public class LocationProviderFactory {
@@ -55,12 +53,7 @@ public class LocationProviderFactory {
 	 * Get Search Provider
 	 */
 	public static ILocationProvider getLocationProvider(Context context, Handler handler) {
-		if (MySettings.SETTING_LOCATIONPROVIDER == SkyhookLocation.PROVIDER_SKYHOOK) {
-			return new SkyhookLocation(context, handler);
-		} else if (MySettings.SETTING_LOCATIONPROVIDER == AndroidLocation.PROVIDER_ANDROID) {
-			return new AndroidLocation(context, handler);
-		}
-		return null;
+		return new SkyhookLocation(context, handler);
 	}
 	
 	

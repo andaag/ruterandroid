@@ -18,14 +18,13 @@
 
 package com.neuron.trafikanten.tasks;
 
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.DataProviderFactory;
+import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
 
 public class RealtimeDataTask extends GenericTask {
 	public static final int TASK_REALTIME = 102;
@@ -81,7 +80,6 @@ public class RealtimeDataTask extends GenericTask {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 		fetch();
 	}
 

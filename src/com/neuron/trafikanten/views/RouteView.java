@@ -20,18 +20,6 @@ package com.neuron.trafikanten.views;
 
 import java.util.ArrayList;
 
-import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataProviders.IGenericProvider;
-import com.neuron.trafikanten.dataProviders.IRouteProvider;
-import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
-import com.neuron.trafikanten.dataSets.RouteData;
-import com.neuron.trafikanten.notification.NotificationDialog;
-import com.neuron.trafikanten.tasks.GenericTask;
-import com.neuron.trafikanten.tasks.SearchRouteTask;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -55,6 +43,17 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+
+import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.DataProviderFactory;
+import com.neuron.trafikanten.dataProviders.IGenericProvider;
+import com.neuron.trafikanten.dataProviders.IRouteProvider;
+import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
+import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.notification.NotificationDialog;
+import com.neuron.trafikanten.tasks.GenericTask;
+import com.neuron.trafikanten.tasks.SearchRouteTask;
 
 // TODO LAYOUT : Consider adding traveltime, for example <symbol> <line> <destination> <right aligned traveltime>
 public class RouteView extends ListActivity {
@@ -354,7 +353,6 @@ public class RouteView extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 	}
 
 	@Override

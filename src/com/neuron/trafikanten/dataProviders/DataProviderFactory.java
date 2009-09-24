@@ -18,14 +18,12 @@
 
 package com.neuron.trafikanten.dataProviders;
 
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.dataProviders.trafikanten.Trafikanten;
+import android.os.Handler;
+
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenTransports;
-
-import android.os.Handler;
 
 /*
  * Class used for getting the right Search/Realtime/Route etc provider.
@@ -35,58 +33,41 @@ import android.os.Handler;
  */
 
 // TODO : Settings for provider
-public class DataProviderFactory {
-	/*
-	 * Gets all data providers
-	 */
-	public static String[] getDataProviders() {
-		return new String[] { "Trafikanten" };
-	}
+public class DataProviderFactory {	
 	
 	/*
-	 * Get data provider string
+	 * Get data provider, this is used in database tables, incase we add more plugins here.
+	 * That way station id's etc can be seperated.
 	 */
 	public static String getDataProviderString() {
-		return getDataProviders()[MySettings.SETTING_DATAPROVIDER - 1];
+		return "Trafikanten";
 	}
-	
 	/*
 	 * Get Search Provider
 	 */
 	public static ISearchProvider getSearchProvider(Handler handler) {
-		if (MySettings.SETTING_DATAPROVIDER == Trafikanten.PROVIDER_TRAFIKANTEN) {
-			return new TrafikantenSearch(handler);
-		}
-		return null;
+		return new TrafikantenSearch(handler);
+
 	}
 	
 	/*
 	 * Get Realtime Provider
 	 */
 	public static IRealtimeProvider getRealtimeProvider(Handler handler) {
-		if (MySettings.SETTING_DATAPROVIDER == Trafikanten.PROVIDER_TRAFIKANTEN) {
-			return new TrafikantenRealtime(handler);
-		}
-		return null;
+		return new TrafikantenRealtime(handler);
 	}
 	
 	/*
 	 * Get Route Provider
 	 */
 	public static IRouteProvider getRouteProvider(Handler handler) {
-		if (MySettings.SETTING_DATAPROVIDER == Trafikanten.PROVIDER_TRAFIKANTEN) {
-			return new TrafikantenRoute(handler);
-		}
-		return null;
+		return new TrafikantenRoute(handler);
 	}
 	
 	/*
 	 * Get Transports Provider
 	 */
 	public static int getImageResource(int transportType) {
-		if (MySettings.SETTING_DATAPROVIDER == Trafikanten.PROVIDER_TRAFIKANTEN) {
-			return TrafikantenTransports.getImageResource(transportType);
-		}
-		return 0;
+		return TrafikantenTransports.getImageResource(transportType);
 	}
 }

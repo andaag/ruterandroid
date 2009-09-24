@@ -21,11 +21,6 @@ package com.neuron.trafikanten.views.map;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataSets.SearchStationData;
-import com.neuron.trafikanten.db.FavoriteDbAdapter;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -47,6 +42,9 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.db.FavoriteDbAdapter;
 
 public class GenericMap extends MapActivity {
 	private static final int DIALOG_LIST = Menu.FIRST;
@@ -251,7 +249,6 @@ public class GenericMap extends MapActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 		locationOverlay.enableMyLocation();
 	}
 

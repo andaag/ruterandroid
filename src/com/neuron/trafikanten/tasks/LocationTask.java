@@ -18,11 +18,6 @@
 
 package com.neuron.trafikanten.tasks;
 
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.locationProviders.ILocationProvider;
-import com.neuron.trafikanten.locationProviders.LocationProviderFactory;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +27,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.locationProviders.ILocationProvider;
+import com.neuron.trafikanten.locationProviders.LocationProviderFactory;
 
 /*
  * Calculate our location, and search for a station
@@ -126,7 +125,6 @@ public class LocationTask extends GenericTask {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 		message.setText(R.string.locationWaiting);
 		locationProvider.getPeriodicLocation();
 	}

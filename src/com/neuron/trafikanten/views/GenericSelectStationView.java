@@ -20,20 +20,6 @@ package com.neuron.trafikanten.views;
 
 import java.util.ArrayList;
 
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.IGenericProvider;
-import com.neuron.trafikanten.dataProviders.ISearchProvider;
-import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
-import com.neuron.trafikanten.dataSets.SearchStationData;
-import com.neuron.trafikanten.db.FavoriteDbAdapter;
-import com.neuron.trafikanten.db.HistoryDbAdapter;
-import com.neuron.trafikanten.tasks.GenericTask;
-import com.neuron.trafikanten.tasks.LocationTask;
-import com.neuron.trafikanten.tasks.SearchStationTask;
-import com.neuron.trafikanten.tasks.SelectContactTask;
-import com.neuron.trafikanten.views.map.GenericMap;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -57,9 +43,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.IGenericProvider;
+import com.neuron.trafikanten.dataProviders.ISearchProvider;
+import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
+import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.db.FavoriteDbAdapter;
+import com.neuron.trafikanten.db.HistoryDbAdapter;
+import com.neuron.trafikanten.tasks.GenericTask;
+import com.neuron.trafikanten.tasks.LocationTask;
+import com.neuron.trafikanten.tasks.SearchStationTask;
+import com.neuron.trafikanten.tasks.SelectContactTask;
+import com.neuron.trafikanten.views.map.GenericMap;
+
 public abstract class GenericSelectStationView extends ListActivity {
 	private static final String TAG = "SelectStationView";
-	private final static int ACTIVITY_SHOWSETTINGS = 1;
 	
 	private final static int FAVORITE_ID = Menu.FIRST;
 	
@@ -69,8 +67,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private final static int MYLOCATION_ID = Menu.FIRST;
 	private final static int MAP_ID = Menu.FIRST + 1;
 	private final static int CONTACT_ID = Menu.FIRST + 2;
-	private final static int SETTINGS_ID = Menu.FIRST + 3;
-	private final static int RESET_ID = Menu.FIRST + 4;
+	private final static int RESET_ID = Menu.FIRST + 3;
 	
 	/*
 	 * Database adapter
@@ -202,9 +199,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 		final MenuItem contact = menu.add(0, CONTACT_ID, 0, R.string.contact);
 		contact.setIcon(R.drawable.ic_menu_cc);
 		
-		final MenuItem settings = menu.add(0, SETTINGS_ID, 0, R.string.settings);
-		settings.setIcon(android.R.drawable.ic_menu_preferences);
-		
 		final MenuItem favorites = menu.add(0, RESET_ID, 0, R.string.reset);
 		favorites.setIcon(android.R.drawable.ic_menu_revert);
 		return true;
@@ -225,9 +219,6 @@ public abstract class GenericSelectStationView extends ListActivity {
         	break;
         case CONTACT_ID:
         	SelectContactTask.StartTask(this);
-        	break;
-        case SETTINGS_ID:
-        	SettingsView.Show(this, ACTIVITY_SHOWSETTINGS);
         	break;
         case RESET_ID:
         	resetView();
@@ -329,14 +320,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		/*
-		 * We reset on back from settings, as that could indicate settings was changed.
-		 */
-		if (requestCode == ACTIVITY_SHOWSETTINGS) {
-			resetView();
-			return;
-		}
-    	
     	if (resultCode == RESULT_OK) {
 			/*
 			 * We have a few views that always return search results
@@ -375,7 +358,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MySettings.refresh(this);
 		favoriteDbAdapter.open();
 		historyDbAdapter.open();
 	}

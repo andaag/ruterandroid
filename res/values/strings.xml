@@ -23,9 +23,7 @@
     <string name="search_for_station">Search for station</string>
     <string name="searchStationHint">Search for a station in the search field.
 \n\n
-You can longpress on a station to mark it as favorite.
-\n\n
-Click menu -> Settings to change language.</string>
+You can longpress on a station to mark it as favorite.</string>
 
 	<!-- SelectStationView -->
 	<string name="favorite">Favorite</string>
