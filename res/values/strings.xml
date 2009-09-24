@@ -27,6 +27,7 @@ You can longpress on a station to mark it as favorite.</string>
 
 	<!-- SelectStationView -->
 	<string name="favorite">Favorite</string>
+	<string name="address">Address Search</string>
 	<string name="map">Map</string>
 	<string name="contact">Contact</string>
 
@@ -63,6 +64,9 @@ You can longpress on a station to mark it as favorite.</string>
 	<!-- SelectContactTask -->
 	<string name="failedToFindAddress">Failed to locate address on map</string>
 	<string name="multipleAddressesFound">Multiple addresses found, using first</string>
+	
+	<!-- SearchAddressTask -->
+	<string name="searchAddressTask">Search for address</string>
 	
 	<!-- Notifications -->
 	<string name="alarm">Alarm</string> <!-- This is shared by everything that can call notifications -->

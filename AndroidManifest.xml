@@ -29,6 +29,7 @@
 <activity android:name=".tasks.SelectContactTask" android:theme="@android:style/Theme.Dialog"></activity>
 
 <receiver android:name=".notification.NotificationIntent"></receiver>
+<activity android:name=".tasks.SearchAddressTask" android:theme="@android:style/Theme.Dialog"></activity>
 </application>
     <uses-sdk android:minSdkVersion="3" />
 

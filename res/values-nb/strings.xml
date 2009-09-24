@@ -27,6 +27,7 @@ Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
 
 	<!-- SelectStationView -->
 	<string name="favorite">Favoritt</string>
+	<string name="address">Addresse Søk</string>
 	<string name="map">Kart</string>
 	<string name="contact">Kontakt</string>
 
@@ -63,6 +64,9 @@ Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
 	<!-- SelectContactTask -->
 	<string name="failedToFindAddress">Klarte ikke finne addressen på kartet</string>
 	<string name="multipleAddressesFound">Flere treff funnet, bruker første</string>
+	
+	<!-- SearchAddressTask -->
+	<string name="searchAddressTask">Søk etter addresse</string>
 	
 	<!-- Notifications -->
 	<string name="alarm">Alarm</string> <!-- This is shared by everything that can call notifications -->

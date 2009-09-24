@@ -52,6 +52,7 @@ import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
 import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.LocationTask;
+import com.neuron.trafikanten.tasks.SearchAddressTask;
 import com.neuron.trafikanten.tasks.SearchStationTask;
 import com.neuron.trafikanten.tasks.SelectContactTask;
 import com.neuron.trafikanten.views.map.GenericMap;
@@ -67,7 +68,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private final static int MYLOCATION_ID = Menu.FIRST;
 	private final static int MAP_ID = Menu.FIRST + 1;
 	private final static int CONTACT_ID = Menu.FIRST + 2;
-	private final static int RESET_ID = Menu.FIRST + 3;
+	private final static int ADDRESS_ID = Menu.FIRST + 3;
+	private final static int RESET_ID = Menu.FIRST + 4;
 	
 	/*
 	 * Database adapter
@@ -199,6 +201,9 @@ public abstract class GenericSelectStationView extends ListActivity {
 		final MenuItem contact = menu.add(0, CONTACT_ID, 0, R.string.contact);
 		contact.setIcon(R.drawable.ic_menu_cc);
 		
+		final MenuItem address = menu.add(0, ADDRESS_ID, 0, R.string.address);
+		address.setIcon(R.drawable.ic_menu_directions);
+		
 		final MenuItem favorites = menu.add(0, RESET_ID, 0, R.string.reset);
 		favorites.setIcon(android.R.drawable.ic_menu_revert);
 		return true;
@@ -219,6 +224,9 @@ public abstract class GenericSelectStationView extends ListActivity {
         	break;
         case CONTACT_ID:
         	SelectContactTask.StartTask(this);
+        	break;
+        case ADDRESS_ID:
+        	SearchAddressTask.StartTask(this);
         	break;
         case RESET_ID:
         	resetView();

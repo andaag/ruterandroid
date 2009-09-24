@@ -132,7 +132,7 @@ public class SelectContactTask extends GenericTask {
 	}
 	
 	/*
-	 * Do geo coding.
+	 * Do geo mapping.
 	 */
 	private void geoMap(String name, String address) {
 		setVisible(true);
@@ -163,8 +163,8 @@ public class SelectContactTask extends GenericTask {
 	}
 	
 	private void foundLocation(Address location) {
-		SearchStationTask.StartTask(this, location.getLatitude(), location.getLongitude());
 		setVisible(false);
+		SearchStationTask.StartTask(this, location.getLatitude(), location.getLongitude());
 	}
 	
     /*
