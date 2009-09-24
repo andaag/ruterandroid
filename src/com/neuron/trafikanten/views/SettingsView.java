@@ -18,11 +18,6 @@
 
 package com.neuron.trafikanten.views;
 
-import com.neuron.trafikanten.MySettings;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.locationProviders.LocationProviderFactory;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Intent;
@@ -33,6 +28,10 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
+
+import com.neuron.trafikanten.MySettings;
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.locationProviders.LocationProviderFactory;
 
 public class SettingsView extends PreferenceActivity implements OnSharedPreferenceChangeListener  {
 	private String oldLanguage;
@@ -50,10 +49,10 @@ public class SettingsView extends PreferenceActivity implements OnSharedPreferen
 		/*
 		 * Setup list view for data providers
 		 */
-		ListPreference dataProviderList = (ListPreference) findPreference(MySettings.KEY_DATA_PROVIDER);
+/*		ListPreference dataProviderList = (ListPreference) findPreference(MySettings.KEY_DATA_PROVIDER);
 		dataProviderList.setDefaultValue(null);
 		dataProviderList.setEntries(DataProviderFactory.getDataProviders());
-		dataProviderList.setEntryValues(DataProviderFactory.getDataProviders());
+		dataProviderList.setEntryValues(DataProviderFactory.getDataProviders());*/
 		
 		/*
 		 * Setup list view for location providers

@@ -12,11 +12,11 @@
                 android:summary="Change Language/Språk"
                 android:dialogTitle="@string/changeLanguage" />
             
-        <ListPreference
+        <!--  <ListPreference
                 android:key="data_provider"
                 android:title="@string/dataProviders"
                 android:summary="@string/dataProvidersSummary"
-                android:dialogTitle="@string/dataProvidersSelect" />
+                android:dialogTitle="@string/dataProvidersSelect" /> -->
                 
         <ListPreference
                 android:key="location_provider"
