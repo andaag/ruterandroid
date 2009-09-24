@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Offentlig Transport</string>
+    <string name="app_name">Trafikanten</string>
     
-    <!-- Package org.offentligtransport -->
+    <!-- Front page -->
     <string name="realtime">Sanntid</string>
     <string name="route">Rute</string>
     <string name="now">Nå</string>
