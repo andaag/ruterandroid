@@ -94,7 +94,7 @@ public class SelectContactTask extends GenericTask {
 			 * Setup select contact alert dialog
 			 */
 		    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		    builder.setTitle("Select contact");
+		    builder.setTitle(R.string.selectContact);
 		    final String[] items = new String[nameList.size()];
 		    nameList.toArray(items);
 		    builder.setItems(items, new DialogInterface.OnClickListener() {

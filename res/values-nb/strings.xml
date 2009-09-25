@@ -64,6 +64,7 @@ Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
 	<!-- SelectContactTask -->
 	<string name="failedToFindAddress">Klarte ikke finne addressen på kartet</string>
 	<string name="multipleAddressesFound">Flere treff funnet, bruker første</string>
+	<string name="selectContact">Velg Kontakt</string>
 	
 	<!-- SearchAddressTask -->
 	<string name="searchAddressTask">Søk etter addresse</string>
