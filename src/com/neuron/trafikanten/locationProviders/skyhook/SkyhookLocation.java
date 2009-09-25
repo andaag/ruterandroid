@@ -83,9 +83,12 @@ public class SkyhookLocation implements ILocationProvider {
 			if (_stopInstant) {
 				return WPSContinuation.WPS_STOP;
 			}
-			Log.i(TAG,"Recieved location update");
+			if (location.getHPE() == 0.0)
+				return WPSContinuation.WPS_CONTINUE;
+			
+			Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
 
-	    	LocationProviderFactory.setLocation(location.getLatitude(), location.getLongitude(), location.getHPE());
+	    	LocationProviderFactory.setLocation(location.getLatitude(), location.getLongitude(), Math.round(location.getHPE()));
 	    	handler.sendEmptyMessage(ILocationProvider.MESSAGE_DONE);
 	        
 	    	if (_stop) {
