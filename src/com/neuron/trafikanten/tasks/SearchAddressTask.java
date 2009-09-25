@@ -135,7 +135,7 @@ public class SearchAddressTask extends GenericTask {
 		setVisible(true);
 		final Geocoder geocoder = new Geocoder(this);
 		try {
-			addresses = geocoder.getFromLocationName(searchAddress, 2);
+			addresses = geocoder.getFromLocationName(searchAddress, 10);
 
 			switch(addresses.size()) {
 			case 0:
