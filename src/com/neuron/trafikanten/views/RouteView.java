@@ -304,7 +304,7 @@ public class RouteView extends ListActivity {
 		 * Departure is what we base our notification on, 10 minuts before departure
 		 */
 		final long notifyDeparture = notifyRouteData.departure;
-		final String notifyWith = notifyRouteData.line == null ? null : notifyRouteData.line + " " + notifyRouteData.destination;
+		final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
 		NotificationDialog.setRouteData(routeData, notifyDeparture, notifyWith);
 		super.onPrepareDialog(id, dialog);
 	}

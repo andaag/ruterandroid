@@ -209,7 +209,9 @@ public class RealtimeView extends ListActivity {
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog) {
 		final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId);
-		final String notifyWith = realtimeData.line == null ? null : realtimeData.line + " " + realtimeData.destination;
+		final String notifyWith = realtimeData.line.equals(realtimeData.destination) 
+			? realtimeData.line 
+			: realtimeData.line + " " + realtimeData.destination;
 		NotificationDialog.setRealtimeData(realtimeData, station, notifyWith);
 		super.onPrepareDialog(id, dialog);
 	}
