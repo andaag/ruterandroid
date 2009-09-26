@@ -16,15 +16,15 @@ public class Trafikanten extends TabActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
- 	final TabHost tabHost = getTabHost();
- 	
-     tabHost.addTab(tabHost.newTabSpec("RealtimeTab")
- 			.setIndicator(getText(R.string.realtime), getResources().getDrawable(R.drawable.ic_menu_recent_history))
- 			.setContent(new Intent(this, SelectRealtimeStationView.class)));
-     
-     tabHost.addTab(tabHost.newTabSpec("RouteTab")
- 			.setIndicator(getText(R.string.route), getResources().getDrawable(R.drawable.ic_menu_directions))
- 			.setContent(new Intent(this, SelectRouteView.class)));
+	 	final TabHost tabHost = getTabHost();
+	 	
+	    tabHost.addTab(tabHost.newTabSpec("RealtimeTab")
+	 			.setIndicator(getText(R.string.realtime), getResources().getDrawable(R.drawable.ic_menu_recent_history))
+	 			.setContent(new Intent(this, SelectRealtimeStationView.class)));
+	     
+	    tabHost.addTab(tabHost.newTabSpec("RouteTab")
+	 			.setIndicator(getText(R.string.route), getResources().getDrawable(R.drawable.ic_menu_directions))
+	 			.setContent(new Intent(this, SelectRouteView.class)));
 	}
 	
 	/*

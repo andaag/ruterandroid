@@ -21,8 +21,8 @@
     
     <!-- SelectStation -->
     <string name="search_for_station">Search for station</string>
-    <string name="searchStationHint">Search for a station in the search field.
-\n\n
+    <string name="searchStationHint">Search for a station in the search field.\n\n
+Please rate trafikanten on android market!\n\n
 You can longpress on a station to mark it as favorite.</string>
 
 	<!-- SelectStationView -->
