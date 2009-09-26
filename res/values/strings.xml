@@ -91,4 +91,5 @@ You can longpress on a station to mark it as favorite.</string>
 	<string name="myLocation">My Location</string>
 	<string name="settings">Settings</string>
 	<string name="reset">Reset</string>
+	<string name="help">Help</string>
 </resources>

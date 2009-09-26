@@ -91,4 +91,5 @@ Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
 	<string name="myLocation">Min Posisjon</string>
 	<string name="settings">Settings</string>
 	<string name="reset">Tilbakestill</string>
+	<string name="help">Hjelp</string>
 </resources>

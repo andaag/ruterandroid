@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -70,6 +71,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private final static int CONTACT_ID = Menu.FIRST + 2;
 	private final static int ADDRESS_ID = Menu.FIRST + 3;
 	private final static int RESET_ID = Menu.FIRST + 4;
+	private final static int HELP_ID = Menu.FIRST + 5;
 	
 	/*
 	 * Database adapter
@@ -206,6 +208,10 @@ public abstract class GenericSelectStationView extends ListActivity {
 		
 		final MenuItem favorites = menu.add(0, RESET_ID, 0, R.string.reset);
 		favorites.setIcon(android.R.drawable.ic_menu_revert);
+		
+		final MenuItem help = menu.add(0, HELP_ID, 0, R.string.help);
+		help.setIcon(android.R.drawable.ic_menu_help);
+		
 		return true;
 	}
 	
@@ -230,6 +236,10 @@ public abstract class GenericSelectStationView extends ListActivity {
         	break;
         case RESET_ID:
         	resetView();
+        	break;
+        case HELP_ID:
+        	final Intent intent = new Intent("android.intent.action.VIEW", Uri.parse("http://code.google.com/p/trafikanten/"));
+        	startActivity(intent);
         	break;
         default:
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());

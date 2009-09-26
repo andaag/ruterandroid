@@ -26,6 +26,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -55,6 +56,7 @@ public class SelectRouteView extends Activity {
 	 * Options menu items:
 	 */
 	private final static int RESET_ID = Menu.FIRST;
+	private final static int HELP_ID = Menu.FIRST + 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +134,9 @@ public class SelectRouteView extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		final MenuItem favorites = menu.add(0, RESET_ID, 0, R.string.reset);
 		favorites.setIcon(android.R.drawable.ic_menu_revert);
+		
+		final MenuItem help = menu.add(0, HELP_ID, 0, R.string.help);
+		help.setIcon(android.R.drawable.ic_menu_help);
 		return true;
 	}
 	
@@ -158,6 +163,10 @@ public class SelectRouteView extends Activity {
         switch(item.getItemId()) {
         case RESET_ID:
         	resetView();
+        	break;
+        case HELP_ID:
+        	final Intent intent = new Intent("android.intent.action.VIEW", Uri.parse("http://code.google.com/p/trafikanten/"));
+        	startActivity(intent);
         	break;
         default:
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());
