@@ -67,7 +67,8 @@ Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
 	<string name="selectContact">Velg Kontakt</string>
 	
 	<!-- SearchAddressTask -->
-	<string name="searchAddressTask">Søk etter addresse</string>
+	<string name="searchAddressTask">Søk etter addresse:</string>
+	<string name="addressHint">Addresse</string>
 	
 	<!-- Notifications -->
 	<string name="alarm">Alarm</string> <!-- This is shared by everything that can call notifications -->
