@@ -176,6 +176,21 @@ public class GenericMap extends MapActivity {
 		selectedStation = station;
 	}
 
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch(id) {
+		case DIALOG_LIST:
+			/*
+			 * Dialog contains a list, force recreating it.
+			 */
+			removeDialog(DIALOG_LIST);
+			dialog = onCreateDialog(DIALOG_LIST);
+			break;
+		}
+		super.onPrepareDialog(id, dialog);
+	}
+	
 	/*
 	 * Creating dialogs
 	 * @see android.app.Activity#onCreateDialog(int)
@@ -184,6 +199,9 @@ public class GenericMap extends MapActivity {
 	protected Dialog onCreateDialog(int id) {
 		switch(id) {
 		case DIALOG_LIST:
+			/*
+			 * TODO : If stationOverlay items are dynamic, and can be updated while if the view is open, this will need to be converted to prepareDialog
+			 */
 			AlertDialog.Builder builder = new AlertDialog.Builder(GenericMap.this);
 			builder.setTitle(getText(R.string.selectStation));
 			String[] items = new String[stationOverlay.size()];

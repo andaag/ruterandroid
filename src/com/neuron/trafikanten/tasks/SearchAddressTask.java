@@ -68,6 +68,20 @@ public class SearchAddressTask extends GenericTask {
 			}
 		});
 	}
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch(id) {
+		case DIALOG_SEARCHADDRESS:
+			/*
+			 * Dialog contains a list, force recreating it.
+			 */
+			removeDialog(DIALOG_SEARCHADDRESS);
+			dialog = onCreateDialog(DIALOG_SEARCHADDRESS);
+			break;
+		}
+		super.onPrepareDialog(id, dialog);
+	}
 
 	@Override
 	protected Dialog onCreateDialog(int id) {

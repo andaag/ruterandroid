@@ -76,6 +76,23 @@ public class SelectContactTask extends GenericTask {
 		Contacts.People.NAME,
 		Contacts.ContactMethods.DATA
 	};
+	
+	
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch(id) {
+		case DIALOG_SELECTCONTACT:
+			/*
+			 * Dialog contains a list, force recreating it.
+			 */
+			removeDialog(DIALOG_SELECTCONTACT);
+			dialog = onCreateDialog(DIALOG_SELECTCONTACT);
+			break;
+		}
+		super.onPrepareDialog(id, dialog);
+	}
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch(id) {
