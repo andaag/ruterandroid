@@ -69,7 +69,7 @@
        <Button android:id="@+id/searchButton"
            android:padding="3dip"
            android:layout_span="2"
-           android:drawableLeft="@android:drawable/ic_search_category_default"
+           android:drawableLeft="@drawable/ic_search_category_default"
            android:drawablePadding="-16px"
            android:text="@string/search"
             />
