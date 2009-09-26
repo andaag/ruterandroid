@@ -44,7 +44,7 @@ import com.neuron.trafikanten.dataSets.SearchStationData;
 
 // TODO FUTURE : TimePicker should be rounded up to nearest 5 minutes.
 public class SelectRouteView extends Activity {
-	private static final String TAG = "SelectRouteView";
+	private static final String TAG = "Trafikanten-SelectRouteView";
 	private static final int ACTIVITY_SELECT_FROM = 1;
 	private static final int ACTIVITY_SELECT_TO = 2;
 	

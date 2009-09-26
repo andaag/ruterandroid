@@ -42,7 +42,7 @@ import android.view.Menu;
 import android.widget.Toast;
 
 public class SelectContactTask extends GenericTask {
-	private static final String TAG = "SelectContactTask";
+	private static final String TAG = "Trafikanten-SelectContactTask";
 	public static final int TASK_SELECTCONTACT = 104;
 	private static final int DIALOG_SELECTCONTACT = Menu.FIRST;
 	

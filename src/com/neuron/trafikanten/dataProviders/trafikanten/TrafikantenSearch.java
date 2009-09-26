@@ -91,7 +91,7 @@ public class TrafikantenSearch implements ISearchProvider {
 
 
 class TrafikantenSearchThread extends Thread implements Runnable {
-	private static final String TAG = "TrafikantenSearchThread";
+	private static final String TAG = "Trafikanten-T-SearchThread";
 	private Handler handler;
 	private String query;
 	private double latitude;

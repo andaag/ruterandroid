@@ -58,7 +58,7 @@ import com.neuron.trafikanten.tasks.SearchRouteTask;
 // TODO LAYOUT : Consider adding traveltime, for example <symbol> <line> <destination> <right aligned traveltime>
 public class RouteView extends ListActivity {
 	private final static int MAX_ROUTELIST = 50;
-	private final static String TAG = "RouteView";
+	private final static String TAG = "Trafikanten-RouteView";
 	private RouteAdapter routeList;
 	private ViewHolder viewHolder = new ViewHolder();
 	

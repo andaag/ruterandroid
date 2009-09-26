@@ -40,7 +40,7 @@ import android.widget.TimePicker;
  * Notification dialog, make sure to set realtimeData and station onPrepareDialog
  */
 public class NotificationDialog {
-	private static final String TAG = "NotificationDialog";
+	private static final String TAG = "Trafikanten-NotificationDialog";
 	private static int notificationCode = 0;
 	/*
 	 * For realtime:

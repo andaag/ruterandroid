@@ -53,7 +53,7 @@ import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.RealtimeDataTask;
 
 public class RealtimeView extends ListActivity {
-	private static final String TAG = "RealtimeView";
+	private static final String TAG = "Trafikanten-RealtimeView";
 	
 	/*
 	 * Options menu:

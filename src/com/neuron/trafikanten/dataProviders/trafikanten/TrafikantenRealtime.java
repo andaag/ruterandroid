@@ -80,7 +80,7 @@ public class TrafikantenRealtime implements IRealtimeProvider {
 }
 
 class TrafikantenRealtimeThread extends Thread implements Runnable {
-	private static final String TAG = "TrafikantenRealtimeThread";
+	private static final String TAG = "Trafikanten-T-RealtimeThread";
 	private Handler handler;
 	private int stationId;	
 	

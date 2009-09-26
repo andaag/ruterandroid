@@ -58,7 +58,7 @@ import com.neuron.trafikanten.tasks.SelectContactTask;
 import com.neuron.trafikanten.views.map.GenericMap;
 
 public abstract class GenericSelectStationView extends ListActivity {
-	private static final String TAG = "SelectStationView";
+	private static final String TAG = "Trafikanten-SelectStationView";
 	
 	private final static int FAVORITE_ID = Menu.FIRST;
 	
