@@ -138,7 +138,7 @@ public class SelectContactTask extends GenericTask {
 		setVisible(true);
 		final Geocoder geocoder = new Geocoder(this);
 		try {
-			List<Address> addresses = geocoder.getFromLocationName(address, 2);
+			List<Address> addresses = geocoder.getFromLocationName(address, 2, 57, 3, 66, 16);
 
 			switch(addresses.size()) {
 			case 0:

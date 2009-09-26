@@ -135,7 +135,8 @@ public class SearchAddressTask extends GenericTask {
 		setVisible(true);
 		final Geocoder geocoder = new Geocoder(this);
 		try {
-			addresses = geocoder.getFromLocationName(searchAddress, 10);
+			// NOTE : These coordinates do NOT cover all of norway.
+			addresses = geocoder.getFromLocationName(searchAddress, 10, 57, 3, 66, 16);
 
 			switch(addresses.size()) {
 			case 0:
