@@ -34,6 +34,8 @@ public class SelectStationView extends GenericSelectStationView {
 	public void stationSelected(SearchStationData station) {
 		if (!station.isFavorite) {
 			historyDbAdapter.updateHistory(station);
+		} else {
+			favoriteDbAdapter.updateUsed(station);
 		}
 		favoriteDbAdapter.close();
 		historyDbAdapter.close();

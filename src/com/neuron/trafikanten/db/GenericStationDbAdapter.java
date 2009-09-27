@@ -33,6 +33,7 @@ public abstract class GenericStationDbAdapter {
     public static final String KEY_ROWID = "_id";
     public static final String KEY_STATIONID = "stationid";
 	public static final String KEY_STOPNAME = "stopname";
+	public static final String KEY_USED = "used";
 	public static final String KEY_EXTRA = "extra";
 	public static final String KEY_UTM_X = "utmX";
 	public static final String KEY_UTM_Y = "utmY";
@@ -51,6 +52,7 @@ public abstract class GenericStationDbAdapter {
 	public static final String[] COLUMNS = new String[] { KEY_STOPNAME, 
 		KEY_EXTRA,
 		KEY_STATIONID,
+		KEY_USED,
 		KEY_UTM_X,
 		KEY_UTM_Y,
 		KEY_LATITUDE,
@@ -60,6 +62,7 @@ public abstract class GenericStationDbAdapter {
         "(_id integer primary key autoincrement, "
     			+ KEY_STATIONID + " int unique,"
     			+ KEY_STOPNAME + " text not null,"
+    			+ KEY_USED + " int not null,"
     			+ KEY_EXTRA + " text,"
     			+ KEY_UTM_X + " int,"
     			+ KEY_UTM_Y + " int,"
@@ -121,6 +124,7 @@ public abstract class GenericStationDbAdapter {
     	final ContentValues values = new ContentValues();
     	values.put(KEY_STATIONID, station.stationId);
     	values.put(KEY_STOPNAME, station.stopName);
+    	values.put(KEY_USED, 1);
     	values.put(KEY_EXTRA, station.extra);
     	values.put(KEY_UTM_X, station.utmCoords[0]);
     	values.put(KEY_UTM_Y, station.utmCoords[1]);
@@ -149,6 +153,6 @@ public abstract class GenericStationDbAdapter {
      * Fetch all columns from db.
      */
     public Cursor fetchAll() {
-    	return db.query(table, COLUMNS, null, null, null, null, KEY_STOPNAME);
+    	return db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
     }
 }

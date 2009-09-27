@@ -21,16 +21,16 @@ package com.neuron.trafikanten.db;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.neuron.trafikanten.dataSets.SearchStationData;
-
 import android.content.Context;
 import android.database.Cursor;
+
+import com.neuron.trafikanten.dataSets.SearchStationData;
 
 /*
  * Class for storing favorite stations.
  */
 public class FavoriteDbAdapter extends GenericStationDbAdapter {
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 5;
 	public FavoriteDbAdapter(Context context) {
 		super(context);
 		super.open("favorites", DATABASE_VERSION);
@@ -74,10 +74,20 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	}
 	
 	/*
+	 * Updates KEY_USED
+	 */
+	public void updateUsed(SearchStationData station) {
+		final String sql = String.format("UPDATE %s SET %s = %s + 1 WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_STATIONID, station.stationId);
+		final Cursor c = db.rawQuery(sql, null);
+		c.moveToFirst();
+		c.close();
+	}
+	
+	/*
 	 * Add favorites to a station list.
 	 */
     public void addFavoritesToList(List<SearchStationData> items) {
-    	Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_STOPNAME);
+    	Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
     	while (cursor.moveToNext()) {
     		SearchStationData station = new SearchStationData(cursor.getString(0), 
     				cursor.getString(1), 

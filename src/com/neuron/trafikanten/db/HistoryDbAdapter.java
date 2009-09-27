@@ -20,16 +20,17 @@ package com.neuron.trafikanten.db;
 
 import java.util.ArrayList;
 
-import com.neuron.trafikanten.dataSets.SearchStationData;
-
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
+
+import com.neuron.trafikanten.dataSets.SearchStationData;
 
 /*
  * Class for storing last X used stations.
  */
 public class HistoryDbAdapter extends GenericStationDbAdapter {
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	public HistoryDbAdapter(Context context) {
 		super(context);
 		super.open("history", DATABASE_VERSION);
@@ -43,7 +44,7 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 		/*
 		 * Get all items from the list
 		 */
-    	Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_STOPNAME);
+    	Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
     	while (cursor.moveToNext()) {
     		SearchStationData station = new SearchStationData(cursor.getString(0), 
     				cursor.getString(1), 
@@ -67,23 +68,37 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
     	cursor.close();
 	}
 	
+	private boolean hasStation(int stationId) {
+		Cursor c = db.query(table, new String[] { KEY_STATIONID }, KEY_STATIONID + " = " + stationId, null, null, null, null);
+		boolean r = c.moveToNext();
+		c.close();
+		return r;
+	}
+	
 	public void updateHistory(SearchStationData station) {
-		/*
-		 * First delete the station, this is to give it a higher id if we use it twice.
-		 */
-		delete(station.stationId);
-		
-		/*
-		 * Then readd it
-		 */
-		add(station);
+		if (hasStation(station.stationId)) {
+			/*
+			 * Update ROWID to max(_id) + 1 (for auto cleaning old entries)
+			 * Update used to used + 1
+			 */
+			final String rowIdSql = "(SELECT MAX(" + KEY_ROWID + ") + 1 FROM " + table + ")"; 
+			final String sql = String.format("UPDATE %s SET %s = %s + 1, %s = %s WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_ROWID, rowIdSql, KEY_STATIONID, station.stationId);
+			Log.i("DEBUG TEMP", sql);
+			final Cursor c = db.rawQuery(sql, null);
+			c.moveToFirst();
+			c.close();
+		} else {
+			/*
+			 * Add station
+			 */
+			add(station);
+		}
 		
 		/*
 		 * Then delete entries too old from the list.
-		 * We maintain a quite big cache (30 stations), this is due to favorites most likely having duplicates.
 		 */
 		db.delete(table, KEY_ROWID +
-				" < (select min(_id) from (select _id from " + table + " order by _id desc limit 5))", null);
+				" < (select min(_id) from (select _id from " + table + " order by _id desc limit 10))", null);
 	}
 
 }
