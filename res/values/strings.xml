@@ -30,6 +30,7 @@ You can longpress on a station to mark it as favorite.</string>
 	<string name="address">Address Search</string>
 	<string name="map">Map</string>
 	<string name="contact">Contact</string>
+	<string name="remove">Remove</string>
 
 	<!-- RouteView -->
 	<string name="travelTime">Travel time : </string>

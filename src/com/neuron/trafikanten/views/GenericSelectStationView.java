@@ -62,6 +62,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private static final String TAG = "Trafikanten-SelectStationView";
 	
 	private final static int FAVORITE_ID = Menu.FIRST;
+	private final static int REMOVE_ID = Menu.FIRST + 1;
 	
 	/*
 	 * Options menu items:
@@ -156,6 +157,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, FAVORITE_ID, 0, R.string.favorite);
+		menu.add(0, REMOVE_ID, 0, R.string.remove);
 	}
 	
 	/*
@@ -182,6 +184,14 @@ public abstract class GenericSelectStationView extends ListActivity {
 	    		historyDbAdapter.delete(station.stationId);
 	    	}
 	    	refresh();
+	    	return true;
+	    case REMOVE_ID:
+	    	/*
+	    	 * Remove a station from favorites and history.
+	    	 */
+	    	favoriteDbAdapter.delete(station.stationId);
+	    	historyDbAdapter.delete(station.stationId);
+	    	resetView(); // Need full resetView here, as a refresh only refreshes favorites
 	    	return true;
 	    }
 		return super.onContextItemSelected(item);

@@ -30,6 +30,7 @@ Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
 	<string name="address">Addresse Søk</string>
 	<string name="map">Kart</string>
 	<string name="contact">Kontakt</string>
+	<string name="remove">Fjern</string>
 
 	<!-- RouteView -->
 	<string name="travelTime">Reisetid : </string>
