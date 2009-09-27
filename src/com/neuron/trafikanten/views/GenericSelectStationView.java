@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -61,8 +62,9 @@ import com.neuron.trafikanten.views.map.GenericMap;
 public abstract class GenericSelectStationView extends ListActivity {
 	private static final String TAG = "Trafikanten-SelectStationView";
 	
-	private final static int FAVORITE_ID = Menu.FIRST;
-	private final static int REMOVE_ID = Menu.FIRST + 1;
+	private final static int ADDFAVORITE_ID = Menu.FIRST;
+	private final static int REMOVEFAVORITE_ID = Menu.FIRST + 1;
+	private final static int REMOVEHISTORY_ID = Menu.FIRST + 2;
 	
 	/*
 	 * Options menu items:
@@ -156,8 +158,18 @@ public abstract class GenericSelectStationView extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(0, FAVORITE_ID, 0, R.string.favorite);
-		menu.add(0, REMOVE_ID, 0, R.string.remove);
+		
+		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		SearchStationData stationData = selectListAdapter.getList().get(info.position);
+		
+		if (stationData.isFavorite) {
+			menu.add(0, REMOVEFAVORITE_ID, 0, R.string.removeFavorite);			
+		} else {
+			menu.add(0, ADDFAVORITE_ID, 0, R.string.addFavorite);
+			if (historyDbAdapter.hasStation(stationData.stationId)) {
+				menu.add(0, REMOVEHISTORY_ID, 0, R.string.removeHistory);
+			}
+		}
 	}
 	
 	/*
@@ -173,7 +185,9 @@ public abstract class GenericSelectStationView extends ListActivity {
         final SearchStationData station = (SearchStationData) selectListAdapter.getItem(info.position);
 
 		switch(item.getItemId()) {
-	    case FAVORITE_ID:
+		case ADDFAVORITE_ID:
+			// Fallthrough, we toggle anyway
+	    case REMOVEFAVORITE_ID:
 	    	/*
 	    	 * Toggle favorite.
 	    	 */
@@ -185,11 +199,10 @@ public abstract class GenericSelectStationView extends ListActivity {
 	    	}
 	    	refresh();
 	    	return true;
-	    case REMOVE_ID:
+	    case REMOVEHISTORY_ID:
 	    	/*
-	    	 * Remove a station from favorites and history.
+	    	 * Remove a station from history
 	    	 */
-	    	favoriteDbAdapter.delete(station.stationId);
 	    	historyDbAdapter.delete(station.stationId);
 	    	resetView(); // Need full resetView here, as a refresh only refreshes favorites
 	    	return true;

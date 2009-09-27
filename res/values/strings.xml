@@ -26,11 +26,12 @@ Please rate trafikanten on android market!\n\n
 You can longpress on a station to mark it as favorite.</string>
 
 	<!-- SelectStationView -->
-	<string name="favorite">Favorite</string>
 	<string name="address">Address Search</string>
 	<string name="map">Map</string>
 	<string name="contact">Contact</string>
-	<string name="remove">Remove</string>
+	<string name="addFavorite">Add to favorites</string>
+	<string name="removeFavorite">Remove from favorites</string>
+	<string name="removeHistory">Remove from history</string>
 
 	<!-- RouteView -->
 	<string name="travelTime">Travel time : </string>

@@ -68,7 +68,7 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
     	cursor.close();
 	}
 	
-	private boolean hasStation(int stationId) {
+	public boolean hasStation(int stationId) {
 		Cursor c = db.query(table, new String[] { KEY_STATIONID }, KEY_STATIONID + " = " + stationId, null, null, null, null);
 		boolean r = c.moveToNext();
 		c.close();
