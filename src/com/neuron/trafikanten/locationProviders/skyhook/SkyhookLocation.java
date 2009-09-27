@@ -27,6 +27,10 @@ public class SkyhookLocation implements ILocationProvider {
 	public SkyhookLocation(Context context, Handler handler) {
 		this.handler = handler;
 		_auth = new WPSAuthentication("aagaande", "http://code.google.com/p/trafikanten/");
+		
+		/*
+		 * Setup cache for XPS
+		 */
 		_xps = new XPS(context);
 		_xps.setTiling(context.getCacheDir().toString(),
                 200*1024,
@@ -83,8 +87,12 @@ public class SkyhookLocation implements ILocationProvider {
 			if (_stopInstant) {
 				return WPSContinuation.WPS_STOP;
 			}
-			if (location.getHPE() == 0.0)
+			if (location.getHPE() == 0.0) {
+				/*
+				 * this can happen when location is cached, if location is cached we dont want the information anyway.
+				 */
 				return WPSContinuation.WPS_CONTINUE;
+			}
 			
 			Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
 
@@ -105,16 +113,5 @@ public class SkyhookLocation implements ILocationProvider {
 			Log.e(TAG, "WPSContinuation - HandleError " + arg0);
 			return null;
 		}
-
-/*		public void onLocationChanged(Location location) {
-		    if (location != null) {
-		    	LocationProviderFactory.setLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy());
-		    	handler.sendEmptyMessage(ILocationProvider.MESSAGE_DONE);
-		        
-		    	if (_stop) {
-		    		stop();
-		    	}
-		    }
-		  }*/
 	};
 }

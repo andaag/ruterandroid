@@ -160,7 +160,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-		SearchStationData stationData = selectListAdapter.getList().get(info.position);
+		final SearchStationData stationData = selectListAdapter.getList().get(info.position);
 		
 		if (stationData.isFavorite) {
 			menu.add(0, REMOVEFAVORITE_ID, 0, R.string.removeFavorite);			
