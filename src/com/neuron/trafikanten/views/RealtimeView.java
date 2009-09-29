@@ -103,6 +103,7 @@ public class RealtimeView extends ListActivity {
         	realtimeList.setList(list);
         	setListAdapter(realtimeList);
         }
+        setTitle("Trafikanten - " + station.stopName);
         registerForContextMenu(getListView());
     }
     
