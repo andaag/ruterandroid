@@ -92,7 +92,7 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
     		SearchStationData station = new SearchStationData(cursor.getString(0), 
     				cursor.getString(1), 
     				cursor.getInt(2), 
-    				new int[] {cursor.getInt(3), cursor.getInt(4)});
+    				new int[] {cursor.getInt(4), cursor.getInt(5)});
     		station.isFavorite = true;
     		items.add(station);
     	}

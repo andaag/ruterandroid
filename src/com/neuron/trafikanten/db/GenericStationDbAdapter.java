@@ -147,12 +147,4 @@ public abstract class GenericStationDbAdapter {
     public Cursor getIds() {
     	return db.query(table, new String[] { KEY_STATIONID }, null, null, null, null, null);
     }
-    
-
-    /*
-     * Fetch all columns from db.
-     */
-    public Cursor fetchAll() {
-    	return db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
-    }
 }
