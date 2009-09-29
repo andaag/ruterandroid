@@ -33,14 +33,14 @@ public class HelperFunctions {
 
 	/*
 	 * Render time in the way trafikanten.no wants
-	 *   From 1-9 minutes we use "+X m", above that we use HH:MM
+	 *   From 1-9 minutes we use "X m", above that we use HH:MM
 	 */
     public static String renderTime(Context context, long time) {
 		long diffMinutes = (time - System.currentTimeMillis()) / MINUTE;
 		if (diffMinutes < 1) {
 			return context.getText(R.string.now).toString();
 		} else if (diffMinutes < 9) {
-			return "+" + diffMinutes + "m";
+			return diffMinutes + "m";
 		}
 		return hourFormater.format(time).toString();
     }
