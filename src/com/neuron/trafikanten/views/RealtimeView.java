@@ -261,8 +261,12 @@ public class RealtimeView extends ListActivity {
 		//    - Currently used internally for sorting? (seem to also indicate directional reference).
 		//    - Might be able to in the future sort by direction with this variable?
 		//				getText(R.string.platform) + " " + data.departurePlatform + "\n" +
-		Toast.makeText(this, data.destination + "\n" +
-				minutesDelayed + "m " + getText(R.string.late), Toast.LENGTH_SHORT).show();
+		String info = data.destination + "\n" +
+			minutesDelayed + "m " + getText(R.string.late);
+		if (data.extra != null) {
+			info = info + "\n" + data.extra;
+		}
+		Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
 	}
 
 	/*
