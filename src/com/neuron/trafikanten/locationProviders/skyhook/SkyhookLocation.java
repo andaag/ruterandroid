@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.locationProviders.ILocationProvider;
 import com.neuron.trafikanten.locationProviders.LocationProviderFactory;
 import com.skyhookwireless.wps.WPSAuthentication;
@@ -18,7 +19,6 @@ public class SkyhookLocation implements ILocationProvider {
 	public static final int PROVIDER_SKYHOOK = 1;
 	private Handler handler;
 	private boolean _stop = true;
-	private boolean _stopInstant = false;
 	
 	private WPSAuthentication _auth;
 	private XPS _xps;
@@ -46,7 +46,6 @@ public class SkyhookLocation implements ILocationProvider {
 	public void getPeriodicLocation() {
 		Log.i(TAG,"Getting periodic location");
 		_stop = false;
-		_stopInstant = false;
 		//WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP,
 		_xps.getXPSLocation(_auth, 1000, XPS.EXACT_ACCURACY, _locationListener);
 	}
@@ -70,9 +69,8 @@ public class SkyhookLocation implements ILocationProvider {
 
 	@Override
 	public void stop() {
-		_stopInstant = true;
-		_xps.abort();
 		_stop = true;
+		_xps.abort();
 	}
 	
 	/*
@@ -82,24 +80,28 @@ public class SkyhookLocation implements ILocationProvider {
 
 		@Override
 		public WPSContinuation handleWPSPeriodicLocation(WPSLocation location) {
-			if (_stopInstant) {
-				return WPSContinuation.WPS_STOP;
-			}
-			if (location.getHPE() == 0.0) {
-				/*
-				 * this can happen when location is cached, if location is cached we dont want the information anyway.
-				 */
-				return WPSContinuation.WPS_CONTINUE;
-			}
-			
-			Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
-
-	    	LocationProviderFactory.setLocation(location.getLatitude(), location.getLongitude(), Math.round(location.getHPE()));
-	    	handler.sendEmptyMessage(ILocationProvider.MESSAGE_DONE);
-	        
+			/*
+			 * If stop is set here, we just kill off the thread.
+			 */
 	    	if (_stop) {
 	    		return WPSContinuation.WPS_STOP;
 	    	}
+			
+	    	/*
+	    	 * Check the age, if the age is too old it's a cached gps position, we dont want those.
+	    	 */
+			final long age = (System.currentTimeMillis() - location.getTime()) / HelperFunctions.SECOND;
+			if (age > 30) { // Age > 30 seconds is ignored
+				return WPSContinuation.WPS_CONTINUE;
+			}
+
+			/*
+			 * Notify we've found a location
+			 */
+			Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
+	    	LocationProviderFactory.setLocation(location.getLatitude(), location.getLongitude(), Math.round(location.getHPE()));
+	    	handler.sendEmptyMessage(ILocationProvider.MESSAGE_DONE);
+	        
 	    	return WPSContinuation.WPS_CONTINUE;
 		}
 

@@ -87,7 +87,10 @@ public class LocationTask extends GenericTask {
         		 */
         		final double[] location = LocationProviderFactory.getLocation();
         		message.setText(getText(R.string.locationWaiting).toString() + "\n" + getText(R.string.current) + " " + location[2] + "m");
-        		if (LocationProviderFactory.SETTING_LOCATION_ACCURACY > location[2]) {
+        		if (LocationProviderFactory.SETTING_LOCATION_ACCURACY > location[2] && location[2] > 0) {
+        			/*
+        			 * Return instant location ok only if accuracy is enough, and it's not a cached gps location (accuracy 0.0 meters)
+        			 */
         			returnOk();
         		}
         		return;
