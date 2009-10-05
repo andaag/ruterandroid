@@ -47,17 +47,15 @@ public class SkyhookLocation implements ILocationProvider {
 		Log.i(TAG,"Getting periodic location");
 		_stop = false;
 		_stopInstant = false;
-        _xps.getXPSLocation(_auth,
-                5,
-                XPS.EXACT_ACCURACY,
-                _locationListener);
+		//WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP,
+		_xps.getXPSLocation(_auth, 1000, XPS.EXACT_ACCURACY, _locationListener);
 	}
 
 	/*
 	 * Get a single location
 	 * @see com.neuron.trafikanten.locationProviders.ILocationProvider#getSingleLocation()
 	 */
-	@Override
+	/*@Override
 	public void getSingleLocation() {
 		Log.i(TAG,"Getting single location");
 		_stop = true;
@@ -66,7 +64,7 @@ public class SkyhookLocation implements ILocationProvider {
                 1,
                 XPS.EXACT_ACCURACY,
                 _locationListener);	
-	}
+	}*/
 
 	
 

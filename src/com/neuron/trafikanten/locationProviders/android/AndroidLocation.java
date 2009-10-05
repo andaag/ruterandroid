@@ -79,7 +79,7 @@ public class AndroidLocation implements ILocationProvider {
 	 * Get a single location
 	 * @see com.neuron.trafikanten.locationProviders.ILocationProvider#getSingleLocation()
 	 */
-	@Override
+	/*@Override
 	public void getSingleLocation() {
 		_stop = true;
 		for(String provider : _providers) {
@@ -88,7 +88,7 @@ public class AndroidLocation implements ILocationProvider {
 					100, // 100m 
 					_locationListener); 
 		}		
-	}
+	}*/
 
 	/*
 	 * Stop location updates (no reports are done after stop is called)

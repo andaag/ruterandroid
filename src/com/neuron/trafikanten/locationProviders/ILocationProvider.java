@@ -24,7 +24,6 @@ import com.neuron.trafikanten.dataProviders.IGenericProvider;
  * Generic interface for gps/wifi/etc location.
  */
 public interface ILocationProvider extends IGenericProvider {
-	public void getSingleLocation();
 	public void getPeriodicLocation();
 	public void stop();
 }
