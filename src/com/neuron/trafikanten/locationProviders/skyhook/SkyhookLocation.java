@@ -46,26 +46,8 @@ public class SkyhookLocation implements ILocationProvider {
 	public void getPeriodicLocation() {
 		Log.i(TAG,"Getting periodic location");
 		_stop = false;
-		//WPSStreetAddressLookup.WPS_NO_STREET_ADDRESS_LOOKUP,
-		_xps.getXPSLocation(_auth, 1000, XPS.EXACT_ACCURACY, _locationListener);
+		_xps.getXPSLocation(_auth, (int) 2, XPS.EXACT_ACCURACY, _locationListener);
 	}
-
-	/*
-	 * Get a single location
-	 * @see com.neuron.trafikanten.locationProviders.ILocationProvider#getSingleLocation()
-	 */
-	/*@Override
-	public void getSingleLocation() {
-		Log.i(TAG,"Getting single location");
-		_stop = true;
-		_stopInstant = false;
-        _xps.getXPSLocation(_auth,
-                1,
-                XPS.EXACT_ACCURACY,
-                _locationListener);	
-	}*/
-
-	
 
 	@Override
 	public void stop() {
@@ -80,9 +62,6 @@ public class SkyhookLocation implements ILocationProvider {
 
 		@Override
 		public WPSContinuation handleWPSPeriodicLocation(WPSLocation location) {
-			/*
-			 * If stop is set here, we just kill off the thread.
-			 */
 	    	if (_stop) {
 	    		return WPSContinuation.WPS_STOP;
 	    	}
@@ -91,6 +70,7 @@ public class SkyhookLocation implements ILocationProvider {
 	    	 * Check the age, if the age is too old it's a cached gps position, we dont want those.
 	    	 */
 			final long age = (System.currentTimeMillis() - location.getTime()) / HelperFunctions.SECOND;
+			Log.d("DEBUG CODE", "handleLocation " + age + " " + location.toString());
 			if (age > 30) { // Age > 30 seconds is ignored
 				return WPSContinuation.WPS_CONTINUE;
 			}
@@ -110,8 +90,10 @@ public class SkyhookLocation implements ILocationProvider {
 
 		@Override
 		public WPSContinuation handleError(WPSReturnCode arg0) {
-			Log.e(TAG, "WPSContinuation - HandleError " + arg0);
-			return null;
+			/*
+			 * We keep trying until canceled.
+			 */
+			return WPSContinuation.WPS_CONTINUE;
 		}
 	};
 }

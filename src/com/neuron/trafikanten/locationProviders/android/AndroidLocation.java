@@ -31,7 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 public class AndroidLocation implements ILocationProvider {
-	public static final int PROVIDER_ANDROID = 1;
+	public static final int PROVIDER_ANDROID = 2;
 	private Handler handler;
 	private boolean _stop = true;
 	private LocationManager _locationManager;
@@ -74,21 +74,6 @@ public class AndroidLocation implements ILocationProvider {
 					_locationListener); 
 		}		
 	}
-
-	/*
-	 * Get a single location
-	 * @see com.neuron.trafikanten.locationProviders.ILocationProvider#getSingleLocation()
-	 */
-	/*@Override
-	public void getSingleLocation() {
-		_stop = true;
-		for(String provider : _providers) {
-			_locationManager.requestLocationUpdates(provider,
-					120000, // 2min 
-					100, // 100m 
-					_locationListener); 
-		}		
-	}*/
 
 	/*
 	 * Stop location updates (no reports are done after stop is called)
