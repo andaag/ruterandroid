@@ -96,7 +96,7 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			URL url = new URL("http://195.1.22.228/topp2009/siri/sm.aspx?id=" + stationId);
+			URL url = new URL("http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId);
 			Log.i(TAG,"Realtime url : " + url);
 			
 			/*
