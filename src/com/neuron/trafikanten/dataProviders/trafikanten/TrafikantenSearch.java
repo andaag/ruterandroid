@@ -18,12 +18,15 @@
 
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
-import java.io.InputStream;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import com.neuron.trafikanten.dataProviders.ISearchProvider;
+import com.neuron.trafikanten.dataSets.SearchStationData;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -32,25 +35,17 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.UTMRef;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.ISearchProvider;
-import com.neuron.trafikanten.dataSets.SearchStationData;
-
 public class TrafikantenSearch implements ISearchProvider {
 	private Handler handler;
-	private Resources resources;
 	private TrafikantenSearchThread thread;
 	
-	public TrafikantenSearch(Resources resources, Handler handler) {
+	public TrafikantenSearch(Handler handler) {
 		this.handler = handler;
-		this.resources = resources;
 	}
 	
 	/*
@@ -70,7 +65,7 @@ public class TrafikantenSearch implements ISearchProvider {
 	@Override
 	public void Search(String query) {
 		Stop();
-		thread = new TrafikantenSearchThread(resources, handler, query);
+		thread = new TrafikantenSearchThread(handler, query);
 		thread.start();
 	}
 	
@@ -80,7 +75,7 @@ public class TrafikantenSearch implements ISearchProvider {
 	@Override
 	public void Search(double latitude, double longitude) {
 		Stop();
-		thread = new TrafikantenSearchThread(resources, handler, latitude, longitude);
+		thread = new TrafikantenSearchThread(handler, latitude, longitude);
 		thread.start();
 	}
 
@@ -98,20 +93,17 @@ public class TrafikantenSearch implements ISearchProvider {
 class TrafikantenSearchThread extends Thread implements Runnable {
 	private static final String TAG = "Trafikanten-T-SearchThread";
 	private Handler handler;
-	private Resources resources;
 	private String query;
 	private double latitude;
 	private double longitude;
 	
-	public TrafikantenSearchThread(Resources resources, Handler handler, String query) {
+	public TrafikantenSearchThread(Handler handler, String query) {
 		this.handler = handler;
-		this.resources = resources;
 		this.query = query;
 	}
 	
-	public TrafikantenSearchThread(Resources resources, Handler handler, double latitude, double longitude) {
+	public TrafikantenSearchThread(Handler handler, double latitude, double longitude) {
 		this.handler = handler;
-		this.resources = resources;
 		
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -123,46 +115,31 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 	 */
 	public void run() {
 		try {
-			InputStream result;
+			URL url;
 			if (query != null) {
 				/*
 				 * Setup URL for a normal station search query.
 				 */
-            	result = HelperFunctions.soapRequest(resources, R.raw.getmatches, new String[]{query}, Trafikanten.API_URL);
+				url = new URL("http://www5.trafikanten.no/txml/?type=1&stopname=" + URLEncoder.encode(query,"UTF-8"));
 			} else {
 				/*
 				 * Setup URL for coordinate search.
 				 */
 				final LatLng latLong = new LatLng(latitude, longitude);
 				final UTMRef utmRef = latLong.toUTMRef();
-				
-                final String x = new Integer((int)utmRef.getEasting()).toString();
-                final String y = new Integer((int)utmRef.getNorthing()).toString();
-                
-                result = HelperFunctions.soapRequest(resources, R.raw.getcloseststops, new String[]{x,y}, Trafikanten.API_URL);
+				url = new URL("http://www5.trafikanten.no/txml/?type=2&x=" + (int) utmRef.getEasting() + "&y=" + (int) utmRef.getNorthing());			
 			}
+			Log.i(TAG,"Opening url " + url.toString());
 			
 			/*
 			 * Setup SAXParser and XMLReader
 			 */
-			
-			/*
-			result.wait(2000);
-			String debug = "";
-			while (true) {
-				int b = result.read();
-				if (b < 1) break; // EOF
-				debug += String.valueOf( ( char )b );
-				
-			}
-			Log.d("DEBUG CODE", "RAW : " + debug);*/
-			
 			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
 			reader.setContentHandler(new SearchHandler(handler));
-			reader.parse(new InputSource(result));
+			reader.parse(new InputSource(url.openStream()));
 		} catch(Exception e) {
 			/*
 			 * All exceptions except thread interruptions are passed to callback.
@@ -190,18 +167,13 @@ class SearchHandler extends DefaultHandler {
 	/*
 	 * Temporary variables for parsing. 
 	 */
-	private boolean inPlace = false;
-	private boolean inZone = false;
-	private boolean inX = false;
-	private boolean inY = false;
-	private boolean inID = false;
-	private boolean inName = false;
+	private boolean inStopMatch = false;
+	private boolean inStopName = false;
 	private boolean inDistrict = false;
-	private boolean inType = false;
-	private boolean inStops = false;
-	
-	// Ignore is used to ignore anything except type Stop.
-	private boolean ignore = false;
+	private boolean inStationId = false;
+	private boolean inXCoordinate = false;
+	private boolean inYCoordinate = false;
+	private boolean inAirDistance = false;
 	
 	public SearchHandler(Handler handler)
 	{
@@ -240,94 +212,71 @@ class SearchHandler extends DefaultHandler {
     @Override 
     public void startElement(String namespaceURI, String localName, 
               String qName, Attributes atts) throws SAXException {
-    	if (ignore) return;
-    	if (inStops) return;
-        if (!inPlace) {
-            if (localName.equals("Place")) {
-                inPlace = true;
+    	if (!inStopMatch) {
+    		if (localName.equals("StopMatch")) {
+    			inStopMatch = true;
     			station = new SearchStationData();
     		}
-		} else {
-			if (localName.equals("Zone")) {
-			    inZone = true;
-			} else if (localName.equals("X")) {
-			    inX = true;
-			} else if (localName.equals("Y")) {
-			    inY = true;
-			} else if (localName.equals("ID")) {
-			    inID = true;
-			} else if (localName.equals("Name")) {
-			    inName = true;
-			} else if (localName.equals("District")) {
-			    inDistrict = true;
-			} else if (localName.equals("Type")) {
-			    inType = true;
-			} else if (localName.equals("Stops")) {
-				inStops = true;
-			}
-		}
+    	} else if (localName.equals("StopName")) {
+    			inStopName = true;
+    	} else if (localName.equals("District")) {
+			inDistrict = true;
+    	} else if (localName.equals("fromid")) {
+    		inStationId = true;
+    	} else if (localName.equals("XCoordinate")) {
+    		inXCoordinate = true;
+    	} else if (localName.equals("YCoordinate")) {
+    		inYCoordinate = true;
+    	} else if (localName.equals("AirDistance")) {
+    		inAirDistance = true;
+    	}
     } 
     
     @Override
     public void endElement(String namespaceURI, String localName, String qName) {
-        if (!inPlace) return;
-        if (localName.equals("Place")) {
-            /*
-             * on StopMatch we're at the end, and we need to add the station to the station list.
-             */
-            inPlace = false;
-            if (!ignore)
-            	stationList.add(station);
-            ignore = false;
-        } else if (localName.equals("Zone")) {
-            inZone = false;
-        } else if (localName.equals("X")) {
-            inX = false;
-        } else if (localName.equals("Y")) {
-            inY = false;
-        } else if (localName.equals("ID")) {
-            inID = false;
-        } else if (localName.equals("Name")) {
-            inName = false;
-        } else if (localName.equals("District")) {
-            inDistrict = false;
-        } else if (localName.equals("Type")) {
-            inType = false;
-        } else if (localName.equals("Stops")) {
-        	inStops = false;
-        }
+    	if (!inStopMatch) return;
+    	if (localName.equals("StopMatch")) {
+    		/*
+    		 * on StopMatch we're at the end, and we need to add the station to the station list.
+    		 */
+    		inStopMatch = false;
+    		stationList.add(station);
+    	} else if (localName.equals("StopName")) {
+    		inStopName = false;
+		} else if (localName.equals("District")) {
+			inDistrict = false;
+		} else if (localName.equals("fromid")) {
+			inStationId = false;
+		} else if (localName.equals("XCoordinate")) {
+			inXCoordinate = false;
+		} else if (localName.equals("YCoordinate")) {
+			inYCoordinate = false;
+		} else if (localName.equals("AirDistance")) {
+			inAirDistance = false;
+		}
     }
     
     @Override
-    public void characters(char ch[], int start, int length) {
-    	if (ignore) return;
-    	//Log.d("DEBUG CODE", "Recieved : " + new String(ch, start, length));
-        if (!inPlace) return;
-	    if (inZone) {
-	    	// Zone is  currently ignored and not shown.
-	    } else if (inX) {
-	    	station.utmCoords[0] = Integer.parseInt(new String(ch, start, length));
-	    } else if (inY) {
-	    	station.utmCoords[1] = Integer.parseInt(new String(ch, start, length));
-	    } else if (inID) {
-	    	station.stationId = Integer.parseInt(new String(ch, start, length));
-	    } else if (inName) {
-	    	station.stopName = new String(ch, start, length);
+    public void characters(char ch[], int start, int length) { 
+    	if (!inStopMatch) return;
+    	if (inStopName) {
+    		station.stopName = new String(ch, start, length);
     		searchForAddress();
-	    } else if (inDistrict) {
-	    	if (station.extra == null) {
+    	} else if (inDistrict) {
+    		if (station.extra == null) {
     			station.extra = new String(ch, start, length);
     		} else {
     			station.extra = station.extra + ", " + new String(ch, start, length);
+    			
     		}
-	    } else if (inType) {
-	    	Log.d("DEBUG CODE","Type : " + new String(ch, start, length) + " " + ch[0] + " " + length);
-	    	if (length != 4 && ch[0] != 'S') {
-	    		Log.d("DEBUG CODE","  - Ignoring");
-	    		ignore = true;
-	    	}
-	    }
-	    //station.setAirDistance(Integer.parseInt(new String(ch, start, length))); // TODO
-
+    	} else if (inStationId) {
+    		station.stationId = Integer.parseInt(new String(ch, start, length));
+    	} else if (inXCoordinate) {
+    		station.utmCoords[0] = Integer.parseInt(new String(ch, start, length));
+    	} else if (inYCoordinate) {
+    		station.utmCoords[1] = Integer.parseInt(new String(ch, start, length));
+    	} else if (inAirDistance) {
+    		station.setAirDistance(Integer.parseInt(new String(ch, start, length)));
+    	}
     }
 }

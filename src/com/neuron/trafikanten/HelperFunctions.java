@@ -18,18 +18,9 @@
 
 package com.neuron.trafikanten;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.content.Context;
-import android.content.res.Resources;
-import android.util.Log;
 
 /*
  * Small helper functions used by multiple classes.
@@ -66,42 +57,4 @@ public class HelperFunctions {
 		return hourFormater.format(time).toString();    	
     }
     
-    /*
-     * Replace % with arguments, simplified version of http://www.mail-archive.com/android-developers@googlegroups.com/msg02846.html
-     */
-	private static String mergeArgument(Resources resources, int rId, String []args) throws IOException {
-		String xml = "";
-		int currentArgIndex = 0;
-		int noArgs = args.length;
-        InputStream xmlStream = resources.openRawResource( rId );
-        
-		while ( true ) {
-			int b = xmlStream.read();
-			if (b < 1) break; // EOF
-			
-			if ( ( char )b == '%' ) { // substitute next args[]
-				xml += args[ currentArgIndex ];
-				if ( currentArgIndex < noArgs - 1 ) currentArgIndex++;
-			}
-			else xml += String.valueOf( ( char )b );
-		} 
-		xmlStream.close();
-
-		return( xml );
-	}
-	
-	/*
-	 * Send a soap request, takes resource id, arguments and the soap url, returns inputStream.
-	 */
-	public static InputStream soapRequest(final Resources resources, final int rid, final String[] args, final String url) throws IOException {
-        final String soap = mergeArgument(resources, rid, args);
-
-        HttpPost httppost = new HttpPost(url);
-    	httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
-        httppost.setEntity(new StringEntity(soap));
-    	Log.d("DEBUG CODE", "Soap request : " + soap);
-    	
-    	HttpResponse response = new DefaultHttpClient().execute(httppost);
-    	return response.getEntity().getContent();
-	}
 }
