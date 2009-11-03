@@ -74,7 +74,7 @@ public class SearchStationTask extends GenericTask {
 			latitude = savedInstanceState.getDouble(KEY_LATITUDE);
 			longitude = savedInstanceState.getDouble(KEY_LONGITUDE);
 		}
-		searchProvider = DataProviderFactory.getSearchProvider(handler);
+		searchProvider = DataProviderFactory.getSearchProvider(getResources(), handler);
 	}
 	
 	private void search() {
