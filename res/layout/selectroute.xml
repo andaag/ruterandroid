@@ -1,8 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+ <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ 			android:layout_width="fill_parent" 
+ 			android:layout_height="fill_parent" >
+ 			
+
+ <SlidingDrawer
+     android:id="@+id/drawer"
+     android:layout_width="fill_parent"
+     android:layout_height="fill_parent"
+
+     android:handle="@+id/handle"
+     android:content="@+id/content">
+
+     <GridView
+         android:id="@id/content"
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent" />
+
+    <!-- Drawer handle -->
+    <LinearLayout
+        android:id="@id/handle"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:focusable="true"
+        >
+     	<ImageButton id="@+id/pickTimeButton"
+		        android:layout_width="56dip"
+		        android:layout_height="fill_parent"
+			   android:src="@drawable/ic_tray_expand"/>
+    </LinearLayout>
+
+ </SlidingDrawer>
+
+
+
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:layout_width="fill_parent"
-   android:layout_height="fill_parent"
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content"
    android:stretchColumns="1">
 
    <TableRow>
@@ -18,7 +55,7 @@
            android:padding="3dip"
            />
    </TableRow>
-
+   
    <TableRow>
        <TextView
            android:gravity="left"
@@ -32,34 +69,82 @@
            android:padding="3dip"
             />
    </TableRow>
-
-   <TableRow
-       android:gravity="left">
+   
+   
+   <TableRow>
        <TextView
-           android:gravity="left"
            android:padding="3dip" 
 
-           android:text="@string/departingAt"
+           android:text="Travel in (minutes)"
            android:textStyle="bold"
            />
-  </TableRow>
-
-   <TableRow
-       android:gravity="left">
        
-    <TimePicker android:id="@+id/timePicker"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:layout_span="2"/>
+       <LinearLayout>
+		    <Spinner android:id="@+id/travelInMinutes"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+		        android:drawSelectorOnTop="true"
+		        android:layout_weight="1"
+		    />
+		    
+			<ImageButton id="@+id/pickTimeButton"
+			       android:layout_width="wrap_content"
+			       android:layout_height="wrap_content"
+				   android:src="@drawable/ic_search_category_default"/>
+		</LinearLayout>
+		
    </TableRow>
    
-   <TableRow
-       android:gravity="left">
-       
+   
+   <TableRow>
 	    <Spinner android:id="@+id/departureDay"
 	        android:layout_span="2"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+	    />
+   </TableRow>
+   
+   
+   
+   
+   <TableRow>
+       <TextView
+           android:padding="3dip" 
+
+           android:text="ChangeMargin"
+           android:textStyle="bold"
+           />
+       
+	    <Spinner android:id="@+id/changeMargin"
+	        android:drawSelectorOnTop="true"
+	        
+	    />
+   </TableRow> 
+   
+   <TableRow>
+       <TextView
+           android:padding="3dip" 
+
+           android:text="ChangePunish"
+           android:textStyle="bold"
+           />
+       
+	    <Spinner android:id="@+id/changePunish"
+	        android:drawSelectorOnTop="true"
+	        
+	    />
+   </TableRow>
+   
+   <TableRow>
+       <TextView
+           android:padding="3dip" 
+
+           android:text="WalkingFactor"
+           android:textStyle="bold"
+           />
+       
+	    <Spinner android:id="@+id/walkingFactor"
 	        android:drawSelectorOnTop="true"
 	        
 	    />
@@ -74,5 +159,7 @@
            android:text="@string/search"
             />
    </TableRow>
- 
+   
 </TableLayout>
+
+  </FrameLayout>

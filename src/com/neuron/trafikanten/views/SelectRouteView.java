@@ -36,7 +36,6 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.neuron.trafikanten.R;
@@ -62,23 +61,14 @@ public class SelectRouteView extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.selectroute);
-		
+
 		/*
 		 * Setup viewHolder
 		 */
 		viewHolder.fromButton = (Button) findViewById(R.id.fromButton);
 		viewHolder.toButton = (Button) findViewById(R.id.toButton);
-		viewHolder.timePicker = (TimePicker) findViewById(R.id.timePicker);
 		viewHolder.departureDay = (Spinner) findViewById(R.id.departureDay);
 		viewHolder.searchButton = (Button) findViewById(R.id.searchButton);
-		
-		{
-			viewHolder.timePicker.setIs24HourView(true);
-			final Calendar calendar = Calendar.getInstance();
-			viewHolder.timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
-			viewHolder.timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
-		}
-		
 		
 		/*
 		 * Load instance state
@@ -147,8 +137,6 @@ public class SelectRouteView extends Activity {
     	/*
     	 * Reset view
     	 */
-		viewHolder.timePicker.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-		viewHolder.timePicker.setCurrentMinute(Calendar.getInstance().get(Calendar.MINUTE));
 		routeData = new RouteData();
 		fillDayList();
 		refreshButtons();		
@@ -216,8 +204,7 @@ public class SelectRouteView extends Activity {
 		 */
 		try {
 			Date date = DATEFORMAT.parse((String) viewHolder.departureDay.getSelectedItem());
-			date.setHours(viewHolder.timePicker.getCurrentHour());
-			date.setMinutes(viewHolder.timePicker.getCurrentMinute());
+			// TODO : Convert date.
 			routeData.departure = date.getTime();
 		} catch (ParseException e) {
 			// This should NEVER happen...
@@ -289,30 +276,6 @@ public class SelectRouteView extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		/*
-		 * Check current time, if it's too old, reset it.
-		 */
-		Date date;
-		try {
-			date = DATEFORMAT.parse((String) viewHolder.departureDay.getSelectedItem());
-			date.setHours(viewHolder.timePicker.getCurrentHour());
-			date.setMinutes(viewHolder.timePicker.getCurrentMinute());
-			
-			Calendar currentDate = Calendar.getInstance();
-			currentDate.roll(Calendar.MINUTE, -30);
-			if (date.before(currentDate.getTime())) {
-				/*
-				 * Date is timepicker is more than 30 minutes old, reset it.
-				 */
-				viewHolder.timePicker.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-				viewHolder.timePicker.setCurrentMinute(Calendar.getInstance().get(Calendar.MINUTE));
-			}
-
-		} catch (ParseException e) {
-			Log.e(TAG,"ParseException onResume, this should never happen " + e);
-		}
-		
 	}
 
 	@Override
@@ -327,7 +290,6 @@ public class SelectRouteView extends Activity {
 	static class ViewHolder {
 		Button fromButton;
 		Button toButton;
-		TimePicker timePicker;
 		Spinner departureDay;
 		Button searchButton;
 	}
