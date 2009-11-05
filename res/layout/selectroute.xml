@@ -3,7 +3,8 @@
  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
  			android:layout_width="fill_parent" 
  			android:layout_height="fill_parent" >
-<!-- 
+
+
 <SlidingDrawer
      android:id="@+id/drawer"
      android:layout_width="fill_parent"
@@ -40,96 +41,60 @@
 			   android:src="@drawable/ic_tray_expand"/>
     </LinearLayout>
 
-</SlidingDrawer>  -->
+</SlidingDrawer> 
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="fill_parent"
      android:layout_height="fill_parent">
      
-	<TableLayout android:id="@+id/tableLayout"
-	   android:layout_width="wrap_content"
+     
+    <Button android:id="@+id/fromButton"
+	   android:layout_width="fill_parent"
 	   android:layout_height="wrap_content"
-	   android:stretchColumns="1">
-	
-	   <TableRow>
-	       <TextView
-	           android:gravity="left"
-	           android:padding="3dip" 
-	
-	           android:text="@string/from"
-	           android:textStyle="bold"
-	           />
-	
-	       <Button android:id="@+id/fromButton"
-	           android:padding="3dip"
-	           />
-	   </TableRow>
-	   
-	   <TableRow>
-		   <LinearLayout
-		   		android:layout_column="1">
-				<CheckBox  android:id="@+id/fromAreaCheckbox" 
-						   android:text="Or any station within" 
-				           android:layout_width="wrap_content" 
-				           android:layout_height="wrap_content"
-				           android:focusable="false"
-				           />
-				           
-				           
-			    <Spinner android:id="@+id/fromAreaSpinner"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-			        android:drawSelectorOnTop="true"
-			    />
-			</LinearLayout>
-	   </TableRow>
-	   
-	   <TableRow>
-	       <TextView
-	           android:gravity="left"
-	           android:padding="3dip" 
-	
-	           android:text="@string/to"
-	           android:textStyle="bold"
-	           />
-	
-	       <Button android:id="@+id/toButton"
-	           android:padding="3dip"
-	            />
-	   </TableRow>
-	   
-	   
-	   <TableRow>
-		   <LinearLayout
-		   		android:layout_column="1">
-				<CheckBox  android:id="@+id/toAreaCheckbox" 
-						   android:text="Or any station within" 
-				           android:layout_width="wrap_content" 
-				           android:layout_height="wrap_content"
-				           android:focusable="false"
-				           />
-				           
-				           
-			    <Spinner android:id="@+id/toAreaSpinner"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-			        android:drawSelectorOnTop="true"
-			    />
-			</LinearLayout>
-	   </TableRow>
-	</TableLayout>
+        android:padding="3dip"
+        
+        android:text="Travel from"
+        />
+        
+   <Spinner android:id="@+id/fromAreaSpinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="30dip"
+    android:layout_below="@+id/fromButton"
+       android:drawSelectorOnTop="true"
+   />
+     
+     
+    <Button android:id="@+id/toButton"
+	   android:layout_width="fill_parent"
+	   android:layout_height="wrap_content"
+        android:padding="3dip"
+        android:layout_below="@+id/fromAreaSpinner"
+        
+        android:text="Travel to"
+        />
+        
+   <Spinner android:id="@+id/toAreaSpinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="30dip"
+    android:layout_below="@+id/toButton"
+       android:drawSelectorOnTop="true"
+   />
+
 	
     <TimePicker android:id="@+id/timePicker"
-        android:layout_height="wrap_content"
+        android:layout_height="128dip"
         android:layout_width="wrap_content"
-        android:layout_below="@+id/tableLayout"
+        android:layout_below="@+id/toAreaSpinner"
         android:layout_alignParentRight="true"/>
 	
     <RadioGroup android:id="@+id/travelRadio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@+id/tableLayout">
+        android:checkedButton="@+id/travelAt"
+        android:layout_below="@+id/toAreaSpinner">
         <RadioButton
             android:text="Travel At"
             android:id="@+id/travelAt" />
