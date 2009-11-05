@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
 
-import com.neuron.trafikanten.views.SelectRealtimeStationView;
-import com.neuron.trafikanten.views.SelectRouteView;
+import com.neuron.trafikanten.views.realtime.SelectRealtimeStationView;
+import com.neuron.trafikanten.views.route.SelectRouteView;
 
 
 //TODO : Go through variable naming for every class, check for int|string|etc.*m[A-Z]

@@ -16,9 +16,10 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.neuron.trafikanten.views;
+package com.neuron.trafikanten.views.realtime;
 
 import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.views.GenericSelectStationView;
 
 import android.content.Intent;
 import android.os.Bundle;

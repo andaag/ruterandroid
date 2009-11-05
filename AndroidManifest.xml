@@ -10,15 +10,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    <activity android:name=".views.SelectStationView"></activity>
-<activity android:name=".views.RealtimeView"></activity>
-<activity android:name=".views.SelectRealtimeStationView"></activity>
+    <activity android:name=".views.route.SelectRouteStationView"></activity>
+<activity android:name=".views.realtime.RealtimeView"></activity>
+<activity android:name=".views.realtime.SelectRealtimeStationView"></activity>
 <activity android:name=".tasks.SearchStationTask" android:theme="@android:style/Theme.Dialog"></activity>
 <activity android:name=".tasks.RealtimeDataTask" android:theme="@android:style/Theme.Dialog"></activity>
 
-<activity android:name=".views.SelectRouteView"></activity>
+<activity android:name=".views.route.SelectRouteView"></activity>
 <activity android:name=".tasks.SearchRouteTask" android:theme="@android:style/Theme.Dialog"></activity>
-<activity android:name=".views.RouteView"></activity>
+<activity android:name=".views.route.DetailedRouteView"></activity>
 <activity android:name=".views.map.GenericMap"></activity>
 <uses-library android:name="com.google.android.maps"></uses-library>
 

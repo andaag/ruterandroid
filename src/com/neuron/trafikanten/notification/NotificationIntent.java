@@ -1,12 +1,5 @@
 package com.neuron.trafikanten.notification;
 
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataSets.NotificationData;
-import com.neuron.trafikanten.dataSets.RouteData;
-import com.neuron.trafikanten.dataSets.SearchStationData;
-import com.neuron.trafikanten.views.RealtimeView;
-import com.neuron.trafikanten.views.RouteView;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,6 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataSets.NotificationData;
+import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.views.realtime.RealtimeView;
+import com.neuron.trafikanten.views.route.DetailedRouteView;
 
 /*
  * This is what gets triggered by AlarmService, what it does is trigger the notification.
@@ -50,7 +50,7 @@ public class NotificationIntent extends BroadcastReceiver {
 			 * Route popup
 			 */
 			final RouteData routeData = notificationData.routeData;
-			intent = new Intent(context, RouteView.class);
+			intent = new Intent(context, DetailedRouteView.class);
 			bundle.putParcelable(RouteData.PARCELABLE, routeData);
 	        intent.putExtras(bundle);
 		}

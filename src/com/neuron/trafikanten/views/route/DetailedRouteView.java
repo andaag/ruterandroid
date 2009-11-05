@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.neuron.trafikanten.views;
+package com.neuron.trafikanten.views.route;
 
 import java.util.ArrayList;
 
@@ -55,8 +55,7 @@ import com.neuron.trafikanten.notification.NotificationDialog;
 import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.SearchRouteTask;
 
-// TODO LAYOUT : Consider adding traveltime, for example <symbol> <line> <destination> <right aligned traveltime>
-public class RouteView extends ListActivity {
+public class DetailedRouteView extends ListActivity {
 	private final static int MAX_ROUTELIST = 50;
 	private final static String TAG = "Trafikanten-RouteView";
 	private RouteAdapter routeList;
@@ -88,7 +87,7 @@ public class RouteView extends ListActivity {
 	private int lastDepartureDatesPos = 0; // this is so back button works logically while loading.
 
 	public static void ShowRoute(Activity activity, RouteData routeData) {
-		Intent intent = new Intent(activity, RouteView.class);
+		Intent intent = new Intent(activity, DetailedRouteView.class);
 		intent.putExtra(RouteData.PARCELABLE, routeData);
 		activity.startActivity(intent);
 	}
@@ -241,13 +240,13 @@ public class RouteView extends ListActivity {
     		if (list != null) {
     			routeList.setList(list);
     		}
-    		RouteView.this.setListAdapter(routeList);
+    		DetailedRouteView.this.setListAdapter(routeList);
     		refreshButtons();
     		break;
     	case IRouteProvider.MESSAGE_EXCEPTION:
     		final String exception = msg.getData().getString(IGenericProvider.KEY_EXCEPTION);
 			Log.w(TAG,"onException " + exception);
-			Toast.makeText(RouteView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+			Toast.makeText(DetailedRouteView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
     		break;
     	}
 	}
@@ -495,5 +494,4 @@ class RouteAdapter extends BaseAdapter {
 		TextView toTime;
 		TextView waittime;
 	}
-};
-
+}

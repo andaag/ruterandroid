@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.neuron.trafikanten.views;
+package com.neuron.trafikanten.views.route;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -100,7 +100,7 @@ public class SelectRouteView extends Activity {
 		viewHolder.fromButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(SelectRouteView.this, SelectStationView.class);
+				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
 				startActivityForResult(intent, ACTIVITY_SELECT_FROM);
 			}
 		});
@@ -111,7 +111,7 @@ public class SelectRouteView extends Activity {
 		viewHolder.toButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(SelectRouteView.this, SelectStationView.class);
+				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
 				startActivityForResult(intent, ACTIVITY_SELECT_TO);
 			}
 		});
@@ -227,7 +227,7 @@ public class SelectRouteView extends Activity {
         }
 		
 		
-		RouteView.ShowRoute(this, routeData);
+		DetailedRouteView.ShowRoute(this, routeData);
 	}
 	
 	/*

@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.neuron.trafikanten.views;
+package com.neuron.trafikanten.views.realtime;
 
 import java.util.ArrayList;
 

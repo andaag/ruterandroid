@@ -16,17 +16,15 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.neuron.trafikanten.views;
-
-import com.neuron.trafikanten.dataSets.SearchStationData;
+package com.neuron.trafikanten.views.route;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-/*
- * This is the generic SelectStationView view, that returns with results.
- */
-public class SelectStationView extends GenericSelectStationView {
+import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.views.GenericSelectStationView;
+
+public class SelectRouteStationView extends GenericSelectStationView {
 	/*
 	 * Handler for station selected
 	 */
