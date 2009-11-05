@@ -1,0 +1,6 @@
+	    <Stop>
+	      <WalkingDistance>%</WalkingDistance>
+	      <ArrivalTime>%</ArrivalTime>
+	      <DepartureTime>%</DepartureTime>
+	      <BoardingAllowed>true</BoardingAllowed>
+	    </Stop>

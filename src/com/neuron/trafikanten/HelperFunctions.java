@@ -69,7 +69,7 @@ public class HelperFunctions {
     /*
      * Replace % with arguments, simplified version of http://www.mail-archive.com/android-developers@googlegroups.com/msg02846.html
      */
-	private static String mergeArgument(Resources resources, int rId, String []args) throws IOException {
+	public static String mergeXmlArgument(Resources resources, int rId, String []args) throws IOException {
 		String xml = "";
 		int currentArgIndex = 0;
 		int noArgs = args.length;
@@ -94,7 +94,7 @@ public class HelperFunctions {
 	 * Send a soap request, takes resource id, arguments and the soap url, returns inputStream.
 	 */
 	public static InputStream soapRequest(final Resources resources, final int rid, final String[] args, final String url) throws IOException {
-        final String soap = mergeArgument(resources, rid, args);
+        final String soap = mergeXmlArgument(resources, rid, args);
 
         HttpPost httppost = new HttpPost(url);
     	httppost.setHeader("Content-Type", "text/xml; charset=utf-8");

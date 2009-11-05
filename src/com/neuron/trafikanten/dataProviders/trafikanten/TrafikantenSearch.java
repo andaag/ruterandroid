@@ -279,22 +279,25 @@ class SearchHandler extends DefaultHandler {
             if (!ignore)
             	stationList.add(station);
             ignore = false;
-        } else if (localName.equals("Zone")) {
-            inZone = false;
-        } else if (localName.equals("X")) {
-            inX = false;
-        } else if (localName.equals("Y")) {
-            inY = false;
-        } else if (localName.equals("ID")) {
-            inID = false;
-        } else if (localName.equals("Name")) {
-            inName = false;
-        } else if (localName.equals("District")) {
-            inDistrict = false;
-        } else if (localName.equals("Type")) {
-            inType = false;
-        } else if (localName.equals("Stops")) {
-        	inStops = false;
+        } else {
+        	if (ignore) return;
+        	if (inZone && localName.equals("Zone")) {
+	            inZone = false;
+	        } else if (inX && localName.equals("X")) {
+	            inX = false;
+	        } else if (inY && localName.equals("Y")) {
+	            inY = false;
+	        } else if (inID && localName.equals("ID")) {
+	            inID = false;
+	        } else if (inName && localName.equals("Name")) {
+	            inName = false;
+	        } else if (inDistrict && localName.equals("District")) {
+	            inDistrict = false;
+	        } else if (inType && localName.equals("Type")) {
+	            inType = false;
+	        } else if (inStops && localName.equals("Stops")) {
+	        	inStops = false;
+	        }
         }
     }
     

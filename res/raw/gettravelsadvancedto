@@ -1,0 +1,4 @@
+        <Stop>
+          <ArrivalTime>%</ArrivalTime>
+          <AlightingAllowed>true</AlightingAllowed>
+        </Stop>

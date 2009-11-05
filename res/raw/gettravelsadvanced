@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <GetTravelsAdvanced xmlns="http://www.trafikanten.no/">
+      <time>%</time>
+      <from>
+      %
+      </from>
+      <to>
+      %
+      </to>
+      <changemargin>%</changemargin>
+      <changepunish>%</changepunish>
+      <walkingfactor>%</walkingfactor>
+      <proposals>5</proposals>
+      <isTravelAfterACertainTimeRatherThanAfter>%</isTravelAfterACertainTimeRatherThanAfter>
+    </GetTravelsAdvanced>
+  </soap:Body>
+</soap:Envelope>
