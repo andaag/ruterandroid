@@ -3,9 +3,8 @@
  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
  			android:layout_width="fill_parent" 
  			android:layout_height="fill_parent" >
- 			
-
- <SlidingDrawer
+<!-- 
+<SlidingDrawer
      android:id="@+id/drawer"
      android:layout_width="fill_parent"
      android:layout_height="fill_parent"
@@ -13,12 +12,20 @@
      android:handle="@+id/handle"
      android:content="@+id/content">
 
-     <GridView
+     <LinearLayout
          android:id="@id/content"
          android:layout_width="fill_parent"
-         android:layout_height="fill_parent" />
+         android:layout_height="fill_parent">
+         
+    
+	    <Spinner android:id="@+id/departureDay"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+	    />
+         
+    </LinearLayout>
 
-    <!-- Drawer handle -->
     <LinearLayout
         android:id="@id/handle"
         android:orientation="horizontal"
@@ -33,133 +40,121 @@
 			   android:src="@drawable/ic_tray_expand"/>
     </LinearLayout>
 
- </SlidingDrawer>
+</SlidingDrawer>  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="fill_parent"
+     android:layout_height="fill_parent">
+     
+	<TableLayout android:id="@+id/tableLayout"
+	   android:layout_width="wrap_content"
+	   android:layout_height="wrap_content"
+	   android:stretchColumns="1">
+	
+	   <TableRow>
+	       <TextView
+	           android:gravity="left"
+	           android:padding="3dip" 
+	
+	           android:text="@string/from"
+	           android:textStyle="bold"
+	           />
+	
+	       <Button android:id="@+id/fromButton"
+	           android:padding="3dip"
+	           />
+	   </TableRow>
+	   
+	   <TableRow>
+		   <LinearLayout
+		   		android:layout_column="1">
+				<CheckBox  android:id="@+id/fromAreaCheckbox" 
+						   android:text="Or any station within" 
+				           android:layout_width="wrap_content" 
+				           android:layout_height="wrap_content"
+				           android:focusable="false"
+				           />
+				           
+				           
+			    <Spinner android:id="@+id/fromAreaSpinner"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+			        android:drawSelectorOnTop="true"
+			    />
+			</LinearLayout>
+	   </TableRow>
+	   
+	   <TableRow>
+	       <TextView
+	           android:gravity="left"
+	           android:padding="3dip" 
+	
+	           android:text="@string/to"
+	           android:textStyle="bold"
+	           />
+	
+	       <Button android:id="@+id/toButton"
+	           android:padding="3dip"
+	            />
+	   </TableRow>
+	   
+	   
+	   <TableRow>
+		   <LinearLayout
+		   		android:layout_column="1">
+				<CheckBox  android:id="@+id/toAreaCheckbox" 
+						   android:text="Or any station within" 
+				           android:layout_width="wrap_content" 
+				           android:layout_height="wrap_content"
+				           android:focusable="false"
+				           />
+				           
+				           
+			    <Spinner android:id="@+id/toAreaSpinner"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+			        android:drawSelectorOnTop="true"
+			    />
+			</LinearLayout>
+	   </TableRow>
+	</TableLayout>
+	
+    <TimePicker android:id="@+id/timePicker"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/tableLayout"
+        android:layout_alignParentRight="true"/>
+	
+    <RadioGroup android:id="@+id/travelRadio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/tableLayout">
+        <RadioButton
+            android:text="Travel At"
+            android:id="@+id/travelAt" />
+        <RadioButton
+            android:text="Arrive Before"
+            android:id="@+id/arriveBefore" />
+    </RadioGroup>
+
+    
 
 
+    
+ 
+    <Button android:id="@+id/searchButton"
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_search_category_default"
+        android:drawablePadding="-16px"
+        android:text="@string/search"
+        android:layout_alignParentBottom="true"
+         />
+	
+         
 
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:layout_width="wrap_content"
-   android:layout_height="wrap_content"
-   android:stretchColumns="1">
 
-   <TableRow>
-       <TextView
-           android:gravity="left"
-           android:padding="3dip" 
-
-           android:text="@string/from"
-           android:textStyle="bold"
-           />
-
-       <Button android:id="@+id/fromButton"
-           android:padding="3dip"
-           />
-   </TableRow>
-   
-   <TableRow>
-       <TextView
-           android:gravity="left"
-           android:padding="3dip" 
-
-           android:text="@string/to"
-           android:textStyle="bold"
-           />
-
-       <Button android:id="@+id/toButton"
-           android:padding="3dip"
-            />
-   </TableRow>
-   
-   
-   <TableRow>
-       <TextView
-           android:padding="3dip" 
-
-           android:text="Travel in (minutes)"
-           android:textStyle="bold"
-           />
-       
-       <LinearLayout>
-		    <Spinner android:id="@+id/travelInMinutes"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-		        android:drawSelectorOnTop="true"
-		        android:layout_weight="1"
-		    />
-		    
-			<ImageButton id="@+id/pickTimeButton"
-			       android:layout_width="wrap_content"
-			       android:layout_height="wrap_content"
-				   android:src="@drawable/ic_search_category_default"/>
-		</LinearLayout>
-		
-   </TableRow>
-   
-   
-   <TableRow>
-	    <Spinner android:id="@+id/departureDay"
-	        android:layout_span="2"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:drawSelectorOnTop="true"
-	    />
-   </TableRow>
-   
-   
-   
-   
-   <TableRow>
-       <TextView
-           android:padding="3dip" 
-
-           android:text="ChangeMargin"
-           android:textStyle="bold"
-           />
-       
-	    <Spinner android:id="@+id/changeMargin"
-	        android:drawSelectorOnTop="true"
-	        
-	    />
-   </TableRow> 
-   
-   <TableRow>
-       <TextView
-           android:padding="3dip" 
-
-           android:text="ChangePunish"
-           android:textStyle="bold"
-           />
-       
-	    <Spinner android:id="@+id/changePunish"
-	        android:drawSelectorOnTop="true"
-	        
-	    />
-   </TableRow>
-   
-   <TableRow>
-       <TextView
-           android:padding="3dip" 
-
-           android:text="WalkingFactor"
-           android:textStyle="bold"
-           />
-       
-	    <Spinner android:id="@+id/walkingFactor"
-	        android:drawSelectorOnTop="true"
-	        
-	    />
-   </TableRow>
-   
-   <TableRow>
-       <Button android:id="@+id/searchButton"
-           android:padding="3dip"
-           android:layout_span="2"
-           android:drawableLeft="@drawable/ic_search_category_default"
-           android:drawablePadding="-16px"
-           android:text="@string/search"
-            />
-   </TableRow>
-   
-</TableLayout>
-
-  </FrameLayout>
+     
+</RelativeLayout>
+</FrameLayout>
