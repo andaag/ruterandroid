@@ -1,5 +1,5 @@
 import sys, httplib
-
+import xml.dom.minidom as md
 
 SoapMessage="""
 <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
@@ -34,5 +34,12 @@ statuscode, statusmessage, header = webservice.getreply()
 print "Response: ", statuscode, statusmessage
 print "headers: ", header
 res = webservice.getfile().read()
+
+
+#pretty_print = lambda f: '\n'.join([line for line in md.parse(open(f)).toprettyxml(indent=' '*2).split('\n') if line.strip()])
+#str = unicode(webservice.getfile().read(), "utf-8" )
+
 f = open("test.log","w")
 f.write(res)
+
+
