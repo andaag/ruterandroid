@@ -24,7 +24,7 @@ import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
 import com.neuron.trafikanten.dataSets.RealtimeData;
-import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 
 public class ResultsProviderFactory {
@@ -46,7 +46,7 @@ public class ResultsProviderFactory {
 	/*
 	 * Route data
 	 */
-	public static ArrayList<RouteData> getRouteResults() {
+	public static ArrayList<RouteProposal> getRouteResults() {
 		return TrafikantenRoute.GetRouteList();
 	}
 }

@@ -20,7 +20,6 @@ package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,16 +30,6 @@ import java.util.Date;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.IRouteProvider;
-import com.neuron.trafikanten.dataSets.RouteData;
-import com.neuron.trafikanten.dataSets.SearchStationData;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -51,7 +40,13 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+
+import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.IRouteProvider;
+import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.RouteProposal;
+import com.neuron.trafikanten.dataSets.SearchStationData;
 
 public class TrafikantenRoute implements IRouteProvider {
 	private Handler handler;
@@ -87,9 +82,9 @@ public class TrafikantenRoute implements IRouteProvider {
 	/*
 	 * Get results (note that this MUST NOT be called while thread is running)
 	 */
-	public static ArrayList<RouteData> GetRouteList() {
-		final ArrayList<RouteData> results = RouteHandler.routeList;
-		RouteHandler.routeList = null;
+	public static ArrayList<RouteProposal> GetRouteList() {
+		final ArrayList<RouteProposal> results = RouteHandler.travelProposalList;
+		RouteHandler.travelProposalList = null;
 		return results; 
 	}
 }
@@ -99,8 +94,8 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	private final static SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	private final static SimpleDateFormat TIMEFORMAT = new SimpleDateFormat("HH:mm");
 	private Handler handler;
-	public static RouteData routeData;
 	private Resources resources;
+	public static RouteData routeData;
 	
 	public TrafikantenRouteThread(Resources resources, Handler handler, RouteData routeData) {
 		this.handler = handler;
@@ -126,13 +121,10 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			URL url = new URL("http://www5.trafikanten.no/txml/?type=4&" + 
-					"fromid=" + routeData.fromStation.stationId + "&toid=" + routeData.toStation.stationId +
-					"&depdate=" + DATEFORMAT.format(routeData.departure) +
-					"&deptime=" + TIMEFORMAT.format(routeData.departure)					
-			);
-			Log.i(TAG, "Loading url " + url.toString());
-			
+			final String[] args = new String[]{ new Integer(routeData.fromStation.stationId).toString(), 
+					new Integer(routeData.toStation.stationId).toString(), 
+					new Date(routeData.departure).toLocaleString()};
+			final InputStream inputStream = HelperFunctions.soapRequest(resources, R.raw.gettravelsafter, args, Trafikanten.API_URL);
 			/*
 			 * Setup SAXParser and XMLReader
 			 */
@@ -142,7 +134,7 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 			final XMLReader reader = parser.getXMLReader();
 			reader.setContentHandler(new RouteHandler(handler));
 			
-			reader.parse(new InputSource(url.openStream()));
+			reader.parse(new InputSource(inputStream));
 		} catch(Exception e) {
 			/*
 			 * All exceptions except thread interruptions are passed to callback.
@@ -161,17 +153,19 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 
 class RouteHandler extends DefaultHandler {
 	private Handler handler;
-	private RouteData routeData;
 	
+	// Results:
 	public static ArrayList<RouteProposal> travelProposalList;
-	public static ArrayList<RouteData> travelStageList;
+	// For parsing:
+	private static RouteProposal travelProposal;
+	private RouteData travelStage; // temporary only, these are moved to travelStageList
+
+	
 	private final static DateFormat timeParser = new SimpleDateFormat("kk:mm");
 
 	/*
 	 * Temporary variables for parsing. 
 	 */
-
-	
 	private boolean inTravelProposal = false;
 	private boolean inTravelStage = false;
 	private boolean inDepartureStop = false;
@@ -197,7 +191,6 @@ class RouteHandler extends DefaultHandler {
 	
 	public RouteHandler(Handler handler) {
 		travelProposalList = new ArrayList<RouteProposal>();
-		travelStageList = new ArrayList<RouteData>();
 		this.handler = handler;
 		searchDate = TrafikantenRouteThread.routeData.departure;
 	}
@@ -246,7 +239,7 @@ class RouteHandler extends DefaultHandler {
 		if (!inTravelProposal) {
 			if (localName.equals("TravelProposal")) {
 				inTravelStage = true;
-				routeProposal = new RouteProposal();
+				travelProposal = new RouteProposal();
 			}
 		} else {	    
 			if (!inTravelStage) {
@@ -255,9 +248,9 @@ class RouteHandler extends DefaultHandler {
 				 */
 		        if (localName.equals("TravelStage")) {
 		            inTravelStage = true;
-		            routeData = new RouteData();
-		            routeData.fromStation = new SearchStationData();
-		            routeData.toStation = new SearchStationData();
+		            travelStage = new RouteData();
+		            travelStage.fromStation = new SearchStationData();
+		            travelStage.toStation = new SearchStationData();
 		        } else if (localName.equals("DepartureTime")) {
 		    		inDepartureTime = true;
 			    } else if (localName.equals("ArrivalTime")) {
@@ -311,8 +304,7 @@ class RouteHandler extends DefaultHandler {
 			 * add the travel proposal to our master list
 			 */
 			inTravelProposal = false;
-			travelProposalList.add(travelStageList);
-			travelStageList = null;
+			travelProposalList.add(travelProposal);
 		} else {
 			if (!inTravelStage) {
 		        if (inDepartureTime && localName.equals("DepartureTime")) {
@@ -328,7 +320,7 @@ class RouteHandler extends DefaultHandler {
 					 * +1 travel stage, add it to the travelStageList list
 					 */
 					inTravelStage = false;
-					travelStageList.add(routeData);
+					travelProposal.travelStageList.add(travelStage);
 				} else {
 					if (inDepartureStop && localName.equals("DepartureStop")) {
 					    inDepartureStop = false;
@@ -366,7 +358,7 @@ class RouteHandler extends DefaultHandler {
 
 	@Override
 	public void characters(char ch[], int start, int length) { 
-	    if (!inTravelStage) return;
+	    /*if (!inTravelStage) return;
 	    if (inDepartureStopId) {
 	    	routeData.fromStation.stationId = Integer.parseInt(new String(ch, start, length));
 	    } else if (inDepartureStopName) {
@@ -386,7 +378,7 @@ class RouteHandler extends DefaultHandler {
 	    } else if (inTransportationID) {
 	    	/*
 	    	 * Append TransportationID to Extra
-	    	 */
+	    	 *
 	    	final String transportationString = new String(ch, start, length);
 	    	if (transportationString.equals("G")) {
 	    		routeData.transportType = IRouteProvider.TRANSPORT_WALK;
@@ -409,7 +401,7 @@ class RouteHandler extends DefaultHandler {
 	    } else if (inWaitingTime) {
 	    	/*
 	    	 * Parse time and add wait time in minutes to route data
-	    	 */
+	    	 *
 			try {
 				Date parsedDate = timeParser.parse(new String(ch, start, length));
 		    	routeData.waitTime = parsedDate.getMinutes() + (parsedDate.getHours() * 60);
@@ -420,6 +412,6 @@ class RouteHandler extends DefaultHandler {
 				msg.setData(bundle);
 				handler.sendMessage(msg);
 			}
-	    }
+	    }*/
 	}
 }
