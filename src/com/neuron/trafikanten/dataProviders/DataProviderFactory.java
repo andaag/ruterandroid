@@ -61,8 +61,8 @@ public class DataProviderFactory {
 	/*
 	 * Get Route Provider
 	 */
-	public static IRouteProvider getRouteProvider(Handler handler) {
-		return new TrafikantenRoute(handler);
+	public static IRouteProvider getRouteProvider(Resources resources, Handler handler) {
+		return new TrafikantenRoute(resources,handler);
 	}
 	
 	/*

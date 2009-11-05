@@ -132,7 +132,6 @@ class RealtimeHandler extends DefaultHandler {
 	private RealtimeData data;
 	public static ArrayList<RealtimeData> realtimeList;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-	
 	private Handler handler;
 	
 	/*
@@ -238,7 +237,6 @@ class RealtimeHandler extends DefaultHandler {
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 	    if (!inMonitoredStopVisit) return;
-	    
 	    /*
 	     * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
 	     * We collect all data until endElement is called, and then pass that again to characters() manually. 

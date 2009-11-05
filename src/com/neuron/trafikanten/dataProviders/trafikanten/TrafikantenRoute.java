@@ -21,6 +21,7 @@ package com.neuron.trafikanten.dataProviders.trafikanten;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.FieldPosition;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
@@ -48,12 +50,17 @@ import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 
+import java.text.DateFormat;
+import java.text.FieldPosition;
+
 public class TrafikantenRoute implements IRouteProvider {
 	private Handler handler;
 	private TrafikantenRouteThread thread;
+	private Resources resources;
 	
-	public TrafikantenRoute(Handler handler) {
+	public TrafikantenRoute(Resources resources, Handler handler) {
 		this.handler = handler;
+		this.resources = resources;
 	}
 
 	/*
@@ -63,7 +70,7 @@ public class TrafikantenRoute implements IRouteProvider {
 	@Override
 	public void Search(RouteData routeData) {
 		Stop();
-		thread = new TrafikantenRouteThread(handler, routeData);
+		thread = new TrafikantenRouteThread(resources, handler, routeData);
 		thread.start();
 		
 	}
@@ -121,20 +128,24 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
+			final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
+			final StringBuffer renderedTime = dateFormater.format(new Date(routeData.departure), new StringBuffer(), new FieldPosition(0));
 			final String[] args = new String[]{ new Integer(routeData.fromStation.stationId).toString(), 
 					new Integer(routeData.toStation.stationId).toString(), 
-					new Date(routeData.departure).toLocaleString()};
-			final InputStream inputStream = HelperFunctions.soapRequest(resources, R.raw.gettravelsafter, args, Trafikanten.API_URL);
+					renderedTime.toString()};
+			
+			final InputStream result = HelperFunctions.soapRequest(resources, R.raw.gettravelsafter, args, Trafikanten.API_URL);
 			/*
 			 * Setup SAXParser and XMLReader
 			 */
+			
 			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
 			reader.setContentHandler(new RouteHandler(handler));
 			
-			reader.parse(new InputSource(inputStream));
+			reader.parse(new InputSource(result));
 		} catch(Exception e) {
 			/*
 			 * All exceptions except thread interruptions are passed to callback.
@@ -183,6 +194,12 @@ class RouteHandler extends DefaultHandler {
 	private boolean inTravelTime = false;
 	private boolean inWaitingTime = false;
 
+	
+	/*
+	 * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
+	 */
+	private String tmpData;
+	private boolean endData;
 	
 	/*
 	 * Date object used to check if we should increase day.
@@ -236,9 +253,11 @@ class RouteHandler extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName, 
 	              String qName, Attributes atts) throws SAXException {
+		Log.d("-StartElement", localName);
+		tmpData = "";
 		if (!inTravelProposal) {
 			if (localName.equals("TravelProposal")) {
-				inTravelStage = true;
+				inTravelProposal = true;
 				travelProposal = new RouteProposal();
 			}
 		} else {	    
@@ -298,7 +317,19 @@ class RouteHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) {
+		Log.d("-EndElement", localName);
 		if (!inTravelProposal) return;
+		
+	    /*
+	     * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
+	     * We collect all data until endElement is called, and then pass that again to characters() manually. 
+	     */
+    	if (tmpData.length() > 0) {
+        	endData = true;
+    		characters(tmpData.toCharArray(), 0, tmpData.length());
+    	}
+		
+		
 		if (localName.equals("TravelProposal")) {
 			/*
 			 * add the travel proposal to our master list
@@ -357,7 +388,65 @@ class RouteHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void characters(char ch[], int start, int length) { 
+	public void characters(char ch[], int start, int length) {
+		if (!inTravelProposal) return;
+		
+	    /*
+	     * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
+	     * Until endElemtent is called we only collect the data.
+	     */
+    	if (!endData) {
+    		tmpData = tmpData + new String(ch, start, length);
+    		return;
+    	}
+    	endData = false;
+		
+		if (!inTravelStage) {
+			/*
+			 * In a travel proposal
+			 */
+			if (inDepartureTime) {
+				Log.d("	DebugCode-TravelProposal DepartureTime",new String(ch, start, length));				
+			} else if (inArrivalTime) {
+				Log.d("	DebugCode-TravelProposal ArrivalTime",new String(ch, start, length));
+			} else if (inRemarks) {
+				Log.d("	DebugCode-TravelProposal Remarks",new String(ch, start, length));
+			}
+		} else {
+			/*
+			 * In a travel stage
+			 */
+		    if (inDepartureStop) {
+		    	Log.d("  DebugCode-TravelStage DepartureStop",new String(ch, start, length));
+		    } else if (inActualStop) {
+		    	Log.d("  DebugCode-TravelStage ActualStop",new String(ch, start, length));
+		    } else if (inArrivalStop) {
+		    	Log.d("  DebugCode-TravelStage ArrivalStop",new String(ch, start, length));
+		    } else if (inDepartureTime) {
+		    	Log.d("  DebugCode-TravelStage DepartureTime",new String(ch, start, length));
+		    } else if (inActualTime) {
+		    	Log.d("  DebugCode-TravelStage ActualTime",new String(ch, start, length));
+		    } else if (inArrivalTime) {
+		    	Log.d("  DebugCode-TravelStage ArrivalTime",new String(ch, start, length));
+		    } else if (inLineID) {
+		    	Log.d("  DebugCode-TravelStage LineID",new String(ch, start, length));		    	
+		    } else if (inLineName) {
+		    	Log.d("  DebugCode-TravelStage LineName",new String(ch, start, length));
+		    } else if (inDestination) {
+		    	Log.d("  DebugCode-TravelStage Destination",new String(ch, start, length));
+		    } else if (inRemarks) {
+		    	Log.d("  DebugCode-TravelStage Remarks",new String(ch, start, length));
+		    } else if (inTourID) {
+		    	Log.d("  DebugCode-TravelStage TourID",new String(ch, start, length));
+		    } else if (inTransportation) {
+		    	Log.d("  DebugCode-TravelStage Transportation",new String(ch, start, length));
+		    } else if (inTravelTime) {
+		    	Log.d("  DebugCode-TravelStage TravelTime",new String(ch, start, length));
+		    } else if (inWaitingTime) {
+		    	Log.d("  DebugCode-TravelStage WaitingTime",new String(ch, start, length));
+		    }
+		}
+		
 	    /*if (!inTravelStage) return;
 	    if (inDepartureStopId) {
 	    	routeData.fromStation.stationId = Integer.parseInt(new String(ch, start, length));

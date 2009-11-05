@@ -56,7 +56,7 @@ public class SearchRouteTask extends GenericTask {
 		} else {
 			routeData = savedInstanceState.getParcelable(RouteData.PARCELABLE);
 		}
-		routeProvider = DataProviderFactory.getRouteProvider(handler);
+		routeProvider = DataProviderFactory.getRouteProvider(getResources(), handler);
 	}
 	
 	/*
