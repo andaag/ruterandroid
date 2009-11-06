@@ -186,7 +186,6 @@ class RouteHandler extends DefaultHandler {
 	private boolean inDestination = false;
 	//private boolean inRemarks = false; // TODO : Parse remarks
 	private boolean inTransportation = false;
-	private boolean inTravelTime = false;
 	private boolean inWaitingTime = false;
 	
 	// Stop data:
@@ -305,8 +304,6 @@ class RouteHandler extends DefaultHandler {
 			        inRemarks = true;*/
 			    } else if (localName.equals("Transportation")) {
 			        inTransportation = true;
-			    } else if (localName.equals("TravelTime")) {
-			        inTravelTime = true;
 			    } else if (localName.equals("WaitingTime")) {
 			        inWaitingTime = true;
 			    }
@@ -384,8 +381,6 @@ class RouteHandler extends DefaultHandler {
 					    inRemarks = false;*/
 					} else if (inTransportation && localName.equals("Transportation")) {
 					    inTransportation = false;
-					} else if (inTravelTime && localName.equals("TravelTime")) {
-					    inTravelTime = false;
 					} else if (inWaitingTime && localName.equals("WaitingTime")) {
 					    inWaitingTime = false;
 					}
@@ -424,82 +419,59 @@ class RouteHandler extends DefaultHandler {
 			 * In a travel stage
 			 */
 		    if (inID) {
-		    	Log.d("  DebugCode-TravelStage inID " + inDepartureStop + " " + inArrivalStop,new String(ch, start, length));
+		    	if (inDepartureStop) {
+		    		travelStage.fromStation.stationId = Integer.parseInt(new String(ch, start, length));
+		    	} else {
+		    		travelStage.toStation.stationId = Integer.parseInt(new String(ch, start, length));
+		    	}
 		    } else if (inName) {
-		    	Log.d("  DebugCode-TravelStage inName " + inDepartureStop + " " + inArrivalStop,new String(ch, start, length));
+		    	if (inDepartureStop) {
+		    		travelStage.fromStation.stopName = new String(ch, start, length);
+		    	} else {
+		    		travelStage.toStation.stopName = new String(ch, start, length);
+		    	}
 		    } else if (inDepartureTime) {
-		    	Log.d("  DebugCode-TravelStage DepartureTime",new String(ch, start, length));
+		    	travelStage.departure = parseTime(new String(ch, start, length));
 		    } else if (inArrivalTime) {
-		    	Log.d("  DebugCode-TravelStage ArrivalTime",new String(ch, start, length));	    	
+		    	travelStage.arrival = parseTime(new String(ch, start, length));	    	
 		    } else if (inLineName) {
-		    	Log.d("  DebugCode-TravelStage LineName",new String(ch, start, length));
+		    	travelStage.line = new String(ch, start, length);
 		    } else if (inDestination) {
-		    	Log.d("  DebugCode-TravelStage Destination",new String(ch, start, length));
+		    	travelStage.destination = new String(ch, start, length);
 		    /*} else if (inRemarks) {
 		    	Log.d("  DebugCode-TravelStage Remarks",new String(ch, start, length));*/
 		    } else if (inTransportation) {
-		    	Log.d("  DebugCode-TravelStage Transportation",new String(ch, start, length));
-		    } else if (inTravelTime) {
-		    	Log.d("  DebugCode-TravelStage TravelTime",new String(ch, start, length));
+		    	final String transportationString = new String(ch, start, length);
+		    	travelStage.transportType = IRouteProvider.TRANSPORT_UNKNOWN;
+		    	if (transportationString.equals("Walking")) {
+		    		travelStage.transportType = IRouteProvider.TRANSPORT_WALK;
+		    	} else if (transportationString.equals("Bus")) {
+		    		travelStage.transportType = IRouteProvider.TRANSPORT_BUS;
+		    	} else if (transportationString.equals("Train")) {
+		    		travelStage.transportType = IRouteProvider.TRANSPORT_TRAIN;
+		    	} else if (transportationString.equals("Tram")) {
+		    		travelStage.transportType = IRouteProvider.TRANSPORT_TRAM;
+		    	} else if (transportationString.equals("Metro")) {
+		    	} else if (transportationString.equals("Boat")) {
+		    	} else if (transportationString.equals("AirportTrain")) {
+		    	} else if (transportationString.equals("AirportBus")) {
+		    		
+		    	}
 		    } else if (inWaitingTime) {
-		    	Log.d("  DebugCode-TravelStage WaitingTime",new String(ch, start, length));
+		    	/*
+		    	 * Parse time and add wait time in minutes to route data
+		    	 */
+				try {
+					Date parsedDate = timeParser.parse(new String(ch, start, length));
+					travelStage.waitTime = parsedDate.getMinutes() + (parsedDate.getHours() * 60);
+				} catch (ParseException e) {
+					final Message msg = handler.obtainMessage(IRouteProvider.MESSAGE_EXCEPTION);
+					final Bundle bundle = new Bundle();
+					bundle.putString(IRouteProvider.KEY_EXCEPTION, e.toString());
+					msg.setData(bundle);
+					handler.sendMessage(msg);
+				}
 		    }
 		}
-		
-	    /*if (!inTravelStage) return;
-	    if (inDepartureStopId) {
-	    	routeData.fromStation.stationId = Integer.parseInt(new String(ch, start, length));
-	    } else if (inDepartureStopName) {
-	    	routeData.fromStation.stopName = new String(ch, start, length);	
-	    } else if (inDepartureTime) {
-	    	routeData.departure = parseTime(new String(ch, start, length));
-	    } else if (inArrivalStopId) {
-	    	routeData.toStation.stationId = Integer.parseInt(new String(ch, start, length));
-	    } else if (inArrivalStopName) {
-	    	routeData.toStation.stopName = new String(ch, start, length);
-	    } else if (inArrivalTime) {
-	    	routeData.arrival = parseTime(new String(ch, start, length));
-	    } else if (inLine) {
-	    	routeData.line = new String(ch, start, length);
-	    } else if (inDestination) {
-	    	routeData.destination = new String(ch, start, length);
-	    } else if (inTransportationID) {
-	    	/*
-	    	 * Append TransportationID to Extra
-	    	 *
-	    	final String transportationString = new String(ch, start, length);
-	    	if (transportationString.equals("G")) {
-	    		routeData.transportType = IRouteProvider.TRANSPORT_WALK;
-	    	} else {
-	    		switch(Integer.parseInt(new String(ch, start, length))) {
-	    		case 2:
-	    			routeData.transportType = IRouteProvider.TRANSPORT_BUS;
-	    			break;
-	    		case 6:
-	    			routeData.transportType = IRouteProvider.TRANSPORT_TRAIN;
-	    			break;
-	    		case 7:
-	    			routeData.transportType = IRouteProvider.TRANSPORT_TRAM;
-	    			break;
-	    		case 8:
-	    			routeData.transportType = IRouteProvider.TRANSPORT_SUBWAY;
-	    			break;
-	    		}
-	    	}
-	    } else if (inWaitingTime) {
-	    	/*
-	    	 * Parse time and add wait time in minutes to route data
-	    	 *
-			try {
-				Date parsedDate = timeParser.parse(new String(ch, start, length));
-		    	routeData.waitTime = parsedDate.getMinutes() + (parsedDate.getHours() * 60);
-			} catch (ParseException e) {
-				final Message msg = handler.obtainMessage(IRouteProvider.MESSAGE_EXCEPTION);
-				final Bundle bundle = new Bundle();
-				bundle.putString(IRouteProvider.KEY_EXCEPTION, e.toString());
-				msg.setData(bundle);
-				handler.sendMessage(msg);
-			}
-	    }*/
 	}
 }
