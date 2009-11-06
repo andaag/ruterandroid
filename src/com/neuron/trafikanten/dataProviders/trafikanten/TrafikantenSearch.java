@@ -36,7 +36,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
@@ -191,7 +190,7 @@ class SearchHandler extends DefaultHandler {
 	 * Temporary variables for parsing. 
 	 */
 	private boolean inPlace = false;
-	private boolean inZone = false;
+	//private boolean inZone = false;
 	private boolean inX = false;
 	private boolean inY = false;
 	private boolean inID = false;
@@ -202,6 +201,9 @@ class SearchHandler extends DefaultHandler {
 	
 	// Ignore is used to ignore anything except type Stop.
 	private boolean ignore = false;
+	
+	//Temporary variable for character data:
+	private StringBuffer buffer = new StringBuffer();
 	
 	public SearchHandler(Handler handler)
 	{
@@ -241,16 +243,14 @@ class SearchHandler extends DefaultHandler {
     public void startElement(String namespaceURI, String localName, 
               String qName, Attributes atts) throws SAXException {
     	if (ignore) return;
-    	if (inStops) return;
+        if (inStops) return;
         if (!inPlace) {
             if (localName.equals("Place")) {
                 inPlace = true;
     			station = new SearchStationData();
     		}
 		} else {
-			if (localName.equals("Zone")) {
-			    inZone = true;
-			} else if (localName.equals("X")) {
+			if (localName.equals("X")) {
 			    inX = true;
 			} else if (localName.equals("Y")) {
 			    inY = true;
@@ -263,7 +263,7 @@ class SearchHandler extends DefaultHandler {
 			} else if (localName.equals("Type")) {
 			    inType = true;
 			} else if (localName.equals("Stops")) {
-				inStops = true;
+			    inStops = true;
 			}
 		}
     } 
@@ -281,56 +281,45 @@ class SearchHandler extends DefaultHandler {
             ignore = false;
         } else {
         	if (ignore) return;
-        	if (inZone && localName.equals("Zone")) {
-	            inZone = false;
-	        } else if (inX && localName.equals("X")) {
+        	if (inX && localName.equals("X")) {
 	            inX = false;
+	            station.utmCoords[0] = Integer.parseInt(buffer.toString());
 	        } else if (inY && localName.equals("Y")) {
 	            inY = false;
+	            station.utmCoords[1] = Integer.parseInt(buffer.toString());
 	        } else if (inID && localName.equals("ID")) {
 	            inID = false;
+	            station.stationId = Integer.parseInt(buffer.toString());
 	        } else if (inName && localName.equals("Name")) {
 	            inName = false;
+		    	station.stopName = buffer.toString();
+	    		searchForAddress();
 	        } else if (inDistrict && localName.equals("District")) {
 	            inDistrict = false;
+		    	if (station.extra == null) {
+	    			station.extra = buffer.toString();
+	    		} else {
+	    			station.extra = station.extra + ", " + buffer.toString();
+	    		}
 	        } else if (inType && localName.equals("Type")) {
 	            inType = false;
+		    	//Log.d("DEBUG CODE","Type : " + new String(ch, start, length) + " " + ch[0] + " " + length);
+	            if (buffer.length() != 4 && !buffer.toString().equals("Stop")) {
+		    		//Log.d("DEBUG CODE","  - Ignoring");
+		    		ignore = true;
+		    	}
 	        } else if (inStops && localName.equals("Stops")) {
 	        	inStops = false;
 	        }
         }
+        buffer.setLength(0);
     }
     
     @Override
     public void characters(char ch[], int start, int length) {
     	if (ignore) return;
-    	//Log.d("DEBUG CODE", "Recieved : " + new String(ch, start, length));
-        if (!inPlace) return;
-	    if (inZone) {
-	    	// Zone is  currently ignored and not shown.
-	    } else if (inX) {
-	    	station.utmCoords[0] = Integer.parseInt(new String(ch, start, length));
-	    } else if (inY) {
-	    	station.utmCoords[1] = Integer.parseInt(new String(ch, start, length));
-	    } else if (inID) {
-	    	station.stationId = Integer.parseInt(new String(ch, start, length));
-	    } else if (inName) {
-	    	station.stopName = new String(ch, start, length);
-    		searchForAddress();
-	    } else if (inDistrict) {
-	    	if (station.extra == null) {
-    			station.extra = new String(ch, start, length);
-    		} else {
-    			station.extra = station.extra + ", " + new String(ch, start, length);
-    		}
-	    } else if (inType) {
-	    	Log.d("DEBUG CODE","Type : " + new String(ch, start, length) + " " + ch[0] + " " + length);
-	    	if (length != 4 && ch[0] != 'S') {
-	    		Log.d("DEBUG CODE","  - Ignoring");
-	    		ignore = true;
-	    	}
-	    }
-	    //station.setAirDistance(Integer.parseInt(new String(ch, start, length))); // TODO
-
+    	if (inPlace || inX || inY || inID || inName || inDistrict || inType) {
+    		buffer.append(ch, start, length);
+    	}
     }
 }

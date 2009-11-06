@@ -152,7 +152,7 @@ class RealtimeHandler extends DefaultHandler {
 	private boolean inStopVisitNote = false;
 	
 	//Temporary variable for character data:
-	private StringBuffer buffer = new StringBuffer(); // collects text
+	private StringBuffer buffer = new StringBuffer();
 	
 	public RealtimeHandler(Handler handler)
 	{
