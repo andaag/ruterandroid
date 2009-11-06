@@ -182,11 +182,9 @@ class RouteHandler extends DefaultHandler {
 	private boolean inArrivalStop = false;
 	private boolean inDepartureTime = false;
 	private boolean inArrivalTime = false;
-	private boolean inLineID = false;
 	private boolean inLineName = false;
 	private boolean inDestination = false;
-	private boolean inRemarks = false;
-	private boolean inTourID = false;
+	//private boolean inRemarks = false; // TODO : Parse remarks
 	private boolean inTransportation = false;
 	private boolean inTravelTime = false;
 	private boolean inWaitingTime = false;
@@ -254,7 +252,7 @@ class RouteHandler extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName, 
 	              String qName, Attributes atts) throws SAXException {
-		Log.d("-StartElement", localName);
+		//Log.d("-StartElement", localName);
 		tmpData = "";
 		if (!inTravelProposal) {
 			if (localName.equals("TravelProposal")) {
@@ -275,8 +273,8 @@ class RouteHandler extends DefaultHandler {
 		    		inDepartureTime = true;
 			    } else if (localName.equals("ArrivalTime")) {
 			        inArrivalTime = true;
-			    } else if (localName.equals("Remarks")) {
-		    		inRemarks = true;
+			    /*} else if (localName.equals("Remarks")) {
+		    		inRemarks = true;*/
 			    }
 		    } else {
 		    	/*
@@ -299,16 +297,12 @@ class RouteHandler extends DefaultHandler {
 			        inDepartureTime = true;
 			    } else if (localName.equals("ArrivalTime")) {
 			        inArrivalTime = true;
-			    } else if (localName.equals("LineID")) {
-			        inLineID = true;
 			    } else if (localName.equals("LineName")) {
 			        inLineName = true;
 			    } else if (localName.equals("Destination")) {
 			        inDestination = true;
-			    } else if (localName.equals("Remarks")) {
-			        inRemarks = true;
-			    } else if (localName.equals("TourID")) {
-			        inTourID = true;
+			    /*} else if (localName.equals("Remarks")) {
+			        inRemarks = true;*/
 			    } else if (localName.equals("Transportation")) {
 			        inTransportation = true;
 			    } else if (localName.equals("TravelTime")) {
@@ -323,7 +317,7 @@ class RouteHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) {
-		Log.d("-EndElement", localName);
+		//Log.d("-EndElement", localName);
 		if (!inTravelProposal) return;
 		
 	    /*
@@ -348,8 +342,8 @@ class RouteHandler extends DefaultHandler {
 		    		inDepartureTime = false;
 			    } else if (inArrivalTime && localName.equals("ArrivalTime")) {
 			        inArrivalTime = false;
-			    } else if (inRemarks && localName.equals("Remarks")) {
-		    		inRemarks = false;
+			    /*} else if (inRemarks && localName.equals("Remarks")) {
+		    		inRemarks = false;*/
 			    }
 			} else {
 				/*
@@ -382,16 +376,12 @@ class RouteHandler extends DefaultHandler {
 					    inDepartureTime = false;
 					} else if (inArrivalTime && localName.equals("ArrivalTime")) {
 					    inArrivalTime = false;
-					} else if (inLineID && localName.equals("LineID")) {
-					    inLineID = false;
 					} else if (inLineName && localName.equals("LineName")) {
 					    inLineName = false;
 					} else if (inDestination && localName.equals("Destination")) {
 					    inDestination = false;
-					} else if (inRemarks && localName.equals("Remarks")) {
-					    inRemarks = false;
-					} else if (inTourID && localName.equals("TourID")) {
-					    inTourID = false;
+					/*} else if (inRemarks && localName.equals("Remarks")) {
+					    inRemarks = false;*/
 					} else if (inTransportation && localName.equals("Transportation")) {
 					    inTransportation = false;
 					} else if (inTravelTime && localName.equals("TravelTime")) {
@@ -426,8 +416,8 @@ class RouteHandler extends DefaultHandler {
 				Log.d("	DebugCode-TravelProposal DepartureTime",new String(ch, start, length));				
 			} else if (inArrivalTime) {
 				Log.d("	DebugCode-TravelProposal ArrivalTime",new String(ch, start, length));
-			} else if (inRemarks) {
-				Log.d("	DebugCode-TravelProposal Remarks",new String(ch, start, length));
+			/*} else if (inRemarks) {
+				Log.d("	DebugCode-TravelProposal Remarks",new String(ch, start, length));*/
 			}
 		} else {
 			/*
@@ -440,17 +430,13 @@ class RouteHandler extends DefaultHandler {
 		    } else if (inDepartureTime) {
 		    	Log.d("  DebugCode-TravelStage DepartureTime",new String(ch, start, length));
 		    } else if (inArrivalTime) {
-		    	Log.d("  DebugCode-TravelStage ArrivalTime",new String(ch, start, length));
-		    } else if (inLineID) {
-		    	Log.d("  DebugCode-TravelStage LineID",new String(ch, start, length));		    	
+		    	Log.d("  DebugCode-TravelStage ArrivalTime",new String(ch, start, length));	    	
 		    } else if (inLineName) {
 		    	Log.d("  DebugCode-TravelStage LineName",new String(ch, start, length));
 		    } else if (inDestination) {
 		    	Log.d("  DebugCode-TravelStage Destination",new String(ch, start, length));
-		    } else if (inRemarks) {
-		    	Log.d("  DebugCode-TravelStage Remarks",new String(ch, start, length));
-		    } else if (inTourID) {
-		    	Log.d("  DebugCode-TravelStage TourID",new String(ch, start, length));
+		    /*} else if (inRemarks) {
+		    	Log.d("  DebugCode-TravelStage Remarks",new String(ch, start, length));*/
 		    } else if (inTransportation) {
 		    	Log.d("  DebugCode-TravelStage Transportation",new String(ch, start, length));
 		    } else if (inTravelTime) {
