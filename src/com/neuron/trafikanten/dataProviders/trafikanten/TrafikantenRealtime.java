@@ -246,7 +246,7 @@ class RealtimeHandler extends DefaultHandler {
     		characters(tmpData.toCharArray(), 0, tmpData.length());
     	}
 	    
-	    if (localName.equals("MonitoredStopVisit")) {
+	    if (inMonitoredStopVisit && localName.equals("MonitoredStopVisit")) {
 	        /*
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */

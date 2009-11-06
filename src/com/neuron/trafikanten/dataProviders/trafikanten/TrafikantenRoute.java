@@ -115,7 +115,7 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	 * This function setups the url and the xmlreader, and passes data to the RouteHandler. 
 	 */
 	
-	public String soapGetFrom(ArrayList<SearchStationData> stationList) throws IOException {
+	/*public String soapGetFrom(ArrayList<SearchStationData> stationList) throws IOException {
 		String xml = "";
 		for(SearchStationData station : stationList) {
 			// TODO : From/airdistance/departure time has to be included atleast.
@@ -124,7 +124,7 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 		}
 		return xml;
 	}
-	// TODO : soapGetTo
+	// TODO : soapGetTo*/
 	
 	public void run() {
 		try {
@@ -164,7 +164,6 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 
 class RouteHandler extends DefaultHandler {
 	private Handler handler;
-	
 	// Results:
 	public static ArrayList<RouteProposal> travelProposalList;
 	// For parsing:
@@ -180,10 +179,8 @@ class RouteHandler extends DefaultHandler {
 	private boolean inTravelProposal = false;
 	private boolean inTravelStage = false;
 	private boolean inDepartureStop = false;
-	private boolean inActualStop = false;
 	private boolean inArrivalStop = false;
 	private boolean inDepartureTime = false;
-	private boolean inActualTime = false;
 	private boolean inArrivalTime = false;
 	private boolean inLineID = false;
 	private boolean inLineName = false;
@@ -193,6 +190,10 @@ class RouteHandler extends DefaultHandler {
 	private boolean inTransportation = false;
 	private boolean inTravelTime = false;
 	private boolean inWaitingTime = false;
+	
+	// Stop data:
+	private boolean inID = false;
+	private boolean inName = false;
 
 	
 	/*
@@ -281,16 +282,21 @@ class RouteHandler extends DefaultHandler {
 		    	/*
 		    	 * We're in a travel stage
 		    	 */
-			    if (localName.equals("DepartureStop")) {
+		    	if (inDepartureStop || inArrivalStop) {
+		    		/*
+		    		 * We're parsing stop data.
+		    		 */
+		    		if (localName.equals("ID")) {
+		    			inID = true;
+		    		} else if (localName.equals("Name")) {
+		    			inName = true;
+		    		}
+		    	} else if (localName.equals("DepartureStop")) {
 			        inDepartureStop = true;
-			    } else if (localName.equals("ActualStop")) {
-			        inActualStop = true;
 			    } else if (localName.equals("ArrivalStop")) {
 			        inArrivalStop = true;
 			    } else if (localName.equals("DepartureTime")) {
 			        inDepartureTime = true;
-			    } else if (localName.equals("ActualTime")) {
-			        inActualTime = true;
 			    } else if (localName.equals("ArrivalTime")) {
 			        inArrivalTime = true;
 			    } else if (localName.equals("LineID")) {
@@ -346,23 +352,34 @@ class RouteHandler extends DefaultHandler {
 		    		inRemarks = false;
 			    }
 			} else {
-				if (localName.equals("TravelStage")) {
-					/*
-					 * +1 travel stage, add it to the travelStageList list
-					 */
-					inTravelStage = false;
-					travelProposal.travelStageList.add(travelStage);
-				} else {
-					if (inDepartureStop && localName.equals("DepartureStop")) {
+				/*
+				 * Check if we're parsing stop data
+				 */
+		    	if (inDepartureStop || inArrivalStop) {
+		    		/*
+		    		 * We're parsing stop data.
+		    		 */
+		    		if (inID && localName.equals("ID")) {
+		    			inID = false;
+		    		} else if (inName && localName.equals("Name")) {
+		    			inName = false;
+					} else if (inDepartureStop && localName.equals("DepartureStop")) {
 					    inDepartureStop = false;
-					} else if (inActualStop && localName.equals("ActualStop")) {
-					    inActualStop = false;
 					} else if (inArrivalStop && localName.equals("ArrivalStop")) {
 					    inArrivalStop = false;
+		    		}
+		    	} else {
+		    		/*
+		    		 * We're parsing a standard TravelStage
+		    		 */
+					if (localName.equals("TravelStage")) {
+						/*
+						 * +1 travel stage, add it to the travelStageList list
+						 */
+						inTravelStage = false;
+						travelProposal.travelStageList.add(travelStage);
 					} else if (inDepartureTime && localName.equals("DepartureTime")) {
 					    inDepartureTime = false;
-					} else if (inActualTime && localName.equals("ActualTime")) {
-					    inActualTime = false;
 					} else if (inArrivalTime && localName.equals("ArrivalTime")) {
 					    inArrivalTime = false;
 					} else if (inLineID && localName.equals("LineID")) {
@@ -382,7 +399,7 @@ class RouteHandler extends DefaultHandler {
 					} else if (inWaitingTime && localName.equals("WaitingTime")) {
 					    inWaitingTime = false;
 					}
-				}
+		    	}
 			}
 		}
 	}
@@ -416,16 +433,12 @@ class RouteHandler extends DefaultHandler {
 			/*
 			 * In a travel stage
 			 */
-		    if (inDepartureStop) {
-		    	Log.d("  DebugCode-TravelStage DepartureStop",new String(ch, start, length));
-		    } else if (inActualStop) {
-		    	Log.d("  DebugCode-TravelStage ActualStop",new String(ch, start, length));
-		    } else if (inArrivalStop) {
-		    	Log.d("  DebugCode-TravelStage ArrivalStop",new String(ch, start, length));
+		    if (inID) {
+		    	Log.d("  DebugCode-TravelStage inID " + inDepartureStop + " " + inArrivalStop,new String(ch, start, length));
+		    } else if (inName) {
+		    	Log.d("  DebugCode-TravelStage inName " + inDepartureStop + " " + inArrivalStop,new String(ch, start, length));
 		    } else if (inDepartureTime) {
 		    	Log.d("  DebugCode-TravelStage DepartureTime",new String(ch, start, length));
-		    } else if (inActualTime) {
-		    	Log.d("  DebugCode-TravelStage ActualTime",new String(ch, start, length));
 		    } else if (inArrivalTime) {
 		    	Log.d("  DebugCode-TravelStage ArrivalTime",new String(ch, start, length));
 		    } else if (inLineID) {
