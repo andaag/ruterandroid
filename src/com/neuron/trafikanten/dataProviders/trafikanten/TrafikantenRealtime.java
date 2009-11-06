@@ -151,11 +151,8 @@ class RealtimeHandler extends DefaultHandler {
 
 	private boolean inStopVisitNote = false;
 	
-	/*
-	 * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
-	 */
-	private String tmpData;
-	private boolean endData;
+	//Temporary variable for character data:
+	private StringBuffer buffer = new StringBuffer(); // collects text
 	
 	public RealtimeHandler(Handler handler)
 	{
@@ -204,7 +201,6 @@ class RealtimeHandler extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName, 
 	              String qName, Attributes atts) throws SAXException {
-		tmpData = "";
 	    if (!inMonitoredStopVisit) {
 	        if (localName.equals("MonitoredStopVisit")) {
 	            inMonitoredStopVisit = true;
@@ -237,14 +233,6 @@ class RealtimeHandler extends DefaultHandler {
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 	    if (!inMonitoredStopVisit) return;
-	    /*
-	     * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
-	     * We collect all data until endElement is called, and then pass that again to characters() manually. 
-	     */
-    	if (tmpData.length() > 0) {
-        	endData = true;
-    		characters(tmpData.toCharArray(), 0, tmpData.length());
-    	}
 	    
 	    if (inMonitoredStopVisit && localName.equals("MonitoredStopVisit")) {
 	        /*
@@ -255,62 +243,46 @@ class RealtimeHandler extends DefaultHandler {
 	    } else { 
 	    	if (inPublishedLineName && localName.equals("PublishedLineName")) {
 		        inPublishedLineName = false;
+		        data.line = buffer.toString();
 		    } else if (inDestinationName && localName.equals("DestinationName")) {
 		        inDestinationName = false;
+		        data.destination = buffer.toString();
 		    } else if (inMonitored && localName.equals("Monitored")) {
-		        inMonitored = false;
+		        final String monitored = buffer.toString();
+		        if (monitored.equalsIgnoreCase("true") || monitored.equals("1")) {
+		        	data.realtime = true;
+		        } else {
+		        	data.realtime = false;
+		        }
 		    } else if (inAimedArrivalTime && localName.equals("AimedArrivalTime")) {
 		        inAimedArrivalTime = false;
+		        data.aimedArrival = parseDateTime(buffer.toString());
 		    } else if (inExpectedArrivalTime && localName.equals("ExpectedArrivalTime")) {
 		        inExpectedArrivalTime = false;
+		        data.expectedArrival = parseDateTime(buffer.toString());
 		    } else if (inAimedDepartureTime && localName.equals("AimedDepartureTime")) {
 		        inAimedDepartureTime = false;
+		        data.aimedDeparture = parseDateTime(buffer.toString());
 		    } else if (inExpectedDepartureTime && localName.equals("ExpectedDepartureTime")) {
 		        inExpectedDepartureTime = false;
+		        data.expectedDeparture = parseDateTime(buffer.toString());
 		    } else if (inDeparturePlatformName && localName.equals("DeparturePlatformName")) {
 		        inDeparturePlatformName = false;
+		        data.departurePlatform = buffer.toString();
 		    } else if (inStopVisitNote && localName.equals("StopVisitNote")) {
 		        inStopVisitNote = false;
+		        data.extra = buffer.toString();
 		    }
 	    }
+		buffer.setLength(0);
 	}
 	
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException { 
-	    if (!inMonitoredStopVisit) return;
-	    /*
-	     * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
-	     * Until endElemtent is called we only collect the data.
-	     */
-    	if (!endData) {
-    		tmpData = tmpData + new String(ch, start, length);
-    		return;
-    	}
-    	endData = false;
-	    
-	    if (inPublishedLineName) {
-	        data.line = new String(ch, start, length);
-	    } else if (inDestinationName) {
-	        data.destination = new String(ch, start, length);
-	    } else if (inMonitored) {
-	        final String monitored = new String(ch, start, length);
-	        if (monitored.equalsIgnoreCase("true") || monitored.equals("1")) {
-	        	data.realtime = true;
-	        } else {
-	        	data.realtime = false;
-	        }
-	    } else if (inAimedArrivalTime) {
-	    	data.aimedArrival = parseDateTime(new String(ch, start, length));
-	    } else if (inExpectedArrivalTime) {
-	    	data.expectedArrival = parseDateTime(new String(ch, start, length));
-	    } else if (inAimedDepartureTime) {
-	    	data.aimedDeparture = parseDateTime(new String(ch, start, length));
-	    } else if (inExpectedDepartureTime) {
-	    	data.expectedDeparture = parseDateTime(new String(ch, start, length));
-	    } else if (inDeparturePlatformName) {
-	        data.departurePlatform = new String(ch, start, length);
-	    } else if (inStopVisitNote) {
-	    	data.extra = new String(ch, start, length);
+	    if (inMonitoredStopVisit || inPublishedLineName || inDestinationName ||
+	    		inMonitored || inAimedArrivalTime || inExpectedArrivalTime || inAimedDepartureTime ||
+	    		inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
+	    	buffer.append(ch,start,length);
 	    }
 	}
 }
