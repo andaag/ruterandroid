@@ -19,12 +19,10 @@
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.InputStream;
-import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.xml.parsers.SAXParser;
@@ -40,6 +38,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
@@ -164,7 +163,7 @@ class RouteHandler extends DefaultHandler {
 	private RouteData travelStage; // temporary only, these are moved to travelStageList
 
 	
-	private final static DateFormat timeParser = new SimpleDateFormat("kk:mm");
+	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
 
 	/*
 	 * Temporary variables for parsing. 
@@ -173,6 +172,7 @@ class RouteHandler extends DefaultHandler {
 	private boolean inTravelStage = false;
 	private boolean inDepartureStop = false;
 	private boolean inArrivalStop = false;
+	private boolean inActualStop = false;
 	private boolean inDepartureTime = false;
 	private boolean inArrivalTime = false;
 	private boolean inLineName = false;
@@ -207,34 +207,16 @@ class RouteHandler extends DefaultHandler {
 	}
 	
 	/*
-	 * Parse the time string returned by trafikanten's route data as a Date.TimeInMillis
+	 * Parse DateTime and convert ParseException to SAXException
 	 */
-	private long parseTime(String time) {
+	private long parseDateTime(String dateTime) throws SAXException {
 		try {
-			/*
-			 * Parse time, and if time is 00:30 and last time was 23:30 we can increase a day.
-			 */
-			Date parsedDate = timeParser.parse(time);
-			
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(TrafikantenRouteThread.routeData.departure);
-			calendar.set(Calendar.HOUR_OF_DAY, parsedDate.getHours());
-			calendar.set(Calendar.MINUTE, parsedDate.getMinutes());
-
-			if (calendar.getTimeInMillis() < searchDate) {
-				// parsedDate is before lastDate, this means a new day has dawned.
-				calendar.add(Calendar.DAY_OF_YEAR, 1);
-			}
-			return calendar.getTimeInMillis();
+			return dateFormater.parse(dateTime).getTime();
 		} catch (ParseException e) {
-			final Message msg = handler.obtainMessage(IRouteProvider.MESSAGE_EXCEPTION);
-			final Bundle bundle = new Bundle();
-			bundle.putString(IRouteProvider.KEY_EXCEPTION, e.toString());
-			msg.setData(bundle);
-			handler.sendMessage(msg);
+			throw new SAXException(e);
 		}
-		return 0;
 	}
+
 	
 	@Override
 	public void startElement(String namespaceURI, String localName, 
@@ -263,6 +245,7 @@ class RouteHandler extends DefaultHandler {
 		    	/*
 		    	 * We're in a travel stage
 		    	 */
+		    	if (inActualStop) return;
 		    	if (inDepartureStop || inArrivalStop) {
 		    		/*
 		    		 * We're parsing stop data.
@@ -288,6 +271,8 @@ class RouteHandler extends DefaultHandler {
 			        inTransportation = true;
 			    } else if (localName.equals("WaitingTime")) {
 			        inWaitingTime = true;
+			    } else if (localName.equals("inActualStop")) {
+			    	inActualStop = false;
 			    }
 		    }
 		}
@@ -295,7 +280,7 @@ class RouteHandler extends DefaultHandler {
 
 
 	@Override
-	public void endElement(String namespaceURI, String localName, String qName) {
+	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 		if (!inTravelProposal) return;
 		
 		if (localName.equals("TravelProposal")) {
@@ -317,7 +302,11 @@ class RouteHandler extends DefaultHandler {
 				/*
 				 * Check if we're parsing stop data
 				 */
-		    	if (inDepartureStop || inArrivalStop) {
+				if (inActualStop) {
+					if (localName.equals("ActualStop")) {
+						inActualStop = false;
+					}
+				} else if (inDepartureStop || inArrivalStop) {
 		    		/*
 		    		 * We're parsing stop data.
 		    		 */
@@ -349,13 +338,17 @@ class RouteHandler extends DefaultHandler {
 						 * +1 travel stage, add it to the travelStageList list
 						 */
 						inTravelStage = false;
+						/*Log.d("DEBUG CODE", "Adding travelstage : " + travelStage.line + " " + travelStage.destination + "\n" + 
+								travelStage.departure + " " + travelStage.arrival + " " + travelStage.waitTime);*/
 						travelProposal.travelStageList.add(travelStage);
 					} else if (inDepartureTime && localName.equals("DepartureTime")) {
 					    inDepartureTime = false;
-				    	travelStage.departure = parseTime(buffer.toString());
+					    if (buffer.length() > 0)
+					    	travelStage.departure = parseDateTime(buffer.toString());
 					} else if (inArrivalTime && localName.equals("ArrivalTime")) {
 					    inArrivalTime = false;
-				    	travelStage.arrival = parseTime(buffer.toString());
+					    if (buffer.length() > 0)
+					    	travelStage.arrival = parseDateTime(buffer.toString());
 					} else if (inLineName && localName.equals("LineName")) {
 					    inLineName = false;
 				    	travelStage.line = buffer.toString();
@@ -388,16 +381,14 @@ class RouteHandler extends DefaultHandler {
 				    	/*
 				    	 * Parse time and add wait time in minutes to route data
 				    	 */
-						try {
-							Date parsedDate = timeParser.parse(buffer.toString());
-							travelStage.waitTime = parsedDate.getMinutes() + (parsedDate.getHours() * 60);
-						} catch (ParseException e) {
-							final Message msg = handler.obtainMessage(IRouteProvider.MESSAGE_EXCEPTION);
-							final Bundle bundle = new Bundle();
-							bundle.putString(IRouteProvider.KEY_EXCEPTION, e.toString());
-							msg.setData(bundle);
-							handler.sendMessage(msg);
-						}
+					    if (buffer.length() > 0) {
+							try {
+								Date parsedDate = dateFormater.parse(buffer.toString());
+								travelStage.waitTime = parsedDate.getMinutes() + (parsedDate.getHours() * 60);
+							} catch (ParseException e) {
+								throw new SAXException(e);
+							}
+					}
 					}
 		    	}
 			}

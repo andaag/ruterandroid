@@ -50,7 +50,7 @@ def testRoute():
        <GetTravelsAfter xmlns="http://www.trafikanten.no/">
         <from>2330160</from>
         <to>3012110</to>
-        <departureTime>2009-11-05T21:35:00</departureTime>
+        <departureTime>2009-11-07T17:07:00</departureTime>
        </GetTravelsAfter>
       </soap12:Body>
     </soap12:Envelope>
@@ -59,5 +59,5 @@ def testRoute():
     
 
 
-#testRoute()
-testSearch()
+testRoute()
+#testSearch()

@@ -188,7 +188,6 @@ class RealtimeHandler extends DefaultHandler {
 	
 	/*
 	 * Parse DateTime and convert ParseException to SAXException
-	 * TODO FUTURE : Parse DateTime and convert ParseException to SAXException, Should be a better way of doing this?
 	 */
 	private long parseDateTime(String dateTime) throws SAXException {
 		try {

@@ -31,13 +31,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.IGenericProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
@@ -183,14 +181,12 @@ class OverviewRouteAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.route_overview_list, null);
 			
 			holder = new ViewHolder();
-			holder.symbol = (ImageView) convertView.findViewById(R.id.symbol);
-			holder.line = (TextView) convertView.findViewById(R.id.line);
-			holder.transportDestination = (TextView) convertView.findViewById(R.id.transportDestination);
-			holder.from = (TextView) convertView.findViewById(R.id.from);
-			holder.fromTime = (TextView) convertView.findViewById(R.id.fromTime);
-			holder.to = (TextView) convertView.findViewById(R.id.to);
-			holder.toTime = (TextView) convertView.findViewById(R.id.toTime);
-			holder.waittime = (TextView) convertView.findViewById(R.id.waittime);
+			holder.departure = (TextView) convertView.findViewById(R.id.departure);
+			holder.arrival = (TextView) convertView.findViewById(R.id.arrival);
+			holder.travelTime = (TextView) convertView.findViewById(R.id.traveltime);
+			holder.switches = (TextView) convertView.findViewById(R.id.switches);
+			holder.routeInfo = (TextView) convertView.findViewById(R.id.routeInfo);
+
 			convertView.setTag(holder);
 		} else {
 			/*
@@ -202,44 +198,42 @@ class OverviewRouteAdapter extends BaseAdapter {
 		/*
 		 * Render data to view.
 		 */
-		//final RouteData routeData = (RouteData)items.get(pos); // TODO : deal with this
-		final RouteData routeData = new RouteData();
-		
-		if (routeData.transportType == IRouteProvider.TRANSPORT_WALK && routeData.destination == null) {
-			holder.transportDestination.setText(R.string.walk);
-		} else {
-			holder.transportDestination.setText(routeData.destination);
+		final RouteProposal routeProposal = items.get(pos);
+		long departure = 0;
+		long arrival = 0;
+		int switches = 0;
+		StringBuffer routeInfo = new StringBuffer();
+		for(RouteData routeData : routeProposal.travelStageList) {
+			arrival = routeData.arrival;
+			if (departure == 0)
+				departure = routeData.departure;
+			if (routeData.transportType != IRouteProvider.TRANSPORT_WALK)
+				switches++;
+			
+			if (routeInfo.length() > 0)
+				routeInfo.append(",");
+			routeInfo.append("X (" + ((arrival - departure) / 1000) + "m)");
 		}
-		holder.line.setText(routeData.line);
-				
-		holder.from.setText(routeData.fromStation.stopName);
-		holder.fromTime.setText(HelperFunctions.hourFormater.format(routeData.departure));
 		
-		holder.to.setText(routeData.toStation.stopName);
-		holder.toTime.setText(HelperFunctions.hourFormater.format(routeData.arrival));
 		
-		/*
-		 * Setup symbol.
-		 */
-		holder.symbol.setVisibility(View.GONE);
-		final int symbolImage = DataProviderFactory.getImageResource(routeData.transportType);
-		if (symbolImage > 0) {
-			holder.symbol.setVisibility(View.VISIBLE);
-			holder.symbol.setImageResource(symbolImage);
-		} else {
-			holder.symbol.setVisibility(View.GONE);
-		}
+		holder.departure.setText(HelperFunctions.hourFormater.format(departure));
+		holder.arrival.setText(HelperFunctions.hourFormater.format(arrival));
+		holder.travelTime.setText(HelperFunctions.hourFormater.format(arrival - departure));
+		holder.switches.setText(new Integer(switches).toString());
+		holder.routeInfo.setText(routeInfo);		
+		
+		
 		
 		/*
 		 * Setup waittime
 		 */
-		if (routeData.waitTime > 0) {
+		/*if (routeData.waitTime > 0) {
 			holder.waittime.setText("" + context.getText(R.string.waitTime) + " " +
 					HelperFunctions.renderAccurate(routeData.waitTime * (HelperFunctions.MINUTE)));
 			holder.waittime.setVisibility(View.VISIBLE);
 		} else {
 			holder.waittime.setVisibility(View.GONE);
-		}
+		}*/
 		
 		return convertView;
 	}
@@ -248,13 +242,10 @@ class OverviewRouteAdapter extends BaseAdapter {
 	 * Class for caching the view.
 	 */
 	static class ViewHolder {
-		ImageView symbol;
-		TextView line;
-		TextView transportDestination;
-		TextView from;
-		TextView fromTime;
-		TextView to;
-		TextView toTime;
-		TextView waittime;
+		TextView departure;
+		TextView arrival;
+		TextView travelTime;
+		TextView switches;
+		TextView routeInfo;
 	}
 }
