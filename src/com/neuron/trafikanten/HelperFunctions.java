@@ -70,24 +70,23 @@ public class HelperFunctions {
      * Replace % with arguments, simplified version of http://www.mail-archive.com/android-developers@googlegroups.com/msg02846.html
      */
 	public static String mergeXmlArgument(Resources resources, int rId, String []args) throws IOException {
-		String xml = "";
 		int currentArgIndex = 0;
-		int noArgs = args.length;
         InputStream xmlStream = resources.openRawResource( rId );
+        StringBuffer xml = new StringBuffer(xmlStream.available() + 100);
         
 		while ( true ) {
-			int b = xmlStream.read();
+			final int b = xmlStream.read();
 			if (b < 1) break; // EOF
 			
-			if ( ( char )b == '%' ) { // substitute next args[]
-				xml += args[ currentArgIndex ];
-				if ( currentArgIndex < noArgs - 1 ) currentArgIndex++;
+			if ( (char)b == '%' ) { // substitute next args[]
+				xml.append(args[currentArgIndex]);
+				currentArgIndex++;
 			}
-			else xml += String.valueOf( ( char )b );
+			else xml.append( (char)b);
 		} 
 		xmlStream.close();
 
-		return( xml );
+		return(xml.toString());
 	}
 	
 	/*
