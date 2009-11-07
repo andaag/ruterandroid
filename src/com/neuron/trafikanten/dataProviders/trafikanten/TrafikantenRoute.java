@@ -186,15 +186,9 @@ class RouteHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 
-	/*
-	 * Date object used to check if we should increase day.
-	 */
-	private long searchDate;
-	
 	public RouteHandler(Handler handler) {
 		travelProposalList = new ArrayList<RouteProposal>();
 		this.handler = handler;
-		searchDate = TrafikantenRouteThread.routeData.departure;
 	}
 	
 	/*

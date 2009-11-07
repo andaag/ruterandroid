@@ -18,6 +18,8 @@
 
 package com.neuron.trafikanten.dataSets;
 
+import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -33,7 +35,8 @@ public class NotificationData  implements Parcelable {
 	/*
 	 * Route notification:
 	 */
-	public RouteData routeData;
+	public ArrayList<RouteProposal> routeProposalList;
+	public int proposalPosition;
 	public long routeDeparture;
 	
 	/*
@@ -50,8 +53,9 @@ public class NotificationData  implements Parcelable {
 		this.with = with;
 	}
 	
-	public NotificationData(RouteData routeData, long departure, long notifyTime, String with) {
-		this.routeData = routeData;
+	public NotificationData(ArrayList<RouteProposal> routeProposalList, int proposalPosition, long departure, long notifyTime, String with) {
+		this.routeProposalList = routeProposalList;
+		this.proposalPosition = proposalPosition;
 		routeDeparture = departure;
 		this.notifyTime = notifyTime;
 		this.with = with;
@@ -64,7 +68,7 @@ public class NotificationData  implements Parcelable {
 		return departureInfo != null ? departureInfo.expectedDeparture : routeDeparture;
 	}
 	public String getStopName() {
-		return station != null ? station.stopName : routeData.fromStation.stopName;
+		return station != null ? station.stopName : routeProposalList.get(proposalPosition).travelStageList.get(0).fromStation.stopName;
 	}
 	
 	/*
@@ -76,12 +80,14 @@ public class NotificationData  implements Parcelable {
 	/*
 	 * Function for reading the parcel
 	 */
+	@SuppressWarnings("unchecked")
 	public NotificationData(Parcel in) {
 		notifyTime = in.readLong();
 		with = in.readString();
 		
 		routeDeparture = in.readLong();
-		routeData = in.readParcelable(RouteData.class.getClassLoader());
+		routeProposalList = in.readArrayList(RouteProposal.class.getClassLoader());
+		proposalPosition = in.readInt();
 		
 		station = in.readParcelable(SearchStationData.class.getClassLoader());
 		departureInfo = in.readParcelable(RealtimeData.class.getClassLoader());
@@ -97,7 +103,8 @@ public class NotificationData  implements Parcelable {
 		out.writeString(with);
 		
 		out.writeLong(routeDeparture);
-		out.writeParcelable(routeData, 0);
+		out.writeTypedList(routeProposalList);
+		out.writeInt(proposalPosition);
 		
 		out.writeParcelable(station, 0);
 		out.writeParcelable(departureInfo, 0);

@@ -40,7 +40,6 @@ import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
-import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.tasks.GenericTask;
@@ -102,8 +101,7 @@ public class OverviewRouteView extends ListActivity {
 	 */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		RouteProposal routeProposal = (RouteProposal) routeList.getItem(position);
-		DetailedRouteView.ShowRoute(this, routeProposal);
+		DetailedRouteView.ShowRoute(this, routeList.getList(), position);
 	}
 	
 	/*

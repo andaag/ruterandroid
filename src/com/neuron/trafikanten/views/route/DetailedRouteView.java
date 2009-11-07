@@ -50,14 +50,13 @@ import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.IGenericProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.notification.NotificationDialog;
 import com.neuron.trafikanten.tasks.GenericTask;
-import com.neuron.trafikanten.tasks.SearchRouteTask;
 
 // TODO : rename detailed_route_* to route_detailed_*
 
 public class DetailedRouteView extends ListActivity {
-	private final static int MAX_ROUTELIST = 50;
 	private final static String TAG = "Trafikanten-DetailedRouteView";
 	private RouteAdapter routeList;
 	private ViewHolder viewHolder = new ViewHolder();
@@ -76,21 +75,19 @@ public class DetailedRouteView extends ListActivity {
 	/*
 	 * Saved instance data
 	 */
-	private RouteData routeData;
+	private ArrayList<RouteProposal> routeProposalList;
+	private int proposalPosition;
+
 	/*
 	 * this is a list of departure dates, it's used to store next/previous button clicks.
 	 * See the button onClick listeners for how this works.
 	 */
-	private final static String KEY_DEPARTURESDATES = "departuredates";
-	private final static String KEY_DEPARTURESDATESPOS = "departuredatespos";
-	// TODO IMPORTANT : MAX_ROUTELIST shouldn't be needed anymore, it should be able to pull the data from OverviewRouteView for next/previous.
-	private long departureDates[] = new long[MAX_ROUTELIST + 1];
-	private int departureDatesPos = 0;
-	private int lastDepartureDatesPos = 0; // this is so back button works logically while loading.
+	public final static String KEY_PROPOSALPOSITION = "proposalPosition";
 
-	public static void ShowRoute(Activity activity, RouteData routeData) {
+	public static void ShowRoute(Activity activity, ArrayList<RouteProposal> routeProposalList, int proposalPosition) {
 		Intent intent = new Intent(activity, DetailedRouteView.class);
-		intent.putExtra(RouteData.PARCELABLE, routeData);
+		intent.putExtra(RouteProposal.PARCELABLE, routeProposalList);
+		intent.putExtra(KEY_PROPOSALPOSITION, proposalPosition);
 		activity.startActivity(intent);
 	}
 	
@@ -116,8 +113,7 @@ public class DetailedRouteView extends ListActivity {
 				/*
 				 * Search for previous departure date.
 				 */
-				lastDepartureDatesPos = departureDatesPos;
-				departureDatesPos--;
+				proposalPosition--;
 				refreshButtons();
 				load();
 			}
@@ -132,9 +128,7 @@ public class DetailedRouteView extends ListActivity {
 				/*
 				 * Simply set departureDate to our first arrival time + 1 minute, that way the search will skip that route and take the next one.
 				 */
-				lastDepartureDatesPos = departureDatesPos;
-				departureDatesPos++;
-				departureDates[departureDatesPos] = (routeList.getList().get(0).departure + HelperFunctions.MINUTE);
+				proposalPosition--;
 				refreshButtons();
 				load();
 			}
@@ -143,19 +137,10 @@ public class DetailedRouteView extends ListActivity {
 		/*
 		 * Load instance state
 		 */
-		if (savedInstanceState == null) {
-			routeData = getIntent().getParcelableExtra(RouteData.PARCELABLE);
-			departureDates[departureDatesPos] = routeData.departure;
-			load();
-		} else {
-			routeData = savedInstanceState.getParcelable(RouteData.PARCELABLE);
-			final ArrayList<RouteData> list = savedInstanceState.getParcelableArrayList(RouteAdapter.KEY_ROUTELIST);
-			routeList.setList(list);
-			setListAdapter(routeList);
-			departureDates = savedInstanceState.getLongArray(KEY_DEPARTURESDATES);
-			departureDatesPos = savedInstanceState.getInt(KEY_DEPARTURESDATESPOS);
-			refreshButtons();
-		}
+		final Bundle bundle = (savedInstanceState != null) ? savedInstanceState : getIntent().getExtras();
+		routeProposalList = bundle.getParcelableArrayList(RouteProposal.PARCELABLE);
+		proposalPosition = bundle.getInt(KEY_PROPOSALPOSITION);
+		load();
 		registerForContextMenu(getListView());
 	}
 	
@@ -163,16 +148,19 @@ public class DetailedRouteView extends ListActivity {
 	 * Refresh button.isEnabled
 	 */
 	private void refreshButtons() {
-		viewHolder.previousButton.setEnabled(departureDatesPos != 0);
-		viewHolder.nextButton.setEnabled((departureDatesPos < MAX_ROUTELIST) && routeList.getList().size() > 0);
+		
+		viewHolder.previousButton.setEnabled(proposalPosition != 0 && routeProposalList.size() > 1);
+		viewHolder.nextButton.setEnabled(proposalPosition < routeProposalList.size() - 1);
 	}
 	
 	/*
 	 * Load station data
 	 */
 	private void load() {
-		routeData.departure = departureDates[departureDatesPos];
-		SearchRouteTask.StartTask(this, routeData);
+		final ArrayList<RouteData> list = routeProposalList.get(proposalPosition).travelStageList;
+		routeList.setList(list);
+		setListAdapter(routeList);
+		refreshButtons();
 	}
 	
 	/*
@@ -260,17 +248,6 @@ public class DetailedRouteView extends ListActivity {
 	 */
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if (resultCode == RESULT_CANCELED && requestCode == SearchRouteTask.TASK_ROUTE) {
-    		if (departureDatesPos == 0 && routeList.getCount() == 0) {
-	    		/*
-	    		 * Back while loading = go back to select station view.
-	    		 */
-	    		finish();
-	    		return;
-    		} else {
-    			departureDatesPos = lastDepartureDatesPos;
-    		}
-    	}
 		if (resultCode == RESULT_OK) {
 			final Message msg = data.getParcelableExtra(GenericTask.KEY_MESSAGE);
 			onMessage(msg);
@@ -307,7 +284,7 @@ public class DetailedRouteView extends ListActivity {
 		 */
 		final long notifyDeparture = notifyRouteData.departure;
 		final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
-		NotificationDialog.setRouteData(routeData, notifyDeparture, notifyWith);
+		NotificationDialog.setRouteData(routeProposalList, proposalPosition, notifyDeparture, notifyWith);
 		super.onPrepareDialog(id, dialog);
 	}
     
@@ -360,10 +337,8 @@ public class DetailedRouteView extends ListActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putParcelable(RouteData.PARCELABLE, routeData);
-		outState.putParcelableArrayList(RouteAdapter.KEY_ROUTELIST, routeList.getList());
-		outState.putLongArray(KEY_DEPARTURESDATES, departureDates);
-		outState.putInt(KEY_DEPARTURESDATESPOS, departureDatesPos);
+		outState.putParcelableArrayList(RouteProposal.PARCELABLE, routeProposalList);
+		outState.putInt(KEY_PROPOSALPOSITION, proposalPosition);
 	}
 	
 	/*
@@ -378,7 +353,6 @@ public class DetailedRouteView extends ListActivity {
 
 
 class RouteAdapter extends BaseAdapter {
-	public static final String KEY_ROUTELIST = "routelist";
 	private LayoutInflater inflater;
 	private ArrayList<RouteData> items = new ArrayList<RouteData>();
 	private Context context;

@@ -18,13 +18,8 @@
 
 package com.neuron.trafikanten.notification;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-
-import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.dataSets.NotificationData;
-import com.neuron.trafikanten.dataSets.RealtimeData;
-import com.neuron.trafikanten.dataSets.RouteData;
-import com.neuron.trafikanten.dataSets.SearchStationData;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -35,6 +30,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TimePicker;
+
+import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.dataSets.NotificationData;
+import com.neuron.trafikanten.dataSets.RealtimeData;
+import com.neuron.trafikanten.dataSets.RouteProposal;
+import com.neuron.trafikanten.dataSets.SearchStationData;
 
 /*
  * Notification dialog, make sure to set realtimeData and station onPrepareDialog
@@ -51,7 +52,8 @@ public class NotificationDialog {
 	/*
 	 * for route:
 	 */
-	private static RouteData sRouteData;
+	private static ArrayList<RouteProposal> sRouteProposalList;
+	private static int sProposalPosition;
 	private static long sRouteDeparture;
 	
 	/*
@@ -64,11 +66,12 @@ public class NotificationDialog {
 		sStation = station;
 		sWith = with;
 		
-		sRouteData = null;
+		sRouteProposalList = null;
 	}
 	
-	public static void setRouteData(RouteData routeData, long departure, String with) {
-		sRouteData = routeData;
+	public static void setRouteData(ArrayList<RouteProposal> routeProposalList, int proposalPosition, long departure, String with) {
+		sRouteProposalList = routeProposalList;
+		sProposalPosition = proposalPosition;
 		sRouteDeparture = departure;
 		sWith = with;
 		
@@ -109,7 +112,7 @@ public class NotificationDialog {
 					/*
 					 * Route data
 					 */
-					notificationData = new NotificationData(sRouteData, sRouteDeparture, calendar.getTimeInMillis(), sWith);
+					notificationData = new NotificationData(sRouteProposalList, sProposalPosition, sRouteDeparture, calendar.getTimeInMillis(), sWith);
 				}
 				bundle.putParcelable(NotificationData.PARCELABLE, notificationData);
 				
@@ -123,6 +126,8 @@ public class NotificationDialog {
 	            AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 	            alarm.set(AlarmManager.RTC_WAKEUP, notificationData.notifyTime, notificationIntent);
 				
+	            sRealtimeData = null;
+	            sRouteProposalList = null;
 			}
     		
     	}, 0, 10, true);

@@ -1,5 +1,7 @@
 package com.neuron.trafikanten.notification;
 
+import java.util.ArrayList;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,7 +13,7 @@ import android.util.Log;
 
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.NotificationData;
-import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 import com.neuron.trafikanten.views.realtime.RealtimeView;
 import com.neuron.trafikanten.views.route.DetailedRouteView;
@@ -49,9 +51,12 @@ public class NotificationIntent extends BroadcastReceiver {
 			/*
 			 * Route popup
 			 */
-			final RouteData routeData = notificationData.routeData;
+			final ArrayList<RouteProposal> routeProposalList = notificationData.routeProposalList;
+			final int proposalPosition = notificationData.proposalPosition;
 			intent = new Intent(context, DetailedRouteView.class);
-			bundle.putParcelable(RouteData.PARCELABLE, routeData);
+			intent.putExtra(RouteProposal.PARCELABLE, routeProposalList);
+			intent.putExtra(DetailedRouteView.KEY_PROPOSALPOSITION, proposalPosition);
+
 	        intent.putExtras(bundle);
 		}
     		
