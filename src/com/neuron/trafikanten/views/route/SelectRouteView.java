@@ -227,7 +227,7 @@ public class SelectRouteView extends Activity {
         }
 		
 		
-		DetailedRouteView.ShowRoute(this, routeData);
+		OverviewRouteView.ShowRoute(this, routeData);
 	}
 	
 	/*

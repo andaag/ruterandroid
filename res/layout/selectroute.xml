@@ -1,112 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 
- <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
- 			android:layout_width="fill_parent" 
- 			android:layout_height="fill_parent" >
-
-<SlidingDrawer
-     android:id="@+id/drawer"
-     android:layout_width="fill_parent"
-     android:layout_height="fill_parent"
-
-     android:handle="@+id/handle"
-     android:content="@+id/content">
-
-     <LinearLayout
-         android:id="@id/content"
-         android:layout_width="fill_parent"
-         android:layout_height="fill_parent">
-         
-    
-	    <Spinner android:id="@+id/departureDay"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:drawSelectorOnTop="true"
-	    />
-         
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@id/handle"
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:focusable="true"
-        >
-     	<ImageButton android:id="@+id/pickTimeButton"
-		        android:layout_width="56dip"
-		        android:layout_height="fill_parent"
-			   android:src="@drawable/ic_tray_expand"/>
-    </LinearLayout>
-
-</SlidingDrawer> 
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="fill_parent"
      android:layout_height="fill_parent">
      
-     
     <Button android:id="@+id/fromButton"
 	   android:layout_width="fill_parent"
 	   android:layout_height="wrap_content"
-        android:padding="3dip"
-        
-        android:text="Travel from"
+        android:text="@string/travelFrom"
         />
-        
-   <Spinner android:id="@+id/fromAreaSpinner"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="30dip"
-    android:layout_below="@+id/fromButton"
-       android:drawSelectorOnTop="true"
-   />
-     
      
     <Button android:id="@+id/toButton"
 	   android:layout_width="fill_parent"
 	   android:layout_height="wrap_content"
-        android:padding="3dip"
-        android:layout_below="@+id/fromAreaSpinner"
+        android:layout_below="@+id/fromButton"
         
-        android:text="Travel to"
+        android:text="@string/travelTo"
         />
         
-   <Spinner android:id="@+id/toAreaSpinner"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="30dip"
-    android:layout_below="@+id/toButton"
-       android:drawSelectorOnTop="true"
-   />
-
-	
     <TimePicker android:id="@+id/timePicker"
-        android:layout_height="128dip"
+        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_below="@+id/toAreaSpinner"
+        android:layout_below="@+id/toButton"
         android:layout_alignParentRight="true"/>
+        
+    <Button android:id="@+id/travelAtArriveBefore"
+	   android:layout_width="wrap_content"
+	   android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/timePicker"
+        android:layout_alignTop="@+id/timePicker"
+        android:layout_alignParentLeft="true"
+        
+        android:text="@string/travelAt"
+        />
+
+    <Spinner android:id="@+id/departureDay"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+        android:layout_toLeftOf="@+id/timePicker"
+        android:layout_below="@+id/travelAtArriveBefore"
+        android:layout_alignParentLeft="true"
+	    />
+	    
+    <CheckBox android:id="@+id/preferDirect"
+	   android:layout_width="wrap_content"
+	   android:layout_height="wrap_content"
+        android:layout_below="@+id/timePicker"
+        android:layout_alignParentLeft="true"
+        
+        android:text="@string/preferDirect"
+        />
+        
+    <CheckBox android:id="@+id/avoidWalking"
+	   android:layout_width="wrap_content"
+	   android:layout_height="wrap_content"
+        android:layout_below="@+id/timePicker"
+        android:paddingRight="5dip"
+        android:layout_alignParentRight="true"
+        
+        android:text="@string/avoidWalking"
+        />
+	    
 	
-    <RadioGroup android:id="@+id/travelRadio"
+
+
+    <TextView android:id="@+id/changeMarginText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:checkedButton="@+id/travelAt"
-        android:layout_below="@+id/toAreaSpinner">
-        <RadioButton
-            android:text="Travel At"
-            android:id="@+id/travelAt" />
-        <RadioButton
-            android:text="Arrive Before"
-            android:id="@+id/arriveBefore" />
-    </RadioGroup>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingRight="3dip"
+        android:paddingLeft="3dip"
+        android:layout_below="@+id/preferDirect"
+        android:text="@string/changeMargin"/>
 
-    
+    <Spinner android:id="@+id/changeMargin"
+	        android:layout_width="fill_parent"
+	        android:layout_height="40dip"
+	        android:drawSelectorOnTop="true"
+        android:layout_toRightOf="@+id/changeMarginText"
+        android:layout_alignTop="@+id/changeMarginText"
+	    />
 
 
-    
- 
     <Button android:id="@+id/searchButton"
      android:layout_width="fill_parent"
      android:layout_height="wrap_content"
@@ -115,10 +91,5 @@
         android:text="@string/search"
         android:layout_alignParentBottom="true"
          />
-	
-         
 
-
-     
 </RelativeLayout>
-</FrameLayout>

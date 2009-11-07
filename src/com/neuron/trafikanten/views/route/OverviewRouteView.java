@@ -45,7 +45,6 @@ import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.SearchRouteTask;
-import com.neuron.trafikanten.views.route.RouteAdapter.ViewHolder;
 
 /*
  * This class shows a route selector list, when multiple travelproposals are sent.
@@ -203,7 +202,8 @@ class OverviewRouteAdapter extends BaseAdapter {
 		/*
 		 * Render data to view.
 		 */
-		final RouteData routeData = items.get(pos);
+		//final RouteData routeData = (RouteData)items.get(pos); // TODO : deal with this
+		final RouteData routeData = new RouteData();
 		
 		if (routeData.transportType == IRouteProvider.TRANSPORT_WALK && routeData.destination == null) {
 			holder.transportDestination.setText(R.string.walk);

@@ -8,10 +8,16 @@
     <string name="now">Now</string>
     
     <!-- SelectRoute -->
-    <string name="from">From : </string>
-    <string name="to">To : </string>
     <string name="travelFrom">Travel From</string>
     <string name="travelTo">Travel To</string>
+    
+    <string name="travelAt">Travel at</string>
+    <string name="ArriveBefore">Arrive before</string>
+    
+    <string name="preferDirect">Prefer direct</string>
+    <string name="avoidWalking">Avoid walking</string>
+    <string name="changeMargin">Change margin : </string>
+    
     <string name="departingAt">Departing at : </string>
     <string name="search">Search</string>
     
