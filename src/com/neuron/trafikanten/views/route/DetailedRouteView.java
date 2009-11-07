@@ -102,7 +102,6 @@ public class DetailedRouteView extends ListActivity {
 		viewHolder.previousButton = (ImageButton) findViewById(R.id.prevButton);
 		viewHolder.infoText = (TextView) findViewById(R.id.infoText);
 		viewHolder.nextButton = (ImageButton) findViewById(R.id.nextButton);
-		refreshButtons();
 
 		/*
 		 * Setup onClick handler on previous button
@@ -114,7 +113,6 @@ public class DetailedRouteView extends ListActivity {
 				 * Search for previous departure date.
 				 */
 				proposalPosition--;
-				refreshButtons();
 				load();
 			}
 		});
@@ -129,7 +127,6 @@ public class DetailedRouteView extends ListActivity {
 				 * Simply set departureDate to our first arrival time + 1 minute, that way the search will skip that route and take the next one.
 				 */
 				proposalPosition--;
-				refreshButtons();
 				load();
 			}
 		});
@@ -148,7 +145,6 @@ public class DetailedRouteView extends ListActivity {
 	 * Refresh button.isEnabled
 	 */
 	private void refreshButtons() {
-		
 		viewHolder.previousButton.setEnabled(proposalPosition != 0 && routeProposalList.size() > 1);
 		viewHolder.nextButton.setEnabled(proposalPosition < routeProposalList.size() - 1);
 	}
