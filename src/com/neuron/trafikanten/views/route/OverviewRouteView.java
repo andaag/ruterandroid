@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
+import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.tasks.GenericTask;
@@ -92,6 +94,16 @@ public class OverviewRouteView extends ListActivity {
 	 */
 	private void load() {
 		SearchRouteTask.StartTask(this, routeData);
+	}
+	
+	/*
+	 * Click on a list item
+	 * @see android.app.ListActivity#onListItemClick(android.widget.ListView, android.view.View, int, long)
+	 */
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		RouteProposal routeProposal = (RouteProposal) routeList.getItem(position);
+		DetailedRouteView.ShowRoute(this, routeProposal);
 	}
 	
 	/*

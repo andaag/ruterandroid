@@ -29,7 +29,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 /*
  * Small helper functions used by multiple classes.
