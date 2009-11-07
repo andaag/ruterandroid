@@ -49,7 +49,6 @@ import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.IGenericProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;
-import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.notification.NotificationDialog;
 import com.neuron.trafikanten.tasks.GenericTask;

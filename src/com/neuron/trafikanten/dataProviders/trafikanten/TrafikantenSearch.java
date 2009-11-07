@@ -318,7 +318,7 @@ class SearchHandler extends DefaultHandler {
     @Override
     public void characters(char ch[], int start, int length) {
     	if (ignore) return;
-    	if (inPlace || inX || inY || inID || inName || inDistrict || inType) {
+    	if (inX || inY || inID || inName || inDistrict || inType) {
     		buffer.append(ch, start, length);
     	}
     }

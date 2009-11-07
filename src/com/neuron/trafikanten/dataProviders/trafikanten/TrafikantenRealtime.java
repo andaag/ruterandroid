@@ -278,8 +278,8 @@ class RealtimeHandler extends DefaultHandler {
 	}
 	
 	@Override
-	public void characters(char ch[], int start, int length) throws SAXException { 
-	    if (inMonitoredStopVisit || inPublishedLineName || inDestinationName ||
+	public void characters(char ch[], int start, int length) throws SAXException {
+	    if (inPublishedLineName || inDestinationName ||
 	    		inMonitored || inAimedArrivalTime || inExpectedArrivalTime || inAimedDepartureTime ||
 	    		inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
 	    	buffer.append(ch,start,length);

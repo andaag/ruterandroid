@@ -18,7 +18,6 @@
 
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.FieldPosition;
@@ -41,7 +40,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
@@ -49,9 +47,6 @@ import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.SearchStationData;
-
-import java.text.DateFormat;
-import java.text.FieldPosition;
 
 public class TrafikantenRoute implements IRouteProvider {
 	private Handler handler;
@@ -184,21 +179,16 @@ class RouteHandler extends DefaultHandler {
 	private boolean inArrivalTime = false;
 	private boolean inLineName = false;
 	private boolean inDestination = false;
-	//private boolean inRemarks = false; // TODO : Parse remarks
 	private boolean inTransportation = false;
 	private boolean inWaitingTime = false;
 	
 	// Stop data:
 	private boolean inID = false;
 	private boolean inName = false;
+	
+	//Temporary variable for character data:
+	private StringBuffer buffer = new StringBuffer();
 
-	
-	/*
-	 * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
-	 */
-	private String tmpData;
-	private boolean endData;
-	
 	/*
 	 * Date object used to check if we should increase day.
 	 */
@@ -251,8 +241,6 @@ class RouteHandler extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName, 
 	              String qName, Attributes atts) throws SAXException {
-		//Log.d("-StartElement", localName);
-		tmpData = "";
 		if (!inTravelProposal) {
 			if (localName.equals("TravelProposal")) {
 				inTravelProposal = true;
@@ -272,8 +260,6 @@ class RouteHandler extends DefaultHandler {
 		    		inDepartureTime = true;
 			    } else if (localName.equals("ArrivalTime")) {
 			        inArrivalTime = true;
-			    /*} else if (localName.equals("Remarks")) {
-		    		inRemarks = true;*/
 			    }
 		    } else {
 		    	/*
@@ -300,8 +286,6 @@ class RouteHandler extends DefaultHandler {
 			        inLineName = true;
 			    } else if (localName.equals("Destination")) {
 			        inDestination = true;
-			    /*} else if (localName.equals("Remarks")) {
-			        inRemarks = true;*/
 			    } else if (localName.equals("Transportation")) {
 			        inTransportation = true;
 			    } else if (localName.equals("WaitingTime")) {
@@ -314,18 +298,7 @@ class RouteHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) {
-		//Log.d("-EndElement", localName);
 		if (!inTravelProposal) return;
-		
-	    /*
-	     * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
-	     * We collect all data until endElement is called, and then pass that again to characters() manually. 
-	     */
-    	if (tmpData.length() > 0) {
-        	endData = true;
-    		characters(tmpData.toCharArray(), 0, tmpData.length());
-    	}
-		
 		
 		if (localName.equals("TravelProposal")) {
 			/*
@@ -337,10 +310,10 @@ class RouteHandler extends DefaultHandler {
 			if (!inTravelStage) {
 		        if (inDepartureTime && localName.equals("DepartureTime")) {
 		    		inDepartureTime = false;
+		    		// TODO : Parse this
 			    } else if (inArrivalTime && localName.equals("ArrivalTime")) {
 			        inArrivalTime = false;
-			    /*} else if (inRemarks && localName.equals("Remarks")) {
-		    		inRemarks = false;*/
+			        // TODO : Parse this
 			    }
 			} else {
 				/*
@@ -352,8 +325,18 @@ class RouteHandler extends DefaultHandler {
 		    		 */
 		    		if (inID && localName.equals("ID")) {
 		    			inID = false;
+				    	if (inDepartureStop) {
+				    		travelStage.fromStation.stationId = Integer.parseInt(buffer.toString());
+				    	} else {
+				    		travelStage.toStation.stationId = Integer.parseInt(buffer.toString());
+				    	}
 		    		} else if (inName && localName.equals("Name")) {
 		    			inName = false;
+				    	if (inDepartureStop) {
+				    		travelStage.fromStation.stopName = buffer.toString();
+				    	} else {
+				    		travelStage.toStation.stopName = buffer.toString();
+				    	}
 					} else if (inDepartureStop && localName.equals("DepartureStop")) {
 					    inDepartureStop = false;
 					} else if (inArrivalStop && localName.equals("ArrivalStop")) {
@@ -371,107 +354,64 @@ class RouteHandler extends DefaultHandler {
 						travelProposal.travelStageList.add(travelStage);
 					} else if (inDepartureTime && localName.equals("DepartureTime")) {
 					    inDepartureTime = false;
+				    	travelStage.departure = parseTime(buffer.toString());
 					} else if (inArrivalTime && localName.equals("ArrivalTime")) {
 					    inArrivalTime = false;
+				    	travelStage.arrival = parseTime(buffer.toString());
 					} else if (inLineName && localName.equals("LineName")) {
 					    inLineName = false;
+				    	travelStage.line = buffer.toString();
 					} else if (inDestination && localName.equals("Destination")) {
 					    inDestination = false;
-					/*} else if (inRemarks && localName.equals("Remarks")) {
-					    inRemarks = false;*/
+				    	travelStage.destination = buffer.toString();
 					} else if (inTransportation && localName.equals("Transportation")) {
 					    inTransportation = false;
+				    	final String transportationString = buffer.toString();
+				    	travelStage.transportType = IRouteProvider.TRANSPORT_UNKNOWN;
+				    	if (transportationString.equals("Walking")) {
+				    		travelStage.transportType = IRouteProvider.TRANSPORT_WALK;
+				    	} else if (transportationString.equals("Bus")) {
+				    		travelStage.transportType = IRouteProvider.TRANSPORT_BUS;
+				    	} else if (transportationString.equals("Train")) {
+				    		travelStage.transportType = IRouteProvider.TRANSPORT_TRAIN;
+				    	} else if (transportationString.equals("Tram")) {
+				    		travelStage.transportType = IRouteProvider.TRANSPORT_TRAM;
+				    	} else if (transportationString.equals("Metro")) {
+				    		// TODO : Parse this
+				    	} else if (transportationString.equals("Boat")) {
+				    		// TODO : Parse this
+				    	} else if (transportationString.equals("AirportTrain")) {
+				    		// TODO : Parse this
+				    	} else if (transportationString.equals("AirportBus")) {
+				    		// TODO : Parse this
+				    	}
 					} else if (inWaitingTime && localName.equals("WaitingTime")) {
 					    inWaitingTime = false;
+				    	/*
+				    	 * Parse time and add wait time in minutes to route data
+				    	 */
+						try {
+							Date parsedDate = timeParser.parse(buffer.toString());
+							travelStage.waitTime = parsedDate.getMinutes() + (parsedDate.getHours() * 60);
+						} catch (ParseException e) {
+							final Message msg = handler.obtainMessage(IRouteProvider.MESSAGE_EXCEPTION);
+							final Bundle bundle = new Bundle();
+							bundle.putString(IRouteProvider.KEY_EXCEPTION, e.toString());
+							msg.setData(bundle);
+							handler.sendMessage(msg);
+						}
 					}
 		    	}
 			}
 		}
+		buffer.setLength(0);
 	}
 
 	@Override
 	public void characters(char ch[], int start, int length) {
-		if (!inTravelProposal) return;
-		
-	    /*
-	     * Workaround for bug http://code.google.com/p/android/issues/detail?id=2459
-	     * Until endElemtent is called we only collect the data.
-	     */
-    	if (!endData) {
-    		tmpData = tmpData + new String(ch, start, length);
-    		return;
-    	}
-    	endData = false;
-		
-		if (!inTravelStage) {
-			/*
-			 * In a travel proposal
-			 */
-			if (inDepartureTime) {
-				Log.d("	DebugCode-TravelProposal DepartureTime",new String(ch, start, length));				
-			} else if (inArrivalTime) {
-				Log.d("	DebugCode-TravelProposal ArrivalTime",new String(ch, start, length));
-			/*} else if (inRemarks) {
-				Log.d("	DebugCode-TravelProposal Remarks",new String(ch, start, length));*/
-			}
-		} else {
-			/*
-			 * In a travel stage
-			 */
-		    if (inID) {
-		    	if (inDepartureStop) {
-		    		travelStage.fromStation.stationId = Integer.parseInt(new String(ch, start, length));
-		    	} else {
-		    		travelStage.toStation.stationId = Integer.parseInt(new String(ch, start, length));
-		    	}
-		    } else if (inName) {
-		    	if (inDepartureStop) {
-		    		travelStage.fromStation.stopName = new String(ch, start, length);
-		    	} else {
-		    		travelStage.toStation.stopName = new String(ch, start, length);
-		    	}
-		    } else if (inDepartureTime) {
-		    	travelStage.departure = parseTime(new String(ch, start, length));
-		    } else if (inArrivalTime) {
-		    	travelStage.arrival = parseTime(new String(ch, start, length));	    	
-		    } else if (inLineName) {
-		    	travelStage.line = new String(ch, start, length);
-		    } else if (inDestination) {
-		    	travelStage.destination = new String(ch, start, length);
-		    /*} else if (inRemarks) {
-		    	Log.d("  DebugCode-TravelStage Remarks",new String(ch, start, length));*/
-		    } else if (inTransportation) {
-		    	final String transportationString = new String(ch, start, length);
-		    	travelStage.transportType = IRouteProvider.TRANSPORT_UNKNOWN;
-		    	if (transportationString.equals("Walking")) {
-		    		travelStage.transportType = IRouteProvider.TRANSPORT_WALK;
-		    	} else if (transportationString.equals("Bus")) {
-		    		travelStage.transportType = IRouteProvider.TRANSPORT_BUS;
-		    	} else if (transportationString.equals("Train")) {
-		    		travelStage.transportType = IRouteProvider.TRANSPORT_TRAIN;
-		    	} else if (transportationString.equals("Tram")) {
-		    		travelStage.transportType = IRouteProvider.TRANSPORT_TRAM;
-		    	} else if (transportationString.equals("Metro")) {
-		    	} else if (transportationString.equals("Boat")) {
-		    	} else if (transportationString.equals("AirportTrain")) {
-		    	} else if (transportationString.equals("AirportBus")) {
-		    		
-		    	}
-		    } else if (inWaitingTime) {
-		    	/*
-		    	 * Parse time and add wait time in minutes to route data
-		    	 */
-				try {
-					Date parsedDate = timeParser.parse(new String(ch, start, length));
-					travelStage.waitTime = parsedDate.getMinutes() + (parsedDate.getHours() * 60);
-				} catch (ParseException e) {
-					final Message msg = handler.obtainMessage(IRouteProvider.MESSAGE_EXCEPTION);
-					final Bundle bundle = new Bundle();
-					bundle.putString(IRouteProvider.KEY_EXCEPTION, e.toString());
-					msg.setData(bundle);
-					handler.sendMessage(msg);
-				}
-		    }
+		if (inDepartureTime || inArrivalTime || inID || inName || inDepartureTime || inArrivalTime ||
+				inLineName || inDestination || inTransportation || inWaitingTime) {
+			buffer.append(ch,start,length);
 		}
 	}
 }
