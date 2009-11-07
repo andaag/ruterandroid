@@ -39,9 +39,9 @@ public class RouteProposal implements Parcelable {
 	/*
 	 * Function for reading the parcel
 	 */
-	@SuppressWarnings("unchecked")
 	public RouteProposal(Parcel in) {
-		travelStageList = in.readArrayList(RouteData.class.getClassLoader());
+		travelStageList = new ArrayList<RouteData>();
+		in.readTypedList(travelStageList, RouteData.CREATOR);
 	}
 	
 	/*

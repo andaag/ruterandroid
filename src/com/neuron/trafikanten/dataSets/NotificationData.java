@@ -80,13 +80,13 @@ public class NotificationData  implements Parcelable {
 	/*
 	 * Function for reading the parcel
 	 */
-	@SuppressWarnings("unchecked")
 	public NotificationData(Parcel in) {
 		notifyTime = in.readLong();
 		with = in.readString();
 		
 		routeDeparture = in.readLong();
-		routeProposalList = in.readArrayList(RouteProposal.class.getClassLoader());
+		routeProposalList = new ArrayList<RouteProposal>();
+		in.readTypedList(routeProposalList, RouteProposal.CREATOR);
 		proposalPosition = in.readInt();
 		
 		station = in.readParcelable(SearchStationData.class.getClassLoader());
