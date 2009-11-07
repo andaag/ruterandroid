@@ -95,7 +95,7 @@ public class TrafikantenSearch implements ISearchProvider {
 
 
 class TrafikantenSearchThread extends Thread implements Runnable {
-	private static final String TAG = "Trafikanten-T-SearchThread";
+	//private static final String TAG = "Trafikanten-T-SearchThread";
 	private Handler handler;
 	private Resources resources;
 	private String query;

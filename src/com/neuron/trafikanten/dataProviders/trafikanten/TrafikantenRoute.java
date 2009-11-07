@@ -92,9 +92,7 @@ public class TrafikantenRoute implements IRouteProvider {
 }
 
 class TrafikantenRouteThread extends Thread implements Runnable {
-	private final static String TAG = "Trafikanten-T-RouteThread";
-	private final static SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
-	private final static SimpleDateFormat TIMEFORMAT = new SimpleDateFormat("HH:mm");
+	//private final static String TAG = "Trafikanten-T-RouteThread";
 	private Handler handler;
 	private Resources resources;
 	public static RouteData routeData;
