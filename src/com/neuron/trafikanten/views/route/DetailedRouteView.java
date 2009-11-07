@@ -126,7 +126,7 @@ public class DetailedRouteView extends ListActivity {
 				/*
 				 * Simply set departureDate to our first arrival time + 1 minute, that way the search will skip that route and take the next one.
 				 */
-				proposalPosition--;
+				proposalPosition++;
 				load();
 			}
 		});
