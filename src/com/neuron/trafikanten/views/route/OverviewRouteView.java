@@ -214,15 +214,33 @@ class OverviewRouteAdapter extends BaseAdapter {
 		int switches = 0;
 		StringBuffer routeInfo = new StringBuffer();
 		for(RouteData routeData : routeProposal.travelStageList) {
-			arrival = routeData.arrival;
-			if (departure == 0)
+			/*
+			 * Grab the first departure and last arrival to calculate total time
+			 */
+			if (departure == 0) {
 				departure = routeData.departure;
-			if (routeData.transportType != IRouteProvider.TRANSPORT_WALK)
-				switches++;
+			}
+			arrival = routeData.arrival;
 			
-			if (routeInfo.length() > 0)
+			/*
+			 * Add , between extra entries
+			 */
+			if (routeInfo.length() > 0) {
 				routeInfo.append(",");
-			routeInfo.append("X (" + ((arrival - departure) / 1000) + "m)");
+			}
+			
+			if (routeData.transportType != IRouteProvider.TRANSPORT_WALK) {
+				/*
+				 * If we're not walking, show line number and increase the amount of switches we are doing.
+				 */
+				switches++;
+				routeInfo.append(routeData.line + " (" + ((arrival - departure) / 1000) + "m)");
+			} else {
+				/*
+				 * We're talking, render that in routeInfo
+				 */
+				routeInfo.append(context.getText(R.string.walk) + " (" + ((arrival - departure) / 1000) + "m)");
+			}
 		}
 		
 		
