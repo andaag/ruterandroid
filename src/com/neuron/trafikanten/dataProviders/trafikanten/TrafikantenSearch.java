@@ -144,18 +144,6 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 			/*
 			 * Setup SAXParser and XMLReader
 			 */
-			
-			/*
-			result.wait(2000);
-			String debug = "";
-			while (true) {
-				int b = result.read();
-				if (b < 1) break; // EOF
-				debug += String.valueOf( ( char )b );
-				
-			}
-			Log.d("DEBUG CODE", "RAW : " + debug);*/
-			
 			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			final SAXParser parser = parserFactory.newSAXParser();
 			
