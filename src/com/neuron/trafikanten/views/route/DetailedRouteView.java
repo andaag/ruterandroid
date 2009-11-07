@@ -413,7 +413,7 @@ class RouteAdapter extends BaseAdapter {
 		 */
 		final RouteData routeData = items.get(pos);
 		
-		if (routeData.transportType == IRouteProvider.TRANSPORT_WALK && routeData.destination == null) {
+		if (routeData.transportType == IRouteProvider.TRANSPORT_WALK) {
 			holder.transportDestination.setText(R.string.walk);
 		} else {
 			holder.transportDestination.setText(routeData.destination);

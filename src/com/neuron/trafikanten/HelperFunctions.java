@@ -29,6 +29,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
 /*
  * Small helper functions used by multiple classes.
@@ -97,7 +98,7 @@ public class HelperFunctions {
         HttpPost httppost = new HttpPost(url);
     	httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
         httppost.setEntity(new StringEntity(soap));
-    	//Log.d("DEBUG CODE", "Soap request : " + soap);
+    	Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
     	
     	HttpResponse response = new DefaultHttpClient().execute(httppost);
     	return response.getEntity().getContent();

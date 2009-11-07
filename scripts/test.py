@@ -50,11 +50,25 @@ def testRoute():
        <GetTravelsAfter xmlns="http://www.trafikanten.no/">
         <from>2330160</from>
         <to>3012110</to>
-        <departureTime>2009-11-07T17:07:00</departureTime>
+        <departureTime>2009-11-07T18:58:00</departureTime>
        </GetTravelsAfter>
       </soap12:Body>
     </soap12:Envelope>
     """
+    
+    
+    SoapMessage="""
+    <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+     <soap12:Body>
+       <GetTravelsAfter xmlns="http://www.trafikanten.no/">
+        <from>2330160</from>
+        <to>3012110</to>
+        <departureTime>2009-11-07T18:58:00</departureTime>
+       </GetTravelsAfter>
+      </soap12:Body>
+    </soap12:Envelope>
+    """
+    
     sendRequest(SoapMessage)
     
 
