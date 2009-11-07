@@ -54,9 +54,11 @@ import com.neuron.trafikanten.notification.NotificationDialog;
 import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.SearchRouteTask;
 
+// TODO : rename detailed_route_* to route_detailed_*
+
 public class DetailedRouteView extends ListActivity {
 	private final static int MAX_ROUTELIST = 50;
-	private final static String TAG = "Trafikanten-RouteView";
+	private final static String TAG = "Trafikanten-DetailedRouteView";
 	private RouteAdapter routeList;
 	private ViewHolder viewHolder = new ViewHolder();
 	
@@ -81,6 +83,7 @@ public class DetailedRouteView extends ListActivity {
 	 */
 	private final static String KEY_DEPARTURESDATES = "departuredates";
 	private final static String KEY_DEPARTURESDATESPOS = "departuredatespos";
+	// TODO IMPORTANT : MAX_ROUTELIST shouldn't be needed anymore, it should be able to pull the data from OverviewRouteView for next/previous.
 	private long departureDates[] = new long[MAX_ROUTELIST + 1];
 	private int departureDatesPos = 0;
 	private int lastDepartureDatesPos = 0; // this is so back button works logically while loading.
@@ -370,7 +373,6 @@ public class DetailedRouteView extends ListActivity {
 		ImageButton previousButton;
 		TextView infoText;
 		ImageButton nextButton;
-
 	}
 }
 

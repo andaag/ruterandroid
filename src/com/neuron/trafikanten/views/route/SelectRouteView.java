@@ -79,7 +79,7 @@ public class SelectRouteView extends Activity {
             final Calendar calendar = Calendar.getInstance();
             viewHolder.timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
             viewHolder.timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
-    }
+        }
 		
 		/*
 		 * Load instance state

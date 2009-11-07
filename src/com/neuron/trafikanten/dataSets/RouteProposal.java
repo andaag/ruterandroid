@@ -20,7 +20,48 @@ package com.neuron.trafikanten.dataSets;
 
 import java.util.ArrayList;
 
-public class RouteProposal {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class RouteProposal implements Parcelable {
 	public ArrayList<RouteData> travelStageList = new ArrayList<RouteData>();
 
+	
+	public RouteProposal() { }
+	
+	/*
+	 * @see android.os.Parcelable
+	 */
+	@Override
+	public int describeContents() {	return 0; }
+	
+	/*
+	 * Function for reading the parcel
+	 */
+	@SuppressWarnings("unchecked")
+	public RouteProposal(Parcel in) {
+		travelStageList = in.readArrayList(RouteData.class.getClassLoader());
+	}
+	
+	/*
+	 * Writing current data to parcel.
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+	 */
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeTypedList(travelStageList);
+	}
+	
+	/*
+	 * Used for bundle.getParcel 
+	 */
+    public static final Parcelable.Creator<RouteProposal> CREATOR = new Parcelable.Creator<RouteProposal>() {
+		public RouteProposal createFromParcel(Parcel in) {
+		    return new RouteProposal(in);
+		}
+		
+		public RouteProposal[] newArray(int size) {
+		    return new RouteProposal[size];
+		}
+	};
 }
