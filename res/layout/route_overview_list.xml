@@ -1,71 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TableLayout 
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 android:stretchColumns="*"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
 	 android:layout_height="fill_parent" 
 	 android:layout_width="fill_parent">
-	 <TableRow>
-	  <TextView android:id="@+id/departure"
-	  android:padding="3dip" 
-	   android:text="Departure" />
-	  
-	  <TextView android:id="@+id/arrival"
-	  	  android:padding="3dip" 
-	   android:text="Arrival" />
 	 
-	  <TextView android:id="@+id/traveltime" 
-	  android:padding="3dip" 
-	   android:text="Traveltime" />
-	  
-	  <TextView android:id="@+id/switches" 
-	  android:padding="3dip" 
-	   android:text="Switches" />
-
-	 </TableRow> 
-
-	 <TableRow>
-	 	  <TextView android:id="@+id/routeInfo"
-	 	  	  android:padding="3dip" 
-	 	  	  android:layout_span="4"
-	 	  	  android:textAppearance="?android:attr/textAppearanceSmall"
-	 	  	  style="?android:attr/listSeparatorTextViewStyle"
-	   			android:text="Travel information" />
-
-	 </TableRow>
-</TableLayout>
-
-
-
-<!-- 
-<LinearLayout 
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 android:layout_height="fill_parent" 
-	 android:layout_width="fill_parent">
-
-	  <TextView id="@+id/textName" 
-	  android:layout_height="wrap_content"
-	  android:layout_width="wrap_content"
-	  android:gravity="left"
-	   android:text="Departure" />
+	  <TextView android:id="@+id/header"
+	  android:padding="3dip"
+	  style="?android:attr/listSeparatorTextViewStyle"
+ 	  	  android:textAppearance="?android:attr/textAppearanceMedium"
+	  android:layout_height="wrap_content" 
+	  android:layout_width="fill_parent"
+	   android:text="18:53 -> 19:13 total 53m" />
 	   
-	  <TextView id="@+id/textName" 
-	  android:layout_height="wrap_content"
-	  android:layout_width="wrap_content"
-	  android:gravity="center"
-	   android:text="Departure" />
-	   
-	   	  <TextView id="@+id/textName" 
-	  android:layout_height="wrap_content"
-	  android:layout_width="wrap_content"
-	  android:gravity="center"
-	   android:text="Departure" />
-	   
-	   	  <TextView id="@+id/textName" 
-	  android:layout_height="wrap_content"
-	  android:layout_width="wrap_content"
-	  android:gravity="right"
-	   android:text="Departure" />
+ 	  <TextView android:id="@+id/routeInfo"
+	  android:padding="3dip"
+	  android:layout_height="wrap_content" 
+	  android:layout_width="fill_parent"
+	  android:singleLine="false"
+   			android:text="[Bus icon]301-Varingskollen(8m), [idle icon]Wait(2m), [tram icon]17-Grefsen(2m), [walk icon]Walk(3m)" />
+   			
+   			
+	  <TextView android:id="@+id/footer"
+	  android:paddingLeft="3dip"
+	  android:paddingTop="3dip"
+	  android:paddingRight="3dip"
+	  android:paddingBottom="15dip"
+	  android:layout_height="wrap_content" 
+	  android:layout_width="fill_parent"
+	   android:text="TODO : 2m waittime and 3m walktime, 1 switch." />
 
+	 
 </LinearLayout>
- -->

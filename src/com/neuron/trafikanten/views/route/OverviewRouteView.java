@@ -191,11 +191,9 @@ class OverviewRouteAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.route_overview_list, null);
 			
 			holder = new ViewHolder();
-			holder.departure = (TextView) convertView.findViewById(R.id.departure);
-			holder.arrival = (TextView) convertView.findViewById(R.id.arrival);
-			holder.travelTime = (TextView) convertView.findViewById(R.id.traveltime);
-			holder.switches = (TextView) convertView.findViewById(R.id.switches);
+			holder.header = (TextView) convertView.findViewById(R.id.header);
 			holder.routeInfo = (TextView) convertView.findViewById(R.id.routeInfo);
+			holder.footer = (TextView) convertView.findViewById(R.id.footer);
 
 			convertView.setTag(holder);
 		} else {
@@ -244,11 +242,11 @@ class OverviewRouteAdapter extends BaseAdapter {
 		}
 		
 		
-		holder.departure.setText(HelperFunctions.hourFormater.format(departure));
-		holder.arrival.setText(HelperFunctions.hourFormater.format(arrival));
-		holder.travelTime.setText(HelperFunctions.hourFormater.format(arrival - departure));
-		holder.switches.setText(new Integer(switches).toString());
-		holder.routeInfo.setText(routeInfo);		
+		holder.header.setText("Route " + (pos + 1) + " = " + HelperFunctions.hourFormater.format(departure) + " -> " +
+				HelperFunctions.hourFormater.format(arrival) + " total " + 
+				HelperFunctions.hourFormater.format(arrival - departure));
+		holder.routeInfo.setText(routeInfo);
+		//holder.footer.setText("TODO : Waittime/Switches/Walktime");
 		
 		
 		
@@ -270,10 +268,8 @@ class OverviewRouteAdapter extends BaseAdapter {
 	 * Class for caching the view.
 	 */
 	static class ViewHolder {
-		TextView departure;
-		TextView arrival;
-		TextView travelTime;
-		TextView switches;
+		TextView header;
 		TextView routeInfo;
+		TextView footer;
 	}
 }
