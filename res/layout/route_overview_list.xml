@@ -13,14 +13,14 @@
 	  android:layout_width="fill_parent"
 	   android:text="18:53 -> 19:13 total 53m" />
 	   
- 	  <TextView android:id="@+id/routeInfo"
-	  android:padding="3dip"
-	  android:layout_height="wrap_content" 
-	  android:layout_width="fill_parent"
-	  android:singleLine="false"
-   			android:text="[Bus icon]301-Varingskollen(8m), [idle icon]Wait(2m), [tram icon]17-Grefsen(2m), [walk icon]Walk(3m)" />
-   			
-   			
+	   
+	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:id="@+id/routeInfo"
+	android:orientation="vertical"
+	 android:layout_height="wrap_content" 
+	 android:layout_width="fill_parent">
+	 </LinearLayout>
+	   
 	  <TextView android:id="@+id/footer"
 	  android:paddingLeft="3dip"
 	  android:paddingTop="3dip"

@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -192,7 +193,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			
 			holder = new ViewHolder();
 			holder.header = (TextView) convertView.findViewById(R.id.header);
-			holder.routeInfo = (TextView) convertView.findViewById(R.id.routeInfo);
+			holder.routeInfo = (LinearLayout) convertView.findViewById(R.id.routeInfo);
 			holder.footer = (TextView) convertView.findViewById(R.id.footer);
 
 			convertView.setTag(holder);
@@ -210,7 +211,8 @@ class OverviewRouteAdapter extends BaseAdapter {
 		long departure = 0;
 		long arrival = 0;
 		int switches = 0;
-		StringBuffer routeInfo = new StringBuffer();
+		
+		holder.routeInfo.removeAllViews();
 		for(RouteData routeData : routeProposal.travelStageList) {
 			/*
 			 * Grab the first departure and last arrival to calculate total time
@@ -220,24 +222,21 @@ class OverviewRouteAdapter extends BaseAdapter {
 			}
 			arrival = routeData.arrival;
 			
-			/*
-			 * Add , between extra entries
-			 */
-			if (routeInfo.length() > 0) {
-				routeInfo.append(",");
-			}
-			
 			if (routeData.transportType != IRouteProvider.TRANSPORT_WALK) {
 				/*
 				 * If we're not walking, show line number and increase the amount of switches we are doing.
 				 */
 				switches++;
-				routeInfo.append(routeData.line + " (" + ((arrival - departure) / 1000) + "m)");
+				final TextView textView = new TextView(context);
+				textView.setText(routeData.line + "-" + routeData.destination + " (" + ((arrival - departure) / 1000) + "m)");
+				holder.routeInfo.addView(textView);
 			} else {
 				/*
 				 * We're talking, render that in routeInfo
 				 */
-				routeInfo.append(context.getText(R.string.walk) + " (" + ((arrival - departure) / 1000) + "m)");
+				final TextView textView = new TextView(context);
+				textView.setText(context.getText(R.string.walk) + " (" + ((arrival - departure) / 1000) + "m)");
+				holder.routeInfo.addView(textView);
 			}
 		}
 		
@@ -245,7 +244,6 @@ class OverviewRouteAdapter extends BaseAdapter {
 		holder.header.setText("Route " + (pos + 1) + " = " + HelperFunctions.hourFormater.format(departure) + " -> " +
 				HelperFunctions.hourFormater.format(arrival) + " total " + 
 				HelperFunctions.hourFormater.format(arrival - departure));
-		holder.routeInfo.setText(routeInfo);
 		//holder.footer.setText("TODO : Waittime/Switches/Walktime");
 		
 		
@@ -269,7 +267,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 	 */
 	static class ViewHolder {
 		TextView header;
-		TextView routeInfo;
+		LinearLayout routeInfo;
 		TextView footer;
 	}
 }
