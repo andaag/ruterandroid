@@ -67,22 +67,25 @@ public class HelperFunctions {
     }
     
     /*
-     * Replace % with arguments, simplified version of http://www.mail-archive.com/android-developers@googlegroups.com/msg02846.html
+     * Replace % with arguments, performance version of http://www.mail-archive.com/android-developers@googlegroups.com/msg02846.html
      */
 	public static String mergeXmlArgument(Resources resources, int rId, String []args) throws IOException {
 		int currentArgIndex = 0;
         InputStream xmlStream = resources.openRawResource( rId );
         StringBuffer xml = new StringBuffer(xmlStream.available() + 100);
         
-		while ( true ) {
+		while (true) {
 			final int b = xmlStream.read();
 			if (b < 1) break; // EOF
 			
-			if ( (char)b == '%' ) { // substitute next args[]
+			if ((char)b == '%') {
+				/*
+				 * Replace next % with args[i]
+				 */
 				xml.append(args[currentArgIndex]);
-				currentArgIndex++;
+				currentArgIndex++; // No checking, will cause exception if % and files and args # dont match up.
 			}
-			else xml.append( (char)b);
+			else xml.append((char)b);
 		} 
 		xmlStream.close();
 
