@@ -221,23 +221,28 @@ class OverviewRouteAdapter extends BaseAdapter {
 				departure = routeData.departure;
 			}
 			arrival = routeData.arrival;
+
 			
+			final TextView textView = new TextView(context);
 			if (routeData.transportType != IRouteProvider.TRANSPORT_WALK) {
 				/*
 				 * If we're not walking, show line number and increase the amount of switches we are doing.
 				 */
+				textView.setText(routeData.line + " " + 
+					HelperFunctions.hourFormater.format(routeData.departure) + " " + 
+					routeData.fromStation.stopName + " -> " + 
+					routeData.toStation.stopName);
 				switches++;
-				final TextView textView = new TextView(context);
-				textView.setText(routeData.line + "-" + routeData.destination + " (" + ((arrival - departure) / 1000) + "m)");
-				holder.routeInfo.addView(textView);
 			} else {
 				/*
 				 * We're talking, render that in routeInfo
 				 */
-				final TextView textView = new TextView(context);
-				textView.setText(context.getText(R.string.walk) + " (" + ((arrival - departure) / 1000) + "m)");
-				holder.routeInfo.addView(textView);
+				textView.setText(context.getText(R.string.walk) + " " + 
+						HelperFunctions.hourFormater.format(routeData.departure) + " " + 
+						routeData.fromStation.stopName + " -> " + 
+						routeData.toStation.stopName);
 			}
+			holder.routeInfo.addView(textView);
 		}
 		
 		
