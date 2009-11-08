@@ -430,7 +430,6 @@ class RouteAdapter extends BaseAdapter {
 		/*
 		 * Setup symbol.
 		 */
-		holder.symbol.setVisibility(View.GONE);
 		final int symbolImage = DataProviderFactory.getImageResource(routeData.transportType);
 		if (symbolImage > 0) {
 			holder.symbol.setVisibility(View.VISIBLE);

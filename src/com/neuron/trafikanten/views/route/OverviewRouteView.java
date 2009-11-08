@@ -27,11 +27,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -40,6 +42,7 @@ import android.widget.Toast;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.IGenericProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
@@ -224,44 +227,42 @@ class OverviewRouteAdapter extends BaseAdapter {
 			}
 			arrival = routeData.arrival;
 
-			final RelativeLayout layout = new RelativeLayout(context);
+			final LinearLayout layout = new LinearLayout(context);
 			
 			/*
-			 * Add Departure
+			 * Add Icon
+			 */
+			{
+				final ImageView imageView = new ImageView(context);
+				final int symbolImage = DataProviderFactory.getImageResource(routeData.transportType);
+				if (symbolImage > 0) {
+					imageView.setVisibility(View.VISIBLE);
+					imageView.setImageResource(symbolImage);
+				} else {
+					imageView.setVisibility(View.GONE);
+				}
+				layout.addView(imageView);
+			}
+
+			
+			/*
+			 * Add Text
 			 */
 			{
 				final TextView textView = new TextView(context);
-				textView.setText(HelperFunctions.hourFormater.format(routeData.departure));
-				textView.setId(1);
+				textView.setText(routeData.line + " " + routeData.fromStation.stopName + " > " + routeData.toStation.stopName);
 				layout.addView(textView);
 			}
-			/*
-			 * Add Departure text
-			 */
-			{
-				final TextView textView = new TextView(context);
-				textView.setText(routeData.fromStation.stopName);
-				
-				final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-				params.addRule(RelativeLayout.BELOW, 1);
-				
-				layout.addView(textView, params);
-			}
+		
 			
 			/*
-			 * Add arrival
+			 * And add it to our container
 			 */
 			{
-				final TextView textView = new TextView(context);
-				textView.setText(HelperFunctions.hourFormater.format(routeData.departure));
-				
-				final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-				params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-				
-				layout.addView(textView, params);
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				layoutParams.gravity = Gravity.VERTICAL_GRAVITY_MASK;
+				holder.routeInfo.addView(layout, layoutParams);
 			}
-			
-			holder.routeInfo.addView(layout);
 			
 			
 
