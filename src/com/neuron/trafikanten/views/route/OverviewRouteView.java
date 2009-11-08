@@ -30,9 +30,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -222,12 +224,52 @@ class OverviewRouteAdapter extends BaseAdapter {
 			}
 			arrival = routeData.arrival;
 
+			final RelativeLayout layout = new RelativeLayout(context);
 			
-			final TextView textView = new TextView(context);
+			/*
+			 * Add Departure
+			 */
+			{
+				final TextView textView = new TextView(context);
+				textView.setText(HelperFunctions.hourFormater.format(routeData.departure));
+				textView.setId(1);
+				layout.addView(textView);
+			}
+			/*
+			 * Add Departure text
+			 */
+			{
+				final TextView textView = new TextView(context);
+				textView.setText(routeData.fromStation.stopName);
+				
+				final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				params.addRule(RelativeLayout.BELOW, 1);
+				
+				layout.addView(textView, params);
+			}
+			
+			/*
+			 * Add arrival
+			 */
+			{
+				final TextView textView = new TextView(context);
+				textView.setText(HelperFunctions.hourFormater.format(routeData.departure));
+				
+				final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				
+				layout.addView(textView, params);
+			}
+			
+			holder.routeInfo.addView(layout);
+			
+			
+
+			/*final TextView textView = new TextView(context);
 			if (routeData.transportType != IRouteProvider.TRANSPORT_WALK) {
 				/*
 				 * If we're not walking, show line number and increase the amount of switches we are doing.
-				 */
+				 *
 				textView.setText(routeData.line + " " + 
 					HelperFunctions.hourFormater.format(routeData.departure) + " " + 
 					routeData.fromStation.stopName + " -> " + 
@@ -236,13 +278,13 @@ class OverviewRouteAdapter extends BaseAdapter {
 			} else {
 				/*
 				 * We're talking, render that in routeInfo
-				 */
+				 *
 				textView.setText(context.getText(R.string.walk) + " " + 
 						HelperFunctions.hourFormater.format(routeData.departure) + " " + 
 						routeData.fromStation.stopName + " -> " + 
 						routeData.toStation.stopName);
 			}
-			holder.routeInfo.addView(textView);
+			holder.routeInfo.addView(textView);*/
 		}
 		
 		
