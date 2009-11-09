@@ -17,19 +17,19 @@
 
 
 <activity android:name=".views.route.SelectRouteView"></activity>
-<activity android:name=".tasks.SearchRouteTask" android:theme="@android:style/Theme.Dialog"></activity>
+
 <activity android:name=".views.route.DetailedRouteView"></activity>
 <activity android:name=".views.map.GenericMap"></activity>
 <uses-library android:name="com.google.android.maps"></uses-library>
 
 
 
-<activity android:name=".tasks.LocationTask" android:theme="@android:style/Theme.Dialog"></activity>
+
 
 
 
 <receiver android:name=".notification.NotificationIntent"></receiver>
-<activity android:name=".tasks.SearchAddressTask" android:theme="@android:style/Theme.Dialog"></activity>
+
 <activity android:name=".views.route.OverviewRouteView"></activity>
 </application>
     <uses-sdk android:minSdkVersion="3" />

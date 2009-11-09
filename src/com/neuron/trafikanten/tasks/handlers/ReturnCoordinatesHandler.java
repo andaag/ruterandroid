@@ -16,8 +16,18 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.neuron.trafikanten.tasks;
+package com.neuron.trafikanten.tasks.handlers;
 
-public interface NewGenericTask {
-	public void Stop();
+import android.os.Handler;
+
+/*
+ * Callbacks:
+ */
+public abstract class ReturnCoordinatesHandler extends Handler {
+    public abstract void onCanceled();
+    public abstract void onError(Exception e);
+    
+    public abstract void OnStartWork();
+    
+    public abstract void onFinished(double latitude, double longitude);
 }

@@ -213,33 +213,6 @@ public class DetailedRouteView extends ListActivity {
 	}
 
 	/*
-	 * Handler for messages (both from Intent's and Handlers)
-	 */
-	public void onMessage(Message msg) {
-    	switch(msg.what) {
-    	case IRouteProvider.MESSAGE_EXCEPTION:
-    		final String exception = msg.getData().getString(IGenericProvider.KEY_EXCEPTION);
-			Log.w(TAG,"onException " + exception);
-			Toast.makeText(DetailedRouteView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-    		break;
-    	}
-	}
-	
-	/*
-	 * activityResult is always a task, and can always be passed to onMessage
-	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
-	 */
-    @Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK) {
-			final Message msg = data.getParcelableExtra(GenericTask.KEY_MESSAGE);
-			onMessage(msg);
-			return;
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-    
-	/*
 	 * Dialog creation
 	 * @see android.app.Activity#onCreateDialog(int)
 	 */

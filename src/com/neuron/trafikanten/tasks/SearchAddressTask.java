@@ -8,50 +8,38 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.IRouteProvider;
+import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
-public class SearchAddressTask extends GenericTask {
+public class SearchAddressTask implements GenericTask {
 	private static final String TAG = "Trafikanten-SearchAddressTask";
-	public static final int TASK_SEARCHADDRESS = 106;
-	private static final int DIALOG_SEARCHADDRESS = Menu.FIRST;
 	
+	private Activity activity;
 	private List<Address> addresses;
-
-	public static void StartTask(Activity activity) {
-		final Intent intent = new Intent(activity, SearchAddressTask.class);
-		StartGenericTask(activity, intent, TASK_SEARCHADDRESS);
-	}
-	
-	@Override
-	public int getlayoutId() { return R.layout.dialog_searchaddress; }
-	
+	ReturnCoordinatesHandler handler;
+	    
 	/*
-	 * onCreate for searchAddressTask
-	 * Task shows a entry box for writing in an address, then does geo lookup to find the coordinates, and asks provider for data around that point.
-	 * @see com.neuron.trafikanten.tasks.GenericTask#onCreate(android.os.Bundle)
+	 * Show the address field dialog and wait for input
 	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		message.setText(R.string.searchAddressTask);
+	public void showAddressField(Activity activity, ReturnCoordinatesHandler handler) {
+		this.activity = activity;
+		this.handler = handler;
 		
-		final EditText searchEdit = (EditText) findViewById(R.id.search);
+		final Dialog dialog = new Dialog(activity);
+		dialog.setContentView(R.layout.dialog_searchaddress);
+		
+		final EditText searchEdit = (EditText) dialog.findViewById(R.id.search);
 		searchEdit.setOnKeyListener(new OnKeyListener() {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() != KeyEvent.ACTION_DOWN) {
@@ -67,127 +55,97 @@ public class SearchAddressTask extends GenericTask {
 				return false;
 			}
 		});
-	}
-	
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		switch(id) {
-		case DIALOG_SEARCHADDRESS:
-			/*
-			 * Dialog contains a list, force recreating it.
-			 */
-			removeDialog(DIALOG_SEARCHADDRESS);
-			dialog = onCreateDialog(DIALOG_SEARCHADDRESS);
-			break;
-		}
-		super.onPrepareDialog(id, dialog);
+		
+		dialog.show();
 	}
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch(id) {
-		case DIALOG_SEARCHADDRESS:
-		    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		    builder.setTitle(R.string.searchAddressTask);
-		    
+	private void showAddressSelection() {
+	    final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+	    builder.setTitle(R.string.searchAddressTask);
+	    
 
-		    /*
-		     * First take all addresses, convert them into strings and check for duplicates.
-		     */
-		    ArrayList<String> addressStrings = new ArrayList<String>();
-		    for(Address address : addresses) {
-		    	Log.d(TAG,"Got address " + address.toString());
-	    		String result = address.getAddressLine(0);
-	    		for (int i = 1; i <= address.getMaxAddressLineIndex(); i++) {
-	    			result = result + ", " + address.getAddressLine(i);
-	    		}
-	    		
-	    		if (!addressStrings.contains(result)) {
-	    			addressStrings.add(result);
-	    		}
-		    }
-		    
-		    /*
-		     * Then convert it into the array setItems wants
-		     */
-		    final String[] items = new String[addressStrings.size()];
-		    addressStrings.toArray(items);
-		    
-		    /*
-		     * Then search for the address
-		     */
-		    builder.setItems(items, new OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					SearchAddressTask.this.foundLocation(addresses.get(which));
-				}
-		    });
-		    
-		    
-		    AlertDialog dialog = builder.create();
-		    dialog.setOnCancelListener(new OnCancelListener() {
-		    	/*
-		    	 * OnCancel we should return to previous view.
-		    	 * @see android.content.DialogInterface.OnCancelListener#onCancel(android.content.DialogInterface)
-		    	 */
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					SearchAddressTask.this.setResult(RESULT_CANCELED, new Intent());
-					SearchAddressTask.this.finish();
-				}
-		    	
-		    });
-		    return dialog;
-		}
-		return null;
+	    /*
+	     * First take all addresses, convert them into strings and check for duplicates.
+	     */
+	    ArrayList<String> addressStrings = new ArrayList<String>();
+	    for(Address address : addresses) {
+	    	Log.d(TAG,"Got address " + address.toString());
+    		String result = address.getAddressLine(0);
+    		for (int i = 1; i <= address.getMaxAddressLineIndex(); i++) {
+    			result = result + ", " + address.getAddressLine(i);
+    		}
+    		
+    		if (!addressStrings.contains(result)) {
+    			addressStrings.add(result);
+    		}
+	    }
+	    
+	    /*
+	     * Then convert it into the array setItems wants
+	     */
+	    final String[] items = new String[addressStrings.size()];
+	    addressStrings.toArray(items);
+	    
+	    /*
+	     * Then search for the address
+	     */
+	    builder.setItems(items, new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				SearchAddressTask.this.foundLocation(addresses.get(which));
+			}
+	    });
+	    
+	    
+	    AlertDialog dialog = builder.create();
+	    dialog.setOnCancelListener(new OnCancelListener() {
+	    	/*
+	    	 * OnCancel we should return to previous view.
+	    	 * @see android.content.DialogInterface.OnCancelListener#onCancel(android.content.DialogInterface)
+	    	 */
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				handler.onCanceled();
+				
+			}
+	    });
 	}
 	
 	/*
 	 * Do geo mapping.
 	 */
 	private void geoMap(String searchAddress) {
-		setVisible(true);
-		final Geocoder geocoder = new Geocoder(this);
+		final Geocoder geocoder = new Geocoder(activity);
 		try {
 			// NOTE : These coordinates do NOT cover all of norway.
 			addresses = geocoder.getFromLocationName(searchAddress, 10, 57, 3, 66, 16);
 
 			switch(addresses.size()) {
 			case 0:
-				Toast.makeText(getApplicationContext(), R.string.failedToFindAddress, Toast.LENGTH_SHORT).show();
-				finish();
+				Toast.makeText(activity, R.string.failedToFindAddress, Toast.LENGTH_SHORT).show();
+				handler.onCanceled();
 				break;
 			case 1:
 				foundLocation(addresses.get(0));
 				break;
 			default:
-				showDialog(DIALOG_SEARCHADDRESS);
+				showAddressSelection();
 			    break;
 			}
 		} catch (IOException e) {
 			/*
 			 * Pass exceptions to parent
 			 */
-			final Message msg = handler.obtainMessage(IRouteProvider.MESSAGE_EXCEPTION);
-			final Bundle bundle = new Bundle();
-			bundle.putString(IRouteProvider.KEY_EXCEPTION, e.toString());
-			msg.setData(bundle);
-			handler.sendMessage(msg);
+			handler.onError(e);
 		}
 	}
 	
 	private void foundLocation(Address location) {
-		SearchStationTask.StartTask(this, location.getLatitude(), location.getLongitude());
-		setVisible(false);
+		handler.onFinished(location.getLatitude(), location.getLongitude());
 	}
-	
-    /*
-     * Direct passthrough
-     * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	setResult(resultCode, data);
-    	finish();
-    }
+
+	@Override
+	public void stop() {
+		// No background threads to kill
+	}
 }

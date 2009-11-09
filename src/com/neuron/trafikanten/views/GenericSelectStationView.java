@@ -52,10 +52,11 @@ import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandle
 import com.neuron.trafikanten.dataSets.SearchStationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
+import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.LocationTask;
-import com.neuron.trafikanten.tasks.NewGenericTask;
 import com.neuron.trafikanten.tasks.SearchAddressTask;
 import com.neuron.trafikanten.tasks.SelectContactTask;
+import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 import com.neuron.trafikanten.views.map.GenericMap;
 
 public abstract class GenericSelectStationView extends ListActivity {
@@ -90,6 +91,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Task tracking
 	 */
 	private ISearchProvider searchProvider;
+	private GenericTask activeTask;
 	
 	/*
 	 * Saved instance state: (list)
@@ -128,7 +130,6 @@ public abstract class GenericSelectStationView extends ListActivity {
         /*
          * Setup the search editbox to search on Enter.
          */
-        
 		final EditText searchEdit = (EditText) findViewById(R.id.search);
 		searchEdit.setOnKeyListener(new OnKeyListener() {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -289,10 +290,10 @@ public abstract class GenericSelectStationView extends ListActivity {
         	GenericMap.Show(this, stationListAdapter.getList(), 0);
         	break;
         case CONTACT_ID:
-        	SelectContactTask.StartTask(this);
+        	selectContact();
         	break;
         case ADDRESS_ID:
-        	SearchAddressTask.StartTask(this);
+        	searchAddressTask();
         	break;
         case RESET_ID:
         	resetView();
@@ -306,6 +307,62 @@ public abstract class GenericSelectStationView extends ListActivity {
         }
 		return super.onOptionsItemSelected(item);
 	}
+	
+	
+	/*
+	 * Get a generic handler that returns coordinates
+	 */
+	private ReturnCoordinatesHandler getReturnCoordinatesHandler() {
+		return new ReturnCoordinatesHandler() {
+	        @Override
+	        public void onCanceled() {
+	                setProgressBarIndeterminateVisibility(false);
+	                activeTask = null;
+	        }
+	
+	        @Override
+	        public void onError(Exception exception) {
+	                Log.w(TAG,"onException " + exception);
+	                Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+	                setProgressBarIndeterminateVisibility(false);
+	        }
+	
+	        @Override
+	        public void onFinished(double latitude, double longitude) {
+	                Log.i(TAG,"selectContactTask finished");
+	                setProgressBarIndeterminateVisibility(false);
+	                activeTask = null;
+	                searchProvider.Search(latitude,longitude);
+	        }
+	
+	        @Override
+	        public void OnStartWork() {
+	                Log.i(TAG,"selectContactTask working");
+	                setProgressBarIndeterminateVisibility(true);                            
+	        }
+		};
+	}
+	
+	/*
+	 * Deal with address search
+	 */
+	private void searchAddressTask() {
+		searchProvider.Stop();
+		SearchAddressTask task = new SearchAddressTask();
+		task.showAddressField(this, getReturnCoordinatesHandler());
+		activeTask = task;
+	}
+	
+	/*
+	 * Deal with contact selection
+	 */
+    private void selectContact() {
+        searchProvider.Stop();
+        
+        SelectContactTask task = new SelectContactTask();
+        task.show(this, getReturnCoordinatesHandler());
+        activeTask = task;
+}
 
 	/*
 	 * Reset is used by RESET_ID and Settings refresh.
@@ -319,12 +376,9 @@ public abstract class GenericSelectStationView extends ListActivity {
         favoriteDbAdapter = new FavoriteDbAdapter(this);
         historyDbAdapter = new HistoryDbAdapter(this);
         
-        
-        
     	/*
     	 * Reset view
     	 */
-        
         stationListAdapter.clear();
     	favoriteDbAdapter.addFavoritesToList(stationListAdapter.getList());
     	historyDbAdapter.addHistoryToList(stationListAdapter.getList());
@@ -394,6 +448,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	protected void onPause() {
 		favoriteDbAdapter.close();
 		historyDbAdapter.close();
+		if (activeTask != null)
+			activeTask.stop();
 		super.onPause();
 	}
 

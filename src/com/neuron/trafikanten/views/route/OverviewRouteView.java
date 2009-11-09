@@ -110,44 +110,6 @@ public class OverviewRouteView extends ListActivity {
 		DetailedRouteView.ShowRoute(this, routeList.getList(), position);
 	}
 	
-	/*
-	 * Handler for messages (both from Intent's and Handlers)
-	 */
-	public void onMessage(Message msg) {
-    	switch(msg.what) {
-    	case IRouteProvider.MESSAGE_DONE:
-    		routeList.clear();
-			/*
-			 * If we haven't already set the most up to date list, set it.
-			 */
-    		final ArrayList<RouteProposal> list = ResultsProviderFactory.getRouteResults();
-    		if (list != null) {
-    			routeList.setList(list);
-    		}
-    		OverviewRouteView.this.setListAdapter(routeList);
-    		break;
-    	case IRouteProvider.MESSAGE_EXCEPTION:
-    		final String exception = msg.getData().getString(IGenericProvider.KEY_EXCEPTION);
-			Log.w(TAG,"onException " + exception);
-			Toast.makeText(OverviewRouteView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-    		break;
-    	}
-	}
-	
-	/*
-	 * activityResult is always a task, and can always be passed to onMessage
-	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
-	 */
-    @Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK) {
-			final Message msg = data.getParcelableExtra(GenericTask.KEY_MESSAGE);
-			onMessage(msg);
-			return;
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-    
     // TODO : We need notification support here.
     // TODO : We need savedInstanceState support here.
 }

@@ -19,63 +19,65 @@
 package com.neuron.trafikanten.tasks;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
+import android.app.Dialog;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.locationProviders.ILocationProvider;
 import com.neuron.trafikanten.locationProviders.LocationProviderFactory;
+import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
 /*
  * Calculate our location, and search for a station
  */
-public class LocationTask extends GenericTask {
-	public static final int TASK_LOCATION = 105;
+public class LocationTask implements GenericTask {
 	private ILocationProvider locationProvider;
+	private Activity activity;
+	private ReturnCoordinatesHandler handler;
+	private TextView message;
 	
-	public static void StartTask(Activity activity) {
-		final Intent intent = new Intent(activity, LocationTask.class);
-		StartGenericTask(activity, intent, TASK_LOCATION);
-	}
-	
-	@Override
-	public int getlayoutId() { return R.layout.dialog_waitlocation;	}
+    public LocationTask(Activity activity, ReturnCoordinatesHandler handler)
+    {
+            this.activity = activity;
+            this.handler = handler;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		message.setText(R.string.locationWaiting);
+    }
+    
+    public void showDialog() {
+		final Dialog dialog = new Dialog(activity);
+		dialog.setContentView(R.layout.dialog_waitlocation);
 		
+		message = (TextView) dialog.findViewById(R.id.message);
+		message.setText(R.string.locationWaiting);
 		/*
 		 * Setup continue button
 		 */
-		Button continueButton = (Button) findViewById(R.id.continueButton);
+		Button continueButton = (Button) dialog.findViewById(R.id.continueButton);
 		continueButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				returnOk();
+				returnLocation();
 			}
 		});
-		locationProvider = LocationProviderFactory.getLocationProvider(this, locationHandler);
-	}
-	
-	private void returnOk() {
-		final double[] location = LocationProviderFactory.getLocation();
+		locationProvider = LocationProviderFactory.getLocationProvider(activity, locationHandler);
+    }
+    
+    private void returnLocation() 
+    {
+    	final double[] location = LocationProviderFactory.getLocation();
 		if (location[0] == 0) {
-			Toast.makeText(this, R.string.noLocationFoundError, Toast.LENGTH_SHORT).show();
+			Toast.makeText(activity, R.string.noLocationFoundError, Toast.LENGTH_SHORT).show();
 			return;
 		}
-		SearchStationTask.StartTask(this, location[0], location[1]);
-		setVisible(false);
-	}
-	
-	
+		handler.onFinished(location[0], location[1]);
+    }
+
 	/*
 	 * Handler for location service:
 	 */
@@ -86,54 +88,20 @@ public class LocationTask extends GenericTask {
         		 * Got a location.
         		 */
         		final double[] location = LocationProviderFactory.getLocation();
-        		message.setText(getText(R.string.locationWaiting).toString() + "\n" + getText(R.string.current) + " " + location[2] + "m");
+        		message.setText(activity.getText(R.string.locationWaiting).toString() + "\n" + activity.getText(R.string.current) + " " + location[2] + "m");
         		if (LocationProviderFactory.SETTING_LOCATION_ACCURACY > location[2] && location[2] > 0) {
         			/*
         			 * Return instant location ok only if accuracy is enough, and it's not a cached gps location (accuracy 0.0 meters)
         			 */
-        			returnOk();
+        			returnLocation();
         		}
         		return;
         	}
-        	/*
-        	 * msg.what is an error/warning/otherwise, pass to parent and return.
-        	 */
-        	Intent intent = new Intent();
-        	intent.putExtra(KEY_MESSAGE, msg);
-        	setResult(RESULT_OK, intent);
-        	finish();
         }
     };
     
-    /*
-     * Direct passthrough
-     * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	setResult(resultCode, data);
-    	finish();
-    }
-
-    /*
-     * Dont keep polling location if we switch views.
-     * @see android.app.Activity#onPause()
-     */
 	@Override
-	protected void onPause() {
-		locationProvider.Stop();
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		message.setText(R.string.locationWaiting);
-		locationProvider.getPeriodicLocation();
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
+	public void stop() {
+		locationProvider.Stop();		
 	}
 }
