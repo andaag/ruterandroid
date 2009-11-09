@@ -91,6 +91,7 @@ public class OverviewRouteView extends ListActivity {
 			setListAdapter(routeList);
 		}
 		registerForContextMenu(getListView());
+		setListAdapter(routeList);
 	}
 	
 	/*
