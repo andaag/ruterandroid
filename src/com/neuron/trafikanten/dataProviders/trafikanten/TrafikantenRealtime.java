@@ -104,7 +104,17 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 			 */
 			if (e.getClass() == InterruptedException.class)
 				return;
-			handler.onError(e);
+			
+			/*
+			 * Send exception
+			 */
+			final Exception sendException = e;
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					handler.onError(sendException);
+				}
+			});
 		}
 	}
 }
