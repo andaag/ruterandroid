@@ -32,6 +32,7 @@ public interface ISearchProvider {
 	public void Stop();
 	
 	abstract class SearchProviderHandler extends Handler {
+		public abstract void onStarted();
 	    public abstract void onData(SearchStationData searchData);
 	    public abstract void onError(Exception e);
 	    public abstract void onFinished();

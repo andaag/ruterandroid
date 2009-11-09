@@ -24,7 +24,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.database.Cursor;
@@ -43,7 +42,6 @@ import com.neuron.trafikanten.R;
 
 public class SelectContactTask implements NewGenericTask {
 	private static final String TAG = "Trafikanten-SelectContactTask";
-	private static final int DIALOG_SELECTCONTACT = 1001;
 	private Activity activity;
 	SelectContactHandler handler;
 
@@ -51,7 +49,78 @@ public class SelectContactTask implements NewGenericTask {
 	{
 		this.activity = activity;
 		this.handler = handler;
-		activity.showDialog(DIALOG_SELECTCONTACT);
+		
+		showDialog();
+	}
+	
+	/*
+	 * Callbacks:
+	 */
+	public abstract class SelectContactHandler extends Handler {
+	    public abstract void onCanceled();
+	    public abstract void onError(Exception e);
+	    
+	    public abstract void OnStartWork();
+	    
+	    public abstract void onFinished(double latitude, double longitude);
+	}
+	
+	private void showDialog() {
+		/*
+		 * Setup dialog
+		 */
+		
+		/*
+		 * Setup list of names with addresses
+		 */
+		ArrayList<String> nameList = new ArrayList<String>();
+		final Cursor cursor = activity.managedQuery(Contacts.ContactMethods.CONTENT_URI, CONTACTMETHODS_PROJECTION, FILTER_POSTAL, null, null);
+		while (cursor.moveToNext()) {
+			nameList.add(cursor.getString(0));
+		}
+		cursor.close();
+		
+		/*
+		 * Setup select contact alert dialog
+		 */
+	    final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+	    builder.setTitle(R.string.selectContact);
+	    final String[] items = new String[nameList.size()];
+	    nameList.toArray(items);
+	    
+	    builder.setItems(items, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int item) {
+	        	final Cursor cursor = activity.managedQuery(Contacts.ContactMethods.CONTENT_URI, CONTACTMETHODS_PROJECTION,
+	        			Contacts.People.NAME + " == ? AND " +
+	        			FILTER_POSTAL, new String[] {items[item]}, null);
+	        	if (!cursor.moveToNext()) {
+	        		Log.w(TAG, "Couldn't lookup address for contact after contact selection : " + items[item]);
+	        		Toast.makeText(activity, "Failed to lookup contact, this is a bug, report!", Toast.LENGTH_SHORT).show();
+	        		return;
+	        	}
+	        	dialog.dismiss();
+	        	handler.OnStartWork();
+	        	geoMap(cursor.getString(0), cursor.getString(1));
+	        }
+	    });
+	    
+	    AlertDialog dialog = builder.create();
+	    dialog.setOnCancelListener(new OnCancelListener() {
+	    	/*
+	    	 * OnCancel we should return to previous view.
+	    	 * @see android.content.DialogInterface.OnCancelListener#onCancel(android.content.DialogInterface)
+	    	 */
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				handler.onCanceled();
+			}
+	    });
+	    
+	    /*
+	     * Show dialog
+	     */
+	    dialog.setOwnerActivity(activity);
+	    dialog.show();
 	}
 	
 	private static final String FILTER_POSTAL = Contacts.ContactMethods.KIND + "=" + Contacts.KIND_POSTAL;
@@ -59,82 +128,6 @@ public class SelectContactTask implements NewGenericTask {
 		Contacts.People.NAME,
 		Contacts.ContactMethods.DATA
 	};
-	
-	// Callback:
-	public abstract class SelectContactHandler extends Handler {
-	    public abstract void onCanceled();
-	    public abstract void onError(Exception e);
-	    public abstract void onFinished(double latitude, double longitude);
-	}
-	
-	@Override
-	public void Stop() {}
-	
-	@Override
-	public void onPrepareDialog(int id, Dialog dialog) {
-		switch(id) {
-		case DIALOG_SELECTCONTACT:
-			/*
-			 * Dialog contains a list, force recreating it.
-			 */
-			activity.removeDialog(DIALOG_SELECTCONTACT);
-			dialog = onCreateDialog(DIALOG_SELECTCONTACT);
-			return;
-		}
-	}
-
-	@Override
-	public Dialog onCreateDialog(int id) {
-		switch(id) {
-		case DIALOG_SELECTCONTACT:
-			/*
-			 * Setup list of names with addresses
-			 */
-			ArrayList<String> nameList = new ArrayList<String>();
-			final Cursor cursor = activity.managedQuery(Contacts.ContactMethods.CONTENT_URI, CONTACTMETHODS_PROJECTION, FILTER_POSTAL, null, null);
-			while (cursor.moveToNext()) {
-				nameList.add(cursor.getString(0));
-			}
-			cursor.close();
-			
-			/*
-			 * Setup select contact alert dialog
-			 */
-		    final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		    builder.setTitle(R.string.selectContact);
-		    final String[] items = new String[nameList.size()];
-		    nameList.toArray(items);
-		    builder.setItems(items, new DialogInterface.OnClickListener() {
-		        public void onClick(DialogInterface dialog, int item) {
-		        	final Cursor cursor = activity.managedQuery(Contacts.ContactMethods.CONTENT_URI, CONTACTMETHODS_PROJECTION,
-		        			Contacts.People.NAME + " == ? AND " +
-		        			FILTER_POSTAL, new String[] {items[item]}, null);
-		        	if (!cursor.moveToNext()) {
-		        		Log.w(TAG, "Couldn't lookup address for contact after contact selection : " + items[item]);
-		        		Toast.makeText(activity, "Failed to lookup contact, this is a bug, report!", Toast.LENGTH_SHORT).show();
-		        		return;
-		        	}
-		        	dialog.dismiss();
-		        	geoMap(cursor.getString(0), cursor.getString(1));
-		        }
-		    });
-		    
-		    AlertDialog dialog = builder.create();
-		    dialog.setOnCancelListener(new OnCancelListener() {
-		    	/*
-		    	 * OnCancel we should return to previous view.
-		    	 * @see android.content.DialogInterface.OnCancelListener#onCancel(android.content.DialogInterface)
-		    	 */
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					handler.onCanceled();
-				}
-		    });
-		    return dialog;
-			
-		}
-		return null;
-	}
 	
 	/*
 	 * Do geo mapping.
@@ -165,4 +158,7 @@ public class SelectContactTask implements NewGenericTask {
 	private void foundLocation(Address location) {
 		handler.onFinished(location.getLatitude(), location.getLongitude());
 	}
+
+	@Override
+	public void Stop() {}
 }

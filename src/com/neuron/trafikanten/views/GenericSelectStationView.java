@@ -146,7 +146,8 @@ public abstract class GenericSelectStationView extends ListActivity {
                 	if (searchEdit.getText().toString().length() == 0) {
                 		resetView();
                 	} else {
-                		stationListAdapter.getList().clear();
+                		if (activeTask != null)
+                			activeTask.Stop();
                 		searchProvider.Search(searchEdit.getText().toString());
                     	searchEdit.setText("");
                 	}
@@ -163,8 +164,8 @@ public abstract class GenericSelectStationView extends ListActivity {
        	searchProvider = DataProviderFactory.getSearchProvider(getResources(), new SearchProviderHandler() {
     		@Override
     		public void onData(SearchStationData station) {
+    			Log.i(TAG,"searchProvider data");
     			stationListAdapter.addItem(station);
-    			stationListAdapter.notifyDataSetChanged();
     		}
 
     		@Override
@@ -176,8 +177,16 @@ public abstract class GenericSelectStationView extends ListActivity {
 
     		@Override
     		public void onFinished() {
+    			Log.i(TAG,"searchProvider finished");
     			setProgressBarIndeterminateVisibility(false);
     		}
+
+			@Override
+			public void onStarted() {
+				Log.i(TAG,"searchProvider started");
+				stationListAdapter.getList().clear();
+				stationListAdapter.notifyDataSetChanged();
+			}
     	});
     }
     
@@ -304,14 +313,14 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private void selectContact() {
 		if (activeTask != null)
 			activeTask.Stop();
-		setProgressBarIndeterminateVisibility(true);
-	
+		searchProvider.Stop();
 		SelectContactTask task = new SelectContactTask();
 		task.show(this, task.new SelectContactHandler() {
 
 			@Override
 			public void onCanceled() {
 				setProgressBarIndeterminateVisibility(false);
+				activeTask = null;
 			}
 
 			@Override
@@ -323,10 +332,16 @@ public abstract class GenericSelectStationView extends ListActivity {
 
 			@Override
 			public void onFinished(double latitude, double longitude) {
+				Log.i(TAG,"selectContactTask finished");
 				setProgressBarIndeterminateVisibility(false);
 				activeTask = null;
-				stationListAdapter.getList().clear();
 				searchProvider.Search(latitude,longitude);
+			}
+
+			@Override
+			public void OnStartWork() {
+				Log.i(TAG,"selectContactTask working");
+				setProgressBarIndeterminateVisibility(true);				
 			}
 			
 		});
@@ -386,6 +401,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	private void refresh() {
 		favoriteDbAdapter.refreshFavorites(stationListAdapter.getList());
+		stationListAdapter.notifyDataSetChanged();
 		infoText.setVisibility(stationListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
 	}
 	

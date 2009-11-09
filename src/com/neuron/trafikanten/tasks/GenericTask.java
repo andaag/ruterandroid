@@ -40,7 +40,6 @@ public abstract class GenericTask extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(getlayoutId());
 		message = (TextView) findViewById(R.id.message);
-		assert(savedInstanceState == null || (handlerActivity == null && handlerIntent == null));
 	}
 	
 	/*

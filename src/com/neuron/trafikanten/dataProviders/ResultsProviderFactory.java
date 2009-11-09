@@ -21,9 +21,7 @@ package com.neuron.trafikanten.dataProviders;
 import java.util.ArrayList;
 
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
-import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
 import com.neuron.trafikanten.dataSets.RouteProposal;
-import com.neuron.trafikanten.dataSets.SearchStationData;
 
 public class ResultsProviderFactory {
 	/*

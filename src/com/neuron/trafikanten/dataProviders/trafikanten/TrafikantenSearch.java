@@ -32,6 +32,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.UTMRef;
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
@@ -40,6 +41,7 @@ import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandle
 import com.neuron.trafikanten.dataSets.SearchStationData;
 
 public class TrafikantenSearch implements ISearchProvider {
+	private static final String TAG = "Trafikanten-TrafikantenSearch";
 	private SearchProviderHandler handler;
 	private Resources resources;
 	private TrafikantenSearchThread thread;
@@ -66,7 +68,9 @@ public class TrafikantenSearch implements ISearchProvider {
 	@Override
 	public void Search(String query) {
 		Stop();
+		Log.i(TAG,"Searching for station " + query);
 		thread = new TrafikantenSearchThread(resources, handler, query);
+		handler.onStarted();
 		thread.start();
 	}
 	
@@ -76,7 +80,9 @@ public class TrafikantenSearch implements ISearchProvider {
 	@Override
 	public void Search(double latitude, double longitude) {
 		Stop();
+		Log.i(TAG,"Searching for coordinates " + latitude + " " + longitude);
 		thread = new TrafikantenSearchThread(resources, handler, latitude, longitude);
+		handler.onStarted();
 		thread.start();
 	}
 }
