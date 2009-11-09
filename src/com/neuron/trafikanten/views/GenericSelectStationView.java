@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -48,15 +47,13 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataProviders.IGenericProvider;
 import com.neuron.trafikanten.dataProviders.ISearchProvider;
-import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
 import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
-import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.LocationTask;
+import com.neuron.trafikanten.tasks.NewGenericTask;
 import com.neuron.trafikanten.tasks.SearchAddressTask;
 import com.neuron.trafikanten.tasks.SelectContactTask;
 import com.neuron.trafikanten.views.map.GenericMap;
@@ -88,6 +85,12 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Views 
 	 */
 	private TextView infoText;
+	
+	/*
+	 * Task tracking
+	 */
+	private NewGenericTask activeTask;
+	private ISearchProvider searchProvider;
 	
 	/*
 	 * Saved instance state: (list)
@@ -143,7 +146,8 @@ public abstract class GenericSelectStationView extends ListActivity {
                 	if (searchEdit.getText().toString().length() == 0) {
                 		resetView();
                 	} else {
-                		search(searchEdit.getText().toString());
+                		stationListAdapter.getList().clear();
+                		searchProvider.Search(searchEdit.getText().toString());
                     	searchEdit.setText("");
                 	}
                 	return true;
@@ -151,34 +155,30 @@ public abstract class GenericSelectStationView extends ListActivity {
 				return false;
 			}
 		});
+		createSearchProvider();
+		setListAdapter(stationListAdapter);
     }
     
-    private void search(String query) {
-       	ISearchProvider searchProvider = DataProviderFactory.getSearchProvider(getResources(), new SearchProviderHandler() {
-			@Override
-			public void onData(SearchStationData station) {
-				stationListAdapter.addItem(station);
-				stationListAdapter.notifyDataSetChanged();
-			}
+    private void createSearchProvider() {
+       	searchProvider = DataProviderFactory.getSearchProvider(getResources(), new SearchProviderHandler() {
+    		@Override
+    		public void onData(SearchStationData station) {
+    			stationListAdapter.addItem(station);
+    			stationListAdapter.notifyDataSetChanged();
+    		}
 
-			@Override
-			public void onError(Exception exception) {
-				Log.w(TAG,"onException " + exception);
-				Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-				setProgressBarIndeterminateVisibility(false);
-			}
+    		@Override
+    		public void onError(Exception exception) {
+    			Log.w(TAG,"onException " + exception);
+    			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+    			setProgressBarIndeterminateVisibility(false);
+    		}
 
-			@Override
-			public void onFinished() {
-				setProgressBarIndeterminateVisibility(false);
-				/*
-				 * Show info text if view is empty
-				 */
-				final TextView infoText = (TextView) findViewById(R.id.emptyText);
-				infoText.setVisibility(stationListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
-			}
+    		@Override
+    		public void onFinished() {
+    			setProgressBarIndeterminateVisibility(false);
+    		}
     	});
-       	searchProvider.Search(query);
     }
     
     /*
@@ -283,7 +283,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         	GenericMap.Show(this, stationListAdapter.getList(), 0);
         	break;
         case CONTACT_ID:
-        	SelectContactTask.StartTask(this);
+        	selectContact();
         	break;
         case ADDRESS_ID:
         	SearchAddressTask.StartTask(this);
@@ -299,6 +299,38 @@ public abstract class GenericSelectStationView extends ListActivity {
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());
         }
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void selectContact() {
+		if (activeTask != null)
+			activeTask.Stop();
+		setProgressBarIndeterminateVisibility(true);
+	
+		SelectContactTask task = new SelectContactTask();
+		task.show(this, task.new SelectContactHandler() {
+
+			@Override
+			public void onCanceled() {
+				setProgressBarIndeterminateVisibility(false);
+			}
+
+			@Override
+			public void onError(Exception exception) {
+				Log.w(TAG,"onException " + exception);
+				Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+				setProgressBarIndeterminateVisibility(false);
+			}
+
+			@Override
+			public void onFinished(double latitude, double longitude) {
+				setProgressBarIndeterminateVisibility(false);
+				activeTask = null;
+				stationListAdapter.getList().clear();
+				searchProvider.Search(latitude,longitude);
+			}
+			
+		});
+		activeTask = task;
 	}
 
 	/*
@@ -358,34 +390,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 	}
 	
 	/*
-	 * Handler for messages (both from Intent's and Handlers)
-	 */
-	public void onMessage(Message msg) {
-    	switch(msg.what) {
-    	case IGenericProvider.MESSAGE_DONE:
-			/*
-			 * When search is completed, replace the list with the new list (if there is one), and refresh.
-			 */
-    		// messageDone is before onResume, so we need to reopen the database.
-			favoriteDbAdapter.open();
-			historyDbAdapter.open();
-			
-			final ArrayList<SearchStationData> list = ResultsProviderFactory.GetSearchResults();
-			if (list != null) {
-				stationListAdapter.setList(list);
-			}
-			GenericSelectStationView.this.refresh();
-			
-    		break;
-    	case IGenericProvider.MESSAGE_EXCEPTION:
-    		final String exception = msg.getData().getString(IGenericProvider.KEY_EXCEPTION);
-			Log.w(TAG,"onException " + exception);
-			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-			break;
-    	}
-	}
-	
-	/*
 	 * activityResult is always a task, with KEY_MESSAGE is passed to onMessage
 	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
 	 */
@@ -393,13 +397,9 @@ public abstract class GenericSelectStationView extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	if (resultCode == RESULT_OK) {
 			/*
-			 * We have a few views that always return search results
+			 * return from map view, will return a single station
 			 */
-			if (data.hasExtra(GenericTask.KEY_MESSAGE)) {
-				final Message msg = data.getParcelableExtra(GenericTask.KEY_MESSAGE);
-				onMessage(msg);
-				return;
-			} else if (data.hasExtra(SearchStationData.PARCELABLE)) {
+			if (data.hasExtra(SearchStationData.PARCELABLE)) {
 				/*
 				 * We got station in return
 				 */

@@ -177,7 +177,7 @@ public class SearchAddressTask extends GenericTask {
 	}
 	
 	private void foundLocation(Address location) {
-		SearchStationTask.StartTask(this, location.getLatitude(), location.getLongitude());
+		//SearchStationTask.StartTask(this, location.getLatitude(), location.getLongitude());
 		setVisible(false);
 	}
 	

@@ -74,6 +74,11 @@ public class RealtimeView extends ListActivity {
 	private SearchStationData station;
 	private RealtimeAdapter realtimeList;
 	
+	/*
+	 * Data provider
+	 */
+	private IRealtimeProvider realtimeProvider;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,7 +109,9 @@ public class RealtimeView extends ListActivity {
     
     private void load() {
     	setProgressBarIndeterminateVisibility(true);
-    	IRealtimeProvider realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
+    	if (realtimeProvider != null)
+    		realtimeProvider.Stop();
+    	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
 				realtimeList.addItem(realtimeData);
@@ -254,7 +261,7 @@ public class RealtimeView extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		RealtimeView.this.setListAdapter(realtimeList); // Re render times to avoid showing "+5m" when it's 2m left.
+		realtimeList.notifyDataSetInvalidated();
 	}
 
 	@Override
