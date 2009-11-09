@@ -89,7 +89,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 	/*
 	 * Task tracking
 	 */
-	private NewGenericTask activeTask;
 	private ISearchProvider searchProvider;
 	
 	/*
@@ -146,8 +145,6 @@ public abstract class GenericSelectStationView extends ListActivity {
                 	if (searchEdit.getText().toString().length() == 0) {
                 		resetView();
                 	} else {
-                		if (activeTask != null)
-                			activeTask.Stop();
                 		searchProvider.Search(searchEdit.getText().toString());
                     	searchEdit.setText("");
                 	}
@@ -292,7 +289,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         	GenericMap.Show(this, stationListAdapter.getList(), 0);
         	break;
         case CONTACT_ID:
-        	selectContact();
+        	SelectContactTask.StartTask(this);
         	break;
         case ADDRESS_ID:
         	SearchAddressTask.StartTask(this);
@@ -308,45 +305,6 @@ public abstract class GenericSelectStationView extends ListActivity {
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());
         }
 		return super.onOptionsItemSelected(item);
-	}
-	
-	private void selectContact() {
-		if (activeTask != null)
-			activeTask.Stop();
-		searchProvider.Stop();
-		
-		SelectContactTask task = new SelectContactTask();
-		task.show(this, task.new SelectContactHandler() {
-
-			@Override
-			public void onCanceled() {
-				setProgressBarIndeterminateVisibility(false);
-				activeTask = null;
-			}
-
-			@Override
-			public void onError(Exception exception) {
-				Log.w(TAG,"onException " + exception);
-				Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-				setProgressBarIndeterminateVisibility(false);
-			}
-
-			@Override
-			public void onFinished(double latitude, double longitude) {
-				Log.i(TAG,"selectContactTask finished");
-				setProgressBarIndeterminateVisibility(false);
-				activeTask = null;
-				searchProvider.Search(latitude,longitude);
-			}
-
-			@Override
-			public void OnStartWork() {
-				Log.i(TAG,"selectContactTask working");
-				setProgressBarIndeterminateVisibility(true);				
-			}
-			
-		});
-		activeTask = task;
 	}
 
 	/*

@@ -71,7 +71,7 @@ public class LocationTask extends GenericTask {
 			Toast.makeText(this, R.string.noLocationFoundError, Toast.LENGTH_SHORT).show();
 			return;
 		}
-		//SearchStationTask.StartTask(this, location[0], location[1]);
+		SearchStationTask.StartTask(this, location[0], location[1]);
 		setVisible(false);
 	}
 	
