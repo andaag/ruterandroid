@@ -22,7 +22,7 @@ package com.neuron.trafikanten.dataProviders;
 /*
  * Search Provider
  */
-public interface  ISearchProvider extends IGenericProvider {
+public interface ISearchProvider extends IGenericProvider {
 	public void Search(String query);
 	public void Search(double latitude, double longitude);
 	public void Stop();

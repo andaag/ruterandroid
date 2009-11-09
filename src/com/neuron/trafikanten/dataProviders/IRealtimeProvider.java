@@ -18,11 +18,21 @@
 
 package com.neuron.trafikanten.dataProviders;
 
+import com.neuron.trafikanten.dataSets.RealtimeData;
+
+import android.os.Handler;
+
 
 /*
  * Realtime provider
  */
-public interface IRealtimeProvider extends IGenericProvider {
+public interface IRealtimeProvider {
 	public void Fetch(int stationId);
 	public void Stop();
+	
+	abstract class RealtimeProviderHandler extends Handler {
+	    public abstract void onData(RealtimeData realtimeData);
+	    public abstract void onError(Exception e);
+	    public abstract void onFinished();
+	}
 }

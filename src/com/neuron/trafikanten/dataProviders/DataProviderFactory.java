@@ -21,6 +21,7 @@ package com.neuron.trafikanten.dataProviders;
 import android.content.res.Resources;
 import android.os.Handler;
 
+import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
@@ -54,7 +55,7 @@ public class DataProviderFactory {
 	/*
 	 * Get Realtime Provider
 	 */
-	public static IRealtimeProvider getRealtimeProvider(Handler handler) {
+	public static IRealtimeProvider getRealtimeProvider(RealtimeProviderHandler handler) {
 		return new TrafikantenRealtime(handler);
 	}
 	

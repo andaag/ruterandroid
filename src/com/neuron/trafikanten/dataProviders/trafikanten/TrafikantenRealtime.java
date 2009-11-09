@@ -21,29 +21,27 @@ package com.neuron.trafikanten.dataProviders.trafikanten;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
-import com.neuron.trafikanten.dataSets.RealtimeData;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
+import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
+import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
+import com.neuron.trafikanten.dataSets.RealtimeData;
+
 public class TrafikantenRealtime implements IRealtimeProvider {
-	private Handler handler;
+	private RealtimeProviderHandler handler;
 	private TrafikantenRealtimeThread thread;
 	
-	public TrafikantenRealtime(Handler handler) {
+	public TrafikantenRealtime(RealtimeProviderHandler handler) {
 		this.handler = handler;
 	}
 	
@@ -68,23 +66,14 @@ public class TrafikantenRealtime implements IRealtimeProvider {
 		thread = new TrafikantenRealtimeThread(handler, stationId);
 		thread.start();
 	}
-
-	/*
-	 * Get results (note that this MUST NOT be called while thread is running)
-	 */
-	public static ArrayList<RealtimeData> GetRealtimeList() {
-		final ArrayList<RealtimeData> results = RealtimeHandler.realtimeList;
-		RealtimeHandler.realtimeList = null;
-		return results; 
-	}
 }
 
 class TrafikantenRealtimeThread extends Thread implements Runnable {
 	private static final String TAG = "Trafikanten-T-RealtimeThread";
-	private Handler handler;
+	private RealtimeProviderHandler handler;
 	private int stationId;	
 	
-	public TrafikantenRealtimeThread(Handler handler, int stationId) {
+	public TrafikantenRealtimeThread(RealtimeProviderHandler handler, int stationId) {
 		this.handler = handler;
 		this.stationId = stationId;
 	}
@@ -115,12 +104,7 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 			 */
 			if (e.getClass() == InterruptedException.class)
 				return;
-
-			final Message msg = handler.obtainMessage(IRealtimeProvider.MESSAGE_EXCEPTION);
-			final Bundle bundle = new Bundle();
-			bundle.putString(IRealtimeProvider.KEY_EXCEPTION, e.toString());
-			msg.setData(bundle);
-			handler.sendMessage(msg);
+			handler.onError(e);
 		}
 	}
 }
@@ -130,9 +114,8 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
  */
 class RealtimeHandler extends DefaultHandler {
 	private RealtimeData data;
-	public static ArrayList<RealtimeData> realtimeList;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-	private Handler handler;
+	private RealtimeProviderHandler handler;
 	
 	/*
 	 * Temporary variables for parsing. 
@@ -154,28 +137,9 @@ class RealtimeHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public RealtimeHandler(Handler handler)
+	public RealtimeHandler(RealtimeProviderHandler handler)
 	{
-		realtimeList = new ArrayList<RealtimeData>();
 		this.handler = handler;
-	}
-	
-	/*
-	 * Add data to realtimeList
-	 */
-	private void addData() {
-		/*
-		 * First search through and check if any previous match has the same line and destination.
-		 * If it does, add us to that instead of making a huge list of duplicates.
-		 */
-		for (RealtimeData d : realtimeList) {
-			if (d.line.equals(data.line) && d.destination.equals(data.destination)) {
-				d.arrivalList.add(data);
-				return;
-			}
-		}
-		
-		realtimeList.add(data);
 	}
 	
 	/*
@@ -183,7 +147,12 @@ class RealtimeHandler extends DefaultHandler {
 	 */
 	@Override
 	public void endDocument() throws SAXException {
-		handler.sendEmptyMessage(IRealtimeProvider.MESSAGE_DONE);
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				handler.onFinished();			
+			}
+		});
 	}
 	
 	/*
@@ -232,13 +201,18 @@ class RealtimeHandler extends DefaultHandler {
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 	    if (!inMonitoredStopVisit) return;
-	    
 	    if (inMonitoredStopVisit && localName.equals("MonitoredStopVisit")) {
 	        /*
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */
 	        inMonitoredStopVisit = false;
-	        addData();
+	        final RealtimeData sendData = data;
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					handler.onData(sendData);	
+				}
+			});
 	    } else { 
 	    	if (inPublishedLineName && localName.equals("PublishedLineName")) {
 		        inPublishedLineName = false;

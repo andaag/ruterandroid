@@ -20,10 +20,8 @@ package com.neuron.trafikanten.dataProviders;
 
 import java.util.ArrayList;
 
-import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
-import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 
@@ -34,13 +32,6 @@ public class ResultsProviderFactory {
 	 */
 	public static ArrayList<SearchStationData> GetSearchResults() {
 		return TrafikantenSearch.GetStationList();
-	}
-	
-	/*
-	 * Realtime data
-	 */
-	public static ArrayList<RealtimeData> getRealtimeResults() {
-		return TrafikantenRealtime.GetRealtimeList();
 	}
 	
 	/*

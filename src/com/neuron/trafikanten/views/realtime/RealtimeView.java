@@ -23,10 +23,8 @@ import java.util.ArrayList;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -34,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -43,14 +42,12 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.IGenericProvider;
+import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
-import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
+import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 import com.neuron.trafikanten.notification.NotificationDialog;
-import com.neuron.trafikanten.tasks.GenericTask;
-import com.neuron.trafikanten.tasks.RealtimeDataTask;
 
 public class RealtimeView extends ListActivity {
 	private static final String TAG = "Trafikanten-RealtimeView";
@@ -71,9 +68,6 @@ public class RealtimeView extends ListActivity {
 	private static final int DIALOG_NOTIFICATION = 1;
 	private int selectedId = 0;
 	
-	
-	private boolean firstLoad = true;
-
 	/*
 	 * Saved instance data
 	 */
@@ -84,6 +78,7 @@ public class RealtimeView extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
         /*
          * Setup view and adapter.
@@ -108,59 +103,33 @@ public class RealtimeView extends ListActivity {
     }
     
     private void load() {
-    	RealtimeDataTask.StartTask(this, station.stationId);
+    	setProgressBarIndeterminateVisibility(true);
+    	IRealtimeProvider realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
+			@Override
+			public void onData(RealtimeData realtimeData) {
+				realtimeList.addItem(realtimeData);
+				realtimeList.notifyDataSetChanged();
+			}
+
+			@Override
+			public void onError(Exception exception) {
+				Log.w(TAG,"onException " + exception);
+				Toast.makeText(RealtimeView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+				setProgressBarIndeterminateVisibility(false);
+			}
+
+			@Override
+			public void onFinished() {
+				setProgressBarIndeterminateVisibility(false);
+				/*
+				 * Show info text if view is empty
+				 */
+				final TextView infoText = (TextView) findViewById(R.id.emptyText);
+				infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
+			}
+    	});
+    	realtimeProvider.Fetch(station.stationId);
     }
-    
-	/*
-	 * Handler for messages (both from Intent's and Handlers)
-	 */
-	public void onMessage(Message msg) {
-    	switch(msg.what) {
-    	case IRealtimeProvider.MESSAGE_DONE:
-			/*
-			 * If we haven't already set the most up to date list, set it.
-			 */
-    		firstLoad = false;
-    		final ArrayList<RealtimeData> list = ResultsProviderFactory.getRealtimeResults();
-    		if (list != null) {
-    			realtimeList.setList(list);
-    		}
-			RealtimeView.this.setListAdapter(realtimeList);
-			
-			/*
-			 * Show info text if view is empty
-			 */
-			final TextView infoText = (TextView) findViewById(R.id.emptyText);
-			infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
-    		break;
-    	case IRealtimeProvider.MESSAGE_EXCEPTION:
-    		final String exception = msg.getData().getString(IGenericProvider.KEY_EXCEPTION);
-			Log.w(TAG,"onException " + exception);
-			Toast.makeText(RealtimeView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-			break;
-    	}
-	}
-	
-	/*
-	 * activityResult is always a task, and can always be passed to onMessage
-	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
-	 */
-    @Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if (resultCode == RESULT_CANCELED && requestCode == RealtimeDataTask.TASK_REALTIME && firstLoad) {
-    		/*
-    		 * Canceled while loading view, should return to select station view.
-    		 */
-    		finish();
-    		return;
-    	}
-    	if (resultCode == RESULT_OK) {
-			final Message msg = data.getParcelableExtra(GenericTask.KEY_MESSAGE);
-			onMessage(msg);
-			return;
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
     
 	/*
 	 * Options menu, visible on menu button.
@@ -312,7 +281,20 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	public ArrayList<RealtimeData> getList() { return items; }
 	public void setList(ArrayList<RealtimeData> items) { this.items = items; }
-	//public void sort() { Collections.sort(items); }
+	public void addItem(RealtimeData item) { 
+		/*
+		 * First search through and check if any previous match has the same line and destination.
+		 * If it does, add us to that instead of making a huge list of duplicates.
+		 */
+		for (RealtimeData d : items) {
+			if (d.line.equals(item.line) && d.destination.equals(item.destination)) {
+				d.arrivalList.add(item);
+				return;
+			}
+		}
+		
+		items.add(item);
+	}
 	
 	/*
 	 * Standard android.widget.Adapter items, self explanatory.
