@@ -101,10 +101,10 @@ public class RealtimeView extends ListActivity {
         	station = savedInstanceState.getParcelable(SearchStationData.PARCELABLE);
         	final ArrayList<RealtimeData> list = savedInstanceState.getParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST);
         	realtimeList.setList(list);
-        	setListAdapter(realtimeList);
         }
         setTitle("Trafikanten - " + station.stopName);
         registerForContextMenu(getListView());
+        setListAdapter(realtimeList);
     }
     
     private void load() {
