@@ -281,13 +281,13 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	public ArrayList<RealtimeData> getList() { return items; }
 	public void setList(ArrayList<RealtimeData> items) { this.items = items; }
-	public void addItem(RealtimeData item) { 
+	public void addItem(RealtimeData item) {
 		/*
 		 * First search through and check if any previous match has the same line and destination.
 		 * If it does, add us to that instead of making a huge list of duplicates.
 		 */
 		for (RealtimeData d : items) {
-			if (d.line.equals(item.line) && d.destination.equals(item.destination)) {
+			if (d.destination.equals(item.destination) && d.line.equals(item.line)) {
 				d.arrivalList.add(item);
 				return;
 			}
