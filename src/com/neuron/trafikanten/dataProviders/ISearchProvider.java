@@ -18,12 +18,22 @@
 
 package com.neuron.trafikanten.dataProviders;
 
+import android.os.Handler;
+
+import com.neuron.trafikanten.dataSets.SearchStationData;
+
 
 /*
  * Search Provider
  */
-public interface ISearchProvider extends IGenericProvider {
+public interface ISearchProvider {
 	public void Search(String query);
 	public void Search(double latitude, double longitude);
 	public void Stop();
+	
+	abstract class SearchProviderHandler extends Handler {
+	    public abstract void onData(SearchStationData searchData);
+	    public abstract void onError(Exception e);
+	    public abstract void onFinished();
+	}
 }

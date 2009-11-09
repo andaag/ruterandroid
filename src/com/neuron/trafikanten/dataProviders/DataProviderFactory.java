@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.os.Handler;
 
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
+import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
@@ -47,9 +48,8 @@ public class DataProviderFactory {
 	/*
 	 * Get Search Provider
 	 */
-	public static ISearchProvider getSearchProvider(Resources resources, Handler handler) {
+	public static ISearchProvider getSearchProvider(Resources resources, SearchProviderHandler handler) {
 		return new TrafikantenSearch(resources, handler);
-
 	}
 	
 	/*

@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
@@ -46,16 +47,17 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.IGenericProvider;
 import com.neuron.trafikanten.dataProviders.ISearchProvider;
 import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
+import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
 import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.LocationTask;
 import com.neuron.trafikanten.tasks.SearchAddressTask;
-import com.neuron.trafikanten.tasks.SearchStationTask;
 import com.neuron.trafikanten.tasks.SelectContactTask;
 import com.neuron.trafikanten.views.map.GenericMap;
 
@@ -90,12 +92,13 @@ public abstract class GenericSelectStationView extends ListActivity {
 	/*
 	 * Saved instance state: (list)
 	 */
-	public SelectListAdapter selectListAdapter;
+	public StationListAdapter stationListAdapter;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
         /*
          * Setup view
@@ -109,14 +112,14 @@ public abstract class GenericSelectStationView extends ListActivity {
 		 */
         favoriteDbAdapter = new FavoriteDbAdapter(this);
         historyDbAdapter = new HistoryDbAdapter(this);
-        selectListAdapter = new SelectListAdapter(this);
+        stationListAdapter = new StationListAdapter(this);
         
         if (savedInstanceState == null) {
-        	favoriteDbAdapter.addFavoritesToList(selectListAdapter.getList());
-        	historyDbAdapter.addHistoryToList(selectListAdapter.getList());
+        	favoriteDbAdapter.addFavoritesToList(stationListAdapter.getList());
+        	historyDbAdapter.addHistoryToList(stationListAdapter.getList());
         } else {
-        	final ArrayList<SearchStationData> list = savedInstanceState.getParcelableArrayList(SelectListAdapter.KEY_SEARCHSTATIONLIST);
-        	selectListAdapter.setList(list);
+        	final ArrayList<SearchStationData> list = savedInstanceState.getParcelableArrayList(StationListAdapter.KEY_SEARCHSTATIONLIST);
+        	stationListAdapter.setList(list);
         }
 		refresh();
         
@@ -140,7 +143,7 @@ public abstract class GenericSelectStationView extends ListActivity {
                 	if (searchEdit.getText().toString().length() == 0) {
                 		resetView();
                 	} else {
-                		SearchStationTask.StartTask(GenericSelectStationView.this, searchEdit.getText().toString());
+                		search(searchEdit.getText().toString());
                     	searchEdit.setText("");
                 	}
                 	return true;
@@ -148,6 +151,34 @@ public abstract class GenericSelectStationView extends ListActivity {
 				return false;
 			}
 		});
+    }
+    
+    private void search(String query) {
+       	ISearchProvider searchProvider = DataProviderFactory.getSearchProvider(getResources(), new SearchProviderHandler() {
+			@Override
+			public void onData(SearchStationData station) {
+				stationListAdapter.addItem(station);
+				stationListAdapter.notifyDataSetChanged();
+			}
+
+			@Override
+			public void onError(Exception exception) {
+				Log.w(TAG,"onException " + exception);
+				Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+				setProgressBarIndeterminateVisibility(false);
+			}
+
+			@Override
+			public void onFinished() {
+				setProgressBarIndeterminateVisibility(false);
+				/*
+				 * Show info text if view is empty
+				 */
+				final TextView infoText = (TextView) findViewById(R.id.emptyText);
+				infoText.setVisibility(stationListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+			}
+    	});
+       	searchProvider.Search(query);
     }
     
     /*
@@ -160,7 +191,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-		final SearchStationData stationData = selectListAdapter.getList().get(info.position);
+		final SearchStationData stationData = stationListAdapter.getList().get(info.position);
 		
 		if (stationData.isFavorite) {
 			menu.add(0, REMOVEFAVORITE_ID, 0, R.string.removeFavorite);			
@@ -182,7 +213,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		 * Get selected item.
 		 */
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        final SearchStationData station = (SearchStationData) selectListAdapter.getItem(info.position);
+        final SearchStationData station = (SearchStationData) stationListAdapter.getItem(info.position);
 
 		switch(item.getItemId()) {
 		case ADDFAVORITE_ID:
@@ -249,7 +280,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         	LocationTask.StartTask(this);
         	break;
         case MAP_ID:
-        	GenericMap.Show(this, selectListAdapter.getList(), 0);
+        	GenericMap.Show(this, stationListAdapter.getList(), 0);
         	break;
         case CONTACT_ID:
         	SelectContactTask.StartTask(this);
@@ -288,9 +319,9 @@ public abstract class GenericSelectStationView extends ListActivity {
     	 * Reset view
     	 */
         
-    	selectListAdapter.clear();
-    	favoriteDbAdapter.addFavoritesToList(selectListAdapter.getList());
-    	historyDbAdapter.addHistoryToList(selectListAdapter.getList());
+        stationListAdapter.clear();
+    	favoriteDbAdapter.addFavoritesToList(stationListAdapter.getList());
+    	historyDbAdapter.addHistoryToList(stationListAdapter.getList());
     	refresh();
     	
     	/*
@@ -309,7 +340,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		/*
 		 * Take current selected station, and return with it.
 		 */
-		SearchStationData station = (SearchStationData) selectListAdapter.getItem(position);
+		SearchStationData station = (SearchStationData) stationListAdapter.getItem(position);
 		stationSelected(station);
 	}
 	
@@ -322,9 +353,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Refresh view, this involves checking list against current favorites and setting .isFavorite to render star.
 	 */
 	private void refresh() {
-		favoriteDbAdapter.refreshFavorites(selectListAdapter.getList());
-		setListAdapter(selectListAdapter);
-		infoText.setVisibility(selectListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+		favoriteDbAdapter.refreshFavorites(stationListAdapter.getList());
+		infoText.setVisibility(stationListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
 	}
 	
 	/*
@@ -332,7 +362,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	public void onMessage(Message msg) {
     	switch(msg.what) {
-    	case ISearchProvider.MESSAGE_DONE:
+    	case IGenericProvider.MESSAGE_DONE:
 			/*
 			 * When search is completed, replace the list with the new list (if there is one), and refresh.
 			 */
@@ -342,7 +372,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 			
 			final ArrayList<SearchStationData> list = ResultsProviderFactory.GetSearchResults();
 			if (list != null) {
-				selectListAdapter.setList(list);
+				stationListAdapter.setList(list);
 			}
 			GenericSelectStationView.this.refresh();
 			
@@ -406,16 +436,16 @@ public abstract class GenericSelectStationView extends ListActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putParcelableArrayList(SelectListAdapter.KEY_SEARCHSTATIONLIST, selectListAdapter.getList());
+		outState.putParcelableArrayList(StationListAdapter.KEY_SEARCHSTATIONLIST, stationListAdapter.getList());
 	}
 }
 
-class SelectListAdapter extends BaseAdapter {
+class StationListAdapter extends BaseAdapter {
 	public static final String KEY_SEARCHSTATIONLIST = "searchstationlist";
 	private LayoutInflater inflater;
 	private ArrayList<SearchStationData> items = new ArrayList<SearchStationData>();
 	
-	public SelectListAdapter(Context context) {
+	public StationListAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
 	}
 
@@ -425,6 +455,7 @@ class SelectListAdapter extends BaseAdapter {
 	public void clear() { items.clear(); }
 	public ArrayList<SearchStationData> getList() { return items; }
 	public void setList(ArrayList<SearchStationData> items) { this.items = items; }
+	public void addItem(SearchStationData item) { items.add(item); }
 	
 	/*
 	 * Standard android.widget.Adapter items, self explanatory.

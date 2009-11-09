@@ -26,14 +26,6 @@ import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 
 public class ResultsProviderFactory {
-	
-	/*
-	 * Search data
-	 */
-	public static ArrayList<SearchStationData> GetSearchResults() {
-		return TrafikantenSearch.GetStationList();
-	}
-	
 	/*
 	 * Route data
 	 */

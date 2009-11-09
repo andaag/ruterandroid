@@ -19,7 +19,6 @@
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -33,21 +32,19 @@ import org.xml.sax.helpers.DefaultHandler;
 import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.UTMRef;
 import android.content.res.Resources;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.ISearchProvider;
+import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 
 public class TrafikantenSearch implements ISearchProvider {
-	private Handler handler;
+	private SearchProviderHandler handler;
 	private Resources resources;
 	private TrafikantenSearchThread thread;
 	
-	public TrafikantenSearch(Resources resources, Handler handler) {
+	public TrafikantenSearch(Resources resources, SearchProviderHandler handler) {
 		this.handler = handler;
 		this.resources = resources;
 	}
@@ -82,33 +79,24 @@ public class TrafikantenSearch implements ISearchProvider {
 		thread = new TrafikantenSearchThread(resources, handler, latitude, longitude);
 		thread.start();
 	}
-
-	/*
-	 * Get results (note that this MUST NOT be called while thread is running)
-	 */
-	public static ArrayList<SearchStationData> GetStationList() {
-		final ArrayList<SearchStationData> results = SearchHandler.stationList;
-		SearchHandler.stationList = null;
-		return results; 
-	}
 }
 
 
 class TrafikantenSearchThread extends Thread implements Runnable {
 	//private static final String TAG = "Trafikanten-T-SearchThread";
-	private Handler handler;
+	private SearchProviderHandler handler;
 	private Resources resources;
 	private String query;
 	private double latitude;
 	private double longitude;
 	
-	public TrafikantenSearchThread(Resources resources, Handler handler, String query) {
+	public TrafikantenSearchThread(Resources resources, SearchProviderHandler handler, String query) {
 		this.handler = handler;
 		this.resources = resources;
 		this.query = query;
 	}
 	
-	public TrafikantenSearchThread(Resources resources, Handler handler, double latitude, double longitude) {
+	public TrafikantenSearchThread(Resources resources, SearchProviderHandler handler, double latitude, double longitude) {
 		this.handler = handler;
 		this.resources = resources;
 		
@@ -156,12 +144,7 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 			 */
 			if (e.getClass() == InterruptedException.class)
 				return;
-		
-			final Message msg = handler.obtainMessage(ISearchProvider.MESSAGE_EXCEPTION);
-			final Bundle bundle = new Bundle();
-			bundle.putString(ISearchProvider.KEY_EXCEPTION, e.toString());
-			msg.setData(bundle);
-			handler.sendMessage(msg);
+			handler.onError(e);
 		}
 	}
 }
@@ -171,8 +154,7 @@ class TrafikantenSearchThread extends Thread implements Runnable {
  */
 class SearchHandler extends DefaultHandler {
 	private SearchStationData station;
-	public static ArrayList<SearchStationData> stationList;
-	private Handler handler;
+	private SearchProviderHandler handler;
 	
 	/*
 	 * Temporary variables for parsing. 
@@ -193,9 +175,8 @@ class SearchHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public SearchHandler(Handler handler)
+	public SearchHandler(SearchProviderHandler handler)
 	{
-		stationList = new ArrayList<SearchStationData>();
 		this.handler = handler;
 	}
 	
@@ -223,7 +204,12 @@ class SearchHandler extends DefaultHandler {
 	 */
 	@Override
 	public void endDocument() throws SAXException {
-		handler.sendEmptyMessage(ISearchProvider.MESSAGE_DONE);
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				handler.onFinished();			
+			}
+		});
 	}
 	
 
@@ -264,8 +250,15 @@ class SearchHandler extends DefaultHandler {
              * on StopMatch we're at the end, and we need to add the station to the station list.
              */
             inPlace = false;
-            if (!ignore)
-            	stationList.add(station);
+            if (!ignore) {
+    	        final SearchStationData sendData = station;
+    			handler.post(new Runnable() {
+    				@Override
+    				public void run() {
+    					handler.onData(sendData);	
+    				}
+    			});
+            }
             ignore = false;
         } else {
         	if (ignore) return;
