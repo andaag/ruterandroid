@@ -25,7 +25,6 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,13 +42,14 @@ import android.widget.Toast;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataProviders.IGenericProvider;
+import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;
-import com.neuron.trafikanten.dataProviders.ResultsProviderFactory;
+import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
+import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
+import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
-import com.neuron.trafikanten.tasks.GenericTask;
-import com.neuron.trafikanten.tasks.SearchRouteTask;
+import com.neuron.trafikanten.views.realtime.RealtimeView;
 
 /*
  * This class shows a route selector list, when multiple travelproposals are sent.
@@ -63,6 +63,7 @@ public class OverviewRouteView extends ListActivity {
 	 * Wanted Route, this is used as a base for the search.
 	 */
 	private RouteData routeData;
+	private IRouteProvider routeProvider;
 	
 	public static void ShowRoute(Activity activity, RouteData routeData) {
 		Intent intent = new Intent(activity, OverviewRouteView.class);
@@ -98,7 +99,39 @@ public class OverviewRouteView extends ListActivity {
 	 * Load station data
 	 */
 	private void load() {
-		SearchRouteTask.StartTask(this, routeData);
+    	setProgressBarIndeterminateVisibility(true);
+    	if (routeProvider != null)
+    		routeProvider.Stop();
+    	
+    	routeList.getList().clear();
+    	routeList.notifyDataSetChanged();
+    	
+    	routeProvider = DataProviderFactory.getRouteProvider(getResources(), new RouteProviderHandler() {
+			@Override
+			public void onData(RouteProposal routeProposal) {
+				routeList.addItem(routeProposal);
+				routeList.notifyDataSetChanged();
+			}
+
+			@Override
+			public void onError(Exception exception) {
+				Log.w(TAG,"onException " + exception);
+				Toast.makeText(OverviewRouteView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+				setProgressBarIndeterminateVisibility(false);
+			}
+
+			@Override
+			public void onFinished() {
+				setProgressBarIndeterminateVisibility(false);
+				/*
+				 * Show info text if view is empty
+				 */
+				/*final TextView infoText = (TextView) findViewById(R.id.emptyText);
+				infoText.setVisibility(routeList.getCount() > 0 ? View.GONE : View.VISIBLE);*/
+			}
+    		
+    	});
+    	routeProvider.Search(routeData);
 	}
 	
 	/*
@@ -141,6 +174,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 	public Object getItem(int pos) { return items.get(pos); }
 	@Override
 	public long getItemId(int pos) { return pos; }
+	public void addItem(RouteProposal item) { items.add(item); }
 	
 	/*
 	 * Setup the view

@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.text.FieldPosition;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.parsers.SAXParser;
@@ -35,23 +34,21 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.res.Resources;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IRouteProvider;
+import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 
 public class TrafikantenRoute implements IRouteProvider {
-	private Handler handler;
+	private RouteProviderHandler handler;
 	private TrafikantenRouteThread thread;
 	private Resources resources;
 	
-	public TrafikantenRoute(Resources resources, Handler handler) {
+	public TrafikantenRoute(Resources resources, RouteProviderHandler handler) {
 		this.handler = handler;
 		this.resources = resources;
 	}
@@ -78,24 +75,15 @@ public class TrafikantenRoute implements IRouteProvider {
 			thread = null;
 		}
 	}
-	
-	/*
-	 * Get results (note that this MUST NOT be called while thread is running)
-	 */
-	public static ArrayList<RouteProposal> GetRouteList() {
-		final ArrayList<RouteProposal> results = RouteHandler.travelProposalList;
-		RouteHandler.travelProposalList = null;
-		return results; 
-	}
 }
 
 class TrafikantenRouteThread extends Thread implements Runnable {
 	//private final static String TAG = "Trafikanten-T-RouteThread";
-	private Handler handler;
+	private RouteProviderHandler handler;
 	private Resources resources;
 	public static RouteData routeData;
 	
-	public TrafikantenRouteThread(Resources resources, Handler handler, RouteData routeData) {
+	public TrafikantenRouteThread(Resources resources, RouteProviderHandler handler, RouteData routeData) {
 		this.handler = handler;
 		this.resources = resources;
 		TrafikantenRouteThread.routeData = routeData;
@@ -144,19 +132,22 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 			if (e.getClass() == InterruptedException.class)
 				return;
 
-			final Message msg = handler.obtainMessage(IRouteProvider.MESSAGE_EXCEPTION);
-			final Bundle bundle = new Bundle();
-			bundle.putString(IRouteProvider.KEY_EXCEPTION, e.toString());
-			msg.setData(bundle);
-			handler.sendMessage(msg);
+			/*
+			 * Send exception
+			 */
+			final Exception sendException = e;
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					handler.onError(sendException);
+				}
+			});
 		}
 	}
 }
 
 class RouteHandler extends DefaultHandler {
-	private Handler handler;
-	// Results:
-	public static ArrayList<RouteProposal> travelProposalList;
+	private RouteProviderHandler handler;
 	// For parsing:
 	private static RouteProposal travelProposal;
 	private RouteData travelStage; // temporary only, these are moved to travelStageList
@@ -186,8 +177,7 @@ class RouteHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 
-	public RouteHandler(Handler handler) {
-		travelProposalList = new ArrayList<RouteProposal>();
+	public RouteHandler(RouteProviderHandler handler) {
 		this.handler = handler;
 	}
 	
@@ -196,7 +186,12 @@ class RouteHandler extends DefaultHandler {
 	 */
 	@Override
 	public void endDocument() throws SAXException {
-		handler.sendEmptyMessage(IRouteProvider.MESSAGE_DONE);
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				handler.onFinished();			
+			}
+		});
 	}
 	
 	/*
@@ -281,7 +276,15 @@ class RouteHandler extends DefaultHandler {
 			 * add the travel proposal to our master list
 			 */
 			inTravelProposal = false;
-			travelProposalList.add(travelProposal);
+			
+	        final RouteProposal sendData = travelProposal;
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					handler.onData(sendData);	
+				}
+			});
+			
 		} else {
 			if (!inTravelStage) {
 		        if (inDepartureTime && localName.equals("DepartureTime")) {
