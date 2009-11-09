@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class RealtimeData implements Parcelable,Comparable<RealtimeData> {
+public class RealtimeData implements Parcelable {
 	public final static String PARCELABLE = "RealtimeData";
 	public String line;
 	public String destination;
@@ -43,15 +43,6 @@ public class RealtimeData implements Parcelable,Comparable<RealtimeData> {
 	public ArrayList<RealtimeData> arrivalList = new ArrayList<RealtimeData>();
 	
 	public RealtimeData() { }
-	
-	@Override
-	public int compareTo(RealtimeData data) {
-		// TODO PERF : this is retarded.
-		if (expectedArrival > 0 && data.expectedArrival > 0) {
-			return Long.valueOf(expectedArrival).compareTo(Long.valueOf(data.expectedArrival));
-		}
-		return Long.valueOf(aimedArrival).compareTo(Long.valueOf(data.aimedArrival));
-	}
 	
 	/*
 	 * @see android.os.Parcelable
