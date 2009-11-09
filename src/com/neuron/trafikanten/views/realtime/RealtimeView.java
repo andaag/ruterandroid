@@ -108,6 +108,9 @@ public class RealtimeView extends ListActivity {
     }
     
     private void load() {
+    	realtimeList.getList().clear();
+    	realtimeList.notifyDataSetChanged();
+    	
     	setProgressBarIndeterminateVisibility(true);
     	if (realtimeProvider != null)
     		realtimeProvider.Stop();
