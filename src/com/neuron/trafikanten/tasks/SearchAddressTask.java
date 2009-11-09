@@ -56,6 +56,16 @@ public class SearchAddressTask implements GenericTask {
 			}
 		});
 		
+		/*
+		 * Handler onCancel
+		 */
+		dialog.setOnCancelListener(new OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				handler.onCanceled();				
+			}
+		});
+		
 		dialog.show();
 	}
 

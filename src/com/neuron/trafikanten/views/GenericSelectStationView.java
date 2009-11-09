@@ -348,9 +348,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	private void findMyLocationTask() {
 		searchProvider.Stop();
-		LocationTask task = new LocationTask(this, getReturnCoordinatesHandler());
-		task.showDialog();
-		activeTask = task;
+		activeTask = new LocationTask(this, getReturnCoordinatesHandler());
 	}
 	
 	/*

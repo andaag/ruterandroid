@@ -20,6 +20,8 @@ package com.neuron.trafikanten.tasks;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -46,6 +48,7 @@ public class LocationTask implements GenericTask {
     {
             this.activity = activity;
             this.handler = handler;
+            showDialog();
 
     }
     
@@ -66,10 +69,24 @@ public class LocationTask implements GenericTask {
 			}
 		});
 		locationProvider = LocationProviderFactory.getLocationProvider(activity, locationHandler);
+		
+		/*
+		 * Handler onCancel
+		 */
+		dialog.setOnCancelListener(new OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				locationProvider.Stop();
+				handler.onCanceled();				
+			}
+		});
+		
+		dialog.show();
     }
     
     private void returnLocation() 
     {
+    	locationProvider.Stop();
     	final double[] location = LocationProviderFactory.getLocation();
 		if (location[0] == 0) {
 			Toast.makeText(activity, R.string.noLocationFoundError, Toast.LENGTH_SHORT).show();
