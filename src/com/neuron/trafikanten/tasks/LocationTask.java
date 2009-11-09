@@ -52,7 +52,7 @@ public class LocationTask implements GenericTask {
 
     }
     
-    public void showDialog() {
+    private void showDialog() {
 		final Dialog dialog = new Dialog(activity);
 		dialog.setContentView(R.layout.dialog_waitlocation);
 		
@@ -98,7 +98,7 @@ public class LocationTask implements GenericTask {
 	/*
 	 * Handler for location service:
 	 */
-    public final Handler locationHandler = new Handler() {
+    private final Handler locationHandler = new Handler() {
         public void handleMessage(Message msg) {
         	if (msg.what == ILocationProvider.MESSAGE_DONE) {
         		/*

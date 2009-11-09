@@ -29,13 +29,19 @@ public class SearchAddressTask implements GenericTask {
 	private List<Address> addresses;
 	ReturnCoordinatesHandler handler;
 	    
+	
+	public SearchAddressTask(Activity activity, ReturnCoordinatesHandler handler) 
+	{
+		this.activity = activity;
+		this.handler = handler;
+		showAddressField();
+		
+	}
+	
 	/*
 	 * Show the address field dialog and wait for input
 	 */
-	public void showAddressField(Activity activity, ReturnCoordinatesHandler handler) {
-		this.activity = activity;
-		this.handler = handler;
-		
+	private void showAddressField() {
 		final Dialog dialog = new Dialog(activity);
 		dialog.setContentView(R.layout.dialog_searchaddress);
 		
@@ -108,17 +114,16 @@ public class SearchAddressTask implements GenericTask {
 	    
 	    
 	    AlertDialog dialog = builder.create();
-	    dialog.setOnCancelListener(new OnCancelListener() {
-	    	/*
-	    	 * OnCancel we should return to previous view.
-	    	 * @see android.content.DialogInterface.OnCancelListener#onCancel(android.content.DialogInterface)
-	    	 */
+		/*
+		 * Handler onCancel
+		 */
+		dialog.setOnCancelListener(new OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
-				handler.onCanceled();
-				
+				handler.onCanceled();				
 			}
-	    });
+		});
+		dialog.show();
 	}
 	
 	/*
