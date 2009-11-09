@@ -217,19 +217,6 @@ public class DetailedRouteView extends ListActivity {
 	 */
 	public void onMessage(Message msg) {
     	switch(msg.what) {
-    	case IRouteProvider.MESSAGE_DONE:
-    		routeList.clear();
-			/*
-			 * If we haven't already set the most up to date list, set it.
-			 */
-    		// TODO : Reimplement this.
-    		/*final ArrayList<RouteData> list = ResultsProviderFactory.getRouteResults();
-    		if (list != null) {
-    			routeList.setList(list);
-    		}
-    		DetailedRouteView.this.setListAdapter(routeList);
-    		refreshButtons();*/
-    		break;
     	case IRouteProvider.MESSAGE_EXCEPTION:
     		final String exception = msg.getData().getString(IGenericProvider.KEY_EXCEPTION);
 			Log.w(TAG,"onException " + exception);
