@@ -45,31 +45,30 @@ public class SelectContactTask implements GenericTask {
     private Activity activity;
     ReturnCoordinatesHandler handler;
     
-    public void show(Activity activity, ReturnCoordinatesHandler handler)
+    public SelectContactTask(Activity activity, ReturnCoordinatesHandler handler) 
     {
-            this.activity = activity;
-            this.handler = handler;
-            
-            showDialog();
+        this.activity = activity;
+        this.handler = handler;
+        showDialog();
     }
     
     /*
      * Setup dialog for selecting contact
      */
     private void showDialog() {
-            /*
-             * Setup list of names with addresses
-             */
-            ArrayList<String> nameList = new ArrayList<String>();
-            final Cursor cursor = activity.managedQuery(Contacts.ContactMethods.CONTENT_URI, CONTACTMETHODS_PROJECTION, FILTER_POSTAL, null, null);
-            while (cursor.moveToNext()) {
-                    nameList.add(cursor.getString(0));
-            }
-            cursor.close();
-            
-            /*
-             * Setup select contact alert dialog
-             */
+        /*
+         * Setup list of names with addresses
+         */
+        ArrayList<String> nameList = new ArrayList<String>();
+        final Cursor cursor = activity.managedQuery(Contacts.ContactMethods.CONTENT_URI, CONTACTMETHODS_PROJECTION, FILTER_POSTAL, null, null);
+        while (cursor.moveToNext()) {
+                nameList.add(cursor.getString(0));
+        }
+        cursor.close();
+        
+        /*
+         * Setup select contact alert dialog
+         */
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.selectContact);
         final String[] items = new String[nameList.size()];
@@ -92,21 +91,19 @@ public class SelectContactTask implements GenericTask {
         });
         
         AlertDialog dialog = builder.create();
-        dialog.setOnCancelListener(new OnCancelListener() {
-            /*
-             * OnCancel we should return to previous view.
-             * @see android.content.DialogInterface.OnCancelListener#onCancel(android.content.DialogInterface)
-             */
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                            handler.onCanceled();
-                    }
-        });
+		/*
+		 * Handler onCancel
+		 */
+		dialog.setOnCancelListener(new OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				handler.onCanceled();				
+			}
+		});
         
         /*
          * Show dialog
          */
-        dialog.setOwnerActivity(activity);
         dialog.show();
     }
     

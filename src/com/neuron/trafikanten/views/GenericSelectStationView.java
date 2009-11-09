@@ -365,9 +365,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     private void selectContact() {
         searchProvider.Stop();
         
-        SelectContactTask task = new SelectContactTask();
-        task.show(this, getReturnCoordinatesHandler());
-        activeTask = task;
+        activeTask = new SelectContactTask(this, getReturnCoordinatesHandler());
 }
 
 	/*
