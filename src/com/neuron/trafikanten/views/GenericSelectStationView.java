@@ -284,7 +284,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         case MYLOCATION_ID:
-        	LocationTask.StartTask(this);
+        	findMyLocationTask();
         	break;
         case MAP_ID:
         	GenericMap.Show(this, stationListAdapter.getList(), 0);
@@ -341,6 +341,16 @@ public abstract class GenericSelectStationView extends ListActivity {
 	                setProgressBarIndeterminateVisibility(true);                            
 	        }
 		};
+	}
+	
+	/*
+	 * Deal with a location search
+	 */
+	private void findMyLocationTask() {
+		searchProvider.Stop();
+		LocationTask task = new LocationTask(this, getReturnCoordinatesHandler());
+		task.showDialog();
+		activeTask = task;
 	}
 	
 	/*
