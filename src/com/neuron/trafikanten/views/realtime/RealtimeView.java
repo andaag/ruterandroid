@@ -108,12 +108,13 @@ public class RealtimeView extends ListActivity {
     }
     
     private void load() {
-    	realtimeList.getList().clear();
-    	realtimeList.notifyDataSetChanged();
-    	
     	setProgressBarIndeterminateVisibility(true);
     	if (realtimeProvider != null)
     		realtimeProvider.Stop();
+    	
+    	realtimeList.getList().clear();
+    	realtimeList.notifyDataSetChanged();
+    	
     	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override
 			public void onData(RealtimeData realtimeData) {

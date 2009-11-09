@@ -314,6 +314,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		if (activeTask != null)
 			activeTask.Stop();
 		searchProvider.Stop();
+		
 		SelectContactTask task = new SelectContactTask();
 		task.show(this, task.new SelectContactHandler() {
 

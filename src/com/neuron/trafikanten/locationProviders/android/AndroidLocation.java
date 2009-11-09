@@ -79,7 +79,7 @@ public class AndroidLocation implements ILocationProvider {
 	 * Stop location updates (no reports are done after stop is called)
 	 */
 	@Override
-	public void stop() {
+	public void Stop() {
 		_stop = true;
 		_locationManager.removeUpdates(_locationListener);
 	}
@@ -94,7 +94,7 @@ public class AndroidLocation implements ILocationProvider {
 		    	handler.sendEmptyMessage(ILocationProvider.MESSAGE_DONE);
 		        
 		    	if (_stop) {
-		    		stop();
+		    		Stop();
 		    	}
 		    }
 		  }

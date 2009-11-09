@@ -65,11 +65,10 @@ public class SelectContactTask implements NewGenericTask {
 	    public abstract void onFinished(double latitude, double longitude);
 	}
 	
+	/*
+	 * Setup dialog for selecting contact
+	 */
 	private void showDialog() {
-		/*
-		 * Setup dialog
-		 */
-		
 		/*
 		 * Setup list of names with addresses
 		 */
@@ -160,5 +159,5 @@ public class SelectContactTask implements NewGenericTask {
 	}
 
 	@Override
-	public void Stop() {}
+	public void Stop() {} // No background stuff to stop.
 }

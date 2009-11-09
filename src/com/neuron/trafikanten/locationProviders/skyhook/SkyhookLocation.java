@@ -50,7 +50,7 @@ public class SkyhookLocation implements ILocationProvider {
 	}
 
 	@Override
-	public void stop() {
+	public void Stop() {
 		_stop = true;
 		_xps.abort();
 	}

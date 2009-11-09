@@ -121,7 +121,7 @@ public class LocationTask extends GenericTask {
      */
 	@Override
 	protected void onPause() {
-		locationProvider.stop();
+		locationProvider.Stop();
 		super.onPause();
 	}
 

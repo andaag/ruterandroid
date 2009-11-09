@@ -30,4 +30,6 @@ public interface IGenericProvider {
 	 */
 	
 	public static final String KEY_EXCEPTION = "exception";
+	
+	public void Stop();
 }

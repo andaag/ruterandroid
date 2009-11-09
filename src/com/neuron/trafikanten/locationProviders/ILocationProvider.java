@@ -25,5 +25,4 @@ import com.neuron.trafikanten.dataProviders.IGenericProvider;
  */
 public interface ILocationProvider extends IGenericProvider {
 	public void getPeriodicLocation();
-	public void stop();
 }

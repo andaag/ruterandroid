@@ -33,5 +33,4 @@ public interface IRouteProvider extends IGenericProvider {
 	public final static int TRANSPORT_WALK = 5;
 	
 	public void Search(RouteData routeData);
-	public void Stop();
 }
