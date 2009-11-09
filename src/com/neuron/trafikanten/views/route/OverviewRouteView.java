@@ -36,6 +36,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -226,7 +227,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			}
 			arrival = routeData.arrival;
 
-			final LinearLayout layout = new LinearLayout(context);
+			final RelativeLayout layout = new RelativeLayout(context);
 			
 			/*
 			 * Add Icon
@@ -241,17 +242,26 @@ class OverviewRouteAdapter extends BaseAdapter {
 					imageView.setVisibility(View.GONE);
 				}
 				layout.addView(imageView);
+				imageView.setId(1);
 			}
 
 			
 			/*
-			 * Add Text
+			 * Add text line
 			 */
 			{
+				final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				params.addRule(RelativeLayout.RIGHT_OF, 1);
+				params.topMargin = 3;
+				
 				final TextView textView = new TextView(context);
-				textView.setText(routeData.line + " " + routeData.fromStation.stopName + " > " + routeData.toStation.stopName);
-				layout.addView(textView);
+				textView.setText(routeData.line + " " + routeData.fromStation.stopName + " for " + 
+						((routeData.arrival - routeData.departure) / 1000) + "min");
+				textView.setSingleLine();
+				layout.addView(textView, params);
+				textView.setId(3);
 			}
+			
 		
 			
 			/*
