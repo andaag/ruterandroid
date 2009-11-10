@@ -20,7 +20,6 @@ public class SkyhookLocation implements ILocationProvider {
 	
 	private WPSAuthentication _auth;
 	private XPS _xps;
-	
 
 	public SkyhookLocation(Context context, LocationProviderHandler handler) {
 		this.handler = handler;
