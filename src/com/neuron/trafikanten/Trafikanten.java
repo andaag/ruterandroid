@@ -1,21 +1,24 @@
 package com.neuron.trafikanten;
 
+import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.TabHost;
 
 import com.neuron.trafikanten.views.realtime.SelectRealtimeStationView;
 import com.neuron.trafikanten.views.route.SelectRouteView;
 
 
-//TODO : Go through variable naming for every class, check for int|string|etc.*m[A-Z]
-//TODO FUTURE : Instead of tabs, use a "slide right for route view" like yr.no? (ViewFlipper)
-
 public class Trafikanten extends TabActivity {
+	private static Activity activity;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Trafikanten.activity = this;
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	 	final TabHost tabHost = getTabHost();
 	 	
 	    tabHost.addTab(tabHost.newTabSpec("RealtimeTab")
@@ -25,6 +28,14 @@ public class Trafikanten extends TabActivity {
 	    tabHost.addTab(tabHost.newTabSpec("RouteTab")
 	 			.setIndicator(getText(R.string.route), getResources().getDrawable(R.drawable.ic_menu_directions))
 	 			.setContent(new Intent(this, SelectRouteView.class)));
+	}
+	
+	/*
+	 * Function is always used from one of the tab views, therefor this is perfectly fine.
+	 */
+	public static void tabHostSetProgressBarIndeterminateVisibility(boolean value)
+	{
+		activity.setProgressBarIndeterminateVisibility(value);
 	}
 	
 	/*

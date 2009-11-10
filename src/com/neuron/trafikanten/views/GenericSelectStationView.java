@@ -33,7 +33,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
@@ -46,6 +45,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.Trafikanten;
 import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.ISearchProvider;
 import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
@@ -102,7 +102,6 @@ public abstract class GenericSelectStationView extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
         /*
          * Setup view
@@ -164,19 +163,20 @@ public abstract class GenericSelectStationView extends ListActivity {
     		public void onData(SearchStationData station) {
     			Log.i(TAG,"searchProvider data");
     			stationListAdapter.addItem(station);
+    			stationListAdapter.notifyDataSetChanged();
     		}
 
     		@Override
     		public void onError(Exception exception) {
     			Log.w(TAG,"onException " + exception);
     			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-    			setProgressBarIndeterminateVisibility(false);
+    			Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
     		}
 
     		@Override
     		public void onFinished() {
     			Log.i(TAG,"searchProvider finished");
-    			setProgressBarIndeterminateVisibility(false);
+    			Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
     		}
 
 			@Override
@@ -184,6 +184,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 				Log.i(TAG,"searchProvider started");
 				stationListAdapter.getList().clear();
 				stationListAdapter.notifyDataSetChanged();
+				Trafikanten.tabHostSetProgressBarIndeterminateVisibility(true);
 			}
     	});
     }
@@ -316,7 +317,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		return new ReturnCoordinatesHandler() {
 	        @Override
 	        public void onCanceled() {
-	                setProgressBarIndeterminateVisibility(false);
+	        	Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
 	                activeTask = null;
 	        }
 	
@@ -324,21 +325,20 @@ public abstract class GenericSelectStationView extends ListActivity {
 	        public void onError(Exception exception) {
 	                Log.w(TAG,"onException " + exception);
 	                Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-	                setProgressBarIndeterminateVisibility(false);
+	                Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
 	        }
 	
 	        @Override
 	        public void onFinished(double latitude, double longitude) {
 	                Log.i(TAG,"selectContactTask finished");
-	                setProgressBarIndeterminateVisibility(false);
+	                Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
 	                activeTask = null;
 	                searchProvider.Search(latitude,longitude);
 	        }
 	
 	        @Override
 	        public void OnStartWork() {
-	                Log.i(TAG,"selectContactTask working");
-	                setProgressBarIndeterminateVisibility(true);                            
+	                Trafikanten.tabHostSetProgressBarIndeterminateVisibility(true);                            
 	        }
 		};
 	}
