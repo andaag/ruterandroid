@@ -34,6 +34,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
@@ -113,6 +114,7 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 					new Integer(routeData.toStation.stationId).toString(), 
 					renderedTime.toString()};
 			
+			Log.d("DEBUG CODE","Sending soap request");
 			final InputStream result = HelperFunctions.soapRequest(resources, R.raw.gettravelsafter, args, Trafikanten.API_URL);
 			/*
 			 * Setup SAXParser and XMLReader
@@ -123,6 +125,7 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 			
 			final XMLReader reader = parser.getXMLReader();
 			reader.setContentHandler(new RouteHandler(handler));
+			Log.d("DEBUG CODE","Starting parser");
 			
 			reader.parse(new InputSource(result));
 		} catch(Exception e) {
@@ -181,6 +184,16 @@ class RouteHandler extends DefaultHandler {
 		this.handler = handler;
 	}
 	
+	
+	
+	@Override
+	public void startDocument() throws SAXException {
+		Log.d("DEBUG CODE","startDocument");
+		super.startDocument();
+	}
+
+
+
 	/*
 	 * End of document, call onCompleted with complete stationList
 	 */
@@ -192,6 +205,7 @@ class RouteHandler extends DefaultHandler {
 				handler.onFinished();			
 			}
 		});
+		Log.d("DEBUG CODE","endDocument");
 	}
 	
 	/*

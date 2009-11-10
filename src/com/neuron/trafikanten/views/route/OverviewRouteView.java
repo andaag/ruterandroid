@@ -221,9 +221,11 @@ class OverviewRouteAdapter extends BaseAdapter {
 				departure = routeData.departure;
 			}
 			arrival = routeData.arrival;
-
-			final RelativeLayout layout = new RelativeLayout(context);
 			
+			/*
+			 * Render the layout
+			 */
+			final RelativeLayout layout = new RelativeLayout(context);
 			/*
 			 * Add Icon
 			 */
@@ -242,19 +244,33 @@ class OverviewRouteAdapter extends BaseAdapter {
 
 			
 			/*
-			 * Add text line
+			 * Add top text line
 			 */
 			{
 				final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 				params.addRule(RelativeLayout.RIGHT_OF, 1);
-				params.topMargin = 3;
 				
 				final TextView textView = new TextView(context);
-				textView.setText(routeData.line + " " + routeData.fromStation.stopName + " for " + 
+				textView.setText(routeData.line + " " + routeData.destination);
+				textView.setSingleLine();
+				layout.addView(textView, params);
+				textView.setId(2);
+			}
+			
+			/*
+			 * Add bottom text line
+			 */
+			{
+				final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				params.addRule(RelativeLayout.RIGHT_OF, 1);
+				params.addRule(RelativeLayout.BELOW, 2);
+				params.leftMargin = 10;
+				
+				final TextView textView = new TextView(context);
+				textView.setText("To : " + routeData.toStation.stopName + " for " + 
 						((routeData.arrival - routeData.departure) / 1000) + "min");
 				textView.setSingleLine();
 				layout.addView(textView, params);
-				textView.setId(3);
 			}
 			
 		
