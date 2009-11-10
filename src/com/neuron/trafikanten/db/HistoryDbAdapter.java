@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.neuron.trafikanten.dataSets.SearchStationData;
 
@@ -83,7 +82,6 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 			 */
 			final String rowIdSql = "(SELECT MAX(" + KEY_ROWID + ") + 1 FROM " + table + ")"; 
 			final String sql = String.format("UPDATE %s SET %s = %s + 1, %s = %s WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_ROWID, rowIdSql, KEY_STATIONID, station.stationId);
-			Log.i("DEBUG TEMP", sql);
 			final Cursor c = db.rawQuery(sql, null);
 			c.moveToFirst();
 			c.close();

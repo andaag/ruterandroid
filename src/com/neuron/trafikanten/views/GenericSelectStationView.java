@@ -423,7 +423,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	}
 	
 	/*
-	 * activityResult is always a task, with KEY_MESSAGE is passed to onMessage
+	 * activityResult handles data passed from map view
 	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
 	 */
     @Override
