@@ -15,8 +15,10 @@ import android.location.Geocoder;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnKeyListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neuron.trafikanten.R;
@@ -43,7 +45,12 @@ public class SearchAddressTask implements GenericTask {
 	 */
 	private void showAddressField() {
 		final Dialog dialog = new Dialog(activity);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.dialog_searchaddress);
+		
+		final TextView message = (TextView) dialog.findViewById(R.id.message);
+		message.setText(R.string.searchAddressTask);
+
 		
 		final EditText searchEdit = (EditText) dialog.findViewById(R.id.search);
 		searchEdit.setOnKeyListener(new OnKeyListener() {
