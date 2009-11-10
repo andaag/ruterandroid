@@ -104,7 +104,6 @@ public class HelperFunctions {
     	Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
     	
     	HttpResponse response = new DefaultHttpClient().execute(httppost);
-    	Log.d("DEBUG CODE","Execute");
     	return response.getEntity().getContent();
 	}
 }
