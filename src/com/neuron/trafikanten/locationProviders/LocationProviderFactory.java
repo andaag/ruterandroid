@@ -32,6 +32,4 @@ public class LocationProviderFactory {
 	public static ILocationProvider getLocationProvider(Context context, LocationProviderHandler handler) {
 		return new SkyhookLocation(context, handler);
 	}
-	
-	
 }

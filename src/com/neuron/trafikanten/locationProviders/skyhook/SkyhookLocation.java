@@ -33,15 +33,14 @@ public class SkyhookLocation implements ILocationProvider {
 		_xps.setTiling(context.getCacheDir().toString(),
                 200*1024,
                 1000*1024,
-                null); 
+                null);
+		getPeriodicLocation();
 	}
 	
 	/*
 	 * Get a periodic location update
-	 * @see com.neuron.trafikanten.locationProviders.ILocationProvider#getPeriodicLocation()
 	 */
-	@Override
-	public void getPeriodicLocation() {
+	private void getPeriodicLocation() {
 		Log.i(TAG,"Getting periodic location");
 		_stop = false;
 		_xps.getXPSLocation(_auth, (int) 2, XPS.EXACT_ACCURACY, _locationListener);
@@ -68,7 +67,6 @@ public class SkyhookLocation implements ILocationProvider {
 	    	 * Check the age, if the age is too old it's a cached gps position, we dont want those.
 	    	 */
 			final long age = (System.currentTimeMillis() - location.getTime()) / HelperFunctions.SECOND;
-			Log.d("DEBUG CODE", "handleLocation " + age + " " + location.toString());
 			if (age > 30) { // Age > 30 seconds is ignored
 				return WPSContinuation.WPS_CONTINUE;
 			}
@@ -76,8 +74,17 @@ public class SkyhookLocation implements ILocationProvider {
 			/*
 			 * Notify we've found a location
 			 */
-			Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
-			handler.onLocation(location.getLatitude(), location.getLongitude(), Math.round(location.getHPE()));
+			//Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
+			final double latitude = location.getLatitude();
+			final double longitude = location.getLongitude();
+			final double accuracy = Math.round(location.getHPE());
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					handler.onLocation(latitude, longitude, accuracy);
+				}
+			});
+			
 	        
 	    	return WPSContinuation.WPS_CONTINUE;
 		}

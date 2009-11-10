@@ -71,6 +71,7 @@ public class LocationTask implements GenericTask {
 			@Override
 			public void onClick(View v) {
 				returnLocation();
+				dialog.dismiss();
 			}
 		});
 		locationProvider = LocationProviderFactory.getLocationProvider(activity, new LocationProviderHandler() {
@@ -86,6 +87,7 @@ public class LocationTask implements GenericTask {
         			 * Return instant location ok only if accuracy is enough, and it's not a cached gps location (accuracy 0.0 meters)
         			 */
         			returnLocation();
+        			dialog.dismiss();
         		}
 				
 			}
