@@ -19,40 +19,17 @@
 package com.neuron.trafikanten.locationProviders;
 
 import android.content.Context;
-import android.os.Handler;
 
+import com.neuron.trafikanten.locationProviders.ILocationProvider.LocationProviderHandler;
 import com.neuron.trafikanten.locationProviders.skyhook.SkyhookLocation;
 
-// TODO : Settings for locationprovider (including a requirement for accuracy, maybe an option to keep scanning and have a refresh button)
 public class LocationProviderFactory {
 	public static final int SETTING_LOCATION_ACCURACY = 5; // Needed accuracy for auto continue when waiting for a fix.	
-	/*
-	 * Gets all data providers, this is IN ORDER, .get[0] == PROVIDER_<.get[0]>
-	 */
-	public static String[] getLocationProviders() {
-		return new String[] { "Skyhook", "Android" };
-	}
-	
-	/*
-	 * Location information:
-	 */
-	private static double _longitude = 0;
-	private static double _latitude = 0;
-	private static double _accuracy = 0;
-	public static void setLocation(double latitude, double longitude, double accuracy) {
-		_longitude = longitude;
-		_latitude = latitude;
-		_accuracy = accuracy;
-	}
-	
-	public static double[] getLocation() {
-		return new double[] { _latitude,  _longitude, _accuracy };
-	}
 	
 	/*
 	 * Get Search Provider
 	 */
-	public static ILocationProvider getLocationProvider(Context context, Handler handler) {
+	public static ILocationProvider getLocationProvider(Context context, LocationProviderHandler handler) {
 		return new SkyhookLocation(context, handler);
 	}
 	

@@ -1,12 +1,10 @@
 package com.neuron.trafikanten.locationProviders.skyhook;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.locationProviders.ILocationProvider;
-import com.neuron.trafikanten.locationProviders.LocationProviderFactory;
 import com.skyhookwireless.wps.WPSAuthentication;
 import com.skyhookwireless.wps.WPSContinuation;
 import com.skyhookwireless.wps.WPSLocation;
@@ -17,14 +15,14 @@ import com.skyhookwireless.wps.XPS;
 public class SkyhookLocation implements ILocationProvider {
 	private final static String TAG = "Trafikanten-SkyhookLocation";
 	public static final int PROVIDER_SKYHOOK = 1;
-	private Handler handler;
+	private LocationProviderHandler handler;
 	private boolean _stop = true;
 	
 	private WPSAuthentication _auth;
 	private XPS _xps;
 	
 
-	public SkyhookLocation(Context context, Handler handler) {
+	public SkyhookLocation(Context context, LocationProviderHandler handler) {
 		this.handler = handler;
 		_auth = new WPSAuthentication("aagaande", "http://code.google.com/p/trafikanten/");
 		
@@ -79,8 +77,7 @@ public class SkyhookLocation implements ILocationProvider {
 			 * Notify we've found a location
 			 */
 			Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
-	    	LocationProviderFactory.setLocation(location.getLatitude(), location.getLongitude(), Math.round(location.getHPE()));
-	    	handler.sendEmptyMessage(ILocationProvider.MESSAGE_DONE);
+			handler.onLocation(location.getLatitude(), location.getLongitude(), Math.round(location.getHPE()));
 	        
 	    	return WPSContinuation.WPS_CONTINUE;
 		}

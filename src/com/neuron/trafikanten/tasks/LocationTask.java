@@ -22,8 +22,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -33,6 +31,7 @@ import android.widget.Toast;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.locationProviders.ILocationProvider;
 import com.neuron.trafikanten.locationProviders.LocationProviderFactory;
+import com.neuron.trafikanten.locationProviders.ILocationProvider.LocationProviderHandler;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
 /*
@@ -43,6 +42,12 @@ public class LocationTask implements GenericTask {
 	private Activity activity;
 	private ReturnCoordinatesHandler handler;
 	private TextView message;
+	
+	/*
+	 * Coordinates:
+	 */
+	private double latitude;
+	private double longitude;
 	
     public LocationTask(Activity activity, ReturnCoordinatesHandler handler)
     {
@@ -68,7 +73,24 @@ public class LocationTask implements GenericTask {
 				returnLocation();
 			}
 		});
-		locationProvider = LocationProviderFactory.getLocationProvider(activity, locationHandler);
+		locationProvider = LocationProviderFactory.getLocationProvider(activity, new LocationProviderHandler() {
+
+			@Override
+			public void onLocation(double latitude, double longitude,
+					double accuracy) {
+				LocationTask.this.latitude = latitude;
+				LocationTask.this.longitude = longitude;
+        		message.setText(activity.getText(R.string.locationWaiting).toString() + "\n" + activity.getText(R.string.current) + " " + accuracy + "m");
+        		if (LocationProviderFactory.SETTING_LOCATION_ACCURACY > accuracy && accuracy > 0) {
+        			/*
+        			 * Return instant location ok only if accuracy is enough, and it's not a cached gps location (accuracy 0.0 meters)
+        			 */
+        			returnLocation();
+        		}
+				
+			}
+			
+		});
 		
 		/*
 		 * Handler onCancel
@@ -87,35 +109,12 @@ public class LocationTask implements GenericTask {
     private void returnLocation() 
     {
     	locationProvider.Stop();
-    	final double[] location = LocationProviderFactory.getLocation();
-		if (location[0] == 0) {
+		if (latitude == 0) {
 			Toast.makeText(activity, R.string.noLocationFoundError, Toast.LENGTH_SHORT).show();
 			return;
 		}
-		handler.onFinished(location[0], location[1]);
+		handler.onFinished(latitude, longitude);
     }
-
-	/*
-	 * Handler for location service:
-	 */
-    private final Handler locationHandler = new Handler() {
-        public void handleMessage(Message msg) {
-        	if (msg.what == ILocationProvider.MESSAGE_DONE) {
-        		/*
-        		 * Got a location.
-        		 */
-        		final double[] location = LocationProviderFactory.getLocation();
-        		message.setText(activity.getText(R.string.locationWaiting).toString() + "\n" + activity.getText(R.string.current) + " " + location[2] + "m");
-        		if (LocationProviderFactory.SETTING_LOCATION_ACCURACY > location[2] && location[2] > 0) {
-        			/*
-        			 * Return instant location ok only if accuracy is enough, and it's not a cached gps location (accuracy 0.0 meters)
-        			 */
-        			returnLocation();
-        		}
-        		return;
-        	}
-        }
-    };
     
 	@Override
 	public void stop() {

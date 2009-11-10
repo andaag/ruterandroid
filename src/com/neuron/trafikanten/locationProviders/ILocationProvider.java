@@ -18,6 +18,8 @@
 
 package com.neuron.trafikanten.locationProviders;
 
+import android.os.Handler;
+
 import com.neuron.trafikanten.dataProviders.IGenericProvider;
 
 /*
@@ -25,4 +27,8 @@ import com.neuron.trafikanten.dataProviders.IGenericProvider;
  */
 public interface ILocationProvider extends IGenericProvider {
 	public void getPeriodicLocation();
+	
+	abstract class LocationProviderHandler extends Handler {
+	    public abstract void onLocation(double latitude, double longitude, double accuracy);
+	}
 }
