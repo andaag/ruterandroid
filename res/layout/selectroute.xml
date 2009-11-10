@@ -87,7 +87,7 @@
      android:layout_width="fill_parent"
      android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_search_category_default"
-        android:drawablePadding="-16px"
+        android:drawablePadding="-16dip"
         android:text="@string/search"
         android:layout_alignParentBottom="true"
          />
