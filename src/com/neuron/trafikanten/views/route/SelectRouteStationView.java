@@ -46,4 +46,9 @@ public class SelectRouteStationView extends GenericSelectStationView {
         setResult(RESULT_OK, intent);
         finish();		
 	}
+
+	@Override
+	public void setProgressBar(boolean value) {
+		setProgressBarIndeterminateVisibility(value);
+	}
 }

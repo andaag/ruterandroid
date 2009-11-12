@@ -33,6 +33,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
@@ -106,6 +107,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         /*
          * Setup view
          */
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.selectstation);
 		registerForContextMenu(getListView());
 		infoText = (TextView) findViewById(R.id.infoText);
@@ -176,7 +178,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     		@Override
     		public void onFinished() {
     			Log.i(TAG,"searchProvider finished");
-    			Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
+    			setProgressBar(false);
     		}
 
 			@Override
@@ -184,7 +186,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 				Log.i(TAG,"searchProvider started");
 				stationListAdapter.getList().clear();
 				stationListAdapter.notifyDataSetChanged();
-				Trafikanten.tabHostSetProgressBarIndeterminateVisibility(true);
+				setProgressBar(true);
 			}
     	});
     }
@@ -317,7 +319,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		return new ReturnCoordinatesHandler() {
 	        @Override
 	        public void onCanceled() {
-	        	Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
+	        	setProgressBar(false);
 	                activeTask = null;
 	        }
 	
@@ -325,20 +327,20 @@ public abstract class GenericSelectStationView extends ListActivity {
 	        public void onError(Exception exception) {
 	                Log.w(TAG,"onException " + exception);
 	                Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-	                Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
+	                setProgressBar(false);
 	        }
 	
 	        @Override
 	        public void onFinished(double latitude, double longitude) {
 	                Log.i(TAG,"selectContactTask finished");
-	                Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
+	                setProgressBar(false);
 	                activeTask = null;
 	                searchProvider.Search(latitude,longitude);
 	        }
 	
 	        @Override
 	        public void OnStartWork() {
-	                Trafikanten.tabHostSetProgressBarIndeterminateVisibility(true);                            
+	                setProgressBar(true);                            
 	        }
 		};
 	}
@@ -412,6 +414,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Custom handler for station selected
 	 */
 	public abstract void stationSelected(SearchStationData station);
+	
+	/*
+	 * Custom function for set progress bar status
+	 */
+	public abstract void setProgressBar(boolean value);
 	    
 	/*
 	 * Refresh view, this involves checking list against current favorites and setting .isFavorite to render star.

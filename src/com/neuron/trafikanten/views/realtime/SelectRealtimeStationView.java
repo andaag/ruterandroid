@@ -18,6 +18,7 @@
 
 package com.neuron.trafikanten.views.realtime;
 
+import com.neuron.trafikanten.Trafikanten;
 import com.neuron.trafikanten.dataSets.SearchStationData;
 import com.neuron.trafikanten.views.GenericSelectStationView;
 
@@ -48,5 +49,14 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
 		final Intent intent = new Intent(this, RealtimeView.class);
         intent.putExtras(bundle);
         startActivity(intent);
+	}
+
+	/*
+	 * The realtime station picker is only visible from a tabhost.
+	 * @see com.neuron.trafikanten.views.GenericSelectStationView#setProgressBar(boolean)
+	 */
+	@Override
+	public void setProgressBar(boolean value) {
+		Trafikanten.tabHostSetProgressBarIndeterminateVisibility(value);
 	}
 }
