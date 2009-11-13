@@ -19,6 +19,7 @@
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -128,11 +129,9 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 				 */
 				final LatLng latLong = new LatLng(latitude, longitude);
 				final UTMRef utmRef = latLong.toUTMRef();
-				
-                final String x = new Integer((int)utmRef.getEasting()).toString();
-                final String y = new Integer((int)utmRef.getNorthing()).toString();
-                
-                result = HelperFunctions.soapRequest(resources, R.raw.getcloseststops, new String[]{x,y}, Trafikanten.API_URL);
+				                
+                final URL url = new URL("http://reis.trafikanten.no/topp2009/getcloseststops.aspx?x="+ (int)utmRef.getEasting() + "&y="+ (int) utmRef.getNorthing() + "&proposals=10");
+                result = url.openStream();
 			}
 			
 			/*
