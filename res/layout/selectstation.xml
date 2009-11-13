@@ -17,9 +17,10 @@
     
     <TextView
     	android:id="@+id/infoText"
+    	android:layout_marginTop="50dip"
+    	android:layout_below="@+id/search"
     	android:layout_width="280dip"
     	android:layout_height="wrap_content"
-    	android:layout_gravity="center_horizontal"
     	android:layout_centerVertical="true"
     	android:layout_centerHorizontal="true"
     	android:text="@string/searchStationHint" />
