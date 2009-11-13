@@ -177,6 +177,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     		@Override
     		public void onFinished() {
     			setProgressBar(false);
+    			refresh();
     		}
 
 			@Override
