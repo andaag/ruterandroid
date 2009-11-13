@@ -163,7 +163,6 @@ public abstract class GenericSelectStationView extends ListActivity {
        	searchProvider = DataProviderFactory.getSearchProvider(getResources(), new SearchProviderHandler() {
     		@Override
     		public void onData(SearchStationData station) {
-    			Log.i(TAG,"searchProvider data");
     			stationListAdapter.addItem(station);
     			stationListAdapter.notifyDataSetChanged();
     		}
@@ -177,7 +176,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 
     		@Override
     		public void onFinished() {
-    			Log.i(TAG,"searchProvider finished");
     			setProgressBar(false);
     		}
 

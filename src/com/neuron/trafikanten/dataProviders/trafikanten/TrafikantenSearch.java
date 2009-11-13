@@ -130,7 +130,8 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 				final LatLng latLong = new LatLng(latitude, longitude);
 				final UTMRef utmRef = latLong.toUTMRef();
 				                
-                final URL url = new URL("http://reis.trafikanten.no/topp2009/getcloseststops.aspx?x="+ (int)utmRef.getEasting() + "&y="+ (int) utmRef.getNorthing() + "&proposals=10");
+				final String urlString = "http://reis.trafikanten.no/topp2009/getcloseststops.aspx?x="+ (int)utmRef.getEasting() + "&y="+ (int) utmRef.getNorthing() + "&proposals=10";
+                final URL url = new URL(urlString);
                 result = url.openStream();
 			}
 			

@@ -37,7 +37,6 @@ public class SearchAddressTask implements GenericTask {
 		this.activity = activity;
 		this.handler = handler;
 		showAddressField();
-		
 	}
 	
 	/*
@@ -51,7 +50,6 @@ public class SearchAddressTask implements GenericTask {
 		final TextView message = (TextView) dialog.findViewById(R.id.message);
 		message.setText(R.string.searchAddressTask);
 
-		
 		final EditText searchEdit = (EditText) dialog.findViewById(R.id.search);
 		searchEdit.setOnKeyListener(new OnKeyListener() {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -63,6 +61,7 @@ public class SearchAddressTask implements GenericTask {
                 case KeyEvent.KEYCODE_ENTER:
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 	geoMap(searchEdit.getText().toString());
+                	dialog.dismiss();
                 	return true;
                 }
 				return false;
@@ -86,7 +85,6 @@ public class SearchAddressTask implements GenericTask {
 	    final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 	    builder.setTitle(R.string.searchAddressTask);
 	    
-
 	    /*
 	     * First take all addresses, convert them into strings and check for duplicates.
 	     */
@@ -115,7 +113,7 @@ public class SearchAddressTask implements GenericTask {
 	    builder.setItems(items, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				SearchAddressTask.this.foundLocation(addresses.get(which));
+				SearchAddressTask.this.foundLocation(addresses.get(which + 1));
 			}
 	    });
 	    
