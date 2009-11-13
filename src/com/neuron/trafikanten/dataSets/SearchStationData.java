@@ -34,11 +34,11 @@ public class SearchStationData implements Parcelable {
 	/*
 	 * When setting airDistance, we also set hasAirDistance, to know that air distance 0 = where we are.
 	 */
-	public boolean hasAirDistance = false;
-	public int airDistance;
-	public void setAirDistance(int airDistance) {
-		this.airDistance = airDistance;
-		hasAirDistance = true;
+	public boolean hasWalkingDistance = false;
+	public int walkingDistance;
+	public void setWalkingDistance(int walkingDistance) {
+		this.walkingDistance = walkingDistance;
+		hasWalkingDistance = true;
 	}
 	
 	public int[] utmCoords = new int[] {0, 0}; // x,y
@@ -85,8 +85,8 @@ public class SearchStationData implements Parcelable {
 		extra = in.readString();
 		
 		stationId = in.readInt();
-		hasAirDistance = in.readInt() != 0;
-		airDistance = in.readInt();
+		hasWalkingDistance = in.readInt() != 0;
+		walkingDistance = in.readInt();
 		
 		utmCoords[0] = in.readInt();
 		utmCoords[1] = in.readInt();
@@ -105,8 +105,8 @@ public class SearchStationData implements Parcelable {
 		out.writeString(extra);
 		
 		out.writeInt(stationId);
-		out.writeInt(hasAirDistance ? 1 : 0);
-		out.writeInt(airDistance);
+		out.writeInt(hasWalkingDistance ? 1 : 0);
+		out.writeInt(walkingDistance);
 		
 		out.writeInt(utmCoords[0]);
 		out.writeInt(utmCoords[1]);

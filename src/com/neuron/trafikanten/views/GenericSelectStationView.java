@@ -558,8 +558,8 @@ class StationListAdapter extends BaseAdapter {
 		/*
 		 * Setup station.airDistance
 		 */
-		if (station.airDistance > 0) {
-			holder.range.setText("" + station.airDistance + "m");
+		if (station.hasWalkingDistance) {
+			holder.range.setText("" + station.walkingDistance + "m");
 			holder.range.setVisibility(View.VISIBLE);
 		} else {
 			//holder.range.setText("");
