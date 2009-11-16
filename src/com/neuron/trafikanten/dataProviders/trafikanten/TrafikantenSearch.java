@@ -312,7 +312,7 @@ class SearchHandler extends DefaultHandler {
 	        	inStops = false;
 	        } else if (inWalkingDistance && localName.equals("WalkingDistance")) {
 	        	inWalkingDistance = false;
-	        	station.setWalkingDistance(Integer.parseInt(buffer.toString()));
+	        	station.walkingDistance = Integer.parseInt(buffer.toString());
 	        }
         }
         buffer.setLength(0);

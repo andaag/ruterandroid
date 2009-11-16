@@ -28,18 +28,9 @@ public class SearchStationData implements Parcelable {
 	public String stopName;
 	public String extra; // Extra is shown under station name, on a seperate line.
 	public int stationId;
+	public int walkingDistance = 0;
 	
 	public boolean isFavorite; // This is used for rendering a star next to favorites, this is NOT stored.
-	
-	/*
-	 * When setting airDistance, we also set hasAirDistance, to know that air distance 0 = where we are.
-	 */
-	public boolean hasWalkingDistance = false;
-	public int walkingDistance;
-	public void setWalkingDistance(int walkingDistance) {
-		this.walkingDistance = walkingDistance;
-		hasWalkingDistance = true;
-	}
 	
 	public int[] utmCoords = new int[] {0, 0}; // x,y
 	public double[] latLongCoords = new double[] {0, 0}; // lat,long
@@ -85,7 +76,6 @@ public class SearchStationData implements Parcelable {
 		extra = in.readString();
 		
 		stationId = in.readInt();
-		hasWalkingDistance = in.readInt() != 0;
 		walkingDistance = in.readInt();
 		
 		utmCoords[0] = in.readInt();
@@ -105,7 +95,6 @@ public class SearchStationData implements Parcelable {
 		out.writeString(extra);
 		
 		out.writeInt(stationId);
-		out.writeInt(hasWalkingDistance ? 1 : 0);
 		out.writeInt(walkingDistance);
 		
 		out.writeInt(utmCoords[0]);

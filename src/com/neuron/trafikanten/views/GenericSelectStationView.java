@@ -555,9 +555,9 @@ class StationListAdapter extends BaseAdapter {
 		}
 		
 		/*
-		 * Setup station.airDistance
+		 * Setup station.walkingDistance
 		 */
-		if (station.hasWalkingDistance) {
+		if (station.walkingDistance > 0) {
 			holder.range.setText("" + station.walkingDistance + "m");
 			holder.range.setVisibility(View.VISIBLE);
 		} else {
