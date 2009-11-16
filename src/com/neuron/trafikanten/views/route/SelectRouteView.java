@@ -67,6 +67,7 @@ public class SelectRouteView extends Activity {
 		 */
 		viewHolder.fromButton = (Button) findViewById(R.id.fromButton);
 		viewHolder.toButton = (Button) findViewById(R.id.toButton);
+		viewHolder.travelAtArriveBeforeButton = (Button) findViewById(R.id.travelAtArriveBefore);
 		viewHolder.timePicker = (TimePicker) findViewById(R.id.timePicker);
 		viewHolder.departureDay = (Spinner) findViewById(R.id.departureDay);
 		viewHolder.changeMargin = (Spinner) findViewById(R.id.changeMargin);
@@ -80,6 +81,28 @@ public class SelectRouteView extends Activity {
             final Calendar calendar = Calendar.getInstance();
             viewHolder.timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
             viewHolder.timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+        }
+        
+        /*
+         * Setup travel at/arrive before button
+         */
+        viewHolder.travelAtArriveBeforeButton.setTag(Boolean.TRUE);
+        {
+        	viewHolder.travelAtArriveBeforeButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					final Boolean status = (Boolean) viewHolder.travelAtArriveBeforeButton.getTag();
+					viewHolder.travelAtArriveBeforeButton.setTag(!status);
+					if (status) {
+						viewHolder.travelAtArriveBeforeButton.setText(R.string.arriveBefore);
+					} else {
+						viewHolder.travelAtArriveBeforeButton.setText(R.string.travelAt);
+					}
+															
+				}
+        		
+        	});
         }
         
         /*
@@ -337,6 +360,7 @@ public class SelectRouteView extends Activity {
 	static class ViewHolder {
 		Button fromButton;
 		Button toButton;
+		Button travelAtArriveBeforeButton;
 		TimePicker timePicker;
 		Spinner departureDay;
 		Spinner changeMargin;

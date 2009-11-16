@@ -78,6 +78,7 @@
 	        android:layout_width="80dip"
 	        android:layout_height="40dip"
 	        android:drawSelectorOnTop="true"
+	        android:layout_alignParentRight="true"
         android:layout_toRightOf="@+id/changeMarginText"
         android:layout_alignTop="@+id/changeMarginText"
 	    />
