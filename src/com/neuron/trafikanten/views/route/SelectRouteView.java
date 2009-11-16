@@ -69,6 +69,7 @@ public class SelectRouteView extends Activity {
 		viewHolder.toButton = (Button) findViewById(R.id.toButton);
 		viewHolder.timePicker = (TimePicker) findViewById(R.id.timePicker);
 		viewHolder.departureDay = (Spinner) findViewById(R.id.departureDay);
+		viewHolder.changeMargin = (Spinner) findViewById(R.id.changeMargin);
 		viewHolder.searchButton = (Button) findViewById(R.id.searchButton);
 		
 		/*
@@ -79,6 +80,17 @@ public class SelectRouteView extends Activity {
             final Calendar calendar = Calendar.getInstance();
             viewHolder.timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
             viewHolder.timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+        }
+        
+        /*
+         * Setup change margin list:
+         */
+        {
+			ArrayAdapter<String> changeMarginAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, 
+					new String[] {"0","1","2","3","4","5","10"});
+			changeMarginAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			viewHolder.changeMargin.setAdapter(changeMarginAdapter);
+			viewHolder.changeMargin.setSelection(2);
         }
 		
 		/*
@@ -273,7 +285,6 @@ public class SelectRouteView extends Activity {
 		viewHolder.departureDay.setAdapter(dayAdapter);
 	}
 	
-	
 	/*
 	 * onPause
 	 * @see android.app.Activity#onPause()
@@ -328,6 +339,7 @@ public class SelectRouteView extends Activity {
 		Button toButton;
 		TimePicker timePicker;
 		Spinner departureDay;
+		Spinner changeMargin;
 		Button searchButton;
 	}
 

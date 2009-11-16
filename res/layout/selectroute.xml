@@ -75,7 +75,7 @@
         android:text="@string/changeMargin"/>
 
     <Spinner android:id="@+id/changeMargin"
-	        android:layout_width="fill_parent"
+	        android:layout_width="80dip"
 	        android:layout_height="40dip"
 	        android:drawSelectorOnTop="true"
         android:layout_toRightOf="@+id/changeMarginText"

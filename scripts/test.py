@@ -83,7 +83,50 @@ def testRoute():
     
     sendRequest(SoapMessage)
     
+def sendAdvancedRoute():
+    SoapMessage="""<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <GetTravelsAdvanced xmlns="http://www.trafikanten.no/">
+      <time>2009-11-16T18:38:00</time>
+      <from>
+        <Stop>
+            <WalkingDistance Unit="meters">79</WalkingDistance>
+            <ID>3010071</ID>
+            <Name>Vippetangen (ved Fiskehallen)</Name>
+            <District>OSLO</District>
+            <Zone>01</Zone>
+            <RealTimeStop>true</RealTimeStop>
+            <X>597356</X>
+            <Y>6641937</Y>
+        </Stop>
+      </from>
+      <to>
+        <Stop>
+            <WalkingDistance Unit="meters">947</WalkingDistance>
+            <ID>3010025</ID>
+            <Name>Kongens gate (i Tollbugata)</Name>
+            <District>OSLO</District>
+            <Zone>01</Zone>
+            <RealTimeStop>true</RealTimeStop>
+            <X>597432</X>
+            <Y>6642764</Y>
+        </Stop>
+      </to>
+      <changemargin>2</changemargin>
+      <changepunish>2</changepunish>
+      <walkingfactor>2</walkingfactor>
+      <proposals>5</proposals>
+      <isTravelAfterACertainTimeRatherThanBefore>true</isTravelAfterACertainTimeRatherThanBefore>
+    </GetTravelsAdvanced>
+  </soap:Body>
+</soap:Envelope>"""
+
+    
+    sendRequest(SoapMessage)
+    
+    
 
 
-testRoute()
+sendAdvancedRoute()
 #testSearch()
