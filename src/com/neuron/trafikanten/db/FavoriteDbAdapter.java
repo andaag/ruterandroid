@@ -24,7 +24,7 @@ import java.util.List;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 /*
  * Class for storing favorite stations.
@@ -43,14 +43,14 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	/*
 	 * Scan list and set .isFavorite where neccesary.
 	 */
-	public void refreshFavorites(ArrayList<SearchStationData> list) {
-		for (SearchStationData station : list)
+	public void refreshFavorites(ArrayList<StationData> list) {
+		for (StationData station : list)
 			station.isFavorite = false;
 		
 		Cursor cursor = getIds();
 		while (cursor.moveToNext()) {
 			int stationId = cursor.getInt(0);
-			for (SearchStationData station : list)
+			for (StationData station : list)
 				if (station.stationId == stationId) {
 					station.isFavorite = true;
 					break;
@@ -62,7 +62,7 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	/*
 	 * Toggles whether a station is favorite or not.
 	 */
-	public boolean toggleFavorite(SearchStationData station) {
+	public boolean toggleFavorite(StationData station) {
 		if (delete(station.stationId))
 			return false;
 		/*
@@ -76,7 +76,7 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	/*
 	 * Updates KEY_USED
 	 */
-	public void updateUsed(SearchStationData station) {
+	public void updateUsed(StationData station) {
 		final String sql = String.format("UPDATE %s SET %s = %s + 1 WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_STATIONID, station.stationId);
 		final Cursor c = db.rawQuery(sql, null);
 		c.moveToFirst();
@@ -86,10 +86,10 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	/*
 	 * Add favorites to a station list.
 	 */
-    public void addFavoritesToList(List<SearchStationData> items) {
+    public void addFavoritesToList(List<StationData> items) {
     	Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
     	while (cursor.moveToNext()) {
-    		SearchStationData station = new SearchStationData(cursor.getString(0), 
+    		StationData station = new StationData(cursor.getString(0), 
     				cursor.getString(1), 
     				cursor.getInt(2), 
     				new int[] {cursor.getInt(4), cursor.getInt(5)});

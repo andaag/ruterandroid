@@ -43,7 +43,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 
 public class GenericMap extends MapActivity {
@@ -55,7 +55,7 @@ public class GenericMap extends MapActivity {
 	/*
 	 * Holder for currently selected station in panel
 	 */
-	static private SearchStationData selectedStation;
+	static private StationData selectedStation;
 	
 	/*
 	 * Options menu items
@@ -72,9 +72,9 @@ public class GenericMap extends MapActivity {
 		activity.startActivityForResult(intent, what);
 	}
 	
-	public static void Show(Activity activity, ArrayList<SearchStationData> stationList, int what) {
+	public static void Show(Activity activity, ArrayList<StationData> stationList, int what) {
 		Intent intent = new Intent(activity, GenericMap.class);
-		intent.putExtra(SearchStationData.PARCELABLE, stationList);
+		intent.putExtra(StationData.PARCELABLE, stationList);
 		activity.startActivityForResult(intent, what);
 	}
 	
@@ -112,7 +112,7 @@ public class GenericMap extends MapActivity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent();
-				intent.putExtra(SearchStationData.PARCELABLE, selectedStation);
+				intent.putExtra(StationData.PARCELABLE, selectedStation);
 				setResult(RESULT_OK, intent);
 				finish();
 			}
@@ -131,11 +131,11 @@ public class GenericMap extends MapActivity {
 		 */
 		if (savedInstanceState == null) {
 			final Bundle bundle = getIntent().getExtras();
-			if (bundle.containsKey(SearchStationData.PARCELABLE)) {
+			if (bundle.containsKey(StationData.PARCELABLE)) {
 				/*
 				 * Load stations passed to us
 				 */
-				final ArrayList<SearchStationData> stationList = bundle.getParcelableArrayList(SearchStationData.PARCELABLE);
+				final ArrayList<StationData> stationList = bundle.getParcelableArrayList(StationData.PARCELABLE);
 				final FavoriteDbAdapter favoriteDbAdapter = new FavoriteDbAdapter(this);
 				favoriteDbAdapter.refreshFavorites(stationList);
 				favoriteDbAdapter.close();
@@ -169,7 +169,7 @@ public class GenericMap extends MapActivity {
 		
 	}
 	
-	static public void onStationTap(SearchStationData station) {
+	static public void onStationTap(StationData station) {
 		viewHolder.infoPanel.setVisibility(View.VISIBLE);
 		viewHolder.name.setText(station.stopName);
 		viewHolder.information.setText(station.extra);
@@ -211,7 +211,7 @@ public class GenericMap extends MapActivity {
 			builder.setItems(items, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					final SearchStationOverlayItem stationItem = stationOverlay.getItem(which);
+					final StationOverlayItem stationItem = stationOverlay.getItem(which);
 					mapView.getController().animateTo(stationItem.getPoint());
 					onStationTap(stationItem.station);
 				}

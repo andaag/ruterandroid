@@ -39,7 +39,7 @@ import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.ISearchProvider;
 import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 public class TrafikantenSearch implements ISearchProvider {
 	private static final String TAG = "Trafikanten-TrafikantenSearch";
@@ -169,7 +169,7 @@ class TrafikantenSearchThread extends Thread implements Runnable {
  * Search XML Parser
  */
 class SearchHandler extends DefaultHandler {
-	private SearchStationData station;
+	private StationData station;
 	private SearchProviderHandler handler;
 	
 	/*
@@ -238,7 +238,7 @@ class SearchHandler extends DefaultHandler {
         if (!inPlace) {
             if (localName.equals("Place")) {
                 inPlace = true;
-    			station = new SearchStationData();
+    			station = new StationData();
     		}
 		} else {
 			if (localName.equals("X")) {
@@ -270,7 +270,7 @@ class SearchHandler extends DefaultHandler {
              */
             inPlace = false;
             if (!ignore) {
-    	        final SearchStationData sendData = station;
+    	        final StationData sendData = station;
     			handler.post(new Runnable() {
     				@Override
     				public void run() {

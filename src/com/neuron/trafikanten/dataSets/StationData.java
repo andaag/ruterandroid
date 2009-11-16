@@ -23,8 +23,8 @@ import uk.me.jstott.jcoord.UTMRef;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SearchStationData implements Parcelable {
-	public final static String PARCELABLE = "SearchStationData";
+public class StationData implements Parcelable {
+	public final static String PARCELABLE = "StationData";
 	public String stopName;
 	public String extra; // Extra is shown under station name, on a seperate line.
 	public int stationId;
@@ -49,15 +49,15 @@ public class SearchStationData implements Parcelable {
 		
 	}
 	
-	public SearchStationData() { }
-	public SearchStationData(String stopName, String extra, int stationId, int[] utmCoords) {
+	public StationData() { }
+	public StationData(String stopName, String extra, int stationId, int[] utmCoords) {
 		this.stopName = stopName;
 		this.extra = extra;
 		this.stationId = stationId;
 		this.utmCoords = utmCoords;
 	}
 	
-	public SearchStationData(String stopName, int stationId) {
+	public StationData(String stopName, int stationId) {
 		this.stopName = stopName;
 		this.stationId = stationId;
 	}
@@ -71,7 +71,7 @@ public class SearchStationData implements Parcelable {
 	/*
 	 * Function for reading the parcel
 	 */
-	public SearchStationData(Parcel in) {
+	public StationData(Parcel in) {
 		stopName = in.readString();
 		extra = in.readString();
 		
@@ -107,13 +107,13 @@ public class SearchStationData implements Parcelable {
 	/*
 	 * Used for bundle.getParcel 
 	 */
-    public static final Parcelable.Creator<SearchStationData> CREATOR = new Parcelable.Creator<SearchStationData>() {
-		public SearchStationData createFromParcel(Parcel in) {
-		    return new SearchStationData(in);
+    public static final Parcelable.Creator<StationData> CREATOR = new Parcelable.Creator<StationData>() {
+		public StationData createFromParcel(Parcel in) {
+		    return new StationData(in);
 		}
 		
-		public SearchStationData[] newArray(int size) {
-		    return new SearchStationData[size];
+		public StationData[] newArray(int size) {
+		    return new StationData[size];
 		}
 	};
 }

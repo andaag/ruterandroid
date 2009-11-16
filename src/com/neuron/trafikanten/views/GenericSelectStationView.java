@@ -50,7 +50,7 @@ import com.neuron.trafikanten.Trafikanten;
 import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.ISearchProvider;
 import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
 import com.neuron.trafikanten.tasks.GenericTask;
@@ -123,7 +123,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         	favoriteDbAdapter.addFavoritesToList(stationListAdapter.getList());
         	historyDbAdapter.addHistoryToList(stationListAdapter.getList());
         } else {
-        	final ArrayList<SearchStationData> list = savedInstanceState.getParcelableArrayList(StationListAdapter.KEY_SEARCHSTATIONLIST);
+        	final ArrayList<StationData> list = savedInstanceState.getParcelableArrayList(StationListAdapter.KEY_SEARCHSTATIONLIST);
         	stationListAdapter.setList(list);
         }
 		refresh();
@@ -162,7 +162,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     private void createSearchProvider() {
        	searchProvider = DataProviderFactory.getSearchProvider(getResources(), new SearchProviderHandler() {
     		@Override
-    		public void onData(SearchStationData station) {
+    		public void onData(StationData station) {
     			stationListAdapter.addItem(station);
     			stationListAdapter.notifyDataSetChanged();
     		}
@@ -200,7 +200,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-		final SearchStationData stationData = stationListAdapter.getList().get(info.position);
+		final StationData stationData = stationListAdapter.getList().get(info.position);
 		
 		if (stationData.isFavorite) {
 			menu.add(0, REMOVEFAVORITE_ID, 0, R.string.removeFavorite);			
@@ -222,7 +222,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		 * Get selected item.
 		 */
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        final SearchStationData station = (SearchStationData) stationListAdapter.getItem(info.position);
+        final StationData station = (StationData) stationListAdapter.getItem(info.position);
 
 		switch(item.getItemId()) {
 		case ADDFAVORITE_ID:
@@ -405,14 +405,14 @@ public abstract class GenericSelectStationView extends ListActivity {
 		/*
 		 * Take current selected station, and return with it.
 		 */
-		SearchStationData station = (SearchStationData) stationListAdapter.getItem(position);
+		StationData station = (StationData) stationListAdapter.getItem(position);
 		stationSelected(station);
 	}
 	
 	/*
 	 * Custom handler for station selected
 	 */
-	public abstract void stationSelected(SearchStationData station);
+	public abstract void stationSelected(StationData station);
 	
 	/*
 	 * Custom function for set progress bar status
@@ -438,11 +438,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 			/*
 			 * return from map view, will return a single station
 			 */
-			if (data.hasExtra(SearchStationData.PARCELABLE)) {
+			if (data.hasExtra(StationData.PARCELABLE)) {
 				/*
 				 * We got station in return
 				 */
-				final SearchStationData station = data.getParcelableExtra(SearchStationData.PARCELABLE);
+				final StationData station = data.getParcelableExtra(StationData.PARCELABLE);
 				onResume(); // reopen database
 				stationSelected(station);
 			}
@@ -484,7 +484,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 class StationListAdapter extends BaseAdapter {
 	public static final String KEY_SEARCHSTATIONLIST = "searchstationlist";
 	private LayoutInflater inflater;
-	private ArrayList<SearchStationData> items = new ArrayList<SearchStationData>();
+	private ArrayList<StationData> items = new ArrayList<StationData>();
 	
 	public StationListAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
@@ -494,9 +494,9 @@ class StationListAdapter extends BaseAdapter {
 	 * Simple functions dealing with adding/setting items. 
 	 */
 	public void clear() { items.clear(); }
-	public ArrayList<SearchStationData> getList() { return items; }
-	public void setList(ArrayList<SearchStationData> items) { this.items = items; }
-	public void addItem(SearchStationData item) { items.add(item); }
+	public ArrayList<StationData> getList() { return items; }
+	public void setList(ArrayList<StationData> items) { this.items = items; }
+	public void addItem(StationData item) { items.add(item); }
 	
 	/*
 	 * Standard android.widget.Adapter items, self explanatory.
@@ -540,7 +540,7 @@ class StationListAdapter extends BaseAdapter {
 		/*
 		 * Render data to view.
 		 */
-		final SearchStationData station = items.get(pos);
+		final StationData station = items.get(pos);
 		holder.stopName.setText(station.stopName);
 		
 		/*

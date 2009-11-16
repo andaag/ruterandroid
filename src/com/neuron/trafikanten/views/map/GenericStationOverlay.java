@@ -21,7 +21,7 @@ package com.neuron.trafikanten.views.map;
 import java.util.ArrayList;
 
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -32,8 +32,8 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 
 // TODO : Rename to StationOverlay
-public class GenericStationOverlay extends ItemizedOverlay<SearchStationOverlayItem> {
-	private ArrayList<SearchStationOverlayItem> items = new ArrayList<SearchStationOverlayItem>();
+public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
+	private ArrayList<StationOverlayItem> items = new ArrayList<StationOverlayItem>();
 	private boolean warnAboutMissingCoordinates = true;
 
 	public GenericStationOverlay(Drawable defaultMarker) {
@@ -44,7 +44,7 @@ public class GenericStationOverlay extends ItemizedOverlay<SearchStationOverlayI
 	 * Simple helper functions
 	 */
 	@Override
-	protected SearchStationOverlayItem createItem(int i) { return items.get(i); }
+	protected StationOverlayItem createItem(int i) { return items.get(i); }
 	@Override
 	public int size() { return items.size(); }
 	
@@ -60,10 +60,10 @@ public class GenericStationOverlay extends ItemizedOverlay<SearchStationOverlayI
 	/*
 	 * Add list of items
 	 */
-	public void add(Activity activity, ArrayList<SearchStationData> stationList) {
+	public void add(Activity activity, ArrayList<StationData> stationList) {
 		final Resources resources = activity.getResources();
 		
-		for(SearchStationData station : stationList) {
+		for(StationData station : stationList) {
 			final double[] location = station.getLongLat();
 			if (location[0] == 0) {
 				if (warnAboutMissingCoordinates) {
@@ -73,7 +73,7 @@ public class GenericStationOverlay extends ItemizedOverlay<SearchStationOverlayI
 				continue;
 			}
 			final GeoPoint point = new GeoPoint((int)(location[0] * 1E6), (int)(location[1] * 1E6));
-			final SearchStationOverlayItem item = new SearchStationOverlayItem(point, station);
+			final StationOverlayItem item = new StationOverlayItem(point, station);
 			if (station.isFavorite) {
 				item.setMarker(boundCenterBottom(resources.getDrawable(R.drawable.icon_mapmarker_favorite)));
 			} else {

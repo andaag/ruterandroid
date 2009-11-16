@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 /*
  * Class for storing last X used stations.
@@ -39,13 +39,13 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 		super.open("history", DATABASE_VERSION);
 	}
 	
-	public void addHistoryToList(ArrayList<SearchStationData> items) {
+	public void addHistoryToList(ArrayList<StationData> items) {
 		/*
 		 * Get all items from the list
 		 */
     	Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
     	while (cursor.moveToNext()) {
-    		SearchStationData station = new SearchStationData(cursor.getString(0), 
+    		StationData station = new StationData(cursor.getString(0), 
     				cursor.getString(1), 
     				cursor.getInt(2), 
     				new int[] {cursor.getInt(4), cursor.getInt(5)});
@@ -53,7 +53,7 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
     		 * Check for duplicates
     		 */
     		boolean foundDuplicate = false;
-    		for (SearchStationData listStation : items) {
+    		for (StationData listStation : items) {
     			if (station.stationId == listStation.stationId) {
     				foundDuplicate = true;
     				break;
@@ -74,7 +74,7 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 		return r;
 	}
 	
-	public void updateHistory(SearchStationData station) {
+	public void updateHistory(StationData station) {
 		if (hasStation(station.stationId)) {
 			/*
 			 * Update ROWID to max(_id) + 1 (for auto cleaning old entries)

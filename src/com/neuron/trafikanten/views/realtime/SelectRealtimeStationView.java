@@ -19,7 +19,7 @@
 package com.neuron.trafikanten.views.realtime;
 
 import com.neuron.trafikanten.Trafikanten;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.views.GenericSelectStationView;
 
 import android.content.Intent;
@@ -34,7 +34,7 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
 	 * Handler for station selected
 	 */
 	@Override
-	public void stationSelected(SearchStationData station) {
+	public void stationSelected(StationData station) {
 		if (!station.isFavorite) {
 			historyDbAdapter.updateHistory(station);
 		} else {
@@ -44,7 +44,7 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
 		historyDbAdapter.close();
 		
 		Bundle bundle = new Bundle();
-		bundle.putParcelable(SearchStationData.PARCELABLE, station);
+		bundle.putParcelable(StationData.PARCELABLE, station);
 		
 		final Intent intent = new Intent(this, RealtimeView.class);
         intent.putExtras(bundle);

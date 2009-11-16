@@ -41,7 +41,7 @@ import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 public class TrafikantenRoute implements IRouteProvider {
 	private RouteProviderHandler handler;
@@ -94,9 +94,9 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	 * This function setups the url and the xmlreader, and passes data to the RouteHandler. 
 	 */
 	
-	/*public String soapGetFrom(ArrayList<SearchStationData> stationList) throws IOException {
+	/*public String soapGetFrom(ArrayList<StationData> stationList) throws IOException {
 		String xml = "";
-		for(SearchStationData station : stationList) {
+		for(StationData station : stationList) {
 			// TODO : From/airdistance/departure time has to be included atleast.
 			String[] args = new String[] { new Integer(station.airDistance).toString() };
 			xml = xml + HelperFunctions.mergeXmlArgument(resources, R.raw.gettravelsadvancedfrom, args);
@@ -231,8 +231,8 @@ class RouteHandler extends DefaultHandler {
 		        if (localName.equals("TravelStage")) {
 		            inTravelStage = true;
 		            travelStage = new RouteData();
-		            travelStage.fromStation = new SearchStationData();
-		            travelStage.toStation = new SearchStationData();
+		            travelStage.fromStation = new StationData();
+		            travelStage.toStation = new StationData();
 		        } else if (localName.equals("DepartureTime")) {
 		    		inDepartureTime = true;
 			    } else if (localName.equals("ArrivalTime")) {

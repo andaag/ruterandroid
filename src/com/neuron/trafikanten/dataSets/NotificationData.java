@@ -29,7 +29,7 @@ public class NotificationData  implements Parcelable {
 	/*
 	 * Realtime notification:
 	 */
-	public SearchStationData station;
+	public StationData station;
 	public RealtimeData departureInfo;
 	
 	/*
@@ -46,7 +46,7 @@ public class NotificationData  implements Parcelable {
 	public String with; // What transport we're traveling with.
 	
 	
-	public NotificationData(SearchStationData station, RealtimeData departureInfo, long notifyTime, String with) {
+	public NotificationData(StationData station, RealtimeData departureInfo, long notifyTime, String with) {
 		this.station = station;
 		this.departureInfo = departureInfo;
 		this.notifyTime = notifyTime;
@@ -89,7 +89,7 @@ public class NotificationData  implements Parcelable {
 		in.readTypedList(routeProposalList, RouteProposal.CREATOR);
 		proposalPosition = in.readInt();
 		
-		station = in.readParcelable(SearchStationData.class.getClassLoader());
+		station = in.readParcelable(StationData.class.getClassLoader());
 		departureInfo = in.readParcelable(RealtimeData.class.getClassLoader());
 	}
 	

@@ -19,7 +19,7 @@
 package com.neuron.trafikanten.db;
 
 import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -120,7 +120,7 @@ public abstract class GenericStationDbAdapter {
 	/*
 	 * Add new station to list.
 	 */
-    public long add(SearchStationData station) {
+    public long add(StationData station) {
     	final ContentValues values = new ContentValues();
     	values.put(KEY_STATIONID, station.stationId);
     	values.put(KEY_STOPNAME, station.stopName);

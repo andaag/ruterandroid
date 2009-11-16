@@ -21,7 +21,7 @@ package com.neuron.trafikanten.views.route;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.views.GenericSelectStationView;
 
 public class SelectRouteStationView extends GenericSelectStationView {
@@ -29,7 +29,7 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	 * Handler for station selected
 	 */
 	@Override
-	public void stationSelected(SearchStationData station) {
+	public void stationSelected(StationData station) {
 		if (!station.isFavorite) {
 			historyDbAdapter.updateHistory(station);
 		} else {
@@ -39,7 +39,7 @@ public class SelectRouteStationView extends GenericSelectStationView {
 		historyDbAdapter.close();
 		
 		Bundle bundle = new Bundle();
-		bundle.putParcelable(SearchStationData.PARCELABLE, station);
+		bundle.putParcelable(StationData.PARCELABLE, station);
 		
 		final Intent intent = new Intent();
         intent.putExtras(bundle);

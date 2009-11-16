@@ -20,7 +20,7 @@ package com.neuron.trafikanten.dataProviders;
 
 import android.os.Handler;
 
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 
 /*
@@ -32,7 +32,7 @@ public interface ISearchProvider extends IGenericProvider {
 	
 	abstract class SearchProviderHandler extends Handler {
 		public abstract void onStarted();
-	    public abstract void onData(SearchStationData searchData);
+	    public abstract void onData(StationData searchData);
 	    public abstract void onError(Exception e);
 	    public abstract void onFinished();
 	}

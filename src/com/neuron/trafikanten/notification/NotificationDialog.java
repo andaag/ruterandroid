@@ -35,7 +35,7 @@ import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataSets.NotificationData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 /*
  * Notification dialog, make sure to set realtimeData and station onPrepareDialog
@@ -47,7 +47,7 @@ public class NotificationDialog {
 	 * For realtime:
 	 */
 	private static RealtimeData sRealtimeData;
-	private static SearchStationData sStation;
+	private static StationData sStation;
 	
 	/*
 	 * for route:
@@ -61,7 +61,7 @@ public class NotificationDialog {
 	 */
 	private static String sWith;
 	
-	public static void setRealtimeData(RealtimeData realtimeData, SearchStationData station, String with) {
+	public static void setRealtimeData(RealtimeData realtimeData, StationData station, String with) {
 		sRealtimeData = realtimeData;
 		sStation = station;
 		sWith = with;

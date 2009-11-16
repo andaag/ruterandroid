@@ -18,15 +18,14 @@
 
 package com.neuron.trafikanten.views.map;
 
-import com.neuron.trafikanten.dataSets.SearchStationData;
-
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
+import com.neuron.trafikanten.dataSets.StationData;
 
-public class SearchStationOverlayItem extends OverlayItem {
-	public SearchStationData station;
+public class StationOverlayItem extends OverlayItem {
+	public StationData station;
 
-	public SearchStationOverlayItem(GeoPoint point, SearchStationData station) {
+	public StationOverlayItem(GeoPoint point, StationData station) {
 		super(point, station.stopName, station.extra);
 		this.station = station;
 	}

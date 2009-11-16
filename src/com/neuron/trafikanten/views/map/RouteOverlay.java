@@ -21,7 +21,7 @@ package com.neuron.trafikanten.views.map;
 import java.util.ArrayList;
 
 import com.neuron.trafikanten.dataSets.RouteData;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -40,10 +40,10 @@ import com.google.android.maps.Projection;
  */
 
 /*
- * Even the route is using SearchStationData, it's a direct list, route goes from .get(0) to .get(.size())
+ * Even the route is using StationData, it's a direct list, route goes from .get(0) to .get(.size())
  */
-public class RouteOverlay extends ItemizedOverlay<SearchStationOverlayItem> {
-	private ArrayList<SearchStationOverlayItem> items = new ArrayList<SearchStationOverlayItem>();
+public class RouteOverlay extends ItemizedOverlay<StationOverlayItem> {
+	private ArrayList<StationOverlayItem> items = new ArrayList<StationOverlayItem>();
 
 	public RouteOverlay(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
@@ -53,7 +53,7 @@ public class RouteOverlay extends ItemizedOverlay<SearchStationOverlayItem> {
 	 * Simple helper functions
 	 */
 	@Override
-	protected SearchStationOverlayItem createItem(int i) { return items.get(i); }
+	protected StationOverlayItem createItem(int i) { return items.get(i); }
 	@Override
 	public int size() { return items.size(); }
 	
@@ -67,10 +67,10 @@ public class RouteOverlay extends ItemizedOverlay<SearchStationOverlayItem> {
 		return false;
 	}
 	
-	private void addStation(SearchStationData station) {
+	private void addStation(StationData station) {
 		final double[] location = station.getLongLat();
 		final GeoPoint point = new GeoPoint((int)(location[0] * 1E6), (int)(location[1] * 1E6));
-		final SearchStationOverlayItem item = new SearchStationOverlayItem(point, station);
+		final StationOverlayItem item = new StationOverlayItem(point, station);
 		items.add(item);
 	}
 	
@@ -94,7 +94,7 @@ public class RouteOverlay extends ItemizedOverlay<SearchStationOverlayItem> {
 		populate();
 	}
 	
-	private void drawRoute(Canvas canvas, Projection projection, SearchStationData fromStation, SearchStationData toStation) {
+	private void drawRoute(Canvas canvas, Projection projection, StationData fromStation, StationData toStation) {
 		final Paint paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setColor(Color.GREEN);
@@ -118,8 +118,8 @@ public class RouteOverlay extends ItemizedOverlay<SearchStationOverlayItem> {
 		
 		int size = items.size() - 1;
 		for (int i = 0; i < size; i++) {
-			final SearchStationData from = items.get(i).station;
-			final SearchStationData to = items.get(i + 1).station;
+			final StationData from = items.get(i).station;
+			final StationData to = items.get(i + 1).station;
 			drawRoute(canvas, projection, from, to);
 		}
 		super.draw(canvas, mapView, shadow);

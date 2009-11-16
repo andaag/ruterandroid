@@ -29,10 +29,10 @@ import android.os.Parcelable;
 public class RouteData implements Parcelable {
 	public final static String PARCELABLE = "RouteData";
 	
-	public SearchStationData fromStation;
+	public StationData fromStation;
 	public long departure;
 	
-	public SearchStationData toStation;
+	public StationData toStation;
 	public long arrival;
 	
 	public String line;
@@ -56,10 +56,10 @@ public class RouteData implements Parcelable {
 	 * Function for reading the parcel
 	 */
 	public RouteData(Parcel in) {
-		fromStation = in.readParcelable(SearchStationData.class.getClassLoader());
+		fromStation = in.readParcelable(StationData.class.getClassLoader());
 		departure = in.readLong();
 		
-		toStation = in.readParcelable(SearchStationData.class.getClassLoader());
+		toStation = in.readParcelable(StationData.class.getClassLoader());
 		arrival = in.readLong();
 		
 		line = in.readString();

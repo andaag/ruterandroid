@@ -41,7 +41,7 @@ import android.widget.Toast;
 
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RouteData;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 
 public class SelectRouteView extends Activity {
 	private static final String TAG = "Trafikanten-SelectRouteView";
@@ -242,7 +242,7 @@ public class SelectRouteView extends Activity {
 		switch(requestCode) {
 		case ACTIVITY_SELECT_FROM:
 		case ACTIVITY_SELECT_TO:
-			final SearchStationData station = data.getParcelableExtra(SearchStationData.PARCELABLE);
+			final StationData station = data.getParcelableExtra(StationData.PARCELABLE);
 			if (requestCode == ACTIVITY_SELECT_FROM) {
 				routeData.fromStation = station;
 			} else {

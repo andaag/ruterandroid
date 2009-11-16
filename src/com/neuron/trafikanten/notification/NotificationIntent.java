@@ -14,7 +14,7 @@ import android.util.Log;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.NotificationData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.views.realtime.RealtimeView;
 import com.neuron.trafikanten.views.route.DetailedRouteView;
 
@@ -45,7 +45,7 @@ public class NotificationIntent extends BroadcastReceiver {
 			 * Setup realtime intent for popup.
 			 */
 			intent = new Intent(context, RealtimeView.class);
-			bundle.putParcelable(SearchStationData.PARCELABLE, notificationData.station);
+			bundle.putParcelable(StationData.PARCELABLE, notificationData.station);
 	        intent.putExtras(bundle);
 		} else {
 			/*

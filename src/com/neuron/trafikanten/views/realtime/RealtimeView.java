@@ -46,7 +46,7 @@ import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
-import com.neuron.trafikanten.dataSets.SearchStationData;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.notification.NotificationDialog;
 
 public class RealtimeView extends ListActivity {
@@ -71,7 +71,7 @@ public class RealtimeView extends ListActivity {
 	/*
 	 * Saved instance data
 	 */
-	private SearchStationData station;
+	private StationData station;
 	private RealtimeAdapter realtimeList;
 	
 	/*
@@ -95,10 +95,10 @@ public class RealtimeView extends ListActivity {
          * Load instance state
          */
         if (savedInstanceState == null) {
-        	station = getIntent().getParcelableExtra(SearchStationData.PARCELABLE);
+        	station = getIntent().getParcelableExtra(StationData.PARCELABLE);
             load();
         } else {
-        	station = savedInstanceState.getParcelable(SearchStationData.PARCELABLE);
+        	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	final ArrayList<RealtimeData> list = savedInstanceState.getParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST);
         	realtimeList.setList(list);
         }
@@ -271,7 +271,7 @@ public class RealtimeView extends ListActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putParcelable(SearchStationData.PARCELABLE, station);
+		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST, realtimeList.getList());
 	}
 }
