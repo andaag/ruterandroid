@@ -18,13 +18,15 @@
 
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
-import java.net.URL;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -33,6 +35,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.Log;
 
+import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
@@ -85,8 +88,11 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			URL url = new URL("http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId);
-			Log.i(TAG,"Realtime url : " + url);
+			HttpUriRequest request = new HttpGet("http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId);
+			InputStream result = HelperFunctions.executeHttpRequest(request);
+
+
+			Log.i(TAG,"Realtime url : " + "http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId);
 			
 			/*
 			 * Setup SAXParser and XMLReader
@@ -97,7 +103,7 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 			final XMLReader reader = parser.getXMLReader();
 			reader.setContentHandler(new RealtimeHandler(handler));
 			
-			reader.parse(new InputSource(url.openStream()));
+			reader.parse(new InputSource(result));
 		} catch(Exception e) {
 			/*
 			 * All exceptions except thread interruptions are passed to callback.

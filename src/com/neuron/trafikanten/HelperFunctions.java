@@ -21,14 +21,18 @@ package com.neuron.trafikanten;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 /*
@@ -93,9 +97,45 @@ public class HelperFunctions {
 	}
 	
 	/*
+	 * Decides on whether or not we should use gzip compression or not.
+	 */
+	public static InputStream executeHttpRequest(HttpUriRequest request) throws IOException {
+		boolean gzip = true;
+		
+		/*
+		 * Disable gzip compression on wifi
+		 */
+		ConnectivityManager connectivityManager =(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE); 
+		NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+		if ((networkInfo != null) && networkInfo.isConnected() && 
+                (networkInfo.getType() == ConnectivityManager.TYPE_WIFI)) { 
+			gzip = false;
+		}
+		
+		
+		/*
+		 * Add gzip header
+		 */
+		if (gzip) {
+			request.addHeader("Accept-Encoding", "gzip");
+		}
+		
+		/*
+		 * Get the response, if we use gzip use the GZIPInputStream
+		 */
+		HttpResponse response = new DefaultHttpClient().execute(request);
+		InputStream content = response.getEntity().getContent();
+		if (gzip) {
+			content = new GZIPInputStream(content);
+		}
+		
+		return content;
+	}
+	
+	/*
 	 * Send a soap request, takes resource id, arguments and the soap url, returns inputStream.
 	 */
-	public static InputStream soapRequest(final Resources resources, final int rid, final String[] args, final String url) throws IOException {
+	public static InputStream soapRequest(final Context context, final Resources resources, final int rid, final String[] args, final String url) throws IOException {
         final String soap = mergeXmlArgument(resources, rid, args);
 
         HttpPost httppost = new HttpPost(url);
@@ -103,7 +143,6 @@ public class HelperFunctions {
         httppost.setEntity(new StringEntity(soap));
     	Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
     	
-    	HttpResponse response = new DefaultHttpClient().execute(httppost);
-    	return response.getEntity().getContent();
+    	return executeHttpRequest(httppost);
 	}
 }
