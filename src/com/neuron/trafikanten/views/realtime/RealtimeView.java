@@ -357,7 +357,11 @@ class RealtimeAdapter extends BaseAdapter {
 				/*
 				 * Data already exists, we add it to the arrival list and return
 				 */
-				d.arrivalList.add(item);
+				if (d.arrivalList == null) {
+					d.arrivalList = HelperFunctions.renderTime(context, item.aimedArrival);
+				} else {
+					d.arrivalList = d.arrivalList + ",  " + HelperFunctions.renderTime(context, item.aimedArrival);
+				}
 				return;
 			}
 		}
@@ -459,14 +463,8 @@ class RealtimeAdapter extends BaseAdapter {
 		/*
 		 * Render list of coming departures
 		 */
-		if (data.arrivalList.size() > 0) {
-			int size = data.arrivalList.size() - 1;
-			String nextDepartures = HelperFunctions.renderTime(context, data.arrivalList.get(0).aimedArrival);
-			for (int i = 1; i < size; i++) {
-				final RealtimeData nextData = data.arrivalList.get(i);
-				nextDepartures = nextDepartures + ",  " + HelperFunctions.renderTime(context, nextData.aimedArrival);
-			}
-			holder.nextDepartures.setText(nextDepartures);
+		if (data.arrivalList != null) {
+			holder.nextDepartures.setText(data.arrivalList);
 			holder.nextDepartures.setVisibility(View.VISIBLE);
 		} else {
 			holder.nextDepartures.setVisibility(View.GONE);

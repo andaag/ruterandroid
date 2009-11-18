@@ -18,8 +18,6 @@
 
 package com.neuron.trafikanten.dataSets;
 
-import java.util.ArrayList;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -38,9 +36,9 @@ public class RealtimeData implements Parcelable {
 	public long expectedDeparture;
 	
 	/*
-	 * List of coming arrivals, this is used for the sliding list under current station in RealtimeView
+	 * List of coming arrivals, this is used for the list under current station in RealtimeView
 	 */
-	public ArrayList<RealtimeData> arrivalList = new ArrayList<RealtimeData>();
+	public String arrivalList;
 	
 	public RealtimeData() { }
 	
@@ -65,13 +63,8 @@ public class RealtimeData implements Parcelable {
 		
 		aimedDeparture = in.readLong();
 		expectedDeparture = in.readLong();
-
-		final ClassLoader loader = RealtimeData.class.getClassLoader();
-		int size = in.readInt();
-		for (int i = 0; i < size; i++) {
-			final RealtimeData data = in.readParcelable(loader);
-			arrivalList.add(data);
-		}
+		
+		arrivalList = in.readString();
 	}
 	
 	/*
@@ -92,10 +85,7 @@ public class RealtimeData implements Parcelable {
 		out.writeLong(aimedDeparture);
 		out.writeLong(expectedDeparture);
 		
-		out.writeInt(arrivalList.size());
-		for (RealtimeData data : arrivalList) {
-			out.writeParcelable(data, 0);
-		}
+		out.writeString(arrivalList);
 	}
 	
 	/*
