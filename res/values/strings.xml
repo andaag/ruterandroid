@@ -54,6 +54,7 @@ You can longpress on a station to mark it as favorite.</string>
 	
 	<!-- RealtimeView -->
 	<string name="ca">ca </string>
+	<string name="old">old</string>
 	<string name="refresh">Refresh</string>
 	<string name="realtimeEmpty">No information found!</string>
 	<string name="late">late</string>

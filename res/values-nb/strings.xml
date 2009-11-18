@@ -49,6 +49,7 @@ Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
 	
 	<!-- RealtimeView -->
 	<string name="ca">ca </string>
+	<string name="old">gammel</string>
 	<string name="refresh">Oppdater</string>
 	<string name="realtimeEmpty">Ingen informasjon funnet!</string>
 	<string name="late">forsinket</string>

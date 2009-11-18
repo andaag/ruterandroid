@@ -50,6 +50,7 @@ import com.neuron.trafikanten.notification.NotificationDialog;
 
 public class RealtimeView extends ListActivity {
 	private static final String TAG = "Trafikanten-RealtimeView";
+	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	
 	/*
 	 * Options menu:
@@ -72,6 +73,7 @@ public class RealtimeView extends ListActivity {
 	 */
 	private StationData station;
 	private RealtimeAdapter realtimeList;
+	private long lastUpdate;
 	
 	/*
 	 * Data provider
@@ -98,6 +100,7 @@ public class RealtimeView extends ListActivity {
             load();
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
+        	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
         	
         	while (true) {
             	final ArrayList<RealtimeData> list = savedInstanceState.getParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST);
@@ -111,12 +114,25 @@ public class RealtimeView extends ListActivity {
         		
         	}
         }
-        setTitle("Trafikanten - " + station.stopName);
+
         registerForContextMenu(getListView());
         setListAdapter(realtimeList);
+        refreshTitle();
+    }
+    
+    private void refreshTitle() {
+    	long lastUpdateDiff = (lastUpdate - System.currentTimeMillis()) / HelperFunctions.SECOND;
+    	if (lastUpdateDiff > 60) {
+    		lastUpdateDiff = lastUpdateDiff / 60;
+    		setTitle("Trafikanten - " + station.stopName + " (" + lastUpdateDiff + "m " + getText(R.string.old) + ")");
+    	} else {
+    		setTitle("Trafikanten - " + station.stopName);
+    	}
+            	
     }
     
     private void load() {
+        lastUpdate = System.currentTimeMillis();
     	setProgressBarIndeterminateVisibility(true);
     	if (realtimeProvider != null)
     		realtimeProvider.Stop();
@@ -140,6 +156,7 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onFinished() {
+				refreshTitle();
 				setProgressBarIndeterminateVisibility(false);
 				/*
 				 * Show info text if view is empty
@@ -275,12 +292,14 @@ public class RealtimeView extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 		realtimeList.notifyDataSetInvalidated();
+		refreshTitle();
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(StationData.PARCELABLE, station);
+		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 
 		/*
 		 * Save all lists in order
