@@ -415,30 +415,6 @@ class RealtimeAdapter extends BaseAdapter {
 	}
 	
 	/*
-	 * Function to render time to a text view, this includes rendering color coding.
-	 */
-	public void renderTimeToTextView(RealtimeData data, TextView out) {
-		if (!data.realtime || data.expectedArrival == 0) {
-			if (!data.realtime) {
-				out.setText("" + context.getText(R.string.ca) + " " + HelperFunctions.renderTime(context, data.aimedArrival));
-			} else {
-				out.setText(HelperFunctions.renderTime(context, data.aimedArrival));
-			}
-		
-			final int color = Color.rgb(255, 255, 255);
-			out.setTextColor(color);
-		} else {
-			out.setText(HelperFunctions.renderTime(context, data.expectedArrival));
-		
-			// Color the time text
-			final long diffMinutes = (data.expectedArrival - data.aimedArrival) / (60 * 1000);
-			final int colorValue = (int)(255 * diffMinutes / 9); // Compute a rgb value from diffMinutes, "max" color range is 9min, so >9 is completely red.
-			final int color = Color.rgb(colorValue, 255 - colorValue, 0);
-			out.setTextColor(color);
-		}
-	}
-	
-	/*
 	 * Setup the view
 	 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
 	 */
@@ -481,7 +457,14 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.line.setText(data.line);
 		}
 		
-		renderTimeToTextView(data, holder.time);
+		/*
+		 * Render the data
+		 */
+		if (!data.realtime) {
+			holder.time.setText("" + context.getText(R.string.ca) + " " + HelperFunctions.renderTime(context, data.aimedArrival));
+		} else {
+			holder.time.setText(HelperFunctions.renderTime(context, data.aimedArrival));
+		}
 		
 		if (renderPlatform) {
 			holder.platform.setText("Platform " + data.departurePlatform);

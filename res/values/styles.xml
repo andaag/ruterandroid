@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <style name="trafikanten">        
-    <!-- <item name="android:windowNoTitle">true</item>  -->
+  <style name="trafikanten" parent="android:Theme">
+  <!--  
+	<item name="android:textStyle">bold</item>
+	 
+	<item name="android:textColor">#fcf930</item>
+	
+	 -->
 </style>
 </resources>
