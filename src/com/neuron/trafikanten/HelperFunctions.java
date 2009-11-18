@@ -31,8 +31,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 /*
@@ -100,17 +98,17 @@ public class HelperFunctions {
 	 * Decides on whether or not we should use gzip compression or not.
 	 */
 	public static InputStream executeHttpRequest(HttpUriRequest request) throws IOException {
-		boolean gzip = true;
+		final boolean gzip = true;
 		
 		/*
 		 * Disable gzip compression on wifi
 		 */
-		ConnectivityManager connectivityManager =(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE); 
+		/*ConnectivityManager connectivityManager =(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE); 
 		NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 		if ((networkInfo != null) && networkInfo.isConnected() && 
                 (networkInfo.getType() == ConnectivityManager.TYPE_WIFI)) { 
 			gzip = false;
-		}
+		}*/
 		
 		
 		/*
@@ -135,7 +133,7 @@ public class HelperFunctions {
 	/*
 	 * Send a soap request, takes resource id, arguments and the soap url, returns inputStream.
 	 */
-	public static InputStream soapRequest(final Context context, final Resources resources, final int rid, final String[] args, final String url) throws IOException {
+	public static InputStream soapRequest(Resources resources, final int rid, final String[] args, final String url) throws IOException {
         final String soap = mergeXmlArgument(resources, rid, args);
 
         HttpPost httppost = new HttpPost(url);
