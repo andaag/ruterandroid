@@ -136,7 +136,7 @@ class RealtimeHandler extends DefaultHandler {
 	/*
 	 * Temporary variables for parsing. 
 	 */
-	private boolean inMonitoredStopVisit = false;
+	private boolean inMonitoredStopVisit = false; // Top block
 	private boolean inPublishedLineName = false;
 	private boolean inDestinationName = false;
 	private boolean inMonitored = false;
@@ -238,7 +238,7 @@ class RealtimeHandler extends DefaultHandler {
 		        data.destination = buffer.toString();
 		    } else if (inMonitored && localName.equals("Monitored")) {
 		        final String monitored = buffer.toString();
-		        if (monitored.equalsIgnoreCase("true") || monitored.equals("1")) {
+		        if (monitored.equalsIgnoreCase("true")) {
 		        	data.realtime = true;
 		        } else {
 		        	data.realtime = false;
