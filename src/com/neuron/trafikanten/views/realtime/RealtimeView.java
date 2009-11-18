@@ -262,26 +262,12 @@ public class RealtimeView extends ListActivity {
 		RealtimeData data = (RealtimeData) realtimeList.getItem(position);
 		final long minutesDelayed = (data.expectedDeparture - data.aimedDeparture) / (60 * 1000);
 		
-
-		// Not including departure platform, as all stations have them, and they currently dont make a lot of sense.
-		//    - Currently used internally for sorting? (seem to also indicate directional reference).
-		//    - Might be able to in the future sort by direction with this variable?
-		//				getText(R.string.platform) + " " + data.departurePlatform + "\n" +
 		String info = data.destination + "\n" +
-			minutesDelayed + "m " + getText(R.string.late);
+			"  " + minutesDelayed + "m " + getText(R.string.late);
 		if (data.extra != null) {
 			info = info + "\n" + data.extra;
 		}
 		Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
-	}
-
-	/*
-	 * onPause - stop anything needed.
-	 * @see android.app.Activity#onPause()
-	 */
-	@Override
-	protected void onPause() {
-		super.onPause();
 	}
 
 	/*
