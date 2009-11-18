@@ -99,8 +99,18 @@ public class RealtimeView extends ListActivity {
             load();
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
-        	final ArrayList<RealtimeData> list = savedInstanceState.getParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST);
-        	realtimeList.setList(list);
+        	
+        	while (true) {
+            	final ArrayList<RealtimeData> list = savedInstanceState.getParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST);
+            	if (list != null) {
+            		for (RealtimeData item : list) {
+            			realtimeList.addItem(item);
+            		}
+            	} else {
+            		break;
+            	}
+        		
+        	}
         }
         setTitle("Trafikanten - " + station.stopName);
         registerForContextMenu(getListView());
@@ -272,14 +282,41 @@ public class RealtimeView extends ListActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(StationData.PARCELABLE, station);
-		outState.putParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST, realtimeList.getList());
+
+		/*
+		 * Save all lists in order
+		 */
+		for (RealtimePlatformList realtimePlatformList : realtimeList.getList()) {
+			outState.putParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST, realtimePlatformList);
+		}
+	}
+}
+
+class RealtimePlatformList extends ArrayList<RealtimeData> {
+	private static final long serialVersionUID = -8158771022676013360L;
+	public String platform;
+	
+	public RealtimePlatformList(String platform) {
+		super();
+		this.platform = platform;
 	}
 }
 
 class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_REALTIMELIST = "realtimelist";
 	private LayoutInflater inflater;
-	private ArrayList<RealtimeData> items = new ArrayList<RealtimeData>();
+	
+	
+	/*
+	 * Structure:
+	 * platform ->
+	 *     line + destination ->
+	 *         RealtimeData	
+	 */
+	private ArrayList< RealtimePlatformList > items = new ArrayList< RealtimePlatformList >();
+	private int itemsSize = 0; // Cached for performance
+	
+	
 	private Context context;
 	
 	public RealtimeAdapter(Context context) {
@@ -290,32 +327,66 @@ class RealtimeAdapter extends BaseAdapter {
 	/*
 	 * Simple functions dealing with adding/setting items. 
 	 */
-	public ArrayList<RealtimeData> getList() { return items; }
-	public void setList(ArrayList<RealtimeData> items) { this.items = items; }
-	public void addItem(RealtimeData item) {
+	public ArrayList< RealtimePlatformList > getList() { return items; }
+	
+	/*
+	 * Simple function that gets (or creates a new) platform in items
+	 */
+	public RealtimePlatformList getOrCreatePlatform(String platform) {
+		for (RealtimePlatformList realtimePlatformList : items) {
+			if (realtimePlatformList.platform.equals(platform)) {
+				return realtimePlatformList;
+			}
+		}
+		
 		/*
-		 * First search through and check if any previous match has the same line and destination.
-		 * If it does, add us to that instead of making a huge list of duplicates.
+		 * No platform found, create new
 		 */
-		for (RealtimeData d : items) {
+		RealtimePlatformList realtimePlatformList = new RealtimePlatformList(platform);
+		items.add(realtimePlatformList);
+		return realtimePlatformList;
+	}
+	
+	/*
+	 * Adding an item puts it in the platform category, and compressed duplicate data to one entry.	
+	 */
+	public void addItem(RealtimeData item) {
+		RealtimePlatformList realtimePlatformList = getOrCreatePlatform(item.departurePlatform);
+		for (RealtimeData d : realtimePlatformList) {
 			if (d.destination.equals(item.destination) && d.line.equals(item.line)) {
+				/*
+				 * Data already exists, we add it to the arrival list and return
+				 */
 				d.arrivalList.add(item);
 				return;
 			}
 		}
-		
-		items.add(item);
+		/*
+		 * Data does not exist, add it
+		 */
+		realtimePlatformList.add(item);
+		itemsSize++;
 	}
 	
 	/*
 	 * Standard android.widget.Adapter items, self explanatory.
 	 */
 	@Override
-	public int getCount() {	return items.size(); }
-	@Override
-	public Object getItem(int pos) { return items.get(pos); }
+	public int getCount() { return itemsSize; }
 	@Override
 	public long getItemId(int pos) { return pos; }
+	
+	@Override
+	public RealtimeData getItem(int pos) {
+		for (RealtimePlatformList realtimePlatformList : items) {
+			if (pos < realtimePlatformList.size()) {
+				return realtimePlatformList.get(pos);
+			} else {
+				pos = pos - realtimePlatformList.size();
+			}
+		}
+		return null;
+	}
 	
 	/*
 	 * Function to render time to a text view, this includes rendering color coding.
@@ -374,7 +445,7 @@ class RealtimeAdapter extends BaseAdapter {
 		/*
 		 * Render data to view.
 		 */
-		final RealtimeData data = items.get(pos);
+		final RealtimeData data = getItem(pos);
 		if (data.destination.equals(data.line)) {
 			holder.destination.setText("");
 			holder.line.setText(data.line);			
