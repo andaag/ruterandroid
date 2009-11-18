@@ -344,6 +344,15 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Simple function that gets (or creates a new) platform in items
 	 */
 	public RealtimePlatformList getOrCreatePlatform(String platform) {
+		/*
+		 * We cant deal with null platforms
+		 */
+		if (platform == null)
+			platform = "";
+		
+		/*
+		 * If the platform already exists in the database just return it
+		 */
 		for (RealtimePlatformList realtimePlatformList : items) {
 			if (realtimePlatformList.platform.equals(platform)) {
 				return realtimePlatformList;
@@ -365,7 +374,9 @@ class RealtimeAdapter extends BaseAdapter {
 			}
 		}
 		
-		
+		/*
+		 * Finally add it and return
+		 */
 		items.add(pos, realtimePlatformList);
 		return realtimePlatformList;
 	}
@@ -472,7 +483,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.time.setText(HelperFunctions.renderTime(context, data.aimedArrival));
 		}
 		
-		if (renderPlatform) {
+		if (renderPlatform && data.departurePlatform != null) {
 			holder.platform.setText("Platform " + data.departurePlatform);
 			holder.platform.setVisibility(View.VISIBLE);
 		} else {
