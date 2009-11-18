@@ -230,35 +230,36 @@ class RealtimeHandler extends DefaultHandler {
 				}
 			});
 	    } else { 
-	    	if (inPublishedLineName && localName.equals("PublishedLineName")) {
+	    	if (inPublishedLineName) {
 		        inPublishedLineName = false;
 		        data.line = buffer.toString();
-		    } else if (inDestinationName && localName.equals("DestinationName")) {
+		    } else if (inDestinationName) {
 		        inDestinationName = false;
 		        data.destination = buffer.toString();
-		    } else if (inMonitored && localName.equals("Monitored")) {
-		        final String monitored = buffer.toString();
+		    } else if (inMonitored) {
+		        inMonitored = false;
+		    	final String monitored = buffer.toString();
 		        if (monitored.equalsIgnoreCase("true")) {
 		        	data.realtime = true;
 		        } else {
 		        	data.realtime = false;
 		        }
-		    } else if (inAimedArrivalTime && localName.equals("AimedArrivalTime")) {
+		    } else if (inAimedArrivalTime) {
 		        inAimedArrivalTime = false;
 		        data.aimedArrival = parseDateTime(buffer.toString());
-		    } else if (inExpectedArrivalTime && localName.equals("ExpectedArrivalTime")) {
+		    } else if (inExpectedArrivalTime) {
 		        inExpectedArrivalTime = false;
 		        data.expectedArrival = parseDateTime(buffer.toString());
-		    } else if (inAimedDepartureTime && localName.equals("AimedDepartureTime")) {
+		    } else if (inAimedDepartureTime) {
 		        inAimedDepartureTime = false;
 		        data.aimedDeparture = parseDateTime(buffer.toString());
-		    } else if (inExpectedDepartureTime && localName.equals("ExpectedDepartureTime")) {
+		    } else if (inExpectedDepartureTime) {
 		        inExpectedDepartureTime = false;
 		        data.expectedDeparture = parseDateTime(buffer.toString());
-		    } else if (inDeparturePlatformName && localName.equals("DeparturePlatformName")) {
+		    } else if (inDeparturePlatformName) {
 		        inDeparturePlatformName = false;
 		        data.departurePlatform = buffer.toString();
-		    } else if (inStopVisitNote && localName.equals("StopVisitNote")) {
+		    } else if (inStopVisitNote) {
 		        inStopVisitNote = false;
 		        data.extra = buffer.toString();
 		    }
