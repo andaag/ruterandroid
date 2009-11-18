@@ -483,10 +483,12 @@ class RealtimeAdapter extends BaseAdapter {
 		
 		renderTimeToTextView(data, holder.time);
 		
-		if (renderPlatform)
-			holder.platform.setText(data.departurePlatform);
-		else 
-			holder.platform.setText(data.departurePlatform + "-Same");
+		if (renderPlatform) {
+			holder.platform.setText("Platform " + data.departurePlatform);
+			holder.platform.setVisibility(View.VISIBLE);
+		} else {
+			holder.platform.setVisibility(View.GONE);
+		}
 		
 		/*
 		 * Render list of coming departures

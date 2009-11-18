@@ -8,20 +8,20 @@
 	>
 	
 	<TextView
+		android:id="@+id/platform"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:paddingLeft="40dip"
+		style="?android:attr/listSeparatorTextViewStyle"/>
+	
+	<TextView
 		android:id="@+id/line"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceMedium"
 		android:layout_marginLeft="2dip"
-		/>
-		
-	<TextView
-		android:id="@+id/platform"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:layout_marginLeft="2dip"
-		android:layout_below="@+id/line"
+		android:layout_below="@+id/platform"
 		/>
 		
 	<TextView
@@ -29,6 +29,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_below="@+id/platform"
 		
 		android:layout_marginRight="6dip"
 		android:layout_alignParentRight="true"
@@ -42,6 +43,7 @@
 		
 		android:layout_marginLeft="40dip"
 		android:layout_toLeftOf="@+id/time"
+		android:layout_below="@+id/platform"
 		android:layout_alignParentLeft="true"
 		android:ellipsize="marquee"
 		android:singleLine="true"

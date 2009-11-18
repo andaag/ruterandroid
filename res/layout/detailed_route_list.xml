@@ -17,7 +17,6 @@
 		android:paddingLeft="40dip"
 		style="?android:attr/listSeparatorTextViewStyle"/>
 	
-	
 	<TextView
 		android:id="@+id/line"
 		android:layout_width="wrap_content"
