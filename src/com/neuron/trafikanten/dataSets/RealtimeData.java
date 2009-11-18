@@ -38,7 +38,7 @@ public class RealtimeData implements Parcelable {
 	/*
 	 * List of coming arrivals, this is used for the list under current station in RealtimeView
 	 */
-	public String arrivalList;
+	public StringBuffer arrivalList = new StringBuffer();
 	
 	public RealtimeData() { }
 	
@@ -64,7 +64,7 @@ public class RealtimeData implements Parcelable {
 		aimedDeparture = in.readLong();
 		expectedDeparture = in.readLong();
 		
-		arrivalList = in.readString();
+		arrivalList = new StringBuffer(in.readString());
 	}
 	
 	/*
@@ -85,7 +85,7 @@ public class RealtimeData implements Parcelable {
 		out.writeLong(aimedDeparture);
 		out.writeLong(expectedDeparture);
 		
-		out.writeString(arrivalList);
+		out.writeString(arrivalList.toString());
 	}
 	
 	/*
