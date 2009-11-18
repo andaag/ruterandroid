@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
