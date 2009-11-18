@@ -101,9 +101,9 @@ public class RealtimeView extends ListActivity {
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
-        	
-        	while (true) {
-            	final ArrayList<RealtimeData> list = savedInstanceState.getParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST);
+
+        	for (int i = 0; i < 100; i++) {
+            	final ArrayList<RealtimeData> list = savedInstanceState.getParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST + i);
             	if (list != null) {
             		for (RealtimeData item : list) {
             			realtimeList.addItem(item);
@@ -111,8 +111,8 @@ public class RealtimeView extends ListActivity {
             	} else {
             		break;
             	}
-        		
         	}
+        		
         }
 
         registerForContextMenu(getListView());
@@ -290,8 +290,10 @@ public class RealtimeView extends ListActivity {
 		/*
 		 * Save all lists in order
 		 */
-		for (RealtimePlatformList realtimePlatformList : realtimeList.getList()) {
-			outState.putParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST, realtimePlatformList);
+		final ArrayList<RealtimePlatformList> list = realtimeList.getList(); 
+		for (int i = 0; i < list.size(); i++) {
+			final RealtimePlatformList realtimePlatformList = list.get(i);
+			outState.putParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST + i, realtimePlatformList);
 		}
 	}
 }
