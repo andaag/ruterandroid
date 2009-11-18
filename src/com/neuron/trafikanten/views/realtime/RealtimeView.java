@@ -313,8 +313,13 @@ class RealtimeAdapter extends BaseAdapter {
 	 *     line + destination ->
 	 *         RealtimeData	
 	 */
-	private ArrayList< RealtimePlatformList > items = new ArrayList< RealtimePlatformList >();
+	private ArrayList<RealtimePlatformList> items = new ArrayList<RealtimePlatformList>();
 	private int itemsSize = 0; // Cached for performance
+	
+	/*
+	 * This variable is set by getItem, it indicates this station is the first of the current platform, so platform should be shown.
+	 */
+	private boolean renderPlatform = false;
 	
 	
 	private Context context;
@@ -343,7 +348,19 @@ class RealtimeAdapter extends BaseAdapter {
 		 * No platform found, create new
 		 */
 		RealtimePlatformList realtimePlatformList = new RealtimePlatformList(platform);
-		items.add(realtimePlatformList);
+		
+		/*
+		 * We make sure the platform list is sorted the same way every time.
+		 */
+		int pos = 0;
+		for (; pos < items.size(); pos++) {
+			if (platform.compareTo(items.get(pos).platform) < 0) {
+				break;
+			}
+		}
+		
+		
+		items.add(pos, realtimePlatformList);
 		return realtimePlatformList;
 	}
 	
@@ -360,7 +377,8 @@ class RealtimeAdapter extends BaseAdapter {
 				if (d.arrivalList.length() == 0) {
 					d.arrivalList.append(HelperFunctions.renderTime(context, item.aimedArrival));
 				} else {
-					d.arrivalList.append(",  " + HelperFunctions.renderTime(context, item.aimedArrival));
+					d.arrivalList.append(",  ");
+					d.arrivalList.append(HelperFunctions.renderTime(context, item.aimedArrival));
 				}
 				return;
 			}
@@ -379,11 +397,15 @@ class RealtimeAdapter extends BaseAdapter {
 	public int getCount() { return itemsSize; }
 	@Override
 	public long getItemId(int pos) { return pos; }
-	
 	@Override
 	public RealtimeData getItem(int pos) {
 		for (RealtimePlatformList realtimePlatformList : items) {
 			if (pos < realtimePlatformList.size()) {
+				if (pos == 0) {
+					renderPlatform = true;
+				} else {
+					renderPlatform = false;
+				}
 				return realtimePlatformList.get(pos);
 			} else {
 				pos = pos - realtimePlatformList.size();
@@ -434,6 +456,7 @@ class RealtimeAdapter extends BaseAdapter {
 			
 			holder = new ViewHolder();
 			holder.destination = (TextView) convertView.findViewById(R.id.destination);
+			holder.platform = (TextView) convertView.findViewById(R.id.platform);
 			holder.line = (TextView) convertView.findViewById(R.id.line);
 			holder.time = (TextView) convertView.findViewById(R.id.time);
 			holder.nextDepartures = (TextView) convertView.findViewById(R.id.nextDepartures);
@@ -460,6 +483,11 @@ class RealtimeAdapter extends BaseAdapter {
 		
 		renderTimeToTextView(data, holder.time);
 		
+		if (renderPlatform)
+			holder.platform.setText(data.departurePlatform);
+		else 
+			holder.platform.setText(data.departurePlatform + "-Same");
+		
 		/*
 		 * Render list of coming departures
 		 */
@@ -478,6 +506,7 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	static class ViewHolder {
 		TextView line;
+		TextView platform;
 		TextView destination;
 		TextView time;
 		TextView nextDepartures;

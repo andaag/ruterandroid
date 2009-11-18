@@ -16,6 +16,15 @@
 		/>
 		
 	<TextView
+		android:id="@+id/platform"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_marginLeft="2dip"
+		android:layout_below="@+id/line"
+		/>
+		
+	<TextView
 		android:id="@+id/time"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
