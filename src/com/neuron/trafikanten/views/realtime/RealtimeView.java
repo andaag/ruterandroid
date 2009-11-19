@@ -398,10 +398,10 @@ class RealtimeAdapter extends BaseAdapter {
 				 * Data already exists, we add it to the arrival list and return
 				 */
 				if (d.arrivalList.length() == 0) {
-					d.arrivalList.append(HelperFunctions.renderTime(context, item.aimedArrival));
+					d.arrivalList.append(HelperFunctions.renderTime(context, item.expectedDeparture));
 				} else {
 					d.arrivalList.append(",  ");
-					d.arrivalList.append(HelperFunctions.renderTime(context, item.aimedArrival));
+					d.arrivalList.append(HelperFunctions.renderTime(context, item.expectedDeparture));
 				}
 				return;
 			}
@@ -484,9 +484,9 @@ class RealtimeAdapter extends BaseAdapter {
 		 * Render the data
 		 */
 		if (!data.realtime) {
-			holder.time.setText("" + context.getText(R.string.ca) + " " + HelperFunctions.renderTime(context, data.aimedArrival));
+			holder.time.setText("" + context.getText(R.string.ca) + " " + HelperFunctions.renderTime(context, data.expectedDeparture));
 		} else {
-			holder.time.setText(HelperFunctions.renderTime(context, data.aimedArrival));
+			holder.time.setText(HelperFunctions.renderTime(context, data.expectedDeparture));
 		}
 		
 		if (renderPlatform && data.departurePlatform != null) {

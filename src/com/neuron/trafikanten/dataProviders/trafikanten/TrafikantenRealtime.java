@@ -141,8 +141,8 @@ class RealtimeHandler extends DefaultHandler {
 	private boolean inDestinationName = false;
 	private boolean inMonitored = false;
 
-	private boolean inAimedArrivalTime = false;
-	private boolean inExpectedArrivalTime = false;
+	/*private boolean inAimedArrivalTime = false;
+	private boolean inExpectedArrivalTime = false;*/
 
 	private boolean inAimedDepartureTime = false;
 	private boolean inExpectedDepartureTime = false;
@@ -197,10 +197,10 @@ class RealtimeHandler extends DefaultHandler {
 		        inDestinationName = true;
 		    } else if (localName.equals("Monitored")) {
 		        inMonitored = true;
-		    } else if (localName.equals("AimedArrivalTime")) {
+		    /*} else if (localName.equals("AimedArrivalTime")) {
 		        inAimedArrivalTime = true;
 		    } else if (localName.equals("ExpectedArrivalTime")) {
-		        inExpectedArrivalTime = true;
+		        inExpectedArrivalTime = true;*/
 		    } else if (localName.equals("AimedDepartureTime")) {
 		        inAimedDepartureTime = true;
 		    } else if (localName.equals("ExpectedDepartureTime")) {
@@ -244,12 +244,12 @@ class RealtimeHandler extends DefaultHandler {
 		        } else {
 		        	data.realtime = false;
 		        }
-		    } else if (inAimedArrivalTime) {
+		    /*} else if (inAimedArrivalTime) {
 		        inAimedArrivalTime = false;
 		        data.aimedArrival = parseDateTime(buffer.toString());
 		    } else if (inExpectedArrivalTime) {
 		        inExpectedArrivalTime = false;
-		        data.expectedArrival = parseDateTime(buffer.toString());
+		        data.expectedArrival = parseDateTime(buffer.toString());*/
 		    } else if (inAimedDepartureTime) {
 		        inAimedDepartureTime = false;
 		        data.aimedDeparture = parseDateTime(buffer.toString());
@@ -269,9 +269,9 @@ class RealtimeHandler extends DefaultHandler {
 	
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
+		//inAimedArrivalTime || inExpectedArrivalTime
 	    if (inPublishedLineName || inDestinationName ||
-	    		inMonitored || inAimedArrivalTime || inExpectedArrivalTime || inAimedDepartureTime ||
-	    		inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
+	    		inMonitored || inAimedDepartureTime || inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
 	    	buffer.append(ch,start,length);
 	    }
 	}
