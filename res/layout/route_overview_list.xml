@@ -5,29 +5,16 @@
 	 android:layout_height="fill_parent" 
 	 android:layout_width="fill_parent">
 	 
-	  <TextView android:id="@+id/header"
-	  android:padding="3dip"
- 	  	  android:textAppearance="?android:attr/textAppearanceMedium"
-	  android:layout_height="wrap_content" 
-	  android:layout_width="fill_parent"
-	   android:text="18:53 -> 19:13 total 53m" />
-	   
-	   
 	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	  android:id="@+id/routeInfo"
-	android:orientation="vertical"
+      android:orientation="horizontal"
 	 android:layout_height="wrap_content" 
 	 android:layout_width="fill_parent">
 	 </LinearLayout>
 	   
 	  <TextView android:id="@+id/footer"
-	  android:paddingLeft="3dip"
-	  android:paddingTop="3dip"
-	  android:paddingRight="3dip"
-	  android:paddingBottom="15dip"
 	  android:layout_height="wrap_content" 
-	  android:layout_width="fill_parent"
-	   android:text="TODO : 2m waittime and 3m walktime, 1 switch." />
+	  android:layout_width="fill_parent"/>
 
 	 
 </LinearLayout>

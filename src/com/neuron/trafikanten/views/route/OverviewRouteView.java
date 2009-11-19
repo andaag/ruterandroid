@@ -26,17 +26,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -192,7 +188,6 @@ class OverviewRouteAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.route_overview_list, null);
 			
 			holder = new ViewHolder();
-			holder.header = (TextView) convertView.findViewById(R.id.header);
 			holder.routeInfo = (LinearLayout) convertView.findViewById(R.id.routeInfo);
 			holder.footer = (TextView) convertView.findViewById(R.id.footer);
 
@@ -210,9 +205,9 @@ class OverviewRouteAdapter extends BaseAdapter {
 		final RouteProposal routeProposal = items.get(pos);
 		long departure = 0;
 		long arrival = 0;
-		int switches = 0;
 		
 		holder.routeInfo.removeAllViews();
+		boolean first = true;
 		for(RouteData routeData : routeProposal.travelStageList) {
 			/*
 			 * Grab the first departure and last arrival to calculate total time
@@ -223,96 +218,39 @@ class OverviewRouteAdapter extends BaseAdapter {
 			arrival = routeData.arrival;
 			
 			/*
-			 * Render the layout
-			 */
-			final RelativeLayout layout = new RelativeLayout(context);
-			/*
 			 * Add Icon
 			 */
-			{
-				final ImageView imageView = new ImageView(context);
+			/*{
 				final int symbolImage = DataProviderFactory.getImageResource(routeData.transportType);
 				if (symbolImage > 0) {
-					imageView.setVisibility(View.VISIBLE);
+					final ImageView imageView = new ImageView(context);
 					imageView.setImageResource(symbolImage);
-				} else {
-					imageView.setVisibility(View.GONE);
+					holder.routeInfo.addView(imageView);
 				}
-				layout.addView(imageView);
-				imageView.setId(1);
-			}
+			}*/
 
 			
 			/*
-			 * Add top text line
+			 * Add text line
 			 */
 			{
-				final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-				params.addRule(RelativeLayout.RIGHT_OF, 1);
-				
 				final TextView textView = new TextView(context);
-				textView.setText(routeData.line + " " + routeData.destination);
-				textView.setSingleLine();
-				layout.addView(textView, params);
-				textView.setId(2);
-			}
-			
-			/*
-			 * Add bottom text line
-			 */
-			{
-				final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-				params.addRule(RelativeLayout.RIGHT_OF, 1);
-				params.addRule(RelativeLayout.BELOW, 2);
-				params.leftMargin = 10;
+				final long minDiff = (routeData.arrival - routeData.departure) / HelperFunctions.MINUTE;
+				final String line = routeData.transportType == IRouteProvider.TRANSPORT_WALK ? context.getText(R.string.walk).toString() : routeData.line;
+				if (!first)
+					textView.setText(", " + line + " (" + minDiff + "m)");
+				else
+					textView.setText(line + " (" + minDiff + "m)");
 				
-				final TextView textView = new TextView(context);
-				textView.setText("To : " + routeData.toStation.stopName + " for " + 
-						((routeData.arrival - routeData.departure) / 1000) + "min");
 				textView.setSingleLine();
-				layout.addView(textView, params);
+				holder.routeInfo.addView(textView);
 			}
-			
-		
-			
-			/*
-			 * And add it to our container
-			 */
-			{
-				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-				layoutParams.gravity = Gravity.VERTICAL_GRAVITY_MASK;
-				holder.routeInfo.addView(layout, layoutParams);
-			}
-			
-			
-
-			/*final TextView textView = new TextView(context);
-			if (routeData.transportType != IRouteProvider.TRANSPORT_WALK) {
-				/*
-				 * If we're not walking, show line number and increase the amount of switches we are doing.
-				 *
-				textView.setText(routeData.line + " " + 
-					HelperFunctions.hourFormater.format(routeData.departure) + " " + 
-					routeData.fromStation.stopName + " -> " + 
-					routeData.toStation.stopName);
-				switches++;
-			} else {
-				/*
-				 * We're talking, render that in routeInfo
-				 *
-				textView.setText(context.getText(R.string.walk) + " " + 
-						HelperFunctions.hourFormater.format(routeData.departure) + " " + 
-						routeData.fromStation.stopName + " -> " + 
-						routeData.toStation.stopName);
-			}
-			holder.routeInfo.addView(textView);*/
+			first = false;
 		}
 		
 		
-		holder.header.setText("Route " + (pos + 1) + " = " + HelperFunctions.hourFormater.format(departure) + " -> " +
-				HelperFunctions.hourFormater.format(arrival) + " total " + 
-				HelperFunctions.hourFormater.format(arrival - departure));
-		//holder.footer.setText("TODO : Waittime/Switches/Walktime");
+		final long minDiff = (arrival - departure) / HelperFunctions.MINUTE;
+		holder.footer.setText("Departure " + HelperFunctions.hourFormater.format(departure) + " arrival " + HelperFunctions.hourFormater.format(arrival) + " total " + minDiff + "m");
 		
 		
 		
@@ -334,7 +272,6 @@ class OverviewRouteAdapter extends BaseAdapter {
 	 * Class for caching the view.
 	 */
 	static class ViewHolder {
-		TextView header;
 		LinearLayout routeInfo;
 		TextView footer;
 	}
