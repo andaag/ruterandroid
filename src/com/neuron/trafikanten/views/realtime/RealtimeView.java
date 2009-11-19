@@ -103,6 +103,7 @@ public class RealtimeView extends ListActivity {
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
 
         	for (int i = 0; i < 100; i++) {
+        		realtimeList.clear();
             	final ArrayList<RealtimeData> list = savedInstanceState.getParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST + i);
             	if (list != null) {
             		for (RealtimeData item : list) {
@@ -111,6 +112,7 @@ public class RealtimeView extends ListActivity {
             	} else {
             		break;
             	}
+            	realtimeList.notifyDataSetInvalidated();
         	}
         		
         }
@@ -137,8 +139,8 @@ public class RealtimeView extends ListActivity {
     	if (realtimeProvider != null)
     		realtimeProvider.Stop();
     	
-    	realtimeList.getList().clear();
-    	realtimeList.notifyDataSetChanged();
+    	realtimeList.clear();
+    	realtimeList.notifyDataSetInvalidated();
     	
     	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override
@@ -339,6 +341,10 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Simple functions dealing with adding/setting items. 
 	 */
 	public ArrayList< RealtimePlatformList > getList() { return items; }
+	public void clear() {
+		items.clear();
+		itemsSize = 0;
+	}
 	
 	/*
 	 * Simple function that gets (or creates a new) platform in items
