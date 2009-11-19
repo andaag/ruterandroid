@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
@@ -98,7 +99,7 @@ public class HelperFunctions {
 	 * Decides on whether or not we should use gzip compression or not.
 	 */
 	public static InputStream executeHttpRequest(HttpUriRequest request) throws IOException {
-		final boolean gzip = true;
+		final boolean gzip = request.getClass().equals(HttpGet.class);
 		
 		/*
 		 * Disable gzip compression on wifi
@@ -137,7 +138,7 @@ public class HelperFunctions {
         final String soap = mergeXmlArgument(resources, rid, args);
 
         HttpPost httppost = new HttpPost(url);
-    	httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
+        httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
         httppost.setEntity(new StringEntity(soap));
     	Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
     	

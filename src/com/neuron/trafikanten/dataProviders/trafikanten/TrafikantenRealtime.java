@@ -26,7 +26,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -88,7 +87,7 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			HttpUriRequest request = new HttpGet("http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId);
+			HttpGet request = new HttpGet("http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId);
 			InputStream result = HelperFunctions.executeHttpRequest(request);
 
 
