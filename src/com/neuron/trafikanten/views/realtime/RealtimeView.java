@@ -81,7 +81,7 @@ public class RealtimeView extends ListActivity {
 	private StationData station;
 	private RealtimeAdapter realtimeList;
 	private long lastUpdate;
-	private ArrayList<DeviData> deviItems;
+	private ArrayList<DeviData> deviItems = new ArrayList<DeviData>();
 	
 	/*
 	 * UI
