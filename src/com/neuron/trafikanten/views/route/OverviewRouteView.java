@@ -137,9 +137,16 @@ public class OverviewRouteView extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		DetailedRouteView.ShowRoute(this, routeList.getList(), position);
 	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putParcelable(RouteData.PARCELABLE, routeData);
+		outState.putParcelableArrayList(OverviewRouteAdapter.KEY_ROUTELIST, routeList.getList());
+	}
 	
-    // TODO : We need notification support here.
-    // TODO : We need savedInstanceState support here.
+
+
 }
 
 class OverviewRouteAdapter extends BaseAdapter {

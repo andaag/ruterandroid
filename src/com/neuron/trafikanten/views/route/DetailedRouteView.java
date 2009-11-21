@@ -267,24 +267,6 @@ public class DetailedRouteView extends ListActivity {
 		return super.onContextItemSelected(item);
 	}
 	
-	/*
-	 * onPause - stop anything needed.
-	 * @see android.app.Activity#onPause()
-	 */
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	/*
-	 * Resume state, restart search.
-	 * @see android.app.Activity#onResume()
-	 */
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
