@@ -133,6 +133,10 @@ public class RealtimeView extends ListActivity {
             	
     }
     
+    /*
+     * Load data, variable used to prevent updating data set on every iteration.
+     */
+    private int tmpDataUpdated = 0;
     private void load() {
         lastUpdate = System.currentTimeMillis();
     	setProgressBarIndeterminateVisibility(true);
@@ -142,11 +146,16 @@ public class RealtimeView extends ListActivity {
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
     	
+    	
     	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
 				realtimeList.addItem(realtimeData);
-				realtimeList.notifyDataSetChanged();
+				tmpDataUpdated++;
+				if (tmpDataUpdated > 5) {
+					realtimeList.notifyDataSetChanged();
+					tmpDataUpdated = 0;
+				}
 			}
 
 			@Override
@@ -165,6 +174,9 @@ public class RealtimeView extends ListActivity {
 				 */
 				final TextView infoText = (TextView) findViewById(R.id.emptyText);
 				infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
+				if (tmpDataUpdated > 0) {
+					realtimeList.notifyDataSetChanged();
+				}
 			}
     	});
     	realtimeProvider.Fetch(station.stationId);
