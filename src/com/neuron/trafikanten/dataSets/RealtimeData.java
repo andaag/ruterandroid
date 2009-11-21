@@ -76,9 +76,7 @@ public class RealtimeData implements Parcelable {
 		arrivalList = new StringBuffer(in.readString());
 		
 		devi = new ArrayList<Integer>();
-		while (in.dataAvail() > 0) {
-			devi.add(in.readInt());
-		}
+		in.readList(devi, Integer.class.getClassLoader());
 	}
 	
 	/*
@@ -100,10 +98,7 @@ public class RealtimeData implements Parcelable {
 		out.writeLong(expectedDeparture);
 		
 		out.writeString(arrivalList.toString());
-		
-		for (Integer deviPos : devi) {
-			out.writeInt(deviPos);
-		}
+		out.writeList(devi);
 	}
 	
 	/*
