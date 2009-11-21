@@ -37,7 +37,7 @@
 		/>
 		
 	<ImageView
-		android:id="@+id/devi"
+		android:id="@+id/deviIcon"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:src="@drawable/tango_dialog_warning"

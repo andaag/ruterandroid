@@ -15,6 +15,7 @@
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_above="@+id/deviIcon"
         />
         
     <TextView
@@ -26,5 +27,25 @@
     	android:layout_centerHorizontal="true"
     	android:text="@string/realtimeEmpty"
     	android:visibility="invisible" />
+    	
+	<ImageView
+		android:id="@+id/deviIcon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/tango_dialog_warning"
+		android:layout_alignParentBottom="true"
+		/> 
+    
+    <TextView
+    	android:id="@+id/deviText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@+id/deviIcon"
+		android:text="Devi info"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:textColor="#fff000"
+		android:layout_alignParentBottom="true"
+    	/>
+    	
     
 </RelativeLayout>

@@ -84,6 +84,12 @@ public class RealtimeView extends ListActivity {
 	private ArrayList<DeviData> deviItems;
 	
 	/*
+	 * UI
+	 */
+	private TextView deviText;
+	private ImageView deviIcon;
+	
+	/*
 	 * Data providers
 	 */
 	private IRealtimeProvider realtimeProvider;
@@ -100,6 +106,8 @@ public class RealtimeView extends ListActivity {
          */
         setContentView(R.layout.realtime);
         realtimeList = new RealtimeAdapter(this);
+        deviText = (TextView) findViewById(R.id.deviText);
+        deviIcon = (ImageView) findViewById(R.id.deviIcon);
         
         /*
          * Load instance state
@@ -119,8 +127,12 @@ public class RealtimeView extends ListActivity {
         registerForContextMenu(getListView());
         setListAdapter(realtimeList);
         refreshTitle();
+        refreshDevi();
     }
     
+    /*
+     * Refreshes the title
+     */
     private void refreshTitle() {
     	long lastUpdateDiff = (lastUpdate - System.currentTimeMillis()) / HelperFunctions.SECOND;
     	if (lastUpdateDiff > 60) {
@@ -129,7 +141,36 @@ public class RealtimeView extends ListActivity {
     	} else {
     		setTitle("Trafikanten - " + station.stopName);
     	}
-            	
+    }
+    
+    /*
+     * Refreshes station specific devi data.
+     */
+    private void refreshDevi() {
+    	if (deviItems.size() == 0) {
+    		/*
+    		 * Nothing to display
+    		 */
+    		deviText.setVisibility(View.GONE);
+    		deviIcon.setVisibility(View.GONE);
+    	} else {
+    		/*
+    		 * Render devi information
+    		 */
+    		deviText.setVisibility(View.VISIBLE);
+    		deviIcon.setVisibility(View.VISIBLE);
+    		
+    		String text = "";
+    		for (DeviData deviData : deviItems) {
+    			if (text.length() == 0) {
+    				text = deviData.title;
+    			} else {
+    				text = text + "\n" + deviData.title;
+    			}
+    		}
+    		deviText.setText(text);
+    		    		
+    	}
     }
     
     /*
@@ -211,7 +252,6 @@ public class RealtimeView extends ListActivity {
 					 * Station specific data
 					 */
 					deviItems.add(deviData);
-					
 				}
 			}
 
@@ -224,6 +264,7 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onFinished() {
+				refreshDevi();
 				setProgressBarIndeterminateVisibility(false);
 				deviProvider = null;
 				if (tmpDataUpdated > 0) {
@@ -610,7 +651,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.line = (TextView) convertView.findViewById(R.id.line);
 			holder.time = (TextView) convertView.findViewById(R.id.time);
 			holder.nextDepartures = (TextView) convertView.findViewById(R.id.nextDepartures);
-			holder.devi = (ImageView) convertView.findViewById(R.id.devi);
+			holder.deviIcon = (ImageView) convertView.findViewById(R.id.deviIcon);
 			
 			convertView.setTag(holder);
 		} else {
@@ -662,9 +703,9 @@ class RealtimeAdapter extends BaseAdapter {
 		 * Show devi icon if appliable
 		 */
 		if (data.devi.size() > 0) {
-			holder.devi.setVisibility(View.VISIBLE);
+			holder.deviIcon.setVisibility(View.VISIBLE);
 		} else {
-			holder.devi.setVisibility(View.GONE);
+			holder.deviIcon.setVisibility(View.GONE);
 		}
 		
 		return convertView;
@@ -680,6 +721,6 @@ class RealtimeAdapter extends BaseAdapter {
 		TextView time;
 		TextView nextDepartures;
 		
-		ImageView devi;
+		ImageView deviIcon;
 	}
 };
