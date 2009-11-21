@@ -26,9 +26,8 @@ import android.os.Handler;
 /*
  * Realtime provider
  */
-public interface IRealtimeProvider {
+public interface IRealtimeProvider extends IGenericProvider {
 	public void Fetch(int stationId);
-	public void Stop();
 	
 	abstract class RealtimeProviderHandler extends Handler {
 	    public abstract void onData(RealtimeData realtimeData);
