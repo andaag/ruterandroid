@@ -36,6 +36,15 @@
 		android:layout_alignParentRight="true"
 		/>
 		
+	<ImageView
+		android:id="@+id/devi"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/tango_dialog_warning"
+		android:layout_toLeftOf="@+id/time"
+		android:layout_alignTop="@+id/time"
+		/> 
+		
 	<TextView
 		android:id="@+id/destination"
 		android:layout_width="wrap_content"

@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -609,6 +610,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.line = (TextView) convertView.findViewById(R.id.line);
 			holder.time = (TextView) convertView.findViewById(R.id.time);
 			holder.nextDepartures = (TextView) convertView.findViewById(R.id.nextDepartures);
+			holder.devi = (ImageView) convertView.findViewById(R.id.devi);
 			
 			convertView.setTag(holder);
 		} else {
@@ -656,6 +658,15 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.nextDepartures.setVisibility(View.GONE);
 		}
 		
+		/*
+		 * Show devi icon if appliable
+		 */
+		if (data.devi.size() > 0) {
+			holder.devi.setVisibility(View.VISIBLE);
+		} else {
+			holder.devi.setVisibility(View.GONE);
+		}
+		
 		return convertView;
 	}
 	
@@ -669,5 +680,6 @@ class RealtimeAdapter extends BaseAdapter {
 		TextView time;
 		TextView nextDepartures;
 		
+		ImageView devi;
 	}
 };
