@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -53,6 +54,7 @@ import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.notification.NotificationDialog;
+import com.neuron.trafikanten.tasks.SelectDeviTask;
 
 public class RealtimeView extends ListActivity {
 	private static final String TAG = "Trafikanten-RealtimeView";
@@ -123,6 +125,17 @@ public class RealtimeView extends ListActivity {
         	realtimeList.loadInstanceState(savedInstanceState);
         	realtimeList.notifyDataSetChanged();
         }
+        
+        /*
+         * Setup onclick handler for devi text
+         */
+        deviText.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new SelectDeviTask(RealtimeView.this, deviItems);												
+			}
+        	
+        });
 
         registerForContextMenu(getListView());
         setListAdapter(realtimeList);

@@ -31,7 +31,7 @@ import com.neuron.trafikanten.dataSets.DeviData;
  */
 
 public class SelectDeviTask implements GenericTask {
-    private static final String TAG = "Trafikanten-SelectDeviTask";
+    //private static final String TAG = "Trafikanten-SelectDeviTask";
     private Activity activity;
     private ArrayList<DeviData> devi;
     
