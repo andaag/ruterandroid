@@ -31,11 +31,8 @@ import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenTransports;
 /*
  * Class used for getting the right Search/Realtime/Route etc provider.
  * 
- * IMPORTANT : When using these functions ALWAYS check the result, events when rotating screen may be sent
- * multiple times, and these functions can be called ONCE to get the result (after that memory is cleared).
  */
 
-// TODO : Settings for provider
 public class DataProviderFactory {	
 	
 	/*
@@ -45,6 +42,7 @@ public class DataProviderFactory {
 	public static String getDataProviderString() {
 		return "Trafikanten";
 	}
+	
 	/*
 	 * Get Search Provider
 	 */

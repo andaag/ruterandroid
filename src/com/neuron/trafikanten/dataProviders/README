@@ -1,8 +1,0 @@
-All providers must self destruct and kill any threads on finalize.
-
-All providers should be providing results through ResultsProviderFactory for performance
-  - ONLY call MESSAGE_DONE when the thread is 100% done managing the data.
-  - do NOT call ResultsProviderFactory.get* after a onPause, as it might have killed and resumed the program.
-  
-  
-For future custom providers : GeoCoder.getFromLocationName coordinates do NOT cover all of norway, this is to cut down on hits to the right areas.

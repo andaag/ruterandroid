@@ -19,17 +19,5 @@
 package com.neuron.trafikanten.dataProviders;
 
 public interface IGenericProvider {
-	public static final int MESSAGE_DONE = 1;
-	/*
-	 * on MESSAGE_DONE call ResultsProviderFactory.Get* for results.
-	 * DO NOT send MESSAGE_DONE until the thread is 100% done processing the results.
-	 */
-	public static final int MESSAGE_EXCEPTION = 2;
-	/*
-	 * on MESSAGE_EXCEPTION msg.obj == exception.
-	 */
-	
-	public static final String KEY_EXCEPTION = "exception";
-	
 	public void Stop();
 }
