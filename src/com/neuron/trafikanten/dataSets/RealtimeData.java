@@ -18,6 +18,8 @@
 
 package com.neuron.trafikanten.dataSets;
 
+import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -38,9 +40,16 @@ public class RealtimeData implements Parcelable {
 	/*
 	 * List of coming arrivals, this is used for the list under current station in RealtimeView
 	 */
-	public StringBuffer arrivalList = new StringBuffer();
+	public StringBuffer arrivalList;
+	/*
+	 * List of devi data, this is a int list, it links to RealtimeView.RealtimeAdapter.deviItems
+	 */
+	public ArrayList<Integer> devi;
 	
-	public RealtimeData() { }
+	public RealtimeData() {
+		arrivalList = new StringBuffer();
+		devi = new ArrayList<Integer>();
+	}
 	
 	/*
 	 * @see android.os.Parcelable
@@ -65,6 +74,11 @@ public class RealtimeData implements Parcelable {
 		expectedDeparture = in.readLong();
 		
 		arrivalList = new StringBuffer(in.readString());
+		
+		devi = new ArrayList<Integer>();
+		while (in.dataAvail() > 0) {
+			devi.add(in.readInt());
+		}
 	}
 	
 	/*
@@ -86,6 +100,10 @@ public class RealtimeData implements Parcelable {
 		out.writeLong(expectedDeparture);
 		
 		out.writeString(arrivalList.toString());
+		
+		for (Integer deviPos : devi) {
+			out.writeInt(deviPos);
+		}
 	}
 	
 	/*

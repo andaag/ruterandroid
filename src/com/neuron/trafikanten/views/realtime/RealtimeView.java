@@ -19,7 +19,6 @@
 package com.neuron.trafikanten.views.realtime;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.app.Dialog;
 import android.app.ListActivity;
