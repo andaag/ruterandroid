@@ -54,7 +54,7 @@ Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
 	<string name="realtimeEmpty">Ingen informasjon funnet!</string>
 	<string name="late">forsinket</string>
 	<string name="warnings">Advarsler</string>
-	<string name="hintRealtimeHoldButton">Hold nede på en linje for flere valg!</string>
+	<string name="hintRealtimeHoldButton">Hold nede for flere valg!</string>
 	
 	<!-- Tasks -->
 	<string name="searchRouteTask">Kalkulerer rute...</string>
