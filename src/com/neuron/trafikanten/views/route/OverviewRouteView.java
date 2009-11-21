@@ -118,6 +118,7 @@ public class OverviewRouteView extends ListActivity {
 			@Override
 			public void onFinished() {
 				setProgressBarIndeterminateVisibility(false);
+				routeProvider = null; 
 				/*
 				 * Show info text if view is empty
 				 */
@@ -144,9 +145,6 @@ public class OverviewRouteView extends ListActivity {
 		outState.putParcelable(RouteData.PARCELABLE, routeData);
 		outState.putParcelableArrayList(OverviewRouteAdapter.KEY_ROUTELIST, routeList.getList());
 	}
-	
-
-
 }
 
 class OverviewRouteAdapter extends BaseAdapter {
