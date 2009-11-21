@@ -112,7 +112,7 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup the basic menu:
 		 */
-		items.add(new SeperatorRouteEntry(this, "Departure and arrival"));
+		items.add(new SeperatorRouteEntry(this, "Select Stations"));
 		
 		/*
 		 * Setup From
@@ -138,7 +138,7 @@ public class SelectRouteView extends ListActivity {
 			}
 		}));
 		
-		items.add(new SeperatorRouteEntry(this, "Settings"));
+		items.add(new SeperatorRouteEntry(this, "Change Settings"));
 		/*
 		 * Setup when
 		 */
@@ -193,7 +193,8 @@ public class SelectRouteView extends ListActivity {
 			}
 		}
 		
-		items.add(new SimpleTextRouteEntry(this, "Search","Search for routes", 0, new OnClickListener() {
+		items.add(new SeperatorRouteEntry(this, "Search for routes"));
+		items.add(new SimpleTextRouteEntry(this, "Search","Calculate X route results", 0, new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
