@@ -20,6 +20,7 @@ package com.neuron.trafikanten.dataProviders;
 
 import android.content.res.Resources;
 
+import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
 import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
 import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
@@ -65,9 +66,18 @@ public class DataProviderFactory {
 	}
 	
 	/*
+	 * Get Devi Provider 
+	 */
+	public static IDeviProvider getDeviProvider(DeviProviderHandler handler) {
+		return new TrafikantenDevi(handler);
+	}
+	
+	/*
 	 * Get Transports Provider
 	 */
 	public static int getImageResource(int transportType) {
 		return TrafikantenTransports.getImageResource(transportType);
 	}
+	
+
 }
