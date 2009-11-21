@@ -112,7 +112,7 @@ public class RealtimeView extends ListActivity {
             	} else {
             		break;
             	}
-            	realtimeList.notifyDataSetInvalidated();
+            	realtimeList.notifyDataSetChanged();
         	}
         		
         }
@@ -140,7 +140,7 @@ public class RealtimeView extends ListActivity {
     		realtimeProvider.Stop();
     	
     	realtimeList.clear();
-    	realtimeList.notifyDataSetInvalidated();
+    	realtimeList.notifyDataSetChanged();
     	
     	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override
@@ -279,7 +279,6 @@ public class RealtimeView extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		realtimeList.notifyDataSetInvalidated();
 		refreshTitle();
 	}
 
