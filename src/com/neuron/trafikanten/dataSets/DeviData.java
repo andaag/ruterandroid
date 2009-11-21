@@ -27,6 +27,7 @@ public class DeviData implements Parcelable {
 	public final static String PARCELABLE = "DeviData";
 	
 	public String title;
+	public String link;
 	public String description;
 	public ArrayList<String> lines;
 	public long validFrom;

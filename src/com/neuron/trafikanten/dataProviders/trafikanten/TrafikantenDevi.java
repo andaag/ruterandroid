@@ -137,6 +137,7 @@ class DeviHandler extends DefaultHandler {
 	 */
 	private boolean inItem = false; // Block data (contains everything under)
 	private boolean inTitle = false;
+	private boolean inLink = false;
 	private boolean inDescription = false;
 	private boolean inLines = false; // Block data (contains line)
 	private boolean inLine = false;
@@ -188,6 +189,8 @@ class DeviHandler extends DefaultHandler {
 	    } else {
 	    	if (localName.equals("title")) {
 	    		inTitle = true;
+	    	} else if (localName.equals("link")) {
+	    		inLink = true;
 		    } else if (localName.equals("description")) {
 		    	inDescription = true;
 		    } else if (localName.equals("lines")) {
@@ -224,6 +227,9 @@ class DeviHandler extends DefaultHandler {
 	    	if (inTitle) {
 	    		inTitle = false;
 		        data.title = buffer.toString();
+	    	} else if (inLink) {
+	    		inLink = false;
+	    		data.link = buffer.toString();
 		    } else if (inDescription) {
 		    	inDescription = false;
 		        data.description = buffer.toString();
@@ -249,7 +255,7 @@ class DeviHandler extends DefaultHandler {
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
 		//inAimedArrivalTime || inExpectedArrivalTime
-	    if (inTitle || inDescription ||
+	    if (inTitle || inLink || inDescription ||
 	    		inLine || inValidFrom || inValidTo || inImportant) {
 	    	buffer.append(ch,start,length);
 	    }
