@@ -57,6 +57,7 @@ import com.neuron.trafikanten.notification.NotificationDialog;
 public class RealtimeView extends ListActivity {
 	private static final String TAG = "Trafikanten-RealtimeView";
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
+	public static final String KEY_DEVILIST = "devilist";
 	
 	/*
 	 * Options menu:
@@ -80,6 +81,7 @@ public class RealtimeView extends ListActivity {
 	private StationData station;
 	private RealtimeAdapter realtimeList;
 	private long lastUpdate;
+	private ArrayList<DeviData> deviItems;
 	
 	/*
 	 * Data providers
@@ -108,6 +110,7 @@ public class RealtimeView extends ListActivity {
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
+        	deviItems = savedInstanceState.getParcelableArrayList(KEY_DEVILIST);
         	
         	realtimeList.loadInstanceState(savedInstanceState);
         	realtimeList.notifyDataSetChanged();
@@ -188,17 +191,28 @@ public class RealtimeView extends ListActivity {
     private void loadDevi() {
     	setProgressBarIndeterminateVisibility(true);
     	tmpDataUpdated = 0;
+    	deviItems = new ArrayList<DeviData>();
 
     	deviProvider = DataProviderFactory.getDeviProvider(new DeviProviderHandler() {
 			@Override
 			public void onData(DeviData deviData) {
-				realtimeList.addDeviItem(deviData);
-				tmpDataUpdated++;
-				if (tmpDataUpdated > 5) {
-					realtimeList.notifyDataSetChanged();
-					tmpDataUpdated = 0;
+				if (deviData.lines.size() > 0) {
+					/*
+					 * Line specific data
+					 */
+					realtimeList.addDeviItem(deviData);
+					tmpDataUpdated++;
+					if (tmpDataUpdated > 5) {
+						realtimeList.notifyDataSetChanged();
+						tmpDataUpdated = 0;
+					}
+				} else {
+					/*
+					 * Station specific data
+					 */
+					deviItems.add(deviData);
+					
 				}
-				
 			}
 
 			@Override
@@ -338,6 +352,7 @@ public class RealtimeView extends ListActivity {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
+		outState.putParcelableArrayList(KEY_DEVILIST, deviItems);
 
 		realtimeList.saveInstanceState(outState);
 	}
@@ -400,7 +415,6 @@ class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable
 class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_REALTIMELIST = "realtimelist";
 	public static final String KEY_ITEMSSIZE = "devilist";
-	public static final String KEY_DEVILIST = "devilist";
 	private LayoutInflater inflater;
 	
 	
@@ -443,7 +457,7 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Saving instance state
 	 */
 	public void saveInstanceState(Bundle outState) {
-		outState.putParcelableArrayList(KEY_DEVILIST, deviItems);
+		outState.putParcelableArrayList(RealtimeView.KEY_DEVILIST, deviItems);
 		outState.putInt(KEY_ITEMSSIZE, itemsSize);
 		outState.putParcelableArrayList(KEY_REALTIMELIST, items);
 	}
@@ -452,7 +466,7 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Loading instance state
 	 */
 	public void loadInstanceState(Bundle inState) {
-		deviItems = inState.getParcelableArrayList(KEY_DEVILIST);
+		deviItems = inState.getParcelableArrayList(RealtimeView.KEY_DEVILIST);
 		itemsSize = inState.getInt(KEY_ITEMSSIZE);
 		items = inState.getParcelableArrayList(KEY_REALTIMELIST);		
 	}
