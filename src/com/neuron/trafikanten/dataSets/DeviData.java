@@ -48,7 +48,16 @@ public class DeviData implements Parcelable {
 	 * Function for reading the parcel
 	 */
 	public DeviData(Parcel in) {
-		//notifyTime = in.readLong();
+		title = in.readString();
+		link = in.readString();
+		description = in.readString();
+		
+		lines = new ArrayList<String>();
+		in.readStringList(lines);
+		
+		validFrom = in.readLong();
+		validTo = in.readLong();
+		important = in.readInt() == 1;
 	}
 	
 	/*
@@ -57,7 +66,13 @@ public class DeviData implements Parcelable {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		//out.writeLong(notifyTime);
+		out.writeString(title);
+		out.writeString(link);
+		out.writeString(description);
+		out.writeStringList(lines);
+		out.writeLong(validFrom);
+		out.writeLong(validTo);
+		out.writeInt(important ? 1 : 0);
 	}
 	
 	/*
