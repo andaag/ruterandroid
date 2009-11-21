@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 
 import com.neuron.trafikanten.dataSets.DeviData;
 
@@ -78,7 +80,8 @@ public class SelectDeviTask implements GenericTask {
     }
     
     private void deviSelected(DeviData deviData) {
-
+    	final Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(deviData.link));
+    	activity.startActivity(intent);
     }
 
 	@Override
