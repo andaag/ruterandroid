@@ -1,96 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="fill_parent"
      android:layout_height="fill_parent">
      
-    <Button android:id="@+id/fromButton"
-	   android:layout_width="fill_parent"
-	   android:layout_height="wrap_content"
-        android:text="@string/travelFrom"
-        />
-     
-    <Button android:id="@+id/toButton"
-	   android:layout_width="fill_parent"
-	   android:layout_height="wrap_content"
-        android:layout_below="@+id/fromButton"
-        
-        android:text="@string/travelTo"
-        />
-        
-    <TimePicker android:id="@+id/timePicker"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_below="@+id/toButton"
-        android:layout_alignParentRight="true"/>
-        
-    <Button android:id="@+id/travelAtArriveBefore"
-	   android:layout_width="wrap_content"
-	   android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/timePicker"
-        android:layout_alignTop="@+id/timePicker"
-        android:layout_alignParentLeft="true"
-        
-        android:text="@string/travelAt"
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         />
 
-    <Spinner android:id="@+id/departureDay"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:drawSelectorOnTop="true"
-        android:layout_toLeftOf="@+id/timePicker"
-        android:layout_below="@+id/travelAtArriveBefore"
-        android:layout_alignParentLeft="true"
-	    />
-	    
-    <CheckBox android:id="@+id/preferDirect"
-	   android:layout_width="wrap_content"
-	   android:layout_height="wrap_content"
-        android:layout_below="@+id/timePicker"
-        android:layout_alignParentLeft="true"
-        
-        android:text="@string/preferDirect"
-        />
-        
-    <CheckBox android:id="@+id/avoidWalking"
-	   android:layout_width="wrap_content"
-	   android:layout_height="wrap_content"
-        android:layout_below="@+id/timePicker"
-        android:paddingRight="5dip"
-        android:layout_alignParentRight="true"
-        
-        android:text="@string/avoidWalking"
-        />
-	    
-	
-
-
-    <TextView android:id="@+id/changeMarginText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:paddingRight="3dip"
-        android:paddingLeft="3dip"
-        android:layout_below="@+id/preferDirect"
-        android:text="@string/changeMargin"/>
-
-    <Spinner android:id="@+id/changeMargin"
-	        android:layout_width="80dip"
-	        android:layout_height="40dip"
-	        android:drawSelectorOnTop="true"
-	        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/changeMarginText"
-        android:layout_alignTop="@+id/changeMarginText"
-	    />
-
-
-    <Button android:id="@+id/searchButton"
-     android:layout_width="fill_parent"
-     android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_search_category_default"
-        android:drawablePadding="-16dip"
-        android:text="@string/search"
-        android:layout_alignParentBottom="true"
-         />
-
-</RelativeLayout>
+</LinearLayout>
