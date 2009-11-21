@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -70,6 +71,7 @@ public class RealtimeView extends ListActivity {
 	 * Context menu:
 	 */
 	private static final int NOTIFY_ID = Menu.FIRST;
+	private static final int DEVI_ID = Menu.FIRST + 1;
 	
 	/*
 	 * Dialogs
@@ -352,7 +354,13 @@ public class RealtimeView extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
+		
+		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		final RealtimeData realtimeData = realtimeList.getItem(info.position);
+		
 		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
+		if (realtimeData.devi.size() > 0)
+			menu.add(0, DEVI_ID, 0, R.string.warnings);
 	}
 	
 	/*
@@ -368,6 +376,11 @@ public class RealtimeView extends ListActivity {
 		case NOTIFY_ID:
 			showDialog(DIALOG_NOTIFICATION);
 			return true;
+		case DEVI_ID:
+			final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId);
+			final ArrayList<DeviData> deviPopup = realtimeList.getDevi(realtimeData);
+			new SelectDeviTask(this, deviPopup);
+
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -388,6 +401,7 @@ public class RealtimeView extends ListActivity {
 		if (data.extra != null) {
 			info = info + "\n" + data.extra;
 		}
+		info = info + "\n   - " + getText(R.string.hintRealtimeHoldButton);
 		Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
 	}
 
@@ -542,6 +556,17 @@ class RealtimeAdapter extends BaseAdapter {
 		if (addDevi) {
 			deviItems.add(item);
 		}
+	}
+	
+	/*
+	 * Get a list of devi's assosiated with a line
+	 */
+	public ArrayList<DeviData> getDevi(RealtimeData realtimeData) {
+		ArrayList<DeviData> result = new ArrayList<DeviData>();
+		for (Integer i : realtimeData.devi) {
+			result.add(deviItems.get(i));
+		}
+		return result;
 	}
 	
 	/*
