@@ -32,6 +32,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.util.Log;
+
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataProviders.IDeviProvider;
 import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
@@ -70,6 +72,7 @@ public class TrafikantenDevi  implements IDeviProvider {
 }
 
 class TrafikantenDeviThread extends Thread implements Runnable {
+	private static final String TAG = "Trafikanten-T-DeviThread";
 	private DeviProviderHandler handler;
 	private int stationId;	
 	
@@ -85,7 +88,9 @@ class TrafikantenDeviThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			HttpGet request = new HttpGet("http://devi.trafikanten.no/rss.aspx?show=filter&stop=" + stationId);
+			final String urlString = "http://devi.trafikanten.no/rss.aspx?show=filter&stop=" + stationId;
+			Log.i(TAG,"Loading devi data : " + urlString);
+			HttpGet request = new HttpGet(urlString);
 			InputStream result = HelperFunctions.executeHttpRequest(request);
 
 			/*

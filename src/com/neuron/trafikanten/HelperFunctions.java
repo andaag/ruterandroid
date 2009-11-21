@@ -23,8 +23,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
@@ -38,6 +38,7 @@ import android.util.Log;
  * Small helper functions used by multiple classes.
  */
 public class HelperFunctions {
+	private final static String TAG = "Trafikanten-HelperFunctions";
 	public final static SimpleDateFormat hourFormater = new SimpleDateFormat("HH:mm");
 	public static final int SECOND = 1000;
 	public static final int MINUTE = 60 * SECOND;
@@ -99,8 +100,6 @@ public class HelperFunctions {
 	 * Decides on whether or not we should use gzip compression or not.
 	 */
 	public static InputStream executeHttpRequest(HttpUriRequest request) throws IOException {
-		final boolean gzip = request.getClass().equals(HttpGet.class);
-		
 		/*
 		 * Disable gzip compression on wifi
 		 */
@@ -115,17 +114,20 @@ public class HelperFunctions {
 		/*
 		 * Add gzip header
 		 */
-		if (gzip) {
-			request.addHeader("Accept-Encoding", "gzip");
-		}
+		request.addHeader("Accept-Encoding", "gzip");
 		
 		/*
 		 * Get the response, if we use gzip use the GZIPInputStream
 		 */
 		HttpResponse response = new DefaultHttpClient().execute(request);
 		InputStream content = response.getEntity().getContent();
-		if (gzip) {
+		
+		Header contentEncoding = response.getFirstHeader("Content-Encoding");
+		if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
 			content = new GZIPInputStream(content);
+			Log.i(TAG,"Recieved compressed data - OK");
+		} else {
+			Log.i(TAG,"Recieved UNCOMPRESSED data - Problem server side");
 		}
 		
 		return content;
