@@ -366,5 +366,4 @@ public class SelectRouteView extends Activity {
 		Spinner changeMargin;
 		Button searchButton;
 	}
-
 }

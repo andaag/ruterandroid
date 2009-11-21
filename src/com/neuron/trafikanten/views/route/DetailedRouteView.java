@@ -92,7 +92,7 @@ public class DetailedRouteView extends ListActivity {
 		/*
 		 * Setup the view
 		 */
-		setContentView(R.layout.detailed_route);
+		setContentView(R.layout.route_detailed);
 		routeList = new RouteAdapter(this);
 		viewHolder.previousButton = (ImageButton) findViewById(R.id.prevButton);
 		viewHolder.infoText = (TextView) findViewById(R.id.infoText);
@@ -326,7 +326,7 @@ class RouteAdapter extends BaseAdapter {
 			/*
 			 * New view, inflate and setup holder.
 			 */
-			convertView = inflater.inflate(R.layout.detailed_route_list, null);
+			convertView = inflater.inflate(R.layout.route_detailed_list, null);
 			
 			holder = new ViewHolder();
 			holder.symbol = (ImageView) convertView.findViewById(R.id.symbol);
