@@ -455,7 +455,7 @@ class SelectRouteAdapter extends BaseAdapter
 		
 		public SeperatorRouteEntry(Context context, String text) {
 			super(null);
-			mText = new TextView(context);
+			mText = new TextView(context, null, R.style.PlatformHeader);
 			mText.setText(text);
 			mText.setGravity(Gravity.CENTER);
 			mView = mText;
@@ -473,7 +473,7 @@ class SelectRouteAdapter extends BaseAdapter
 		public SimpleTextRouteEntry(Context context, String title, String extra, int paddingLeft, OnClickListener onClickListener) {
 			super(onClickListener);
         	LinearLayout linearLayout = new LinearLayout(context);
-        	linearLayout.setPadding(paddingLeft, 0, 0, 0);
+        	linearLayout.setPadding(paddingLeft + 2, 2, 2, 2);
         	linearLayout.setOrientation(LinearLayout.VERTICAL);
         	
             mTitle = new TextView(context);
@@ -496,11 +496,17 @@ class SelectRouteAdapter extends BaseAdapter
 		 */
 		public CheckboxRouteEntry(Context context, String title, boolean checked, int paddingLeft, OnClickListener onClickListener) {
 			super(onClickListener);
+			
+        	LinearLayout linearLayout = new LinearLayout(context);
+        	linearLayout.setPadding(paddingLeft + 2, 2, 2, 2);
+        	linearLayout.setOrientation(LinearLayout.VERTICAL);
+			
 			mCheckBox = new CheckBox(context);
-			mCheckBox.setPadding(paddingLeft, 0, 0, 0);
 			mCheckBox.setText(title);
 			mCheckBox.setChecked(checked);
-			mView = mCheckBox;
+			
+			linearLayout.addView(mCheckBox, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+			mView = linearLayout;
 		}
 	}
 	
