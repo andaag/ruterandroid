@@ -419,11 +419,7 @@ class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable
 	 */
 	public RealtimePlatformList(Parcel in) {
 		platform = in.readString();
-		
-		while (in.dataAvail() > 0) {
-			final RealtimeData realtimeData = in.readParcelable(RealtimeData.class.getClassLoader());
-			this.add(realtimeData);
-		}
+		in.readList(this, RealtimeData.class.getClassLoader());
 	}
 	
 	/*
@@ -433,10 +429,7 @@ class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeString(platform);
-		
-		for (RealtimeData realtimeData : this) {
-			out.writeParcelable(realtimeData, 0);			
-		}
+		out.writeList(this);
 	}
 	
 	/*
