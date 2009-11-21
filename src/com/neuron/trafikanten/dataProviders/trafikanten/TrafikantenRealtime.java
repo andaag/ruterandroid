@@ -87,11 +87,12 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			HttpGet request = new HttpGet("http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId);
+			final String urlString = "http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId;
+			Log.i(TAG,"Realtime url : " + urlString);
+			HttpGet request = new HttpGet(urlString);
 			InputStream result = HelperFunctions.executeHttpRequest(request);
 
 
-			Log.i(TAG,"Realtime url : " + "http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId);
 			
 			/*
 			 * Setup SAXParser and XMLReader

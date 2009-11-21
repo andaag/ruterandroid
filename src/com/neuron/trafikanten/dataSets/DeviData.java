@@ -23,6 +23,8 @@ import android.os.Parcelable;
 
 public class DeviData implements Parcelable {
 	public final static String PARCELABLE = "DeviData";
+	
+	public DeviData() {}
 
 	/*
 	 * @see android.os.Parcelable
