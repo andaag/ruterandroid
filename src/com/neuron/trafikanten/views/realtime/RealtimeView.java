@@ -19,11 +19,14 @@
 package com.neuron.trafikanten.views.realtime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -42,8 +45,11 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.DataProviderFactory;
+import com.neuron.trafikanten.dataProviders.IDeviProvider;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
+import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
+import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.notification.NotificationDialog;
@@ -76,9 +82,10 @@ public class RealtimeView extends ListActivity {
 	private long lastUpdate;
 	
 	/*
-	 * Data provider
+	 * Data providers
 	 */
 	private IRealtimeProvider realtimeProvider;
+	private IDeviProvider deviProvider;
 	
     /** Called when the activity is first created. */
     @Override
@@ -101,20 +108,9 @@ public class RealtimeView extends ListActivity {
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
-
-        	for (int i = 0; i < 100; i++) {
-        		realtimeList.clear();
-            	final ArrayList<RealtimeData> list = savedInstanceState.getParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST + i);
-            	if (list != null) {
-            		for (RealtimeData item : list) {
-            			realtimeList.addItem(item);
-            		}
-            	} else {
-            		break;
-            	}
-            	realtimeList.notifyDataSetChanged();
-        	}
-        		
+        	
+        	realtimeList.loadInstanceState(savedInstanceState);
+        	realtimeList.notifyDataSetChanged();
         }
 
         registerForContextMenu(getListView());
@@ -136,17 +132,19 @@ public class RealtimeView extends ListActivity {
     /*
      * Load data, variable used to prevent updating data set on every iteration.
      */
-    private int tmpDataUpdated = 0;
+    private int tmpDataUpdated;
     private void load() {
         lastUpdate = System.currentTimeMillis();
     	setProgressBarIndeterminateVisibility(true);
     	if (realtimeProvider != null)
     		realtimeProvider.Stop();
+    	if (deviProvider != null)
+    		deviProvider.Stop();
     	
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
     	
-    	
+    	tmpDataUpdated = 0;
     	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
@@ -177,9 +175,50 @@ public class RealtimeView extends ListActivity {
 				if (tmpDataUpdated > 0) {
 					realtimeList.notifyDataSetChanged();
 				}
+				realtimeProvider = null;
+				loadDevi();
 			}
     	});
     	realtimeProvider.Fetch(station.stationId);
+    }
+    
+    /*
+     * Load devi data
+     */
+    private void loadDevi() {
+    	setProgressBarIndeterminateVisibility(true);
+    	tmpDataUpdated = 0;
+
+    	deviProvider = DataProviderFactory.getDeviProvider(new DeviProviderHandler() {
+			@Override
+			public void onData(DeviData deviData) {
+				realtimeList.addDeviItem(deviData);
+				tmpDataUpdated++;
+				if (tmpDataUpdated > 5) {
+					realtimeList.notifyDataSetChanged();
+					tmpDataUpdated = 0;
+				}
+				
+			}
+
+			@Override
+			public void onError(Exception exception) {
+				Log.w(TAG,"onException " + exception);
+				Toast.makeText(RealtimeView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+				setProgressBarIndeterminateVisibility(false);				
+			}
+
+			@Override
+			public void onFinished() {
+				setProgressBarIndeterminateVisibility(false);
+				deviProvider = null;
+				if (tmpDataUpdated > 0) {
+					realtimeList.notifyDataSetChanged();
+				}				
+			}
+    		
+    	});
+    	deviProvider.Fetch(station.stationId);
     }
     
 	/*
@@ -300,18 +339,11 @@ public class RealtimeView extends ListActivity {
 		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 
-		/*
-		 * Save all lists in order
-		 */
-		final ArrayList<RealtimePlatformList> list = realtimeList.getList(); 
-		for (int i = 0; i < list.size(); i++) {
-			final RealtimePlatformList realtimePlatformList = list.get(i);
-			outState.putParcelableArrayList(RealtimeAdapter.KEY_REALTIMELIST + i, realtimePlatformList);
-		}
+		realtimeList.saveInstanceState(outState);
 	}
 }
 
-class RealtimePlatformList extends ArrayList<RealtimeData> {
+class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable {
 	private static final long serialVersionUID = -8158771022676013360L;
 	public String platform;
 	
@@ -319,10 +351,56 @@ class RealtimePlatformList extends ArrayList<RealtimeData> {
 		super();
 		this.platform = platform;
 	}
+
+	/*
+	 * @see android.os.Parcelable
+	 */
+	@Override
+	public int describeContents() {	return 0; }
+	
+	/*
+	 * Function for reading the parcel
+	 */
+	public RealtimePlatformList(Parcel in) {
+		platform = in.readString();
+		
+		while (in.dataAvail() > 0) {
+			final RealtimeData realtimeData = in.readParcelable(RealtimeData.class.getClassLoader());
+			this.add(realtimeData);
+		}
+	}
+	
+	/*
+	 * Writing current data to parcel.
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+	 */
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(platform);
+		
+		for (RealtimeData realtimeData : this) {
+			out.writeParcelable(realtimeData, 0);			
+		}
+	}
+	
+	/*
+	 * Used for bundle.getParcel 
+	 */
+    public static final Parcelable.Creator<RealtimePlatformList> CREATOR = new Parcelable.Creator<RealtimePlatformList>() {
+		public RealtimePlatformList createFromParcel(Parcel in) {
+		    return new RealtimePlatformList(in);
+		}
+		
+		public RealtimePlatformList[] newArray(int size) {
+		    return new RealtimePlatformList[size];
+		}
+	};
 }
 
 class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_REALTIMELIST = "realtimelist";
+	public static final String KEY_ITEMSSIZE = "devilist";
+	public static final String KEY_DEVILIST = "devilist";
 	private LayoutInflater inflater;
 	
 	
@@ -333,7 +411,12 @@ class RealtimeAdapter extends BaseAdapter {
 	 *         RealtimeData	
 	 */
 	private ArrayList<RealtimePlatformList> items = new ArrayList<RealtimePlatformList>();
-	private int itemsSize = 0; // Cached for performance
+	private int itemsSize = 0; // Cached for performance, this is len(items) + len(item[0]) + len(item[1]) ...
+	
+	/*
+	 * Devi data:
+	 */
+	private ArrayList<DeviData> deviItems = new ArrayList<DeviData>();
 	
 	/*
 	 * This variable is set by getItem, it indicates this station is the first of the current platform, so platform should be shown.
@@ -349,12 +432,55 @@ class RealtimeAdapter extends BaseAdapter {
 	}
 	
 	/*
-	 * Simple functions dealing with adding/setting items. 
+	 * Clearing the list 
 	 */
-	public ArrayList< RealtimePlatformList > getList() { return items; }
 	public void clear() {
 		items.clear();
+		deviItems.clear();
 		itemsSize = 0;
+	}
+	/*
+	 * Saving instance state
+	 */
+	public void saveInstanceState(Bundle outState) {
+		outState.putParcelableArrayList(KEY_DEVILIST, deviItems);
+		outState.putInt(KEY_ITEMSSIZE, itemsSize);
+		outState.putParcelableArrayList(KEY_REALTIMELIST, items);
+	}
+	
+	/*
+	 * Loading instance state
+	 */
+	public void loadInstanceState(Bundle inState) {
+		deviItems = inState.getParcelableArrayList(KEY_DEVILIST);
+		itemsSize = inState.getInt(KEY_ITEMSSIZE);
+		items = inState.getParcelableArrayList(KEY_REALTIMELIST);		
+	}
+
+	
+	/*
+	 * Function to add devi data
+	 *  - This only cares about devi's linked to a line, station devi's are handled in main class.
+	 */
+	public void addDeviItem(DeviData item) {
+		int pos = deviItems.size();
+		boolean addDevi = false;
+
+		/*
+		 * Scan and add the devi position index to all realtime data
+		 */
+		for (RealtimePlatformList realtimePlatformList : items) {
+			for (RealtimeData d : realtimePlatformList) {
+				if (item.lines.contains(d.line)) {
+					addDevi = true;
+					d.devi.add(pos);
+				}
+			}
+		}
+		
+		if (addDevi) {
+			deviItems.add(item);
+		}
 	}
 	
 	/*

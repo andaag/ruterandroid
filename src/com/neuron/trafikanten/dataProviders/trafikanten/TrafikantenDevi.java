@@ -70,7 +70,6 @@ public class TrafikantenDevi  implements IDeviProvider {
 }
 
 class TrafikantenDeviThread extends Thread implements Runnable {
-	private static final String TAG = "Trafikanten-T-DeviThread";
 	private DeviProviderHandler handler;
 	private int stationId;	
 	

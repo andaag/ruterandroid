@@ -33,7 +33,6 @@ public class DeviData implements Parcelable {
 	public long validTo;
 	public boolean important;
 	
-	
 	public DeviData() {
 		lines = new ArrayList<String>();
 	}
