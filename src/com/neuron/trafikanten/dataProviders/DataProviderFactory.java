@@ -24,6 +24,7 @@ import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
 import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
 import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
+import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenDevi;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;

@@ -18,13 +18,25 @@
 
 package com.neuron.trafikanten.dataSets;
 
+import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class DeviData implements Parcelable {
 	public final static String PARCELABLE = "DeviData";
 	
-	public DeviData() {}
+	public String title;
+	public String description;
+	public ArrayList<String> lines;
+	public long validFrom;
+	public long validTo;
+	public boolean important;
+	
+	
+	public DeviData() {
+		lines = new ArrayList<String>();
+	}
 
 	/*
 	 * @see android.os.Parcelable

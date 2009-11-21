@@ -32,8 +32,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.util.Log;
-
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataProviders.IDeviProvider;
 import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
@@ -133,19 +131,15 @@ class DeviHandler extends DefaultHandler {
 	/*
 	 * Temporary variables for parsing. 
 	 */
-	private boolean inMonitoredStopVisit = false; // Top block
-	private boolean inPublishedLineName = false;
-	private boolean inDestinationName = false;
-	private boolean inMonitored = false;
+	private boolean inItem = false; // Block data (contains everything under)
+	private boolean inTitle = false;
+	private boolean inDescription = false;
+	private boolean inLines = false; // Block data (contains line)
+	private boolean inLine = false;
+	private boolean inValidFrom = false;
+	private boolean inValidTo = false;
+	private boolean inImportant = false;
 
-	/*private boolean inAimedArrivalTime = false;
-	private boolean inExpectedArrivalTime = false;*/
-
-	private boolean inAimedDepartureTime = false;
-	private boolean inExpectedDepartureTime = false;
-	private boolean inDeparturePlatformName = false;
-
-	private boolean inStopVisitNote = false;
 	
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
@@ -182,30 +176,26 @@ class DeviHandler extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName, 
 	              String qName, Attributes atts) throws SAXException {
-	    if (!inMonitoredStopVisit) {
-	        if (localName.equals("MonitoredStopVisit")) {
-	            inMonitoredStopVisit = true;
+	    if (!inItem) {
+	        if (localName.equals("item")) {
+	        	inItem = true;
 	            data = new DeviData();
 	        }
 	    } else {
-	    	if (localName.equals("PublishedLineName")) {
-		        inPublishedLineName = true;
-		    } else if (localName.equals("DestinationName")) {
-		        inDestinationName = true;
-		    } else if (localName.equals("Monitored")) {
-		        inMonitored = true;
-		    /*} else if (localName.equals("AimedArrivalTime")) {
-		        inAimedArrivalTime = true;
-		    } else if (localName.equals("ExpectedArrivalTime")) {
-		        inExpectedArrivalTime = true;*/
-		    } else if (localName.equals("AimedDepartureTime")) {
-		        inAimedDepartureTime = true;
-		    } else if (localName.equals("ExpectedDepartureTime")) {
-		        inExpectedDepartureTime = true;
-		    } else if (localName.equals("DeparturePlatformName")) {
-		        inDeparturePlatformName = true;
-		    } else if (localName.equals("StopVisitNote")) {
-		        inStopVisitNote = true;
+	    	if (localName.equals("title")) {
+	    		inTitle = true;
+		    } else if (localName.equals("description")) {
+		    	inDescription = true;
+		    } else if (localName.equals("lines")) {
+		    	inLines = true;
+		    } else if (inLines && localName.equals("line")) {
+		        inLine = true;
+		    } else if (localName.equals("ValidFrom")) {
+		    	inValidFrom = true;
+		    } else if (localName.equals("ValidTo")) {
+		    	inValidTo = true;
+		    } else if (localName.equals("Important")) {
+		    	inImportant = true;
 		    }
 	    }
 	}
@@ -213,12 +203,12 @@ class DeviHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-	    if (!inMonitoredStopVisit) return;
-	    if (inMonitoredStopVisit && localName.equals("MonitoredStopVisit")) {
+	    if (!inItem) return;
+	    if (inItem && localName.equals("item")) {
 	        /*
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */
-	        inMonitoredStopVisit = false;
+	    	inItem = false;
 	        final DeviData sendData = data;
 			handler.post(new Runnable() {
 				@Override
@@ -227,38 +217,26 @@ class DeviHandler extends DefaultHandler {
 				}
 			});
 	    } else { 
-	    	if (inPublishedLineName) {
-		        inPublishedLineName = false;
-		        data.line = buffer.toString();
-		    } else if (inDestinationName) {
-		        inDestinationName = false;
-		        data.destination = buffer.toString();
-		    } else if (inMonitored) {
-		        inMonitored = false;
-		    	final String monitored = buffer.toString();
-		        if (monitored.equalsIgnoreCase("true")) {
-		        	data.realtime = true;
-		        } else {
-		        	data.realtime = false;
-		        }
-		    /*} else if (inAimedArrivalTime) {
-		        inAimedArrivalTime = false;
-		        data.aimedArrival = parseDateTime(buffer.toString());
-		    } else if (inExpectedArrivalTime) {
-		        inExpectedArrivalTime = false;
-		        data.expectedArrival = parseDateTime(buffer.toString());*/
-		    } else if (inAimedDepartureTime) {
-		        inAimedDepartureTime = false;
-		        data.aimedDeparture = parseDateTime(buffer.toString());
-		    } else if (inExpectedDepartureTime) {
-		        inExpectedDepartureTime = false;
-		        data.expectedDeparture = parseDateTime(buffer.toString());
-		    } else if (inDeparturePlatformName) {
-		        inDeparturePlatformName = false;
-		        data.departurePlatform = buffer.toString();
-		    } else if (inStopVisitNote) {
-		        inStopVisitNote = false;
-		        data.extra = buffer.toString();
+	    	if (inTitle) {
+	    		inTitle = false;
+		        data.title = buffer.toString();
+		    } else if (inDescription) {
+		    	inDescription = false;
+		        data.description = buffer.toString();
+		    } else if (inLine) { // 
+		    	inLine = false;
+		        data.lines.add(buffer.toString());
+		    } else if (inLines) { //  && localName.equals("lines") is unneeded, as we check inLine first, and if we have no "line" data we must have "lines" data
+		    	inLines = false;
+		    } else if (inValidFrom) {
+		    	inValidFrom = false;
+		        data.validFrom = parseDateTime(buffer.toString());
+		    } else if (inValidTo) {
+		    	inValidTo = false;
+		        data.validTo = parseDateTime(buffer.toString());
+		    } else if (inImportant) {
+		        inImportant = false;
+		        data.important = buffer.toString().equals("True");
 		    }
 	    }
 		buffer.setLength(0);
@@ -267,8 +245,8 @@ class DeviHandler extends DefaultHandler {
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
 		//inAimedArrivalTime || inExpectedArrivalTime
-	    if (inPublishedLineName || inDestinationName ||
-	    		inMonitored || inAimedDepartureTime || inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
+	    if (inTitle || inDescription ||
+	    		inLine || inValidFrom || inValidTo || inImportant) {
 	    	buffer.append(ch,start,length);
 	    }
 	}
