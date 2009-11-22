@@ -145,7 +145,7 @@ public class SelectRouteView extends ListActivity {
 		} else {
 			for (StationData station : routeSearch.toStation) {
 				if (travelToString == null) {
-					travelFromString = getText(R.string.travelingTo) + " : " + station.stopName;
+					travelToString = getText(R.string.travelingTo) + " : " + station.stopName;
 				} else {
 					travelToString = travelToString + ", " + station.stopName;
 				}
