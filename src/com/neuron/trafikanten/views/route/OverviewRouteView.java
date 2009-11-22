@@ -158,36 +158,32 @@ class RenderOverviewText {
 	/*
 	 * Contains text to add + the style
 	 */
-	class SpannableSet {
-		public String text;
+	private class SpannableSet {
 		public StyleSpan style;
-		public SpannableSet(String text, StyleSpan style) {
-			this.text = text;
+		public int start;
+		public int end;
+		public SpannableSet(int start, int end, StyleSpan style) {
 			this.style = style;
+			this.start = start;
+			this.end = end;
 		}
 	}
-	ArrayList<SpannableSet> spannableSet = new ArrayList<SpannableSet>();
+	private ArrayList<SpannableSet> spannableSet = new ArrayList<SpannableSet>();
+	private StringBuffer textBuffer = new StringBuffer();
 	
 	public void addString(String text, StyleSpan style) {
-		spannableSet.add(new SpannableSet(text, style));
+		if (style != null) {
+			final int start = textBuffer.length();
+			final int end = start + text.length();
+			spannableSet.add(new SpannableSet(start, end, style));
+		}
+		textBuffer.append(text);
 	}
 	
 	public SpannableString toSpannableString() {
-		StringBuffer fullString = new StringBuffer();
-		/*
-		 * Construct the text
-		 */
+		SpannableString s = new SpannableString(textBuffer.toString());
 		for (SpannableSet spanSet : spannableSet) {
-			fullString.append(spanSet.text);
-		}
-		
-		SpannableString s = new SpannableString(fullString.toString());
-		int pos = 0;
-		for (SpannableSet spanSet : spannableSet) {
-			final int len = spanSet.text.length();
-			if (spanSet.style != null)
-				s.setSpan(spanSet.style, pos, len, 0); 
-			pos = pos + len;
+			s.setSpan(spanSet.style, spanSet.start, spanSet.end, 0); 
 		}
 		return s;
 	}
