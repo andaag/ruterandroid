@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.text.FieldPosition;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.xml.parsers.SAXParser;
@@ -109,10 +110,21 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	public void run() {
 		try {
 			// TODO : This needs to parse everything from routeSearch, including departure/arrival info, and set departure if departure = 0.
+			final boolean travelAt = routeSearch.arrival > 0;
+			long travelTime = travelAt ? routeSearch.departure : routeSearch.arrival;
+			if (travelTime == 0) {
+				travelTime = Calendar.getInstance().getTimeInMillis();
+			}
+			
+			// Todo, support multiple stations
+			final StationData fromStation = routeSearch.fromStation.get(0);
+			final StationData toStation = routeSearch.fromStation.get(0);
+			
+			
 			final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-			final StringBuffer renderedTime = dateFormater.format(new Date(routeSearch.routeData.departure), new StringBuffer(), new FieldPosition(0));
-			final String[] args = new String[]{ new Integer(routeSearch.routeData.fromStation.stationId).toString(), 
-					new Integer(routeSearch.routeData.toStation.stationId).toString(), 
+			final StringBuffer renderedTime = dateFormater.format(new Date(travelTime), new StringBuffer(), new FieldPosition(0));
+			final String[] args = new String[]{ new Integer(fromStation.stationId).toString(), 
+					new Integer(toStation.stationId).toString(), 
 					renderedTime.toString()};
 			
 			final InputStream result = HelperFunctions.soapRequest(resources, R.raw.gettravelsafter, args, Trafikanten.API_URL);

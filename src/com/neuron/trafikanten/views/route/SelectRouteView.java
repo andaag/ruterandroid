@@ -115,7 +115,18 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup From
 		 */
-		final String travelFromString = routeSearch.routeData.fromStation == null ? "Select where to travel from" : "Traveling from " + routeSearch.routeData.fromStation.stopName;
+		String travelFromString = null;
+		if (routeSearch.fromStation.size() == 0) {
+			travelFromString = "Select where to travel from";
+		} else {
+			for (StationData station : routeSearch.fromStation) {
+				if (travelFromString == null) {
+					travelFromString = "Traveling from : " + station.stopName;
+				} else {
+					travelFromString = travelFromString + ", " + station.stopName;
+				}
+			}
+		}
 		items.add(new SimpleTextRouteEntry(this, "From",travelFromString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -128,7 +139,18 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup to
 		 */
-		final String travelToString = routeSearch.routeData.toStation == null ? "Select where to travel to" : "Traveling to " + routeSearch.routeData.toStation.stopName;
+		String travelToString = null;
+		if (routeSearch.toStation.size() == 0) {
+			travelToString = "Select where to travel to";
+		} else {
+			for (StationData station : routeSearch.toStation) {
+				if (travelToString == null) {
+					travelToString = "Traveling from : " + station.stopName;
+				} else {
+					travelToString = travelToString + ", " + station.stopName;
+				}
+			}
+		}
 		items.add(new SimpleTextRouteEntry(this, "To",travelToString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -144,16 +166,16 @@ public class SelectRouteView extends ListActivity {
 		 */
 		final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("EEEEEEE dd-MM-yyyy HH:mm");
 		String travelTime;
-		if (routeSearch.routeData.arrival == 0) {
+		if (routeSearch.arrival == 0) {
 			/*
 			 * Travel type "travel at"
 			 */
-			travelTime = routeSearch.routeData.departure == 0 ? "Travel at : Now" : "Travel at : " + DATEFORMAT.format(routeSearch.routeData.departure);
+			travelTime = routeSearch.departure == 0 ? "Travel at : Now" : "Travel at : " + DATEFORMAT.format(routeSearch.departure);
 		} else {
 			/*
 			 * Travel type "arrive before"
 			 */
-			travelTime = routeSearch.routeData.arrival == 0 ? "Arrive before : Now" : "Arrive before : " + DATEFORMAT.format(routeSearch.routeData.arrival);
+			travelTime = routeSearch.arrival == 0 ? "Arrive before : Now" : "Arrive before : " + DATEFORMAT.format(routeSearch.arrival);
 		}
 		items.add(new SimpleTextRouteEntry(this, "When",travelTime, 5, new OnClickListener() {
 			@Override
@@ -272,11 +294,11 @@ public class SelectRouteView extends ListActivity {
 	 * Do actual search
 	 */
 	public void onSearch() {
-		if (routeSearch.routeData.fromStation == null) {
+		if (routeSearch.fromStation.size() == 0) {
 			Toast.makeText(this, R.string.pleaseSelectFrom, Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if (routeSearch.routeData.toStation == null) {
+		if (routeSearch.toStation.size() == 0) {
 			Toast.makeText(this, R.string.pleaseSelectTo, Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -298,9 +320,11 @@ public class SelectRouteView extends ListActivity {
 		case ACTIVITY_SELECT_TO:
 			final StationData station = data.getParcelableExtra(StationData.PARCELABLE);
 			if (requestCode == ACTIVITY_SELECT_FROM) {
-				routeSearch.routeData.fromStation = station;
+				routeSearch.fromStation.clear();
+				routeSearch.fromStation.add(station);
 			} else {
-				routeSearch.routeData.toStation = station;
+				routeSearch.toStation.clear();
+				routeSearch.toStation.add(station);
 			}
 			break;
 		default:
@@ -369,11 +393,11 @@ public class SelectRouteView extends ListActivity {
 		                date.setHours(timePicker.getCurrentHour());
 		                date.setMinutes(timePicker.getCurrentMinute());
 		                if (travelAt) {
-		                	routeSearch.routeData.departure = date.getTime();
-		                	routeSearch.routeData.arrival = 0;
+		                	routeSearch.departure = date.getTime();
+		                	routeSearch.arrival = 0;
 		                } else {
-		                	routeSearch.routeData.departure = 0;
-		                	routeSearch.routeData.arrival = date.getTime();	                	
+		                	routeSearch.departure = 0;
+		                	routeSearch.arrival = date.getTime();	                	
 		                }
 						refreshMenu();
 						dialog.dismiss();

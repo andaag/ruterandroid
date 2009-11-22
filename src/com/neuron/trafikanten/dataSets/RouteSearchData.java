@@ -18,6 +18,8 @@
 
 package com.neuron.trafikanten.dataSets;
 
+import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -27,14 +29,10 @@ import android.os.Parcelable;
 public class RouteSearchData implements Parcelable {
 	public final static String PARCELABLE = "RouteSearchData";
 	
-	/*
-	 * of routeData a RouteSearch uses : 
-	 * 		fromStation, toStation
-	 * 		departure or arrival
-	 * 					- if arrival > 0, we assume arriveBefore, otherwise travelAt.
-	 * 					- if departure == 0 we use now.
-	 */
-	public RouteData routeData = new RouteData();
+	public ArrayList<StationData> fromStation = new ArrayList<StationData>();
+	public ArrayList<StationData> toStation = new ArrayList<StationData>();
+	public long departure = 0;
+	public long arrival = 0;
 	public boolean advancedOptionsEnabled = false;
 	
 	/*
@@ -67,7 +65,10 @@ public class RouteSearchData implements Parcelable {
 	 * Function for reading the parcel
 	 */
 	public RouteSearchData(Parcel in) {
-		routeData = in.readParcelable(RouteData.class.getClassLoader());
+		in.readList(fromStation, StationData.class.getClassLoader());
+		in.readList(toStation, StationData.class.getClassLoader());
+		departure = in.readLong();
+		arrival = in.readLong();
 		advancedOptionsEnabled = in.readInt() == 1;
 		preferDirect = in.readInt() == 1;
 		avoidWalking = in.readInt() == 1;
@@ -82,7 +83,10 @@ public class RouteSearchData implements Parcelable {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeParcelable(routeData, 0);
+		out.writeList(fromStation);
+		out.writeList(toStation);
+		out.writeLong(departure);
+		out.writeLong(arrival);
 		out.writeInt(advancedOptionsEnabled ? 1 : 0);
 		out.writeInt(preferDirect ? 1 : 0);
 		out.writeInt(avoidWalking ? 1 : 0);
