@@ -77,6 +77,16 @@ public class TrafikantenRoute implements IRouteProvider {
 			thread = null;
 		}
 	}
+	
+	/*
+	 * Call a normal stop on finalize
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		Stop();
+		super.finalize();
+	}
 }
 
 class TrafikantenRouteThread extends Thread implements Runnable {

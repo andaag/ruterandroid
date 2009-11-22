@@ -69,6 +69,17 @@ public class TrafikantenDevi  implements IDeviProvider {
 		}
 	}
 
+	/*
+	 * Call a normal stop on finalize
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		Stop();
+		super.finalize();
+	}
+	
+	
 }
 
 class TrafikantenDeviThread extends Thread implements Runnable {

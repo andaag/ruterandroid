@@ -86,6 +86,16 @@ public class TrafikantenSearch implements ISearchProvider {
 		handler.onStarted();
 		thread.start();
 	}
+	
+	/*
+	 * Call a normal stop on finalize
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		Stop();
+		super.finalize();
+	}
 }
 
 

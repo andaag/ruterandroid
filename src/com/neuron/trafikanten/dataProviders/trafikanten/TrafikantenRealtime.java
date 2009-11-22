@@ -68,6 +68,16 @@ public class TrafikantenRealtime implements IRealtimeProvider {
 		thread = new TrafikantenRealtimeThread(handler, stationId);
 		thread.start();
 	}
+	
+	/*
+	 * Call a normal stop on finalize
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		Stop();
+		super.finalize();
+	}
 }
 
 class TrafikantenRealtimeThread extends Thread implements Runnable {
