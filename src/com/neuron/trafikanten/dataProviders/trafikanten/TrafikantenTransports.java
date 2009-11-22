@@ -32,6 +32,8 @@ public class TrafikantenTransports {
 			return R.drawable.icon_bus;
 		case IRouteProvider.TRANSPORT_SUBWAY:
 			return R.drawable.icon_subway;
+		case IRouteProvider.TRANSPORT_WALK:
+			return R.drawable.icon_walk;
 		}
 		return R.drawable.icon_unknown;
 	}

@@ -278,7 +278,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 */
 			{
 				final int symbolImage = DataProviderFactory.getImageResource(routeData.transportType);
-				if (symbolImage > 0 && symbolImage != IRouteProvider.TRANSPORT_UNKNOWN) {
+				if (symbolImage > 0) {
 					final ImageView imageView = new ImageView(context);
 					imageView.setImageResource(symbolImage);
 					holder.proposalIcons.addView(imageView);

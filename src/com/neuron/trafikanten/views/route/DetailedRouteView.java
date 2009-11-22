@@ -49,8 +49,6 @@ import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.notification.NotificationDialog;
 
-// TODO : rename detailed_route_* to route_detailed_*
-
 public class DetailedRouteView extends ListActivity {
 	//private final static String TAG = "Trafikanten-DetailedRouteView";
 	private RouteAdapter routeList;
