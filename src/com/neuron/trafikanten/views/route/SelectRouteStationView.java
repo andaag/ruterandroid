@@ -73,8 +73,6 @@ public class SelectRouteStationView extends GenericSelectStationView {
 					/*
 					 * Multiselect was enabled, this means button click = return with stations
 					 */
-					favoriteDbAdapter.close();
-					historyDbAdapter.close();
 					
 					/*
 					 * Update history for all the stations we ended up using
@@ -82,6 +80,8 @@ public class SelectRouteStationView extends GenericSelectStationView {
 					for(StationData station : selectedStations) {
 						updateHistory(station);
 					}
+					favoriteDbAdapter.close();
+					historyDbAdapter.close();
 
 					/*
 					 * Return list of stations
