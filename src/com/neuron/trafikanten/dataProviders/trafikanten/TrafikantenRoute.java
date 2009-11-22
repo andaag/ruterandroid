@@ -118,7 +118,7 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 			
 			// Todo, support multiple stations
 			final StationData fromStation = routeSearch.fromStation.get(0);
-			final StationData toStation = routeSearch.fromStation.get(0);
+			final StationData toStation = routeSearch.toStation.get(0);
 			
 			
 			final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
