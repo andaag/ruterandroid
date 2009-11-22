@@ -69,10 +69,11 @@ public class SelectRouteView extends ListActivity {
 	/*
 	 * Saved instance data:
 	 */
-	private boolean advancedOptionsVisible = false;
+	private boolean advancedOptionsEnabled = false;
 	private RouteData routeData = new RouteData();
 	private boolean preferDirect = false;
 	private boolean travelAt = true; // if false it's arriveBefore
+	private boolean avoidWalking = false;
 	
 	/*
 	 * Options menu items:
@@ -100,7 +101,9 @@ public class SelectRouteView extends ListActivity {
 	private void resetView() {
 		routeData = new RouteData();
 		preferDirect = false;
-		advancedOptionsVisible = false;
+		advancedOptionsEnabled = false;
+		travelAt = true;
+		avoidWalking = false;
 		refreshMenu();
 	}
 	
@@ -117,7 +120,8 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup From
 		 */
-		items.add(new SimpleTextRouteEntry(this, "From","Select where to travel from", 0, new OnClickListener() {
+		final String travelFromString = routeData.fromStation == null ? "Select where to travel from" : "Traveling from " + routeData.fromStation.stopName;
+		items.add(new SimpleTextRouteEntry(this, "From",travelFromString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
@@ -129,7 +133,8 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup to
 		 */
-		items.add(new SimpleTextRouteEntry(this, "To","Select your destination", 0, new OnClickListener() {
+		final String travelToString = routeData.toStation == null ? "Select where to travel to" : "Traveling to " + routeData.toStation.stopName;
+		items.add(new SimpleTextRouteEntry(this, "To",travelToString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
@@ -161,40 +166,54 @@ public class SelectRouteView extends ListActivity {
 	
 				@Override
 				public void onClick(View v) {
-					advancedOptionsVisible = !advancedOptionsVisible;
+					advancedOptionsEnabled = !advancedOptionsEnabled;
 					refreshMenu();
 				}
 				
 			};
 			
-			if (advancedOptionsVisible) {
-				items.add(new SimpleTextRouteEntry(this, "Advanced","Hide advanced options", 0, advancedOnClickListener));
-				
-				
+			if (advancedOptionsEnabled) {
+				items.add(new SimpleTextRouteEntry(this, "Advanced","Disable advanced options", 0, advancedOnClickListener));
 				
 				/*
 				 * Add advanced options
 				 */
-				items.add(new CheckboxRouteEntry(this, "Prefer direct",true, 10, new OnClickListener() {
+				items.add(new CheckboxRouteEntry(this, "Prefer direct", preferDirect, 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						preferDirect = !preferDirect;
 						refreshMenu();
 					}
 				}));
-				items.add(new CheckboxRouteEntry(this, "Like monkeys",true, 10, new OnClickListener() {
+				items.add(new CheckboxRouteEntry(this, "Avoid walking", avoidWalking, 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						
+						avoidWalking = !avoidWalking;
+						refreshMenu();
 					}
 				}));
+				
+				items.add(new SimpleTextRouteEntry(this, "Change margin","The safe margin between each station", 10, new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+					}
+				}));
+				
+				items.add(new SimpleTextRouteEntry(this, "Proposals","The maximum amount of suggestions", 10, new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+					}
+				}));
+				
 			} else {
-				items.add(new SimpleTextRouteEntry(this, "Advanced","Show advanced options", 0, advancedOnClickListener));
+				items.add(new SimpleTextRouteEntry(this, "Advanced","Enable advanced options", 0, advancedOnClickListener));
 			}
 		}
 		
 		items.add(new SeperatorRouteEntry(this, "Search for routes"));
-		items.add(new SimpleTextRouteEntry(this, "Search","Calculate X route results", 0, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, "Search","Calculate route results", 0, new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
