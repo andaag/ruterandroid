@@ -25,12 +25,15 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -148,6 +151,48 @@ public class OverviewRouteView extends ListActivity {
 	}
 }
 
+/*
+ * this renders fancy looking text for our text overview
+ */
+class RenderOverviewText {
+	/*
+	 * Contains text to add + the style
+	 */
+	class SpannableSet {
+		public String text;
+		public StyleSpan style;
+		public SpannableSet(String text, StyleSpan style) {
+			this.text = text;
+			this.style = style;
+		}
+	}
+	ArrayList<SpannableSet> spannableSet = new ArrayList<SpannableSet>();
+	
+	public void addString(String text, StyleSpan style) {
+		spannableSet.add(new SpannableSet(text, style));
+	}
+	
+	public SpannableString toSpannableString() {
+		StringBuffer fullString = new StringBuffer();
+		/*
+		 * Construct the text
+		 */
+		for (SpannableSet spanSet : spannableSet) {
+			fullString.append(spanSet.text);
+		}
+		
+		SpannableString s = new SpannableString(fullString.toString());
+		int pos = 0;
+		for (SpannableSet spanSet : spannableSet) {
+			final int len = spanSet.text.length();
+			if (spanSet.style != null)
+				s.setSpan(spanSet.style, pos, len, 0); 
+			pos = pos + len;
+		}
+		return s;
+	}
+}
+
 class OverviewRouteAdapter extends BaseAdapter {
 	public static final String KEY_ROUTELIST = "routelist";
 	private LayoutInflater inflater;
@@ -194,7 +239,8 @@ class OverviewRouteAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.route_overview_list, null);
 			
 			holder = new ViewHolder();
-			holder.routeInfo = (LinearLayout) convertView.findViewById(R.id.routeInfo);
+			holder.proposalIcons = (LinearLayout) convertView.findViewById(R.id.proposalIcons);
+			holder.routeInfo = (TextView) convertView.findViewById(R.id.routeInfo);
 			holder.footer = (TextView) convertView.findViewById(R.id.footer);
 
 			convertView.setTag(holder);
@@ -212,8 +258,8 @@ class OverviewRouteAdapter extends BaseAdapter {
 		long departure = 0;
 		long arrival = 0;
 		
-		holder.routeInfo.removeAllViews();
-		boolean first = true;
+		holder.proposalIcons.removeAllViews();
+		String routeInfoText = null;
 		for(RouteData routeData : routeProposal.travelStageList) {
 			/*
 			 * Grab the first departure and last arrival to calculate total time
@@ -224,38 +270,37 @@ class OverviewRouteAdapter extends BaseAdapter {
 			arrival = routeData.arrival;
 			
 			/*
-			 * Add Icon
+			 * Add Icon to proposalIcons
 			 */
-			/*{
+			{
 				final int symbolImage = DataProviderFactory.getImageResource(routeData.transportType);
-				if (symbolImage > 0) {
+				if (symbolImage > 0 && symbolImage != IRouteProvider.TRANSPORT_UNKNOWN) {
 					final ImageView imageView = new ImageView(context);
 					imageView.setImageResource(symbolImage);
-					holder.routeInfo.addView(imageView);
+					holder.proposalIcons.addView(imageView);
 				}
-			}*/
+			}
 
 			
 			/*
 			 * Add text line
 			 */
 			{
-				final TextView textView = new TextView(context);
 				final long minDiff = (routeData.arrival - routeData.departure) / HelperFunctions.MINUTE;
 				final String line = routeData.transportType == IRouteProvider.TRANSPORT_WALK ? context.getText(R.string.walk).toString() : routeData.line;
-				if (!first)
-					textView.setText(", " + line + " (" + minDiff + "m)");
-				else
-					textView.setText(line + " (" + minDiff + "m)");
-				
-				textView.setSingleLine();
-				holder.routeInfo.addView(textView);
+				if (routeInfoText == null) {
+					routeInfoText = line + " (" + minDiff + "m)";
+				} else {
+					routeInfoText = routeInfoText + ", " + line + " (" + minDiff + "m)";
+				}
 			}
-			first = false;
 		}
 		
 		
 		final long minDiff = (arrival - departure) / HelperFunctions.MINUTE;
+		holder.routeInfo.setText(routeInfoText);
+		holder.routeInfo.setSingleLine();
+		
 		holder.footer.setText("Departure " + HelperFunctions.hourFormater.format(departure) + " arrival " + HelperFunctions.hourFormater.format(arrival) + " total " + minDiff + "m");
 		
 		
@@ -278,7 +323,8 @@ class OverviewRouteAdapter extends BaseAdapter {
 	 * Class for caching the view.
 	 */
 	static class ViewHolder {
-		LinearLayout routeInfo;
+		LinearLayout proposalIcons;
+		TextView routeInfo;
 		TextView footer;
 	}
 }
