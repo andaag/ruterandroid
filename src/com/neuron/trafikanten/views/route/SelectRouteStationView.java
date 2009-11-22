@@ -49,6 +49,8 @@ public class SelectRouteStationView extends GenericSelectStationView {
 			/*
 			 * Not saving instance state for this view, just confusing to switch into a station selector for the route view.
 			 */
+			favoriteDbAdapter.close();
+			historyDbAdapter.close();
 			setResult(RESULT_CANCELED);
 			finish();
 			return;
@@ -73,7 +75,17 @@ public class SelectRouteStationView extends GenericSelectStationView {
 					 */
 					favoriteDbAdapter.close();
 					historyDbAdapter.close();
+					
+					/*
+					 * Update history for all the stations we ended up using
+					 */
+					for(StationData station : selectedStations) {
+						updateHistory(station);
+					}
 
+					/*
+					 * Return list of stations
+					 */
 					Bundle bundle = new Bundle();
 					bundle.putParcelableArrayList(STATIONLIST_PARCELABLE, selectedStations);
 					
@@ -98,12 +110,12 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	 */
 	@Override
 	public void stationSelected(StationData station) {
-		updateHistory(station);
 		switch(multiSelect) {
 		case MULTISELECT_DISABLED:
 			/*
 			 * Multiselect is disabled, return as normal
 			 */
+			updateHistory(station);
 			favoriteDbAdapter.close();
 			historyDbAdapter.close();
 
