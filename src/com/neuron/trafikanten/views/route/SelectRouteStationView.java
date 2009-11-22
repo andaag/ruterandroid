@@ -32,7 +32,6 @@ import com.neuron.trafikanten.views.GenericSelectStationView;
 
 public class SelectRouteStationView extends GenericSelectStationView {
 	public static final String STATIONLIST_PARCELABLE = "stationList";
-	public static final String KEY_MULTISELECT = "multiselect";
 	private Button multiSelectButton;
 	
 	private ArrayList<StationData> selectedStations = new ArrayList<StationData>();
@@ -46,6 +45,15 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		if (savedInstanceState != null) {
+			/*
+			 * Not saving instance state for this view, just confusing to switch into a station selector for the route view.
+			 */
+			setResult(RESULT_CANCELED);
+			finish();
+			return;
+		}
+		
 		multiSelectButton = (Button) findViewById(R.id.multiSelectButton);
 		multiSelectButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -78,15 +86,6 @@ public class SelectRouteStationView extends GenericSelectStationView {
 			}
 		});
 		multiSelectButton.setVisibility(View.VISIBLE);
-		
-		if (savedInstanceState != null) {
-			multiSelect = savedInstanceState.getInt(KEY_MULTISELECT);
-			if (multiSelect == MULTISELECT_ENABLED)
-				multiSelectButton.setText(android.R.string.ok);
-			selectedStations = savedInstanceState.getParcelableArrayList(STATIONLIST_PARCELABLE);
-			refreshMultiSelect();
-		}
-
 	}
 	
 	private void refreshMultiSelect() {
@@ -100,8 +99,6 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	@Override
 	public void stationSelected(StationData station) {
 		updateHistory(station);
-
-		
 		switch(multiSelect) {
 		case MULTISELECT_DISABLED:
 			/*
@@ -119,6 +116,10 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	        finish();
 	        break;
 		case MULTISELECT_ENABLED:
+			/*
+			 * With multiselect enabled stationSelected means toggle.
+			 */
+			
 			if (selectedStations.contains(station)) {
 				selectedStations.remove(station);
 			} else {
@@ -132,13 +133,4 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	public void setProgressBar(boolean value) {
 		setProgressBarIndeterminateVisibility(value);
 	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(KEY_MULTISELECT, multiSelect);
-		outState.putParcelableArrayList(STATIONLIST_PARCELABLE, selectedStations);
-	}
-	
-	
 }

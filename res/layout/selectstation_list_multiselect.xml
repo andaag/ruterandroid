@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- This file is used to support multiselect in station selectors from route view -->
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	>
+	
+	<CheckBox
+		android:id="@+id/stopname"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		/>
+		
+	<TextView
+		android:id="@+id/range"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_alignParentRight="true"
+		android:layout_marginRight="6dip"
+		/>
+		
+	<ImageView
+		android:id="@+id/star"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@android:drawable/btn_star_big_on"
+		android:visible="false" 
+		android:layout_toLeftOf="@+id/range"
+		/>
+		
+	<TextView
+		android:id="@+id/address"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_below="@+id/stopname"
+		android:layout_marginLeft="50dip"
+		android:layout_marginTop="-16dip"
+		/>
+		
+</RelativeLayout>
