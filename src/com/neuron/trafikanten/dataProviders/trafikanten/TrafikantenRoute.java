@@ -41,6 +41,7 @@ import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
+import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.dataSets.StationData;
 
 public class TrafikantenRoute implements IRouteProvider {
@@ -58,9 +59,9 @@ public class TrafikantenRoute implements IRouteProvider {
 	 * @see com.neuron.trafikanten.dataProviders.IRouteProvider#Search(com.neuron.trafikanten.dataSets.RouteData)
 	 */
 	@Override
-	public void Search(RouteData routeData) {
+	public void Search(RouteSearchData routeSearch) {
 		Stop();
-		thread = new TrafikantenRouteThread(resources, handler, routeData);
+		thread = new TrafikantenRouteThread(resources, handler, routeSearch);
 		thread.start();
 		
 	}
@@ -81,12 +82,12 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	//private final static String TAG = "Trafikanten-T-RouteThread";
 	private RouteProviderHandler handler;
 	private Resources resources;
-	public static RouteData routeData;
+	private RouteSearchData routeSearch;
 	
-	public TrafikantenRouteThread(Resources resources, RouteProviderHandler handler, RouteData routeData) {
+	public TrafikantenRouteThread(Resources resources, RouteProviderHandler handler, RouteSearchData routeSearch) {
 		this.handler = handler;
 		this.resources = resources;
-		TrafikantenRouteThread.routeData = routeData;
+		this.routeSearch = routeSearch;
 	}
 	
 	/*
@@ -108,9 +109,9 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	public void run() {
 		try {
 			final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-			final StringBuffer renderedTime = dateFormater.format(new Date(routeData.departure), new StringBuffer(), new FieldPosition(0));
-			final String[] args = new String[]{ new Integer(routeData.fromStation.stationId).toString(), 
-					new Integer(routeData.toStation.stationId).toString(), 
+			final StringBuffer renderedTime = dateFormater.format(new Date(routeSearch.routeData.departure), new StringBuffer(), new FieldPosition(0));
+			final String[] args = new String[]{ new Integer(routeSearch.routeData.fromStation.stationId).toString(), 
+					new Integer(routeSearch.routeData.toStation.stationId).toString(), 
 					renderedTime.toString()};
 			
 			final InputStream result = HelperFunctions.soapRequest(resources, R.raw.gettravelsafter, args, Trafikanten.API_URL);

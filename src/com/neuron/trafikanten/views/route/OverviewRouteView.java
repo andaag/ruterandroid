@@ -43,6 +43,7 @@ import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
+import com.neuron.trafikanten.dataSets.RouteSearchData;
 
 /*
  * This class shows a route selector list, when multiple travelproposals are sent.
@@ -55,12 +56,12 @@ public class OverviewRouteView extends ListActivity {
 	/*
 	 * Wanted Route, this is used as a base for the search.
 	 */
-	private RouteData routeData;
+	private RouteSearchData routeSearch;
 	private IRouteProvider routeProvider;
 	
-	public static void ShowRoute(Activity activity, RouteData routeData) {
+	public static void ShowRoute(Activity activity, RouteSearchData routeSearch) {
 		Intent intent = new Intent(activity, OverviewRouteView.class);
-		intent.putExtra(RouteData.PARCELABLE, routeData);
+		intent.putExtra(RouteSearchData.PARCELABLE, routeSearch);
 		activity.startActivity(intent);
 	}
 	
@@ -78,10 +79,10 @@ public class OverviewRouteView extends ListActivity {
 		 * Load instance state
 		 */
 		if (savedInstanceState == null) {
-			routeData = getIntent().getParcelableExtra(RouteData.PARCELABLE);
+			routeSearch = getIntent().getParcelableExtra(RouteSearchData.PARCELABLE);
 			load();
 		} else {
-			routeData = savedInstanceState.getParcelable(RouteData.PARCELABLE);
+			routeSearch = savedInstanceState.getParcelable(RouteSearchData.PARCELABLE);
 			final ArrayList<RouteProposal> list = savedInstanceState.getParcelableArrayList(OverviewRouteAdapter.KEY_ROUTELIST);
 			routeList.setList(list);
 			setListAdapter(routeList);
@@ -127,7 +128,7 @@ public class OverviewRouteView extends ListActivity {
 			}
     		
     	});
-    	routeProvider.Search(routeData);
+    	routeProvider.Search(routeSearch);
 	}
 	
 	/*
@@ -142,7 +143,7 @@ public class OverviewRouteView extends ListActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putParcelable(RouteData.PARCELABLE, routeData);
+		outState.putParcelable(RouteSearchData.PARCELABLE, routeSearch);
 		outState.putParcelableArrayList(OverviewRouteAdapter.KEY_ROUTELIST, routeList.getList());
 	}
 }

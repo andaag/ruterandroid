@@ -20,8 +20,8 @@ package com.neuron.trafikanten.dataProviders;
 
 import android.os.Handler;
 
-import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
+import com.neuron.trafikanten.dataSets.RouteSearchData;
 
 public interface IRouteProvider extends IGenericProvider {
 
@@ -35,7 +35,7 @@ public interface IRouteProvider extends IGenericProvider {
 	public final static int TRANSPORT_SUBWAY = 4;
 	public final static int TRANSPORT_WALK = 5;
 	
-	public void Search(RouteData routeData);
+	public void Search(RouteSearchData routeSearch);
 	
 	abstract class RouteProviderHandler extends Handler {
 	    public abstract void onData(RouteProposal routeProposal);

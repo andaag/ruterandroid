@@ -53,6 +53,7 @@ import android.widget.LinearLayout.LayoutParams;
 
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.views.route.SelectRouteAdapter.CheckboxRouteEntry;
 import com.neuron.trafikanten.views.route.SelectRouteAdapter.GenericRouteEntry;
@@ -69,16 +70,8 @@ public class SelectRouteView extends ListActivity {
 	private static final int DIALOG_PROPOSALS = 3;
 	
 	private SelectRouteAdapter listMenu;
-	
-	/*
-	 * Saved instance data:
-	 */
-	private boolean advancedOptionsEnabled = false;
-	private RouteData routeData = new RouteData();
-	private boolean preferDirect = false;
-	private boolean avoidWalking = false;
-	private int changeMargin = 2; // in minutes
-	private int proposals = 5;
+
+	private RouteSearchData routeSearch;
 	
 	/*
 	 * Options menu items:
@@ -97,19 +90,16 @@ public class SelectRouteView extends ListActivity {
 		 * Load instance state
 		 */
 		if (savedInstanceState != null) {
-			
+			routeSearch = savedInstanceState.getParcelable(RouteSearchData.PARCELABLE);
+		} else {
+			routeSearch = new RouteSearchData();
 		}
 		refreshMenu();
 		setListAdapter(listMenu);
 	}
 	
 	private void resetView() {
-		routeData = new RouteData();
-		preferDirect = false;
-		advancedOptionsEnabled = false;
-		avoidWalking = false;
-		changeMargin = 2;
-		proposals = 5;
+		routeSearch = new RouteSearchData();
 		refreshMenu();
 	}
 	
@@ -126,7 +116,7 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup From
 		 */
-		final String travelFromString = routeData.fromStation == null ? "Select where to travel from" : "Traveling from " + routeData.fromStation.stopName;
+		final String travelFromString = routeSearch.routeData.fromStation == null ? "Select where to travel from" : "Traveling from " + routeSearch.routeData.fromStation.stopName;
 		items.add(new SimpleTextRouteEntry(this, "From",travelFromString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -139,7 +129,7 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup to
 		 */
-		final String travelToString = routeData.toStation == null ? "Select where to travel to" : "Traveling to " + routeData.toStation.stopName;
+		final String travelToString = routeSearch.routeData.toStation == null ? "Select where to travel to" : "Traveling to " + routeSearch.routeData.toStation.stopName;
 		items.add(new SimpleTextRouteEntry(this, "To",travelToString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -155,16 +145,16 @@ public class SelectRouteView extends ListActivity {
 		 */
 		final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("EEEEEEE dd-MM-yyyy HH:mm");
 		String travelTime;
-		if (routeData.arrival == 0) {
+		if (routeSearch.routeData.arrival == 0) {
 			/*
 			 * Travel type "travel at"
 			 */
-			travelTime = routeData.departure == 0 ? "Travel at : Now" : "Travel at : " + DATEFORMAT.format(routeData.departure);
+			travelTime = routeSearch.routeData.departure == 0 ? "Travel at : Now" : "Travel at : " + DATEFORMAT.format(routeSearch.routeData.departure);
 		} else {
 			/*
 			 * Travel type "arrive before"
 			 */
-			travelTime = routeData.arrival == 0 ? "Arrive before : Now" : "Arrive before : " + DATEFORMAT.format(routeData.arrival);
+			travelTime = routeSearch.routeData.arrival == 0 ? "Arrive before : Now" : "Arrive before : " + DATEFORMAT.format(routeSearch.routeData.arrival);
 		}
 		items.add(new SimpleTextRouteEntry(this, "When",travelTime, 5, new OnClickListener() {
 			@Override
@@ -183,34 +173,34 @@ public class SelectRouteView extends ListActivity {
 	
 				@Override
 				public void onClick(View v) {
-					advancedOptionsEnabled = !advancedOptionsEnabled;
+					routeSearch.advancedOptionsEnabled = !routeSearch.advancedOptionsEnabled;
 					refreshMenu();
 				}
 				
 			};
 			
-			if (advancedOptionsEnabled) {
+			if (routeSearch.advancedOptionsEnabled) {
 				items.add(new SimpleTextRouteEntry(this, "Advanced","Disable advanced options", 0, advancedOnClickListener));
 				
 				/*
 				 * Add advanced options
 				 */
-				items.add(new CheckboxRouteEntry(this, "Prefer direct", preferDirect, 10, new OnClickListener() {
+				items.add(new CheckboxRouteEntry(this, "Prefer direct", routeSearch.preferDirect, 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						preferDirect = !preferDirect;
+						routeSearch.preferDirect = !routeSearch.preferDirect;
 						refreshMenu();
 					}
 				}));
-				items.add(new CheckboxRouteEntry(this, "Avoid walking", avoidWalking, 10, new OnClickListener() {
+				items.add(new CheckboxRouteEntry(this, "Avoid walking", routeSearch.avoidWalking, 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						avoidWalking = !avoidWalking;
+						routeSearch.avoidWalking = !routeSearch.avoidWalking;
 						refreshMenu();
 					}
 				}));
 				
-				items.add(new SimpleTextRouteEntry(this, "Change margin : " + changeMargin + "m","The safe margin between each station", 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, "Change margin : " + routeSearch.changeMargin + "m","The safe margin between each station", 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						SelectRouteView.this.showDialog(DIALOG_CHANGEMARGIN);
@@ -218,7 +208,7 @@ public class SelectRouteView extends ListActivity {
 					}
 				}));
 				
-				items.add(new SimpleTextRouteEntry(this, "Proposals : " + proposals,"The maximum amount of suggestions", 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, "Proposals : " + routeSearch.proposals,"The maximum amount of suggestions", 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						SelectRouteView.this.showDialog(DIALOG_PROPOSALS);
@@ -283,24 +273,16 @@ public class SelectRouteView extends ListActivity {
 	 * Do actual search
 	 */
 	public void onSearch() {
-		if (routeData.fromStation == null) {
+		if (routeSearch.routeData.fromStation == null) {
 			Toast.makeText(this, R.string.pleaseSelectFrom, Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if (routeData.toStation == null) {
+		if (routeSearch.routeData.toStation == null) {
 			Toast.makeText(this, R.string.pleaseSelectTo, Toast.LENGTH_SHORT).show();
 			return;
 		}
 		
-		boolean departureNow = routeData.departure == 0 && routeData.arrival == 0;
-		if (departureNow) {
-			routeData.departure = Calendar.getInstance().getTimeInMillis();			
-		}
-		
-		OverviewRouteView.ShowRoute(this, routeData);
-		if (departureNow) {
-			routeData.departure = 0;
-		}
+		OverviewRouteView.ShowRoute(this, routeSearch);
 	}
 	
 	/*
@@ -317,9 +299,9 @@ public class SelectRouteView extends ListActivity {
 		case ACTIVITY_SELECT_TO:
 			final StationData station = data.getParcelableExtra(StationData.PARCELABLE);
 			if (requestCode == ACTIVITY_SELECT_FROM) {
-				routeData.fromStation = station;
+				routeSearch.routeData.fromStation = station;
 			} else {
-				routeData.toStation = station;
+				routeSearch.routeData.toStation = station;
 			}
 			break;
 		default:
@@ -388,11 +370,11 @@ public class SelectRouteView extends ListActivity {
 		                date.setHours(timePicker.getCurrentHour());
 		                date.setMinutes(timePicker.getCurrentMinute());
 		                if (travelAt) {
-		                	routeData.departure = date.getTime();
-		                	routeData.arrival = 0;
+		                	routeSearch.routeData.departure = date.getTime();
+		                	routeSearch.routeData.arrival = 0;
 		                } else {
-		                	routeData.departure = 0;
-		                	routeData.arrival = date.getTime();	                	
+		                	routeSearch.routeData.departure = 0;
+		                	routeSearch.routeData.arrival = date.getTime();	                	
 		                }
 						refreshMenu();
 						dialog.dismiss();
@@ -411,7 +393,7 @@ public class SelectRouteView extends ListActivity {
 			changeBuilder.setTitle("Set change margin");
 			changeBuilder.setItems(changeMarginItems, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int item) {
-			        changeMargin = item + 1;
+			    	routeSearch.changeMargin = item + 1;
 			        refreshMenu();
 			    }
 			});
@@ -424,9 +406,9 @@ public class SelectRouteView extends ListActivity {
 			changeProposals.setItems(proposalItems, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int item) {
 			    	if (item == 5) {
-			    		proposals = 10; 
+			    		routeSearch.proposals = 10; 
 			    	} else {
-			    		proposals = item + 1;
+			    		routeSearch.proposals = item + 1;
 			    	}
 			        refreshMenu();
 			    }
