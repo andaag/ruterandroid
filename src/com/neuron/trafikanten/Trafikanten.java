@@ -21,6 +21,8 @@ public class Trafikanten extends TabActivity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	 	final TabHost tabHost = getTabHost();
 	 	
+	 	setTitle("Trafikanten - " + getText(R.string.app_version));
+	 	
 	    tabHost.addTab(tabHost.newTabSpec("RealtimeTab")
 	 			.setIndicator(getText(R.string.realtime), getResources().getDrawable(R.drawable.ic_menu_recent_history))
 	 			.setContent(new Intent(this, SelectRealtimeStationView.class)));
