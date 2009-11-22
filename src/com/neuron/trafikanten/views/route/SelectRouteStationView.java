@@ -45,14 +45,7 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		if (savedInstanceState != null) {
-			multiSelect = savedInstanceState.getInt(KEY_MULTISELECT);
-			if (multiSelect == MULTISELECT_ENABLED)
-				multiSelectButton.setText(android.R.string.ok);
-			selectedStations = savedInstanceState.getParcelableArrayList(STATIONLIST_PARCELABLE);
-		}
-		
+
 		multiSelectButton = (Button) findViewById(R.id.multiSelectButton);
 		multiSelectButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -85,6 +78,15 @@ public class SelectRouteStationView extends GenericSelectStationView {
 			}
 		});
 		multiSelectButton.setVisibility(View.VISIBLE);
+		
+		if (savedInstanceState != null) {
+			multiSelect = savedInstanceState.getInt(KEY_MULTISELECT);
+			if (multiSelect == MULTISELECT_ENABLED)
+				multiSelectButton.setText(android.R.string.ok);
+			selectedStations = savedInstanceState.getParcelableArrayList(STATIONLIST_PARCELABLE);
+			refreshMultiSelect();
+		}
+
 	}
 	
 	private void refreshMultiSelect() {
