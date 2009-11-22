@@ -108,6 +108,7 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
+			// TODO : This needs to parse everything from routeSearch, including departure/arrival info, and set departure if departure = 0.
 			final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
 			final StringBuffer renderedTime = dateFormater.format(new Date(routeSearch.routeData.departure), new StringBuffer(), new FieldPosition(0));
 			final String[] args = new String[]{ new Integer(routeSearch.routeData.fromStation.stationId).toString(), 

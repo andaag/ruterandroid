@@ -52,7 +52,6 @@ import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.views.route.SelectRouteAdapter.CheckboxRouteEntry;
