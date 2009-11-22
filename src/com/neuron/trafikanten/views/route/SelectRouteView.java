@@ -110,24 +110,24 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup the basic menu:
 		 */
-		items.add(new SeperatorRouteEntry(this, "Select Stations"));
+		items.add(new SeperatorRouteEntry(this, getText(R.string.selectStations).toString()));
 		
 		/*
 		 * Setup From
 		 */
 		String travelFromString = null;
 		if (routeSearch.fromStation.size() == 0) {
-			travelFromString = "Select where to travel from";
+			travelFromString = getText(R.string.selectWhereToTravelFrom).toString();
 		} else {
 			for (StationData station : routeSearch.fromStation) {
 				if (travelFromString == null) {
-					travelFromString = "Traveling from : " + station.stopName;
+					travelFromString = getText(R.string.travelingFrom) + " : " + station.stopName;
 				} else {
 					travelFromString = travelFromString + ", " + station.stopName;
 				}
 			}
 		}
-		items.add(new SimpleTextRouteEntry(this, "From",travelFromString, 0, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, getText(R.string.travelFrom).toString(),travelFromString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
@@ -141,17 +141,17 @@ public class SelectRouteView extends ListActivity {
 		 */
 		String travelToString = null;
 		if (routeSearch.toStation.size() == 0) {
-			travelToString = "Select where to travel to";
+			travelToString = getText(R.string.selectWhereToTravelTo).toString();
 		} else {
 			for (StationData station : routeSearch.toStation) {
 				if (travelToString == null) {
-					travelToString = "Traveling from : " + station.stopName;
+					travelFromString = getText(R.string.travelingTo) + " : " + station.stopName;
 				} else {
 					travelToString = travelToString + ", " + station.stopName;
 				}
 			}
 		}
-		items.add(new SimpleTextRouteEntry(this, "To",travelToString, 0, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, getText(R.string.travelTo).toString(),travelToString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
@@ -160,7 +160,7 @@ public class SelectRouteView extends ListActivity {
 			}
 		}));
 		
-		items.add(new SeperatorRouteEntry(this, "Change Settings"));
+		items.add(new SeperatorRouteEntry(this, getText(R.string.changeSettings).toString()));
 		/*
 		 * Setup when
 		 */
@@ -170,14 +170,14 @@ public class SelectRouteView extends ListActivity {
 			/*
 			 * Travel type "travel at"
 			 */
-			travelTime = routeSearch.departure == 0 ? "Travel at : Now" : "Travel at : " + DATEFORMAT.format(routeSearch.departure);
+			travelTime = routeSearch.departure == 0 ? getText(R.string.travelAt) + " : " + getText(R.string.now) : getText(R.string.travelAt) + " : " + DATEFORMAT.format(routeSearch.departure);
 		} else {
 			/*
 			 * Travel type "arrive before"
 			 */
-			travelTime = routeSearch.arrival == 0 ? "Arrive before : Now" : "Arrive before : " + DATEFORMAT.format(routeSearch.arrival);
+			travelTime = routeSearch.arrival == 0 ? getText(R.string.arriveBefore) + " : " + getText(R.string.now) : getText(R.string.arriveBefore) + " : " + DATEFORMAT.format(routeSearch.arrival);
 		}
-		items.add(new SimpleTextRouteEntry(this, "When",travelTime, 5, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, getText(R.string.when).toString(),travelTime, 5, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				SelectRouteView.this.showDialog(DIALOG_SELECTTIME);
@@ -201,19 +201,19 @@ public class SelectRouteView extends ListActivity {
 			};
 			
 			if (routeSearch.advancedOptionsEnabled) {
-				items.add(new SimpleTextRouteEntry(this, "Advanced","Disable advanced options", 0, advancedOnClickListener));
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.advancedOptions).toString(),getText(R.string.disable) + " " + getText(R.string.advancedOptions), 0, advancedOnClickListener));
 				
 				/*
 				 * Add advanced options
 				 */
-				items.add(new CheckboxRouteEntry(this, "Prefer direct", routeSearch.preferDirect, 10, new OnClickListener() {
+				items.add(new CheckboxRouteEntry(this, getText(R.string.preferDirect).toString(), routeSearch.preferDirect, 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						routeSearch.preferDirect = !routeSearch.preferDirect;
 						refreshMenu();
 					}
 				}));
-				items.add(new CheckboxRouteEntry(this, "Avoid walking", routeSearch.avoidWalking, 10, new OnClickListener() {
+				items.add(new CheckboxRouteEntry(this, getText(R.string.avoidWalking).toString(), routeSearch.avoidWalking, 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						routeSearch.avoidWalking = !routeSearch.avoidWalking;
@@ -221,7 +221,7 @@ public class SelectRouteView extends ListActivity {
 					}
 				}));
 				
-				items.add(new SimpleTextRouteEntry(this, "Change margin : " + routeSearch.changeMargin + "m","The safe margin between each station", 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.changeMargin) + " : " + routeSearch.changeMargin + "m",getText(R.string.safeMargin).toString(), 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						SelectRouteView.this.showDialog(DIALOG_CHANGEMARGIN);
@@ -229,7 +229,7 @@ public class SelectRouteView extends ListActivity {
 					}
 				}));
 				
-				items.add(new SimpleTextRouteEntry(this, "Proposals : " + routeSearch.proposals,"The maximum amount of suggestions", 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.proposals) + " : " + routeSearch.proposals,getText(R.string.maxProposals).toString(), 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						SelectRouteView.this.showDialog(DIALOG_PROPOSALS);
@@ -238,12 +238,12 @@ public class SelectRouteView extends ListActivity {
 				}));
 				
 			} else {
-				items.add(new SimpleTextRouteEntry(this, "Advanced","Enable advanced options", 0, advancedOnClickListener));
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.advancedOptions).toString(),getText(R.string.enable) + " " + getText(R.string.advancedOptions), 0, advancedOnClickListener));
 			}
 		}
 		
-		items.add(new SeperatorRouteEntry(this, "Search for routes"));
-		items.add(new SimpleTextRouteEntry(this, "Search","Calculate route results", 0, new OnClickListener() {
+		items.add(new SeperatorRouteEntry(this, getText(R.string.searchForRoutes).toString()));
+		items.add(new SimpleTextRouteEntry(this, getText(R.string.search).toString(),getText(R.string.calculateRouteResults).toString(), 0, new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -344,14 +344,13 @@ public class SelectRouteView extends ListActivity {
 			 */
 			final Dialog dialog = new Dialog(this);
 			dialog.setContentView(R.layout.selectroute_dialog_timepick);
-			dialog.setTitle("Select travel time");
-
+			dialog.setTitle(R.string.setTravelTime);
 			/*
 			 * Setup the travel at/arrive before spinner.
 			 */
 			final ArrayList<String> travelAtArriveBeforeItems = new ArrayList<String>();
-			travelAtArriveBeforeItems.add("Travel at");
-			travelAtArriveBeforeItems.add("Arrive before");
+			travelAtArriveBeforeItems.add(getText(R.string.travelAt).toString());
+			travelAtArriveBeforeItems.add(getText(R.string.arriveBefore).toString());
 			final Spinner travelAtArriveBeforeSpinner = (Spinner) dialog.findViewById(R.id.travelAtArriveBefore);
 			final ArrayAdapter<String> travelAtArriveBeforeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, travelAtArriveBeforeItems);
 			travelAtArriveBeforeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -414,7 +413,7 @@ public class SelectRouteView extends ListActivity {
 			final CharSequence[] changeMarginItems = {"1m", "2m", "3m", "4m", "5m"};
 			
 			AlertDialog.Builder changeBuilder = new AlertDialog.Builder(this);
-			changeBuilder.setTitle("Set change margin");
+			changeBuilder.setTitle(R.string.setChangeMargin);
 			changeBuilder.setItems(changeMarginItems, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int item) {
 			    	routeSearch.changeMargin = item + 1;
@@ -426,7 +425,7 @@ public class SelectRouteView extends ListActivity {
 			final CharSequence[] proposalItems = {"1", "2", "3", "4", "5", "10"};
 			
 			AlertDialog.Builder changeProposals = new AlertDialog.Builder(this);
-			changeProposals.setTitle("Set change margin");
+			changeProposals.setTitle(R.string.setProposals);
 			changeProposals.setItems(proposalItems, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int item) {
 			    	if (item == 5) {

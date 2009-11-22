@@ -41,7 +41,6 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_toRightOf="@+id/deviIcon"
-		android:text="Devi info"
 		android:textAppearance="?android:attr/textAppearanceMedium"
 		android:textColor="#fff000"
 		android:layout_alignParentBottom="true"
