@@ -464,6 +464,7 @@ public class SelectRouteView extends ListActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+		outState.putParcelable(RouteSearchData.PARCELABLE, routeSearch);
 	}
 }
 
