@@ -24,9 +24,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,6 +65,8 @@ public class SelectRouteView extends ListActivity {
 	private static final int ACTIVITY_SELECT_TO = 2;
 	
 	private static final int DIALOG_SELECTTIME = 1;
+	private static final int DIALOG_CHANGEMARGIN = 2;
+	private static final int DIALOG_PROPOSALS = 3;
 	
 	private SelectRouteAdapter listMenu;
 	
@@ -74,6 +78,8 @@ public class SelectRouteView extends ListActivity {
 	private boolean preferDirect = false;
 	private boolean travelAt = true; // if false it's arriveBefore
 	private boolean avoidWalking = false;
+	private int changeMargin = 2; // in minutes
+	private int proposals = 5;
 	
 	/*
 	 * Options menu items:
@@ -104,6 +110,8 @@ public class SelectRouteView extends ListActivity {
 		advancedOptionsEnabled = false;
 		travelAt = true;
 		avoidWalking = false;
+		changeMargin = 2;
+		proposals = 5;
 		refreshMenu();
 	}
 	
@@ -148,8 +156,19 @@ public class SelectRouteView extends ListActivity {
 		 * Setup when
 		 */
 		final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("EEEEEEE dd-MM-yyyy HH:mm");
-		final String travelTime = routeData.departure == 0 ? "Now" : DATEFORMAT.format(routeData.departure);
-		items.add(new SimpleTextRouteEntry(this, "When","Travel at : " + travelTime, 5, new OnClickListener() {
+		String travelTime;
+		if (routeData.arrival == 0) {
+			/*
+			 * Travel type "travel at"
+			 */
+			travelTime = routeData.departure == 0 ? "Travel at : Now" : "Travel at : " + DATEFORMAT.format(routeData.departure);
+		} else {
+			/*
+			 * Travel type "arrive before"
+			 */
+			travelTime = routeData.arrival == 0 ? "Arrive before : Now" : "Arrive before : " + DATEFORMAT.format(routeData.arrival);
+		}
+		items.add(new SimpleTextRouteEntry(this, "When",travelTime, 5, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				SelectRouteView.this.showDialog(DIALOG_SELECTTIME);
@@ -193,17 +212,19 @@ public class SelectRouteView extends ListActivity {
 					}
 				}));
 				
-				items.add(new SimpleTextRouteEntry(this, "Change margin","The safe margin between each station", 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, "Change margin : " + changeMargin + "m","The safe margin between each station", 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-
+						SelectRouteView.this.showDialog(DIALOG_CHANGEMARGIN);
+						refreshMenu();						
 					}
 				}));
 				
-				items.add(new SimpleTextRouteEntry(this, "Proposals","The maximum amount of suggestions", 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, "Proposals : " + proposals,"The maximum amount of suggestions", 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-
+						SelectRouteView.this.showDialog(DIALOG_PROPOSALS);
+						refreshMenu();
 					}
 				}));
 				
@@ -273,7 +294,7 @@ public class SelectRouteView extends ListActivity {
 			return;
 		}
 		
-		boolean departureNow = routeData.departure == 0;
+		boolean departureNow = routeData.departure == 0 && routeData.arrival == 0;
 		if (departureNow) {
 			routeData.departure = Calendar.getInstance().getTimeInMillis();			
 		}
@@ -368,7 +389,13 @@ public class SelectRouteView extends ListActivity {
 						Date date = DATEFORMAT.parse(dayAdapter.getItem(dayList.getSelectedItemPosition()));
 		                date.setHours(timePicker.getCurrentHour());
 		                date.setMinutes(timePicker.getCurrentMinute());
-		                routeData.departure = date.getTime();
+		                if (travelAt) {
+		                	routeData.departure = date.getTime();
+		                	routeData.arrival = 0;
+		                } else {
+		                	routeData.departure = 0;
+		                	routeData.arrival = date.getTime();	                	
+		                }
 						refreshMenu();
 						dialog.dismiss();
 					} catch (ParseException e) {
@@ -379,6 +406,34 @@ public class SelectRouteView extends ListActivity {
 			});
 			
 			return dialog;
+		case DIALOG_CHANGEMARGIN:
+			final CharSequence[] changeMarginItems = {"1m", "2m", "3m", "4m", "5m"};
+			
+			AlertDialog.Builder changeBuilder = new AlertDialog.Builder(this);
+			changeBuilder.setTitle("Set change margin");
+			changeBuilder.setItems(changeMarginItems, new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int item) {
+			        changeMargin = item + 1;
+			        refreshMenu();
+			    }
+			});
+			return changeBuilder.create();
+		case DIALOG_PROPOSALS:
+			final CharSequence[] proposalItems = {"1", "2", "3", "4", "5", "10"};
+			
+			AlertDialog.Builder changeProposals = new AlertDialog.Builder(this);
+			changeProposals.setTitle("Set change margin");
+			changeProposals.setItems(proposalItems, new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int item) {
+			    	if (item == 5) {
+			    		proposals = 10; 
+			    	} else {
+			    		proposals = item + 1;
+			    	}
+			        refreshMenu();
+			    }
+			});
+			return changeProposals.create();
 		}
 		return super.onCreateDialog(id);
 	}
