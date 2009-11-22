@@ -24,9 +24,11 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
-import android.text.style.StyleSpan;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -159,23 +161,29 @@ class RenderOverviewText {
 	 * Contains text to add + the style
 	 */
 	private class SpannableSet {
-		public StyleSpan style;
+		public Object style;
 		public int start;
 		public int end;
-		public SpannableSet(int start, int end, StyleSpan style) {
+		public int flags;
+		public SpannableSet(int start, int end, Object style, int flags) {
 			this.style = style;
 			this.start = start;
 			this.end = end;
+			this.flags = flags;
 		}
 	}
 	private ArrayList<SpannableSet> spannableSet = new ArrayList<SpannableSet>();
 	private StringBuffer textBuffer = new StringBuffer();
 	
-	public void addString(String text, StyleSpan style) {
+	public int length() {
+		return textBuffer.length();
+	}
+	
+	public void addString(String text, Object style, int flags) {
 		if (style != null) {
 			final int start = textBuffer.length();
 			final int end = start + text.length();
-			spannableSet.add(new SpannableSet(start, end, style));
+			spannableSet.add(new SpannableSet(start, end, style, flags));
 		}
 		textBuffer.append(text);
 	}
@@ -183,7 +191,7 @@ class RenderOverviewText {
 	public SpannableString toSpannableString() {
 		SpannableString s = new SpannableString(textBuffer.toString());
 		for (SpannableSet spanSet : spannableSet) {
-			s.setSpan(spanSet.style, spanSet.start, spanSet.end, 0); 
+			s.setSpan(spanSet.style, spanSet.start, spanSet.end, spanSet.flags); 
 		}
 		return s;
 	}
@@ -255,7 +263,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 		long arrival = 0;
 		
 		holder.proposalIcons.removeAllViews();
-		String routeInfoText = null;
+		RenderOverviewText routeInfoText = new RenderOverviewText();
 		for(RouteData routeData : routeProposal.travelStageList) {
 			/*
 			 * Grab the first departure and last arrival to calculate total time
@@ -284,20 +292,37 @@ class OverviewRouteAdapter extends BaseAdapter {
 			{
 				final long minDiff = (routeData.arrival - routeData.departure) / HelperFunctions.MINUTE;
 				final String line = routeData.transportType == IRouteProvider.TRANSPORT_WALK ? context.getText(R.string.walk).toString() : routeData.line;
-				if (routeInfoText == null) {
-					routeInfoText = line + " (" + minDiff + "m)";
+				if (routeInfoText.length() == 0) {
+					/*routeInfoText.addString(line + " (", null, 0);
+					routeInfoText.addString(minDiff + "m", new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
+					routeInfoText.addString(")", null, 0);*/
+					routeInfoText.addString(line + " (" + minDiff + "m)", null, 0);
 				} else {
-					routeInfoText = routeInfoText + ", " + line + " (" + minDiff + "m)";
+					/*routeInfoText.addString(", " + line + " (", null, 0);
+					routeInfoText.addString(minDiff + "m", new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
+					routeInfoText.addString(")", null, 0);*/
+					routeInfoText.addString(", " + line + " (" + minDiff + "m)", null, 0);
 				}
 			}
 		}
-		
-		
-		final long minDiff = (arrival - departure) / HelperFunctions.MINUTE;
-		holder.routeInfo.setText(routeInfoText);
+		holder.routeInfo.setText(routeInfoText.toSpannableString());
 		holder.routeInfo.setSingleLine();
 		
-		holder.footer.setText("Departure " + HelperFunctions.hourFormater.format(departure) + " arrival " + HelperFunctions.hourFormater.format(arrival) + " total " + minDiff + "m");
+		{
+			/*
+			 * Footer text
+			 */
+			final long minDiff = (arrival - departure) / HelperFunctions.MINUTE;
+			RenderOverviewText footerText = new RenderOverviewText();
+			footerText.addString("Departure ", null, 0);
+			footerText.addString(HelperFunctions.hourFormater.format(departure),new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
+			footerText.addString(" arrival ", null, 0);
+			footerText.addString(HelperFunctions.hourFormater.format(arrival),new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
+			footerText.addString(" total ", null, 0);
+			footerText.addString(new Long(minDiff).toString() + "m",new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
+			holder.footer.setText(footerText.toSpannableString());
+			holder.footer.setSingleLine();
+		}
 		
 		
 		
