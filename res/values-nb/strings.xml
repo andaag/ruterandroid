@@ -49,6 +49,7 @@
     <string name="searchStationHint">Søk etter stasjon i søk feltet.\n\n
 Husk å gi Trafikanten rating på android market\n\n
 Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
+	<string name="selectMultipleStations">Velg flere stasjoner</string>
 
         <!-- SelectStationView -->
         <string name="address">Addresse Søk</string>

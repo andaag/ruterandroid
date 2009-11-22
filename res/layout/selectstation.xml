@@ -25,11 +25,21 @@
     	android:layout_centerHorizontal="true"
     	android:text="@string/searchStationHint" />
     
+    <Button
+        android:id="@+id/multiSelectButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:text="@string/selectMultipleStations"
+        />
+        
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/search"
+        android:layout_above="@+id/multiSelectButton"
         />
 
 </RelativeLayout>

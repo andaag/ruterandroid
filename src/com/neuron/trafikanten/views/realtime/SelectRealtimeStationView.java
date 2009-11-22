@@ -35,11 +35,7 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
 	 */
 	@Override
 	public void stationSelected(StationData station) {
-		if (!station.isFavorite) {
-			historyDbAdapter.updateHistory(station);
-		} else {
-			favoriteDbAdapter.updateUsed(station);
-		}
+		updateHistory(station);
 		favoriteDbAdapter.close();
 		historyDbAdapter.close();
 		

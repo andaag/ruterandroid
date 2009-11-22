@@ -21,7 +21,6 @@ package com.neuron.trafikanten.views;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,9 +34,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -159,6 +160,9 @@ public abstract class GenericSelectStationView extends ListActivity {
 		setListAdapter(stationListAdapter);
     }
     
+    /*
+     * Setup a stored search provider, this is shared between multiple functions
+     */
     private void createSearchProvider() {
        	searchProvider = DataProviderFactory.getSearchProvider(getResources(), new SearchProviderHandler() {
     		@Override
@@ -188,6 +192,10 @@ public abstract class GenericSelectStationView extends ListActivity {
 				setProgressBar(true);
 			}
     	});
+    }
+    
+    public void setAdapterLayout(int layout) {
+    	stationListAdapter.setLayout(layout);
     }
     
     /*
@@ -414,6 +422,14 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	public abstract void stationSelected(StationData station);
 	
+	public void updateHistory(StationData station) {
+		if (!station.isFavorite) {
+			historyDbAdapter.updateHistory(station);
+		} else {
+			favoriteDbAdapter.updateUsed(station);
+		}
+	}
+	
 	/*
 	 * Custom function for set progress bar status
 	 */
@@ -486,9 +502,12 @@ class StationListAdapter extends BaseAdapter {
 	public static final String KEY_SEARCHSTATIONLIST = "searchstationlist";
 	private LayoutInflater inflater;
 	private ArrayList<StationData> items = new ArrayList<StationData>();
+	private int layout = R.layout.selectstation_list;
+	private GenericSelectStationView parent;
 	
-	public StationListAdapter(Context context) {
-		inflater = LayoutInflater.from(context);
+	public StationListAdapter(GenericSelectStationView parent) {
+		this.parent = parent;
+		inflater = LayoutInflater.from(parent);
 	}
 
 	/*
@@ -508,22 +527,32 @@ class StationListAdapter extends BaseAdapter {
 	public Object getItem(int pos) { return items.get(pos); }
 	@Override
 	public long getItemId(int pos) { return pos; }
-
+	
+	/*
+	 * Code to support multiselect
+	 */
+	public void setLayout(int layout) {
+		this.layout = layout;
+		notifyDataSetChanged();
+	}
+	
 	/*
 	 * Setup the view
 	 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
 	 */
 	@Override
 	public View getView(int pos, View convertView, ViewGroup arg2) {
+		final StationData station = items.get(pos);
 		/*
 		 * Setup holder, for performance and readability.
 		 */
 		ViewHolder holder;
-		if (convertView == null) {
+		if (convertView == null || convertView.getId() != layout) {
 			/*
 			 * New view, inflate and setup holder.
 			 */
-			convertView = inflater.inflate(R.layout.selectstation_list, null);
+			convertView = inflater.inflate(layout, null);
+			convertView.setId(layout);
 			
 			holder = new ViewHolder();
 			holder.star = (ImageView) convertView.findViewById(R.id.star);
@@ -538,10 +567,19 @@ class StationListAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
+		if (layout == R.layout.selectstation_list_multiselect) {
+			CheckBox stopCheckBox = (CheckBox) convertView.findViewById(R.id.stopname);
+			stopCheckBox.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					parent.stationSelected(station);
+				}
+			});
+		}
+		
 		/*
 		 * Render data to view.
 		 */
-		final StationData station = items.get(pos);
 		holder.stopName.setText(station.stopName);
 		
 		/*

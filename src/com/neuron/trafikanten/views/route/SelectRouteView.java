@@ -318,13 +318,28 @@ public class SelectRouteView extends ListActivity {
 		switch(requestCode) {
 		case ACTIVITY_SELECT_FROM:
 		case ACTIVITY_SELECT_TO:
-			final StationData station = data.getParcelableExtra(StationData.PARCELABLE);
-			if (requestCode == ACTIVITY_SELECT_FROM) {
-				routeSearch.fromStation.clear();
-				routeSearch.fromStation.add(station);
+			if (data.hasExtra(StationData.PARCELABLE)) {
+				/*
+				 * Return data is a single station
+				 */
+				final StationData station = data.getParcelableExtra(StationData.PARCELABLE);
+				if (requestCode == ACTIVITY_SELECT_FROM) {
+					routeSearch.fromStation.clear();
+					routeSearch.fromStation.add(station);
+				} else {
+					routeSearch.toStation.clear();
+					routeSearch.toStation.add(station);
+				}
 			} else {
-				routeSearch.toStation.clear();
-				routeSearch.toStation.add(station);
+				/*
+				 * Return data is a set of stations
+				 */
+				final ArrayList<StationData> stationList = data.getParcelableArrayListExtra(SelectRouteStationView.STATIONLIST_PARCELABLE);
+				if (requestCode == ACTIVITY_SELECT_FROM) {
+					routeSearch.fromStation = stationList;
+				} else {
+					routeSearch.toStation = stationList;
+				}
 			}
 			break;
 		default:
