@@ -24,6 +24,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.database.Cursor;
@@ -44,6 +45,7 @@ public class SelectContactTask implements GenericTask {
     private static final String TAG = "Trafikanten-SelectContactTask";
     private Activity activity;
     ReturnCoordinatesHandler handler;
+    private Dialog dialog; 
     
     public SelectContactTask(Activity activity, ReturnCoordinatesHandler handler) 
     {
@@ -90,7 +92,7 @@ public class SelectContactTask implements GenericTask {
             }
         });
         
-        AlertDialog dialog = builder.create();
+        dialog = builder.create();
 		/*
 		 * Handler onCancel
 		 */
@@ -145,6 +147,7 @@ public class SelectContactTask implements GenericTask {
 
 	@Override
 	public void stop() {
-		// No background data to stop.
+		handler.onCanceled();
+		dialog.dismiss();
 	}
 }

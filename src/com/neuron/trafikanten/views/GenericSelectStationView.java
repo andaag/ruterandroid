@@ -319,7 +319,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	        @Override
 	        public void onCanceled() {
 	        	setProgressBar(false);
-	                activeTask = null;
+	            activeTask = null;
 	        }
 	
 	        @Override
@@ -458,8 +458,9 @@ public abstract class GenericSelectStationView extends ListActivity {
 	protected void onPause() {
 		favoriteDbAdapter.close();
 		historyDbAdapter.close();
-		if (activeTask != null)
+		if (activeTask != null) {
 			activeTask.stop();
+		}
 		super.onPause();
 	}
 

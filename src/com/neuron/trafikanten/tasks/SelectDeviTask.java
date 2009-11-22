@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -36,6 +37,7 @@ public class SelectDeviTask implements GenericTask {
     //private static final String TAG = "Trafikanten-SelectDeviTask";
     private Activity activity;
     private ArrayList<DeviData> devi;
+    private Dialog dialog;
     
     public SelectDeviTask(Activity activity, ArrayList<DeviData> devi) 
     {
@@ -71,7 +73,7 @@ public class SelectDeviTask implements GenericTask {
             }
         });
         
-        AlertDialog dialog = builder.create();
+        dialog = builder.create();
         
         /*
          * Show dialog
@@ -86,6 +88,6 @@ public class SelectDeviTask implements GenericTask {
 
 	@Override
 	public void stop() {
-		// No background data to stop.
+		dialog.dismiss();
 	}
 }

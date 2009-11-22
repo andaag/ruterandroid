@@ -50,6 +50,11 @@ public class LocationTask implements GenericTask {
 	private double latitude;
 	private double longitude;
 	
+	/*
+	 * Dialog
+	 */
+	private Dialog dialog;
+	
     public LocationTask(Activity activity, ReturnCoordinatesHandler handler)
     {
             this.activity = activity;
@@ -59,7 +64,7 @@ public class LocationTask implements GenericTask {
     }
     
     private void showDialog() {
-		final Dialog dialog = new Dialog(activity);
+		dialog = new Dialog(activity);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.dialog_waitlocation);
 		
@@ -122,6 +127,8 @@ public class LocationTask implements GenericTask {
     
 	@Override
 	public void stop() {
-		locationProvider.Stop();		
+		locationProvider.Stop();
+		handler.onCanceled();
+		dialog.dismiss();
 	}
 }

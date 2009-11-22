@@ -30,6 +30,7 @@ public class SearchAddressTask implements GenericTask {
 	private Activity activity;
 	private List<Address> addresses;
 	ReturnCoordinatesHandler handler;
+	private Dialog dialog; 
 	    
 	
 	public SearchAddressTask(Activity activity, ReturnCoordinatesHandler handler) 
@@ -43,7 +44,7 @@ public class SearchAddressTask implements GenericTask {
 	 * Show the address field dialog and wait for input
 	 */
 	private void showAddressField() {
-		final Dialog dialog = new Dialog(activity);
+		dialog = new Dialog(activity);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.dialog_searchaddress);
 		
@@ -118,7 +119,7 @@ public class SearchAddressTask implements GenericTask {
 	    });
 	    
 	    
-	    AlertDialog dialog = builder.create();
+	    dialog = builder.create();
 		/*
 		 * Handler onCancel
 		 */
@@ -166,6 +167,7 @@ public class SearchAddressTask implements GenericTask {
 
 	@Override
 	public void stop() {
-		// No background threads to kill
+		handler.onCanceled();
+		dialog.dismiss();
 	}
 }
