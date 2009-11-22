@@ -76,7 +76,6 @@ public class SelectRouteView extends ListActivity {
 	private boolean advancedOptionsEnabled = false;
 	private RouteData routeData = new RouteData();
 	private boolean preferDirect = false;
-	private boolean travelAt = true; // if false it's arriveBefore
 	private boolean avoidWalking = false;
 	private int changeMargin = 2; // in minutes
 	private int proposals = 5;
@@ -108,7 +107,6 @@ public class SelectRouteView extends ListActivity {
 		routeData = new RouteData();
 		preferDirect = false;
 		advancedOptionsEnabled = false;
-		travelAt = true;
 		avoidWalking = false;
 		changeMargin = 2;
 		proposals = 5;
@@ -384,7 +382,7 @@ public class SelectRouteView extends ListActivity {
 				@Override
 				public void onClick(View v) {
 					try {
-						travelAt = travelAtArriveBeforeSpinner.getSelectedItemPosition() == 0;
+						boolean travelAt = travelAtArriveBeforeSpinner.getSelectedItemPosition() == 0;
 						
 						Date date = DATEFORMAT.parse(dayAdapter.getItem(dayList.getSelectedItemPosition()));
 		                date.setHours(timePicker.getCurrentHour());
