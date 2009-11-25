@@ -413,6 +413,7 @@ public class RealtimeView extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 		refreshTitle();
+		realtimeList.notifyDataSetChanged(); // force refreshing times.
 	}
 
 	@Override
