@@ -29,7 +29,8 @@ public class RealtimeData implements Parcelable {
 	public String destination;
 	public boolean realtime;
 	public String departurePlatform;
-	public String extra;
+	public String stopVisitNote;
+	
 
 	/*public long aimedArrival;
 	public long expectedArrival;*/
@@ -65,7 +66,7 @@ public class RealtimeData implements Parcelable {
 		destination = in.readString();
 		realtime = in.readInt() != 0;
 		departurePlatform = in.readString();
-		extra = in.readString();
+		stopVisitNote = in.readString();
 		
 		/*aimedArrival = in.readLong();
 		expectedArrival = in.readLong();*/
@@ -89,7 +90,7 @@ public class RealtimeData implements Parcelable {
 		out.writeString(destination);
 		out.writeInt(realtime ? 1 : 0);
 		out.writeString(departurePlatform);
-		out.writeString(extra);
+		out.writeString(stopVisitNote);
 		
 		/*out.writeLong(aimedArrival);
 		out.writeLong(expectedArrival);*/

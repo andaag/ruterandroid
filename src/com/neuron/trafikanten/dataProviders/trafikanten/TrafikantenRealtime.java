@@ -271,7 +271,7 @@ class RealtimeHandler extends DefaultHandler {
 		        data.departurePlatform = buffer.toString();
 		    } else if (inStopVisitNote) {
 		        inStopVisitNote = false;
-		        data.extra = buffer.toString();
+		        data.stopVisitNote = buffer.toString();
 		    }
 	    }
 		buffer.setLength(0);

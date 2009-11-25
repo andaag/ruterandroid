@@ -72,5 +72,29 @@
 		
 		android:textSize="13dip"
     />
+    
+    
+	<ImageView
+		android:id="@+id/stopVisitIcon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/tango_emblem_important"
+		android:layout_below="@+id/nextDepartures"
+		android:paddingLeft="50dip"
+		/> 
+		
+	<TextView
+		android:id="@+id/stopVisitNote"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		
+		android:ellipsize="marquee"
+		android:singleLine="true"
+		
+		android:layout_marginLeft="3dip"
+		android:layout_marginTop="1dip"
+		android:layout_toRightOf="@+id/stopVisitIcon"
+		android:layout_alignTop="@+id/stopVisitIcon"
+		/>
 
 </RelativeLayout>

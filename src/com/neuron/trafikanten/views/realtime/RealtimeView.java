@@ -398,9 +398,6 @@ public class RealtimeView extends ListActivity {
 		
 		String info = data.destination + "\n" +
 			"  " + minutesDelayed + "m " + getText(R.string.late);
-		if (data.extra != null) {
-			info = info + "\n" + data.extra;
-		}
 		info = info + "\n   - " + getText(R.string.hintRealtimeHoldButton);
 		Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
 	}
@@ -685,6 +682,9 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.nextDepartures = (TextView) convertView.findViewById(R.id.nextDepartures);
 			holder.deviIcon = (ImageView) convertView.findViewById(R.id.deviIcon);
 			
+			holder.stopVisitIcon = (ImageView) convertView.findViewById(R.id.stopVisitIcon);
+			holder.stopVisitNote = (TextView) convertView.findViewById(R.id.stopVisitNote);
+			
 			convertView.setTag(holder);
 		} else {
 			/*
@@ -740,6 +740,18 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.deviIcon.setVisibility(View.GONE);
 		}
 		
+		/*
+		 * And render stopVisitNote
+		 */
+		if (data.stopVisitNote != null) {
+			holder.stopVisitIcon.setVisibility(View.VISIBLE);
+			holder.stopVisitNote.setVisibility(View.VISIBLE);
+			holder.stopVisitNote.setText(data.stopVisitNote);
+		} else {
+			holder.stopVisitIcon.setVisibility(View.GONE);
+			holder.stopVisitNote.setVisibility(View.GONE);
+		}
+		
 		return convertView;
 	}
 	
@@ -754,5 +766,8 @@ class RealtimeAdapter extends BaseAdapter {
 		TextView nextDepartures;
 		
 		ImageView deviIcon;
+		
+		ImageView stopVisitIcon;
+		TextView stopVisitNote;
 	}
 };
