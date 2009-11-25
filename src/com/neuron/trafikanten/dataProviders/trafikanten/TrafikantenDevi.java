@@ -21,6 +21,7 @@ package com.neuron.trafikanten.dataProviders.trafikanten;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -227,13 +228,19 @@ class DeviHandler extends DefaultHandler {
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */
 	    	inItem = false;
-	        final DeviData sendData = data;
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					handler.onData(sendData);	
-				}
-			});
+	    	
+	    	long dateDiffHours = (data.validFrom - Calendar.getInstance().getTimeInMillis()) / HelperFunctions.HOUR;
+	    	if (dateDiffHours < 3) {
+	    		/*
+	    		 * We ignore devi events that are over 3 hours into the future, as realtime data only shows 3 hours into the future.	    		 */
+		        final DeviData sendData = data;
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						handler.onData(sendData);	
+					}
+				});
+	    	}
 	    } else { 
 	    	if (inTitle) {
 	    		inTitle = false;

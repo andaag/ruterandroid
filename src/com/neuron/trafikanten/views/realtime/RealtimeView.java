@@ -85,7 +85,7 @@ public class RealtimeView extends ListActivity {
 	private StationData station;
 	private RealtimeAdapter realtimeList;
 	private long lastUpdate;
-	private ArrayList<DeviData> deviItems = new ArrayList<DeviData>();
+	private ArrayList<DeviData> deviItems;
 	
 	/*
 	 * UI
@@ -162,7 +162,7 @@ public class RealtimeView extends ListActivity {
      * Refreshes station specific devi data.
      */
     private void refreshDevi() {
-    	if (deviItems.size() == 0) {
+    	if (deviItems == null || deviItems.size() == 0) {
     		/*
     		 * Nothing to display
     		 */
@@ -183,8 +183,7 @@ public class RealtimeView extends ListActivity {
     				text = text + "\n" + deviData.title;
     			}
     		}
-    		deviText.setText(text);
-    		    		
+    		deviText.setText(text);   		
     	}
     }
     
