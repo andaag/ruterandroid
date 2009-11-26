@@ -41,7 +41,7 @@ public class RouteSearchData implements Parcelable {
 	public boolean preferDirect = false;
 	public boolean avoidWalking = false;
 	public int changeMargin = 2; // in minutes
-	public int proposals = 5;
+	public int proposals = 6; // asking for 6 results, as it perfectly fills the screen.
 	
 	public RouteSearchData() {}
 	
@@ -52,7 +52,7 @@ public class RouteSearchData implements Parcelable {
 		preferDirect = false;
 		avoidWalking = false;
 		changeMargin = 2;
-		proposals = 5;
+		proposals = 6;
 	}
 	
 	/*
