@@ -64,34 +64,26 @@ def sendAdvancedRoute():
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
     <GetTravelsAdvanced xmlns="http://www.trafikanten.no/">
-      <time>2009-11-21T18:38:00</time>
+       <time>2009-11-27T18:38:00</time>
       <from>
-<Stop>
-    <WalkingDistance Unit="meters">159</WalkingDistance>
-    <ID>3010070</ID>
-    <District>OSLO</District>
-    <Zone>   01</Zone>
-    <RealTimeStop>False</RealTimeStop>
-    <X>597375</X>
-    <Y>6641800</Y>
-</Stop>
+        <Stop>
+            <ID>3012110</ID>
+        </Stop>
       </from>
       <to>
-<Stop>
-    <WalkingDistance Unit="meters">947</WalkingDistance>
-    <ID>3010025</ID>
-    <District>OSLO</District>
-    <Zone>   01</Zone>
-    <RealTimeStop>True</RealTimeStop>
-    <X>597432</X>
-    <Y>6642764</Y>
-</Stop>
+        <Stop>
+            <ID>2330160</ID>
+        </Stop>
       </to>
       <changemargin>2</changemargin>
       <changepunish>2</changepunish>
-      <walkingfactor>2</walkingfactor>
+      <walkingfactor>100</walkingfactor>
       <proposals>5</proposals>
       <isTravelAfterACertainTimeRatherThanBefore>true</isTravelAfterACertainTimeRatherThanBefore>
+ 
+ 
+      <transportationtypes/>
+      <linenames/>
     </GetTravelsAdvanced>
   </soap:Body>
 </soap:Envelope>"""
@@ -101,6 +93,6 @@ def sendAdvancedRoute():
     
     
 
-testRoute()
-#sendAdvancedRoute()
+#testRoute()
+sendAdvancedRoute()
 #testSearch()

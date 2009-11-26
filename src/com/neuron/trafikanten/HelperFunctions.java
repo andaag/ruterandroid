@@ -133,17 +133,23 @@ public class HelperFunctions {
 		return content;
 	}
 	
+	
 	/*
-	 * Send a soap request, takes resource id, arguments and the soap url, returns inputStream.
+	 * Send a soap request to the server
 	 */
-	public static InputStream soapRequest(Resources resources, final int rid, final String[] args, final String url) throws IOException {
-        final String soap = mergeXmlArgument(resources, rid, args);
-
+	public static InputStream soapRequest(Resources resources, String soap, final String url) throws IOException {
         HttpPost httppost = new HttpPost(url);
         httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
         httppost.setEntity(new StringEntity(soap));
     	Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
     	
     	return executeHttpRequest(httppost);
+	}
+	/*
+	 * Send a soap request, takes resource id, arguments and the soap url, returns inputStream.
+	 */
+	public static InputStream soapRequest(Resources resources, final int rid, final String[] args, final String url) throws IOException {
+        final String soap = mergeXmlArgument(resources, rid, args);
+        return soapRequest(resources, soap, url);
 	}
 }

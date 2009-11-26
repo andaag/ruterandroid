@@ -119,25 +119,58 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			// TODO : This needs to parse everything from routeSearch, including departure/arrival info, and set departure if departure = 0.
-			final boolean travelAt = routeSearch.arrival > 0;
+			/*
+			 * Setup time
+			 */
+			final boolean travelAt = routeSearch.arrival == 0;
 			long travelTime = travelAt ? routeSearch.departure : routeSearch.arrival;
 			if (travelTime == 0) {
 				travelTime = Calendar.getInstance().getTimeInMillis();
 			}
-			
-			// Todo, support multiple stations
-			final StationData fromStation = routeSearch.fromStation.get(0);
-			final StationData toStation = routeSearch.toStation.get(0);
-			
-			
 			final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-			final StringBuffer renderedTime = dateFormater.format(new Date(travelTime), new StringBuffer(), new FieldPosition(0));
-			final String[] args = new String[]{ new Integer(fromStation.stationId).toString(), 
-					new Integer(toStation.stationId).toString(), 
-					renderedTime.toString()};
+			final StringBuffer travelTimeString = dateFormater.format(new Date(travelTime), new StringBuffer(), new FieldPosition(0));
 			
-			final InputStream result = HelperFunctions.soapRequest(resources, R.raw.gettravelsafter, args, Trafikanten.API_URL);
+			/*
+			 * Setup from stations
+			 */
+			final StringBuffer soapFromStation = new StringBuffer();
+			for (StationData station : routeSearch.fromStation) {
+				soapFromStation.append(HelperFunctions.mergeXmlArgument(resources, R.raw.gettravelsadvancedstation, 
+						new String[] {new Integer(station.walkingDistance).toString(), new Integer(station.stationId).toString() } ));
+			}
+			/*
+			 * Setup to stations
+			 */
+			final StringBuffer soapToStation = new StringBuffer();
+			for (StationData station : routeSearch.toStation) {
+				soapToStation.append(HelperFunctions.mergeXmlArgument(resources, R.raw.gettravelsadvancedstation, 
+						new String[] {new Integer(station.walkingDistance).toString(), new Integer(station.stationId).toString() } ));
+			}
+			
+			/*
+			 * Disable advanced options  if they are not visible
+			 */
+			if (!routeSearch.advancedOptionsEnabled) {
+				routeSearch.resetAdvancedOptions();
+			}
+			
+			/*
+			 * Change margin/change punish/proposals
+			 */
+			String changeMargin = new Integer(routeSearch.changeMargin).toString();
+			//String changePunish = new Integer(routeSearch.).toString();
+			String changePunish = "2"; // TODO
+			String proposals = new Integer(routeSearch.proposals).toString();
+			/*
+			 * WalkingFactor
+			 */
+			String walkingFactor = "100"; // TODO
+			
+			final String[] args = new String[]{Boolean.toString(travelAt), travelTimeString.toString(), 
+					soapFromStation.toString(), soapToStation.toString(),
+					changeMargin, changePunish, proposals, walkingFactor};
+			
+			final InputStream result = HelperFunctions.soapRequest(resources, R.raw.gettravelsadvanced, args, Trafikanten.API_URL);
 			/*
 			 * Setup SAXParser and XMLReader
 			 */

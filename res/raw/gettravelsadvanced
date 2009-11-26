@@ -2,6 +2,7 @@
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
     <GetTravelsAdvanced xmlns="http://www.trafikanten.no/">
+      <isTravelAfterACertainTimeRatherThanBefore>%</isTravelAfterACertainTimeRatherThanBefore>
       <time>%</time>
       <from>
       %
@@ -11,9 +12,10 @@
       </to>
       <changemargin>%</changemargin>
       <changepunish>%</changepunish>
+      <proposals>%</proposals>
       <walkingfactor>%</walkingfactor>
-      <proposals>5</proposals>
-      <isTravelAfterACertainTimeRatherThanAfter>%</isTravelAfterACertainTimeRatherThanAfter>
+      <transportationtypes/>
+      <linenames/>
     </GetTravelsAdvanced>
   </soap:Body>
 </soap:Envelope>
