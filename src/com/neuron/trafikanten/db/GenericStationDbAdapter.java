@@ -106,6 +106,13 @@ public abstract class GenericStationDbAdapter {
     }
     
     /*
+     * Check if the database is open
+     */
+    public boolean isOpen() {
+    	return (db != null);
+    }
+    
+    /*
      * Close the database gracefully.
      */
 	public void close() { 

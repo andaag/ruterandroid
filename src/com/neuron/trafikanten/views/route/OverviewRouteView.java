@@ -144,8 +144,24 @@ public class OverviewRouteView extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		DetailedRouteView.ShowRoute(this, routeList.getList(), position);
 	}
-
+	
+	/*
+	 * Make sure we kill off threads when freeing memory.
+	 * @see android.app.Activity#onDestroy()
+	 */
 	@Override
+	protected void onDestroy() {
+		if (routeProvider != null) {
+			routeProvider.Stop();
+		}
+		super.onDestroy();
+	}
+
+	/*
+	 * saveInstanceState saves all variables needed for onCreate
+	 * @see android.app.Activity#onSaveInstanceState(android.os.Bundle)
+	 */
+	 @Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(RouteSearchData.PARCELABLE, routeSearch);

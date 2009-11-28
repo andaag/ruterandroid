@@ -81,8 +81,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	/*
 	 * Database adapter
 	 */
-	public static FavoriteDbAdapter favoriteDbAdapter;
-	public static HistoryDbAdapter historyDbAdapter;
+	public FavoriteDbAdapter favoriteDbAdapter;
+	public HistoryDbAdapter historyDbAdapter;
 	
 	/*
 	 * Views 
@@ -439,9 +439,21 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Refresh view, this involves checking list against current favorites and setting .isFavorite to render star.
 	 */
 	private void refresh() {
+		boolean dbClosed = !favoriteDbAdapter.isOpen();
+		if (dbClosed) {
+			/*
+			 * This can happen as we allow background loading.
+			 */
+			favoriteDbAdapter.open();
+			historyDbAdapter.open();
+		}
 		favoriteDbAdapter.refreshFavorites(stationListAdapter.getList());
 		stationListAdapter.notifyDataSetChanged();
 		infoText.setVisibility(stationListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+		if (dbClosed) {
+			favoriteDbAdapter.close();
+			historyDbAdapter.close();
+		}
 	}
 	
 	/*
@@ -478,6 +490,12 @@ public abstract class GenericSelectStationView extends ListActivity {
 			activeTask.stop();
 		}
 		super.onPause();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		searchProvider.Stop();
+		super.onDestroy();
 	}
 
 	/*

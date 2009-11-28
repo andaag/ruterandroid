@@ -412,6 +412,25 @@ public class RealtimeView extends ListActivity {
 		realtimeList.notifyDataSetChanged(); // force refreshing times.
 	}
 
+	/*
+	 * Make sure we kill off threads when freeing memory.
+	 * @see android.app.Activity#onDestroy()
+	 */
+	@Override
+	protected void onDestroy() {
+		if (realtimeProvider != null) {
+			realtimeProvider.Stop();
+		}
+		if (deviProvider != null) {
+			deviProvider.Stop();
+		}
+		super.onDestroy();
+	}
+
+	/*
+	 * saveInstanceState saves all variables needed for onCreate
+	 * @see android.app.Activity#onSaveInstanceState(android.os.Bundle)
+	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
