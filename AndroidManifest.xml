@@ -32,7 +32,12 @@
 
 <activity android:name=".views.route.OverviewRouteView"></activity>
 </application>
-    <uses-sdk android:minSdkVersion="3" />
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
+    
+<supports-screens
+	    largeScreens="true"
+	    normalScreens="true"
+	    smallScreens="true" />
 
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 <uses-permission android:name="android.permission.INTERNET"></uses-permission>
