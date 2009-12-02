@@ -491,7 +491,8 @@ class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable
 
 class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_REALTIMELIST = "realtimelist";
-	public static final String KEY_ITEMSSIZE = "devilist";
+	public static final String KEY_STATIONDEVILIST = "stationdevilist";
+	public static final String KEY_ITEMSSIZE = "devilistsize";
 	private LayoutInflater inflater;
 	
 	
@@ -534,7 +535,7 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Saving instance state
 	 */
 	public void saveInstanceState(Bundle outState) {
-		outState.putParcelableArrayList(RealtimeView.KEY_DEVILIST, deviItems);
+		outState.putParcelableArrayList(KEY_STATIONDEVILIST, deviItems);
 		outState.putInt(KEY_ITEMSSIZE, itemsSize);
 		outState.putParcelableArrayList(KEY_REALTIMELIST, items);
 	}
@@ -543,7 +544,7 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Loading instance state
 	 */
 	public void loadInstanceState(Bundle inState) {
-		deviItems = inState.getParcelableArrayList(RealtimeView.KEY_DEVILIST);
+		deviItems = inState.getParcelableArrayList(KEY_STATIONDEVILIST);
 		itemsSize = inState.getInt(KEY_ITEMSSIZE);
 		items = inState.getParcelableArrayList(KEY_REALTIMELIST);		
 	}
