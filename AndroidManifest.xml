@@ -10,10 +10,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <!-- It is recommended that you use an activity-alias to provide the "CREATE_SHORTCUT" -->
-        <!-- intent-filter.  This gives you a way to set the text (and optionally the -->
-        <!-- icon) that will be seen in the launcher's create-shortcut user interface. -->
 
         <activity-alias android:name=".CreateShortcuts"
             android:targetActivity=".Trafikanten"
