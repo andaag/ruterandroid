@@ -47,9 +47,15 @@
     <!-- SelectStation -->
     <string name="search_for_station">Søk etter stasjon</string>
     <string name="searchStationHint">Søk etter stasjon i søk feltet.\n\n
-Husk å gi Trafikanten rating på android market\n\n
-Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
+Trykk på meny knappen for flere valg.\n
+Du kan lage snarvei på hjemme skjermen:\n
+ - Stasjoner nær meg (gps).\n
+ - Sanntids data for en stasjon.\n
+Press lenge på en stasjon for flere valg.\n
+\n\n
+Husk å gi Trafikanten rating på android market</string>
 	<string name="selectMultipleStations">Velg flere stasjoner</string>
+	<string name="favorites">Favoritter</string>
 
         <!-- SelectStationView -->
         <string name="address">Addresse Søk</string>
@@ -60,14 +66,16 @@ Du kan presse lenge på en stasjon for å legge den til i favoritter.</string>
         <string name="removeHistory">Fjern fra history</string>
 
         <!-- OverviewRouteView -->
-        <string name="proposal">Forslag :</string>
+        <string name="proposal">Reise Forslag :</string>
 
         <!-- DetailedRouteView -->
         <string name="travelTime">Reisetid : </string>
         <string name="waitTime">Ventetid : </string>
         <string name="walkTime">Gå tid : </string>
         <string name="walk">Gå</string>
-        <string name="noRouteFound">Ingen rute funnet!</string>
+        <string name="noRoutesFound">Ingen rute funnet!</string>  
+        <string name="routeLoading">Laster reise informasjon...\n\n
+Trykk på ett reise forslag for detaljer!</string>
         
         <!-- GenericMap -->
         <string name="selectStation">Velg stasjon</string>

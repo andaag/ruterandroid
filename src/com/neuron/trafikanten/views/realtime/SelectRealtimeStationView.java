@@ -46,6 +46,21 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
         intent.putExtras(bundle);
         startActivity(intent);
 	}
+	
+	
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (savedInstanceState == null && getIntent().hasExtra(Trafikanten.KEY_MYLOCATION)) {
+			/*
+			 * We have "MYLOCATION" shortcut request
+			 */
+			findMyLocationTask();			
+		}
+	}
+
+
 
 	/*
 	 * The realtime station picker is only visible from a tabhost.

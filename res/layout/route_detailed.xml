@@ -6,16 +6,6 @@
     android:layout_height="fill_parent"
     >
 
-    <TextView
-    	android:id="@+id/noRouteFound"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_gravity="center_horizontal"
-    	android:layout_centerVertical="true"
-    	android:layout_centerHorizontal="true"
-    	android:text="@string/noRouteFound"
-    	android:visibility="invisible" />
-
     <LinearLayout
         android:id="@+id/panel"
 	    android:orientation="horizontal"

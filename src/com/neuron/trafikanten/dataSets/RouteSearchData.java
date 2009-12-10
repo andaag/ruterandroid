@@ -38,8 +38,8 @@ public class RouteSearchData implements Parcelable {
 	/*
 	 * Advanced options, if advancedOptionsEnabled == false, dont use them
 	 */
-	public boolean preferDirect = false;
-	public boolean avoidWalking = false;
+	/*public boolean preferDirect = false;
+	public boolean avoidWalking = false;*/
 	public int changeMargin = 2; // in minutes
 	public int proposals = 6; // asking for 6 results, as it perfectly fills the screen.
 	
@@ -49,8 +49,8 @@ public class RouteSearchData implements Parcelable {
 	 * Called when advancedOptionsEnabled == false, this resets advanced options to defaults.
 	 */
 	public void resetAdvancedOptions() {
-		preferDirect = false;
-		avoidWalking = false;
+		/*preferDirect = false;
+		avoidWalking = false;*/
 		changeMargin = 2;
 		proposals = 6;
 	}
@@ -70,8 +70,8 @@ public class RouteSearchData implements Parcelable {
 		departure = in.readLong();
 		arrival = in.readLong();
 		advancedOptionsEnabled = in.readInt() == 1;
-		preferDirect = in.readInt() == 1;
-		avoidWalking = in.readInt() == 1;
+		/*preferDirect = in.readInt() == 1;
+		avoidWalking = in.readInt() == 1;*/
 		changeMargin = in.readInt();
 		proposals = in.readInt();
 	}
@@ -88,8 +88,8 @@ public class RouteSearchData implements Parcelable {
 		out.writeLong(departure);
 		out.writeLong(arrival);
 		out.writeInt(advancedOptionsEnabled ? 1 : 0);
-		out.writeInt(preferDirect ? 1 : 0);
-		out.writeInt(avoidWalking ? 1 : 0);
+		/*out.writeInt(preferDirect ? 1 : 0);
+		out.writeInt(avoidWalking ? 1 : 0);*/
 		out.writeInt(changeMargin);
 		out.writeInt(proposals);
 	}

@@ -10,28 +10,41 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- It is recommended that you use an activity-alias to provide the "CREATE_SHORTCUT" -->
+        <!-- intent-filter.  This gives you a way to set the text (and optionally the -->
+        <!-- icon) that will be seen in the launcher's create-shortcut user interface. -->
+
+        <activity-alias android:name=".CreateShortcuts"
+            android:targetActivity=".Trafikanten"
+            android:label="@string/app_name">
+
+            <!--  This intent-filter allows your shortcuts to be created in the launcher. -->
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity-alias>
+
+
+	<activity android:name=".views.realtime.RealtimeView">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+	</activity>        
+        
     <activity android:name=".views.route.SelectRouteStationView"></activity>
-<activity android:name=".views.realtime.RealtimeView"></activity>
-<activity android:name=".views.realtime.SelectRealtimeStationView"></activity>
-
-
-
-<activity android:name=".views.route.SelectRouteView"></activity>
-
-<activity android:name=".views.route.DetailedRouteView"></activity>
-<activity android:name=".views.map.GenericMap"></activity>
-<uses-library android:name="com.google.android.maps"></uses-library>
-
-
-
-
-
-
-
-<receiver android:name=".notification.NotificationIntent"></receiver>
-
-<activity android:name=".views.route.OverviewRouteView"></activity>
+	<activity android:name=".views.realtime.SelectRealtimeStationView"></activity>
+	<activity android:name=".views.route.SelectRouteView"></activity>
+	<activity android:name=".views.route.DetailedRouteView"></activity>
+	<activity android:name=".views.map.GenericMap"></activity>
+	<uses-library android:name="com.google.android.maps"></uses-library>
+	<receiver android:name=".notification.NotificationIntent"></receiver>
+	<activity android:name=".views.route.OverviewRouteView"></activity>
 </application>
+
+
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
     
 <supports-screens

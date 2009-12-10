@@ -51,9 +51,15 @@
     <!-- SelectStation -->
     <string name="search_for_station">Search for station</string>
     <string name="searchStationHint">Search for a station in the search field.\n\n
-Please rate trafikanten on android market!\n\n
-You can longpress on a station to mark it as favorite.</string>
+Click the menu button for more options.\n
+You can make a shortcut on the home screen:\n
+  - Stations near me (using gps).\n
+  - Realtime data for a station.\n
+Longpress on a station to mark it as favorite.\n
+\n\n
+Please rate trafikanten on android market!</string>
 	<string name="selectMultipleStations">Select multiple stations</string>
+	<string name="favorites">Favorites</string>
 
         <!-- SelectStationView -->
         <string name="address">Address Search</string>
@@ -64,14 +70,16 @@ You can longpress on a station to mark it as favorite.</string>
         <string name="removeHistory">Remove from history</string>
 
         <!-- OverviewRouteView -->
-        <string name="proposal">Proposal :</string>
+        <string name="proposal">Travel Proposal :</string>
 
         <!-- DetailedRouteView -->
         <string name="travelTime">Travel time : </string>
         <string name="waitTime">Wait time : </string>
         <string name="walkTime">Walk time : </string>
         <string name="walk">Walk</string>
-        <string name="noRouteFound">No route found!</string>  
+        <string name="noRoutesFound">No routes found!</string>  
+        <string name="routeLoading">Route loading...\n\n
+Click a travel proposal for a detailed view!</string>
         
         <!-- GenericMap -->
         <string name="selectStation">Select a station</string>

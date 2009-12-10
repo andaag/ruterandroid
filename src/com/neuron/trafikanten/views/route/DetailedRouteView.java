@@ -161,12 +161,6 @@ public class DetailedRouteView extends ListActivity {
 		super.setListAdapter(adapter);
 		final ArrayList<RouteData> list = routeList.getList();
 		/*
-		 * Check if the info text should be shown 
-		 */
-		final TextView infoText = (TextView) findViewById(R.id.noRouteFound);
-		infoText.setVisibility(list.size() > 0 ? View.GONE : View.VISIBLE);
-		
-		/*
 		 * Render info box on the bottom
 		 */
 		if (list.size() > 0) {

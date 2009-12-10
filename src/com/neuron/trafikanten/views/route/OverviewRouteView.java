@@ -106,12 +106,14 @@ public class OverviewRouteView extends ListActivity {
     	
     	routeList.getList().clear();
     	routeList.notifyDataSetChanged();
+		final TextView infoText = (TextView) findViewById(R.id.emptyText);
     	
     	routeProvider = DataProviderFactory.getRouteProvider(getResources(), new RouteProviderHandler() {
 			@Override
 			public void onData(RouteProposal routeProposal) {
 				routeList.addItem(routeProposal);
 				routeList.notifyDataSetChanged();
+				infoText.setVisibility(routeList.getCount() > 0 ? View.GONE : View.VISIBLE);
 			}
 
 			@Override
@@ -123,6 +125,7 @@ public class OverviewRouteView extends ListActivity {
 
 			@Override
 			public void onFinished() {
+				infoText.setText(R.string.noRoutesFound);
 				setProgressBarIndeterminateVisibility(false);
 				routeProvider = null; 
 				/*

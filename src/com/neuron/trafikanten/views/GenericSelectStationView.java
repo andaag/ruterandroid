@@ -75,7 +75,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private final static int MAP_ID = Menu.FIRST + 1;
 	private final static int CONTACT_ID = Menu.FIRST + 2;
 	private final static int ADDRESS_ID = Menu.FIRST + 3;
-	private final static int RESET_ID = Menu.FIRST + 4;
+	private final static int FAVORITES_ID = Menu.FIRST + 4;
 	private final static int HELP_ID = Menu.FIRST + 5;
 	
 	/*
@@ -268,17 +268,17 @@ public abstract class GenericSelectStationView extends ListActivity {
 		final MenuItem myLocation = menu.add(0, MYLOCATION_ID, 0, R.string.myLocation);
 		myLocation.setIcon(android.R.drawable.ic_menu_mylocation);
 		
-		final MenuItem map = menu.add(0, MAP_ID, 0, R.string.map);
-		map.setIcon(android.R.drawable.ic_menu_mapmode);
-		
+		final MenuItem favorites = menu.add(0, FAVORITES_ID, 0, R.string.favorites);
+		favorites.setIcon(android.R.drawable.ic_menu_myplaces);
+	
 		final MenuItem contact = menu.add(0, CONTACT_ID, 0, R.string.contact);
 		contact.setIcon(R.drawable.ic_menu_cc);
 		
 		final MenuItem address = menu.add(0, ADDRESS_ID, 0, R.string.address);
 		address.setIcon(R.drawable.ic_menu_directions);
 		
-		final MenuItem favorites = menu.add(0, RESET_ID, 0, R.string.reset);
-		favorites.setIcon(android.R.drawable.ic_menu_revert);
+		final MenuItem map = menu.add(0, MAP_ID, 0, R.string.map);
+		map.setIcon(android.R.drawable.ic_menu_mapmode);
 		
 		final MenuItem help = menu.add(0, HELP_ID, 0, R.string.help);
 		help.setIcon(android.R.drawable.ic_menu_help);
@@ -305,7 +305,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         case ADDRESS_ID:
         	searchAddressTask();
         	break;
-        case RESET_ID:
+        case FAVORITES_ID:
         	resetView();
         	break;
         case HELP_ID:
@@ -355,7 +355,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	/*
 	 * Deal with a location search
 	 */
-	private void findMyLocationTask() {
+	public void findMyLocationTask() {
 		searchProvider.Stop();
 		activeTask = new LocationTask(this, getReturnCoordinatesHandler());
 	}

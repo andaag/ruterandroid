@@ -54,7 +54,6 @@ import android.widget.LinearLayout.LayoutParams;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.dataSets.StationData;
-import com.neuron.trafikanten.views.route.SelectRouteAdapter.CheckboxRouteEntry;
 import com.neuron.trafikanten.views.route.SelectRouteAdapter.GenericRouteEntry;
 import com.neuron.trafikanten.views.route.SelectRouteAdapter.SeperatorRouteEntry;
 import com.neuron.trafikanten.views.route.SelectRouteAdapter.SimpleTextRouteEntry;
@@ -110,14 +109,14 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup the basic menu:
 		 */
-		items.add(new SeperatorRouteEntry(this, getText(R.string.selectStations).toString()));
+		items.add(new SeperatorRouteEntry(this, R.string.selectStations));
 		
 		/*
 		 * Setup From
 		 */
-		String travelFromString = null;
+		CharSequence travelFromString = null;
 		if (routeSearch.fromStation.size() == 0) {
-			travelFromString = getText(R.string.selectWhereToTravelFrom).toString();
+			travelFromString = getText(R.string.selectWhereToTravelFrom);
 		} else {
 			for (StationData station : routeSearch.fromStation) {
 				if (travelFromString == null) {
@@ -127,7 +126,7 @@ public class SelectRouteView extends ListActivity {
 				}
 			}
 		}
-		items.add(new SimpleTextRouteEntry(this, getText(R.string.travelFrom).toString(),travelFromString, 0, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, R.string.travelFrom,travelFromString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
@@ -139,9 +138,9 @@ public class SelectRouteView extends ListActivity {
 		/*
 		 * Setup to
 		 */
-		String travelToString = null;
+		CharSequence travelToString = null;
 		if (routeSearch.toStation.size() == 0) {
-			travelToString = getText(R.string.selectWhereToTravelTo).toString();
+			travelToString = getText(R.string.selectWhereToTravelTo);
 		} else {
 			for (StationData station : routeSearch.toStation) {
 				if (travelToString == null) {
@@ -151,7 +150,7 @@ public class SelectRouteView extends ListActivity {
 				}
 			}
 		}
-		items.add(new SimpleTextRouteEntry(this, getText(R.string.travelTo).toString(),travelToString, 0, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, R.string.travelTo,travelToString, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
@@ -160,7 +159,7 @@ public class SelectRouteView extends ListActivity {
 			}
 		}));
 		
-		items.add(new SeperatorRouteEntry(this, getText(R.string.changeSettings).toString()));
+		items.add(new SeperatorRouteEntry(this, R.string.changeSettings));
 		/*
 		 * Setup when
 		 */
@@ -177,7 +176,7 @@ public class SelectRouteView extends ListActivity {
 			 */
 			travelTime = routeSearch.arrival == 0 ? getText(R.string.arriveBefore) + " : " + getText(R.string.now) : getText(R.string.arriveBefore) + " : " + DATEFORMAT.format(routeSearch.arrival);
 		}
-		items.add(new SimpleTextRouteEntry(this, getText(R.string.when).toString(),travelTime, 5, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, R.string.when, travelTime, 5, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				SelectRouteView.this.showDialog(DIALOG_SELECTTIME);
@@ -201,27 +200,27 @@ public class SelectRouteView extends ListActivity {
 			};
 			
 			if (routeSearch.advancedOptionsEnabled) {
-				items.add(new SimpleTextRouteEntry(this, getText(R.string.advancedOptions).toString(),getText(R.string.disable) + " " + getText(R.string.advancedOptions), 0, advancedOnClickListener));
+				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions,getText(R.string.disable) + " " + getText(R.string.advancedOptions), 0, advancedOnClickListener));
 				
 				/*
 				 * Add advanced options
 				 */
-				items.add(new CheckboxRouteEntry(this, getText(R.string.preferDirect).toString(), routeSearch.preferDirect, 10, new OnClickListener() {
+				/*items.add(new CheckboxRouteEntry(this, R.string.preferDirect, routeSearch.preferDirect, 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						routeSearch.preferDirect = !routeSearch.preferDirect;
 						refreshMenu();
 					}
 				}));
-				items.add(new CheckboxRouteEntry(this, getText(R.string.avoidWalking).toString(), routeSearch.avoidWalking, 10, new OnClickListener() {
+				items.add(new CheckboxRouteEntry(this, R.string.avoidWalking, routeSearch.avoidWalking, 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						routeSearch.avoidWalking = !routeSearch.avoidWalking;
 						refreshMenu();
 					}
-				}));
+				}));*/
 				
-				items.add(new SimpleTextRouteEntry(this, getText(R.string.changeMargin) + " : " + routeSearch.changeMargin + "m",getText(R.string.safeMargin).toString(), 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.changeMargin) + " : " + routeSearch.changeMargin + "m", getText(R.string.safeMargin), 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						SelectRouteView.this.showDialog(DIALOG_CHANGEMARGIN);
@@ -229,7 +228,7 @@ public class SelectRouteView extends ListActivity {
 					}
 				}));
 				
-				items.add(new SimpleTextRouteEntry(this, getText(R.string.proposals) + " : " + routeSearch.proposals,getText(R.string.maxProposals).toString(), 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.proposals) + " : " + routeSearch.proposals, getText(R.string.maxProposals), 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						SelectRouteView.this.showDialog(DIALOG_PROPOSALS);
@@ -238,12 +237,12 @@ public class SelectRouteView extends ListActivity {
 				}));
 				
 			} else {
-				items.add(new SimpleTextRouteEntry(this, getText(R.string.advancedOptions).toString(),getText(R.string.enable) + " " + getText(R.string.advancedOptions), 0, advancedOnClickListener));
+				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions, getText(R.string.enable) + " " + getText(R.string.advancedOptions), 0, advancedOnClickListener));
 			}
 		}
 		
-		items.add(new SeperatorRouteEntry(this, getText(R.string.searchForRoutes).toString()));
-		items.add(new SimpleTextRouteEntry(this, getText(R.string.search).toString(),getText(R.string.calculateRouteResults).toString(), 0, new OnClickListener() {
+		items.add(new SeperatorRouteEntry(this, R.string.searchForRoutes));
+		items.add(new SimpleTextRouteEntry(this, R.string.search, getText(R.string.calculateRouteResults), 0, new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -363,11 +362,11 @@ public class SelectRouteView extends ListActivity {
 			/*
 			 * Setup the travel at/arrive before spinner.
 			 */
-			final ArrayList<String> travelAtArriveBeforeItems = new ArrayList<String>();
-			travelAtArriveBeforeItems.add(getText(R.string.travelAt).toString());
-			travelAtArriveBeforeItems.add(getText(R.string.arriveBefore).toString());
+			final ArrayList<CharSequence> travelAtArriveBeforeItems = new ArrayList<CharSequence>();
+			travelAtArriveBeforeItems.add(getText(R.string.travelAt));
+			travelAtArriveBeforeItems.add(getText(R.string.arriveBefore));
 			final Spinner travelAtArriveBeforeSpinner = (Spinner) dialog.findViewById(R.id.travelAtArriveBefore);
-			final ArrayAdapter<String> travelAtArriveBeforeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, travelAtArriveBeforeItems);
+			final ArrayAdapter<CharSequence> travelAtArriveBeforeAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, travelAtArriveBeforeItems);
 			travelAtArriveBeforeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			travelAtArriveBeforeSpinner.setAdapter(travelAtArriveBeforeAdapter);
 			
@@ -547,7 +546,7 @@ class SelectRouteAdapter extends BaseAdapter
 	public static class SeperatorRouteEntry extends GenericRouteEntry {
 		private TextView mText;
 		
-		public SeperatorRouteEntry(Context context, String text) {
+		public SeperatorRouteEntry(Context context, int text) {
 			super(null);
 			mText = new TextView(context, null, R.style.PlatformHeader);
 			mText.setText(text);
@@ -561,25 +560,37 @@ class SelectRouteAdapter extends BaseAdapter
         private TextView mTitle;
         private TextView mSubText;
         
-        /*
-         * This is a simple layout, a text with a smaller subtext.
-         */
-		public SimpleTextRouteEntry(Context context, String title, String extra, int paddingLeft, OnClickListener onClickListener) {
-			super(onClickListener);
+        
+        private void setupView(Context context, int paddingLeft, OnClickListener onClickListener) {
         	LinearLayout linearLayout = new LinearLayout(context);
         	linearLayout.setPadding(paddingLeft + 2, 2, 2, 2);
         	linearLayout.setOrientation(LinearLayout.VERTICAL);
         	
             mTitle = new TextView(context);
-            mTitle.setText(title);
             mTitle.setTextAppearance(context, android.R.style.TextAppearance_Medium);
             linearLayout.addView(mTitle, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 
             mSubText = new TextView(context);
-            mSubText.setText(extra);
             mSubText.setTextAppearance(context, android.R.style.TextAppearance_Small);
             linearLayout.addView(mSubText, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
             mView = linearLayout;
+        }
+        
+        /*
+         * This is a simple layout, a text with a smaller subtext.
+         */
+		public SimpleTextRouteEntry(Context context, int title, CharSequence extra, int paddingLeft, OnClickListener onClickListener) {
+			super(onClickListener);
+			setupView(context, paddingLeft, onClickListener);
+            mTitle.setText(title);
+            mSubText.setText(extra);
+        }
+		
+		public SimpleTextRouteEntry(Context context, CharSequence title, CharSequence extra, int paddingLeft, OnClickListener onClickListener) {
+			super(onClickListener);
+			setupView(context, paddingLeft, onClickListener);
+            mTitle.setText(title);
+            mSubText.setText(extra);
         }
 	}
 	
@@ -588,7 +599,7 @@ class SelectRouteAdapter extends BaseAdapter
 		/*
 		 * This is a checkbox layout.
 		 */
-		public CheckboxRouteEntry(Context context, String title, boolean checked, int paddingLeft, OnClickListener onClickListener) {
+		public CheckboxRouteEntry(Context context, int title, boolean checked, int paddingLeft, OnClickListener onClickListener) {
 			super(onClickListener);
 			
         	LinearLayout linearLayout = new LinearLayout(context);

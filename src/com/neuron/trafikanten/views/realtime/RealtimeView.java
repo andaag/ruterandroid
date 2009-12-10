@@ -117,7 +117,15 @@ public class RealtimeView extends ListActivity {
          * Load instance state
          */
         if (savedInstanceState == null) {
-        	station = getIntent().getParcelableExtra(StationData.PARCELABLE);
+        	Bundle bundle = getIntent().getExtras();
+        	/*
+        	 * Most of the time we get a normal StationData.PARCELABLE, but shortcuts sends a simple bundle.
+        	 */
+        	if (bundle.containsKey(StationData.PARCELABLE)) {
+        		station = getIntent().getParcelableExtra(StationData.PARCELABLE);
+        	} else {
+        		station = StationData.readSimpleBundle(bundle);
+        	}
             load();
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
@@ -201,7 +209,8 @@ public class RealtimeView extends ListActivity {
     	
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
-    	
+
+		final TextView infoText = (TextView) findViewById(R.id.emptyText);
     	tmpDataUpdated = 0;
     	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override
@@ -228,7 +237,6 @@ public class RealtimeView extends ListActivity {
 				/*
 				 * Show info text if view is empty
 				 */
-				final TextView infoText = (TextView) findViewById(R.id.emptyText);
 				infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
 				if (tmpDataUpdated > 0) {
 					realtimeList.notifyDataSetChanged();

@@ -20,6 +20,7 @@ package com.neuron.trafikanten.dataSets;
 
 import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.UTMRef;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -60,6 +61,23 @@ public class StationData implements Parcelable {
 	public StationData(String stopName, int stationId) {
 		this.stopName = stopName;
 		this.stationId = stationId;
+	}
+	
+	/*
+	 * Functions for writing to a bundle, this writes a "simple" set without coordinates.
+	 */
+	private final static String BUNDLE_STOPNAME = "stationDataStopname";
+	private final static String BUNDLE_STATIONID = "stationDataStationid";
+	public void writeSimpleBundle(Bundle bundle) {
+		bundle.putString(BUNDLE_STOPNAME, stopName);
+		bundle.putInt(BUNDLE_STATIONID, stationId);
+	}
+	
+	/*
+	 * Load the bundle back into a station set
+	 */
+	public static StationData readSimpleBundle(Bundle bundle) {
+		return new StationData(bundle.getString(BUNDLE_STOPNAME), bundle.getInt(BUNDLE_STATIONID));
 	}
 	
 	/*

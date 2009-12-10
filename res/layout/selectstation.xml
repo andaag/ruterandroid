@@ -19,7 +19,7 @@
     	android:id="@+id/infoText"
     	android:layout_marginTop="50dip"
     	android:layout_below="@+id/search"
-    	android:layout_width="280dip"
+    	android:layout_width="300dip"
     	android:layout_height="wrap_content"
     	android:layout_centerVertical="true"
     	android:layout_centerHorizontal="true"

@@ -158,23 +158,23 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 			 * Change margin/change punish/proposals
 			 */
 			String changeMargin = new Integer(routeSearch.changeMargin).toString();
-			//String changePunish = new Integer(routeSearch.).toString();
-			String changePunish = "2"; // TODO
 			String proposals = new Integer(routeSearch.proposals).toString();
-			/*
-			 * WalkingFactor
-			 */
-			String walkingFactor = "100"; // TODO
 			
+			//For now using default values
+			String changePunish = "2";
+			String walkingFactor = "100";
+			
+			/*
+			 * Setup args to gettravelsadvanced and send soap request
+			 */
 			final String[] args = new String[]{Boolean.toString(travelAt), travelTimeString.toString(), 
 					soapFromStation.toString(), soapToStation.toString(),
 					changeMargin, changePunish, proposals, walkingFactor};
-			
 			final InputStream result = HelperFunctions.soapRequest(resources, R.raw.gettravelsadvanced, args, Trafikanten.API_URL);
+
 			/*
 			 * Setup SAXParser and XMLReader
 			 */
-			
 			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			final SAXParser parser = parserFactory.newSAXParser();
 			
