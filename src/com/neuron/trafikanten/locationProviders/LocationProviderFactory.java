@@ -24,7 +24,7 @@ import com.neuron.trafikanten.locationProviders.ILocationProvider.LocationProvid
 import com.neuron.trafikanten.locationProviders.skyhook.SkyhookLocation;
 
 public class LocationProviderFactory {
-	public static final int SETTING_LOCATION_ACCURACY = 5; // Needed accuracy for auto continue when waiting for a fix.	
+	public static final int SETTING_LOCATION_ACCURACY = 80; // Needed accuracy for auto continue when waiting for a fix.	
 	
 	/*
 	 * Get Search Provider
