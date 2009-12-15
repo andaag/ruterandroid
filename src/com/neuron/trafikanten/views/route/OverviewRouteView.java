@@ -21,6 +21,7 @@ package com.neuron.trafikanten.views.route;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -30,16 +31,21 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
@@ -49,6 +55,7 @@ import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
+import com.neuron.trafikanten.notification.NotificationDialog;
 
 /*
  * This class shows a route selector list, when multiple travelproposals are sent.
@@ -57,6 +64,17 @@ import com.neuron.trafikanten.dataSets.RouteSearchData;
 public class OverviewRouteView extends ListActivity {
 	private final static String TAG = "Trafikanten-OverviewRouteView";
 	private OverviewRouteAdapter routeList;
+	
+	/*
+	 * Context menu:
+	 */
+	private static final int NOTIFY_ID = Menu.FIRST;
+	
+	/*
+	 * Dialogs
+	 */
+	private static final int DIALOG_NOTIFICATION = 1;
+	private int selectedId = 0;
 	
 	/*
 	 * Wanted Route, this is used as a base for the search.
@@ -146,6 +164,68 @@ public class OverviewRouteView extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		DetailedRouteView.ShowRoute(this, routeList.getList(), position);
+	}
+	
+	/*
+	 * Dialog creation
+	 * @see android.app.Activity#onCreateDialog(int)
+	 */
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch(id) {
+		case DIALOG_NOTIFICATION:
+			/*
+			 * notify dialog
+			 */
+			return NotificationDialog.getDialog(this);
+		}
+		return super.onCreateDialog(id);
+	}
+
+	/*
+	 * Load data into dialog
+	 * @see android.app.Activity#onPrepareDialog(int, android.app.Dialog)
+	 */
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		// notifyRouteData here is the first route data.
+		final RouteData notifyRouteData = routeList.getItem(selectedId).travelStageList.get(0);
+		/*
+		 * Departure is what we base our notification on, 10 minuts before departure
+		 */
+		
+		final long notifyDeparture = notifyRouteData.departure;
+		final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
+		NotificationDialog.setRouteData(routeList.getList(), selectedId, notifyDeparture, notifyWith);
+		super.onPrepareDialog(id, dialog);
+	}
+    
+	/*
+	 * onCreate - Context menu is a popup from a longpress on a list item.
+	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+	 */
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
+	}
+    
+	/*
+	 * onSelected - Context menu is a popup from a longpress on a list item.
+	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+        final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+        selectedId = info.position;
+		
+		switch(item.getItemId()) {
+		case NOTIFY_ID:
+			showDialog(DIALOG_NOTIFICATION);
+			return true;
+		}
+		return super.onContextItemSelected(item);
 	}
 	
 	/*
@@ -240,7 +320,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 	@Override
 	public int getCount() {	return items.size(); }
 	@Override
-	public Object getItem(int pos) { return items.get(pos); }
+	public RouteProposal getItem(int pos) { return items.get(pos); }
 	@Override
 	public long getItemId(int pos) { return pos; }
 	public void addItem(RouteProposal item) { items.add(item); }

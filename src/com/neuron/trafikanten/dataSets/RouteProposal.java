@@ -26,7 +26,6 @@ import android.os.Parcelable;
 public class RouteProposal implements Parcelable {
 	public final static String PARCELABLE = "RouteProposal";
 	public ArrayList<RouteData> travelStageList = new ArrayList<RouteData>();
-
 	
 	public RouteProposal() { }
 	
