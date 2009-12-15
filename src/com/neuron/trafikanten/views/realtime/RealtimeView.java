@@ -198,7 +198,6 @@ public class RealtimeView extends ListActivity {
     /*
      * Load data, variable used to prevent updating data set on every iteration.
      */
-    private int tmpDataUpdated;
     private void load() {
         lastUpdate = System.currentTimeMillis();
     	setProgressBarIndeterminateVisibility(true);
@@ -211,15 +210,15 @@ public class RealtimeView extends ListActivity {
     	realtimeList.notifyDataSetChanged();
 
 		final TextView infoText = (TextView) findViewById(R.id.emptyText);
-    	tmpDataUpdated = 0;
+		realtimeList.itemsAddedWithoutNotify = 0;
     	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
 				realtimeList.addItem(realtimeData);
-				tmpDataUpdated++;
-				if (tmpDataUpdated > 5) {
+				realtimeList.itemsAddedWithoutNotify++;
+				if (realtimeList.itemsAddedWithoutNotify > 5) {
+					realtimeList.itemsAddedWithoutNotify = 0;
 					realtimeList.notifyDataSetChanged();
-					tmpDataUpdated = 0;
 				}
 			}
 
@@ -238,7 +237,8 @@ public class RealtimeView extends ListActivity {
 				 * Show info text if view is empty
 				 */
 				infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
-				if (tmpDataUpdated > 0) {
+				if (realtimeList.itemsAddedWithoutNotify > 0) {
+					realtimeList.itemsAddedWithoutNotify = 0;
 					realtimeList.notifyDataSetChanged();
 				}
 				realtimeProvider = null;
@@ -253,7 +253,7 @@ public class RealtimeView extends ListActivity {
      */
     private void loadDevi() {
     	setProgressBarIndeterminateVisibility(true);
-    	tmpDataUpdated = 0;
+    	realtimeList.itemsAddedWithoutNotify = 0;
     	deviItems = new ArrayList<DeviData>();
 
     	deviProvider = DataProviderFactory.getDeviProvider(new DeviProviderHandler() {
@@ -264,10 +264,10 @@ public class RealtimeView extends ListActivity {
 					 * Line specific data
 					 */
 					realtimeList.addDeviItem(deviData);
-					tmpDataUpdated++;
-					if (tmpDataUpdated > 5) {
+					realtimeList.itemsAddedWithoutNotify++;
+					if (realtimeList.itemsAddedWithoutNotify > 5) {
+						realtimeList.itemsAddedWithoutNotify = 0;
 						realtimeList.notifyDataSetChanged();
-						tmpDataUpdated = 0;
 					}
 				} else {
 					/*
@@ -289,7 +289,8 @@ public class RealtimeView extends ListActivity {
 				refreshDevi();
 				setProgressBarIndeterminateVisibility(false);
 				deviProvider = null;
-				if (tmpDataUpdated > 0) {
+				if (realtimeList.itemsAddedWithoutNotify > 0) {
+					realtimeList.itemsAddedWithoutNotify = 0;
 					realtimeList.notifyDataSetChanged();
 				}				
 			}
@@ -503,7 +504,6 @@ class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_ITEMSSIZE = "devilistsize";
 	private LayoutInflater inflater;
 	
-	
 	/*
 	 * Structure:
 	 * platform ->
@@ -512,6 +512,7 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	private ArrayList<RealtimePlatformList> items = new ArrayList<RealtimePlatformList>();
 	private int itemsSize = 0; // Cached for performance, this is len(items) + len(item[0]) + len(item[1]) ...
+	public int itemsAddedWithoutNotify = 0; // List of items added during load without a .notifyDataUpdated
 	
 	/*
 	 * Devi data:
@@ -665,7 +666,13 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Standard android.widget.Adapter items, self explanatory.
 	 */
 	@Override
-	public int getCount() { return itemsSize; }
+	public int getCount() {
+		if (itemsAddedWithoutNotify > 0) {
+			notifyDataSetChanged(); // This is incase getCount is called between our data set updates, which triggers IllegalStateException, listView does a simple if (mItemCount != mAdapter.getCount()) {
+			itemsAddedWithoutNotify = 0;
+		}
+		return itemsSize; 
+	}
 	@Override
 	public long getItemId(int pos) { return pos; }
 	@Override
