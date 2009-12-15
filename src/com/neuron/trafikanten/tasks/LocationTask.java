@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -51,17 +52,33 @@ public class LocationTask implements GenericTask {
 	private double longitude;
 	
 	/*
-	 * Dialog
+	 * Dialog related
 	 */
 	private Dialog dialog;
+	private Button continueButton;
+    private Handler buttonRefresher = new Handler();
+    private long showContinueAfterMs = 20000;
+	
 	
     public LocationTask(Activity activity, ReturnCoordinatesHandler handler)
     {
             this.activity = activity;
             this.handler = handler;
             showDialog();
-
     }
+    
+    private Runnable updateButton = new Runnable() {
+		@Override
+		public void run() {
+			showContinueAfterMs = showContinueAfterMs - 5000;
+			if (showContinueAfterMs <= 0) {
+				continueButton.setVisibility(View.VISIBLE);
+			} else {
+				buttonRefresher.postDelayed(updateButton, 5000);
+				continueButton.setVisibility(View.GONE);
+			}
+		}
+    };
     
     private void showDialog() {
 		dialog = new Dialog(activity);
@@ -73,7 +90,7 @@ public class LocationTask implements GenericTask {
 		/*
 		 * Setup continue button
 		 */
-		Button continueButton = (Button) dialog.findViewById(R.id.continueButton);
+		continueButton = (Button) dialog.findViewById(R.id.continueButton);
 		continueButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -81,6 +98,8 @@ public class LocationTask implements GenericTask {
 				dialog.dismiss();
 			}
 		});
+		updateButton.run();
+		
 		locationProvider = LocationProviderFactory.getLocationProvider(activity, new LocationProviderHandler() {
 
 			@Override
