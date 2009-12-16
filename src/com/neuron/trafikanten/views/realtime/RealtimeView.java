@@ -668,8 +668,8 @@ class RealtimeAdapter extends BaseAdapter {
 	@Override
 	public int getCount() {
 		if (itemsAddedWithoutNotify > 0) {
-			notifyDataSetChanged(); // This is incase getCount is called between our data set updates, which triggers IllegalStateException, listView does a simple if (mItemCount != mAdapter.getCount()) {
 			itemsAddedWithoutNotify = 0;
+			notifyDataSetChanged(); // This is incase getCount is called between our data set updates, which triggers IllegalStateException, listView does a simple if (mItemCount != mAdapter.getCount()) {
 		}
 		return itemsSize; 
 	}
