@@ -92,6 +92,7 @@ public class RealtimeView extends ListActivity {
 	 */
 	private TextView deviText;
 	private ImageView deviIcon;
+	private TextView infoText;
 	
 	/*
 	 * Data providers
@@ -112,6 +113,7 @@ public class RealtimeView extends ListActivity {
         realtimeList = new RealtimeAdapter(this);
         deviText = (TextView) findViewById(R.id.deviText);
         deviIcon = (ImageView) findViewById(R.id.deviIcon);
+		infoText = (TextView) findViewById(R.id.emptyText);
         
         /*
          * Load instance state
@@ -134,6 +136,7 @@ public class RealtimeView extends ListActivity {
         	
         	realtimeList.loadInstanceState(savedInstanceState);
         	realtimeList.notifyDataSetChanged();
+        	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
         }
         
         /*
@@ -209,7 +212,6 @@ public class RealtimeView extends ListActivity {
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
 
-		final TextView infoText = (TextView) findViewById(R.id.emptyText);
 		realtimeList.itemsAddedWithoutNotify = 0;
     	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override

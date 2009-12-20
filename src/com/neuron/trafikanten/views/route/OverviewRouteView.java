@@ -82,6 +82,11 @@ public class OverviewRouteView extends ListActivity {
 	private RouteSearchData routeSearch;
 	private IRouteProvider routeProvider;
 	
+	/*
+	 * UI
+	 */
+	private TextView infoText;
+	
 	public static void ShowRoute(Activity activity, RouteSearchData routeSearch) {
 		Intent intent = new Intent(activity, OverviewRouteView.class);
 		intent.putExtra(RouteSearchData.PARCELABLE, routeSearch);
@@ -97,6 +102,7 @@ public class OverviewRouteView extends ListActivity {
 		 */
 		setContentView(R.layout.route_overview);
 		routeList = new OverviewRouteAdapter(this);
+		infoText = (TextView) findViewById(R.id.emptyText);
 
 		/*
 		 * Load instance state
@@ -108,7 +114,7 @@ public class OverviewRouteView extends ListActivity {
 			routeSearch = savedInstanceState.getParcelable(RouteSearchData.PARCELABLE);
 			final ArrayList<RouteProposal> list = savedInstanceState.getParcelableArrayList(OverviewRouteAdapter.KEY_ROUTELIST);
 			routeList.setList(list);
-			setListAdapter(routeList);
+			infoText.setVisibility(routeList.getCount() > 0 ? View.GONE : View.VISIBLE);
 		}
 		registerForContextMenu(getListView());
 		setListAdapter(routeList);
@@ -124,7 +130,6 @@ public class OverviewRouteView extends ListActivity {
     	
     	routeList.getList().clear();
     	routeList.notifyDataSetChanged();
-		final TextView infoText = (TextView) findViewById(R.id.emptyText);
     	
     	routeProvider = DataProviderFactory.getRouteProvider(getResources(), new RouteProviderHandler() {
 			@Override

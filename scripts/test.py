@@ -64,7 +64,7 @@ def sendAdvancedRoute():
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
     <GetTravelsAdvanced xmlns="http://www.trafikanten.no/">
-       <time>2009-11-27T18:38:00</time>
+       <time>2009-12-30T18:38:00</time>
       <from>
         <Stop>
             <ID>3012110</ID>
