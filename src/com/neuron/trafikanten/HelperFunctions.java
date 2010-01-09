@@ -141,7 +141,7 @@ public class HelperFunctions {
         HttpPost httppost = new HttpPost(url);
         httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
         httppost.setEntity(new StringEntity(soap));
-    	Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
+    	//Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
     	
     	return executeHttpRequest(httppost);
 	}
