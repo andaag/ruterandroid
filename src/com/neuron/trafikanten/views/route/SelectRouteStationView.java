@@ -102,6 +102,7 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	
 	private void refreshMultiSelect() {
 		int layout = multiSelect == MULTISELECT_ENABLED ? R.layout.selectstation_list_multiselect : R.layout.selectstation_list;
+		selectedStations.clear();
 		setAdapterLayout(layout);
 	}
 	
