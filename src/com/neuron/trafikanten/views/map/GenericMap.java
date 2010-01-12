@@ -150,8 +150,6 @@ public class GenericMap extends MapActivity {
 		/*
          * Add MyLocationOverlay so we can see where we are.
          */
-		// http://community.developer.motorola.com/t5/Android-App-Development-for/Google-Maps/m-p/3422;jsessionid=75FB01FDA4F23318196FEC79A1ADFA11
-		// http://groups.google.com/group/android-developers/browse_thread/thread/43615742f462bbf1/8918ddfc92808c42
 		locationOverlay = new FixedMyLocationOverlay(this, mapView);
 
 		boolean animateToGpsPosition = true;

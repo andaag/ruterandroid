@@ -12,6 +12,8 @@
 	   android:apiKey="0C4n0QlD7VKWny63h-bygLe8DF4bhWdnxCYYhNA"
 	   />
 	   
+	   <!--  DEBUG KEY : 0C4n0QlD7VKWDhy4m7uWO5K-1k6rjEw0CJXlYgQ" -->
+	   
 	   
 	<include android:id="@+id/mapoverlay" layout="@layout/map_overlay" />
 </RelativeLayout>
