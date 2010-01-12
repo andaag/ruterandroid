@@ -36,6 +36,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.FixedMyLocationOverlay;
 import com.google.android.TransparentPanel;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -149,7 +150,10 @@ public class GenericMap extends MapActivity {
 		/*
          * Add MyLocationOverlay so we can see where we are.
          */
-		locationOverlay = new MyLocationOverlay(this, mapView);
+		// http://community.developer.motorola.com/t5/Android-App-Development-for/Google-Maps/m-p/3422;jsessionid=75FB01FDA4F23318196FEC79A1ADFA11
+		// http://groups.google.com/group/android-developers/browse_thread/thread/43615742f462bbf1/8918ddfc92808c42
+		locationOverlay = new FixedMyLocationOverlay(this, mapView);
+
 		boolean animateToGpsPosition = true;
         if (animateToGpsPosition) {
         	locationOverlay.runOnFirstFix(new Runnable() {
