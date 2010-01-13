@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -114,7 +115,7 @@ public class RealtimeView extends ListActivity {
         deviText = (TextView) findViewById(R.id.deviText);
         deviIcon = (ImageView) findViewById(R.id.deviIcon);
 		infoText = (TextView) findViewById(R.id.emptyText);
-        
+        		
         /*
          * Load instance state
          */
@@ -505,6 +506,7 @@ class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_STATIONDEVILIST = "stationdevilist";
 	public static final String KEY_ITEMSSIZE = "devilistsize";
 	private LayoutInflater inflater;
+	private Typeface departuresTypeface;
 	
 	/*
 	 * Structure:
@@ -531,6 +533,7 @@ class RealtimeAdapter extends BaseAdapter {
 	
 	public RealtimeAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
+		departuresTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/typewriter.ttf");
 		this.context = context;
 	}
 	
@@ -715,11 +718,15 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.platform = (TextView) convertView.findViewById(R.id.platform);
 			holder.line = (TextView) convertView.findViewById(R.id.line);
 			holder.time = (TextView) convertView.findViewById(R.id.time);
-			holder.nextDepartures = (TextView) convertView.findViewById(R.id.nextDepartures);
+			holder.departures = (TextView) convertView.findViewById(R.id.departures);
+			holder.departures.setTypeface(departuresTypeface);
 			holder.deviIcon = (ImageView) convertView.findViewById(R.id.deviIcon);
 			
 			holder.stopVisitIcon = (ImageView) convertView.findViewById(R.id.stopVisitIcon);
 			holder.stopVisitNote = (TextView) convertView.findViewById(R.id.stopVisitNote);
+			
+			//Setup font
+ 
 			
 			convertView.setTag(holder);
 		} else {

@@ -9,92 +9,105 @@
 	
 	<TextView
 		android:id="@+id/platform"
-		style="@style/PlatformHeader"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:paddingLeft="40dip"/>
+		android:paddingLeft="40dip"
+		
+		android:text="1"
+		/>
 	
 	<TextView
 		android:id="@+id/line"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceMedium"
 		android:layout_marginLeft="2dip"
 		android:layout_below="@+id/platform"
-		/>
 		
-	<TextView
-		android:id="@+id/time"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:layout_below="@+id/platform"
-		android:textColor="#fff000"
+		android:background="#ffffff"
+		android:textColor="#3c65bf"
+		android:padding="2dip"
+		android:textStyle="bold"
+		android:typeface="sans"
+		android:textSize="20dip"
 		
-		android:layout_marginRight="6dip"
-		android:layout_alignParentRight="true"
+		android:text="301"
 		/>
 		
 	<ImageView
-		android:id="@+id/deviIcon"
+		android:id="@+id/icon"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:src="@drawable/tango_dialog_warning"
-		android:layout_toLeftOf="@+id/time"
-		android:layout_alignTop="@+id/time"
-		/> 
+		android:layout_below="@+id/platform"
+
+		android:layout_marginRight="6dip"
+		android:layout_alignParentRight="true"
+		
+		android:src="@drawable/icon_boat"
+		
+		/>
 		
 	<TextView
 		android:id="@+id/destination"
 		android:layout_width="wrap_content"
-		android:layout_height="23dip"
-		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_height="wrap_content"
 		
-		android:layout_marginLeft="40dip"
-		android:layout_toLeftOf="@+id/time"
+		android:textColor="#ffffff"
+		android:textStyle="bold"
+		android:typeface="sans"
+		android:textSize="20dip"
+		
+		android:paddingLeft="6dip"
+		android:paddingTop="2dip"
+		android:paddingRight="2dip"
+		android:paddingBottom="2dip"
+		
+
+		
+		
+		
+		android:layout_toRightOf="@+id/line"
+		android:layout_toLeftOf="@+id/icon"
 		android:layout_below="@+id/platform"
-		android:layout_alignParentLeft="true"
 		android:ellipsize="marquee"
 		android:singleLine="true"
+		
+		android:text="Varingskollen [tog]"
 		/>
 			
-    <TextView android:id="@+id/nextDepartures"
+    <TextView android:id="@+id/departures"
         android:layout_width="fill_parent"
         android:layout_height="17dip"
 		android:layout_below="@+id/destination"
 				
-		android:paddingLeft="50dip"
-		android:paddingRight="6dip"
+				
+		android:textColor="#aaaa00"
+		android:background="@drawable/shortcut_sanntidsskinn"
+		android:paddingLeft="1dip"
+		android:paddingTop="1dip"
+		android:paddingRight="1dip"
+		android:paddingBottom="2dip"
+		android:textSize="20dip"
+				
 				
 		android:ellipsize="marquee"
 		android:singleLine="true"
 		
-		android:textSize="13dip"
-    />
+		android:text="9m 13:43 14:53"
+		
+    	/>
     
     
-	<ImageView
-		android:id="@+id/stopVisitIcon"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:src="@drawable/tango_emblem_important"
-		android:layout_below="@+id/nextDepartures"
+    <!-- departureInfo contains stopVisitNote and devi -->
+	<LinearLayout android:id="@+id/departureInfo" 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:layout_below="@+id/destination"
 		android:paddingLeft="50dip"
-		/> 
-		
-	<TextView
-		android:id="@+id/stopVisitNote"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		
+		android:paddingRight="6dip"
 		android:ellipsize="marquee"
 		android:singleLine="true"
-		
-		android:layout_marginLeft="3dip"
-		android:layout_marginTop="1dip"
-		android:layout_toRightOf="@+id/stopVisitIcon"
-		android:layout_alignTop="@+id/stopVisitIcon"
+
 		/>
 
 </RelativeLayout>
