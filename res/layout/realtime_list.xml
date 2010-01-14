@@ -12,7 +12,9 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:paddingLeft="40dip"
+		android:gravity="center"
+		android:textColor="#ffffff"
+		android:background="@drawable/platformskin"
 		
 		android:text="1"
 		/>
