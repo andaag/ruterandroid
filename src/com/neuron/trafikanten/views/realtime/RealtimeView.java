@@ -717,7 +717,10 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.departures = (TextView) convertView.findViewById(R.id.departures);
 			holder.departures.setTypeface(departuresTypeface);
 			holder.departures.setMovementMethod(scrollingMovementMethod);
+			
+			//TODO : move these to xml file:
 			holder.departures.setHorizontallyScrolling(true);
+			
 			holder.departureInfo = (TableRow) convertView.findViewById(R.id.departureInfo);
 			
 			convertView.setTag(holder);

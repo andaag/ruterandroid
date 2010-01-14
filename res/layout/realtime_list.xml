@@ -83,6 +83,8 @@
 		android:paddingRight="2dip"
 		android:paddingBottom="1dip"
 		android:textSize="15dip"
+		android:ellipsize="none"
+		android:layout_marginRight="6dip"
 				
 		android:singleLine="true"
 		
