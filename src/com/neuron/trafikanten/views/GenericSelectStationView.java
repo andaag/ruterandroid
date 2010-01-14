@@ -618,7 +618,8 @@ class StationListAdapter extends BaseAdapter {
 			holder.range.setText("" + station.walkingDistance + "m");
 			holder.range.setVisibility(View.VISIBLE);
 		} else {
-			holder.range.setVisibility(View.GONE);
+			holder.range.setText("");
+			holder.range.setVisibility(View.INVISIBLE);
 		}
 		
 		/*
