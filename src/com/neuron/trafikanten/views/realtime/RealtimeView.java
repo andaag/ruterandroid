@@ -41,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -91,8 +92,8 @@ public class RealtimeView extends ListActivity {
 	/*
 	 * UI
 	 */
-	private TextView deviText;
-	private ImageView deviIcon;
+	/*private TextView deviText;
+	private ImageView deviIcon;*/
 	private TextView infoText;
 	
 	/*
@@ -112,8 +113,9 @@ public class RealtimeView extends ListActivity {
          */
         setContentView(R.layout.realtime);
         realtimeList = new RealtimeAdapter(this);
-        deviText = (TextView) findViewById(R.id.deviText);
-        deviIcon = (ImageView) findViewById(R.id.deviIcon);
+        /*deviText = (TextView) findViewById(R.id.deviText);
+        deviIcon = (ImageView) findViewById(R.id.deviIcon);*/
+        Toast.makeText(this, "TODO : deviText for stations", Toast.LENGTH_SHORT).show();
 		infoText = (TextView) findViewById(R.id.emptyText);
         		
         /*
@@ -143,13 +145,12 @@ public class RealtimeView extends ListActivity {
         /*
          * Setup onclick handler for devi text
          */
-        deviText.setOnClickListener(new OnClickListener() {
+        /*deviText.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				new SelectDeviTask(RealtimeView.this, deviItems);												
 			}
-        	
-        });
+        });*/
 
         registerForContextMenu(getListView());
         setListAdapter(realtimeList);
@@ -178,13 +179,13 @@ public class RealtimeView extends ListActivity {
     		/*
     		 * Nothing to display
     		 */
-    		deviText.setVisibility(View.GONE);
-    		deviIcon.setVisibility(View.GONE);
+    		/*deviText.setVisibility(View.GONE);
+    		deviIcon.setVisibility(View.GONE);*/
     	} else {
     		/*
     		 * Render devi information
     		 */
-    		deviText.setVisibility(View.VISIBLE);
+    		/*deviText.setVisibility(View.VISIBLE);
     		deviIcon.setVisibility(View.VISIBLE);
     		
     		String text = "";
@@ -195,7 +196,7 @@ public class RealtimeView extends ListActivity {
     				text = text + "\n" + deviData.title;
     			}
     		}
-    		deviText.setText(text);   		
+    		deviText.setText(text);*/   		
     	}
     }
     
@@ -533,6 +534,7 @@ class RealtimeAdapter extends BaseAdapter {
 	
 	public RealtimeAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
+		Toast.makeText(context, "TODO : arrivalList lists future transports ONLY", Toast.LENGTH_SHORT).show();
 		departuresTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/typewriter.ttf");
 		this.context = context;
 	}
@@ -714,19 +716,12 @@ class RealtimeAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.realtime_list, null);
 			
 			holder = new ViewHolder();
-			holder.destination = (TextView) convertView.findViewById(R.id.destination);
 			holder.platform = (TextView) convertView.findViewById(R.id.platform);
 			holder.line = (TextView) convertView.findViewById(R.id.line);
-			holder.time = (TextView) convertView.findViewById(R.id.time);
+			holder.destination = (TextView) convertView.findViewById(R.id.destination);
 			holder.departures = (TextView) convertView.findViewById(R.id.departures);
 			holder.departures.setTypeface(departuresTypeface);
-			holder.deviIcon = (ImageView) convertView.findViewById(R.id.deviIcon);
-			
-			holder.stopVisitIcon = (ImageView) convertView.findViewById(R.id.stopVisitIcon);
-			holder.stopVisitNote = (TextView) convertView.findViewById(R.id.stopVisitNote);
-			
-			//Setup font
- 
+			holder.departureInfo = (TableRow) convertView.findViewById(R.id.departureInfo);
 			
 			convertView.setTag(holder);
 		} else {
@@ -751,11 +746,11 @@ class RealtimeAdapter extends BaseAdapter {
 		/*
 		 * Render the data
 		 */
-		if (!data.realtime) {
+		/*if (!data.realtime) {
 			holder.time.setText("" + context.getText(R.string.ca) + " " + HelperFunctions.renderTime(context, data.expectedDeparture));
 		} else {
 			holder.time.setText(HelperFunctions.renderTime(context, data.expectedDeparture));
-		}
+		}*/
 		
 		if (renderPlatform && data.departurePlatform != null) {
 			holder.platform.setText("Platform " + data.departurePlatform);
@@ -767,33 +762,34 @@ class RealtimeAdapter extends BaseAdapter {
 		/*
 		 * Render list of coming departures
 		 */
+		
 		if (data.arrivalList.length() > 0) {
-			holder.nextDepartures.setText(data.arrivalList);
-			holder.nextDepartures.setVisibility(View.VISIBLE);
+			holder.departures.setText(data.arrivalList);
+			holder.departures.setVisibility(View.VISIBLE);
 		} else {
-			holder.nextDepartures.setVisibility(View.GONE);
+			holder.departures.setVisibility(View.GONE);
 		}
 		
 		/*
 		 * Show devi icon if appliable
 		 */
-		if (data.devi.size() > 0) {
+		/*if (data.devi.size() > 0) {
 			holder.deviIcon.setVisibility(View.VISIBLE);
 		} else {
 			holder.deviIcon.setVisibility(View.GONE);
-		}
+		}*/
 		
 		/*
 		 * And render stopVisitNote
 		 */
-		if (data.stopVisitNote != null) {
+		/*if (data.stopVisitNote != null) {
 			holder.stopVisitIcon.setVisibility(View.VISIBLE);
 			holder.stopVisitNote.setVisibility(View.VISIBLE);
 			holder.stopVisitNote.setText(data.stopVisitNote);
 		} else {
 			holder.stopVisitIcon.setVisibility(View.GONE);
 			holder.stopVisitNote.setVisibility(View.GONE);
-		}
+		}*/
 		
 		return convertView;
 	}
@@ -802,15 +798,12 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Class for caching the view.
 	 */
 	static class ViewHolder {
-		TextView line;
 		TextView platform;
+		
+		TextView line;
 		TextView destination;
-		TextView time;
-		TextView nextDepartures;
+		TextView departures;
 		
-		ImageView deviIcon;
-		
-		ImageView stopVisitIcon;
-		TextView stopVisitNote;
+		TableRow departureInfo;
 	}
 };

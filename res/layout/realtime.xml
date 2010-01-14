@@ -24,23 +24,4 @@
     	android:text="@string/realtimeEmpty"
     	android:visibility="invisible" />
     	
-	<ImageView
-		android:id="@+id/deviIcon"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:src="@drawable/tango_dialog_warning"
-		android:layout_alignParentBottom="true"
-		/> 
-    
-    <TextView
-    	android:id="@+id/deviText"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_toRightOf="@+id/deviIcon"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:textColor="#fff000"
-		android:layout_alignParentBottom="true"
-    	/>
-    	
-    
 </RelativeLayout>

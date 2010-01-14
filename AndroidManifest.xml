@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.neuron.trafikanten"
       android:versionName="@string/app_version" android:versionCode="12">
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/trafikanten">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".Trafikanten"
                   android:label="@string/app_name">
             <intent-filter>

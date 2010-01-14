@@ -548,7 +548,8 @@ class SelectRouteAdapter extends BaseAdapter
 		
 		public SeperatorRouteEntry(Context context, int text) {
 			super(null);
-			mText = new TextView(context, null, R.style.PlatformHeader);
+			//mText = new TextView(context, null, R.style.PlatformHeader);
+			mText = new TextView(context, null);
 			mText.setText(text);
 			mText.setGravity(Gravity.CENTER);
 			mView = mText;
