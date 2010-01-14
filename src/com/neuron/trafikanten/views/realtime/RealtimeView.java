@@ -183,7 +183,8 @@ public class RealtimeView extends ListActivity {
 				
 				deviText.setBackgroundResource(R.drawable.realtime_station_devi);
 				deviText.setTextColor(Color.BLACK);
-				deviText.setPadding(2, 1, 8, 1);
+				deviText.setPadding(2, 1, 26, 1);
+				deviText.setSingleLine();
 				
 				devi.setOnClickListener(new OnClickListener() {
 					@Override
@@ -767,7 +768,8 @@ class RealtimeAdapter extends BaseAdapter {
 				
 				deviText.setBackgroundResource(R.drawable.shortcut_sanntidsskinn);
 				deviText.setTextColor(Color.rgb(250, 244, 0));
-				deviText.setPadding(2, 1, 8, 1);
+				deviText.setPadding(2, 1, 26, 1);
+				deviText.setSingleLine();
 				
 				holder.departureInfo.addView(deviText);
 			}
@@ -781,7 +783,8 @@ class RealtimeAdapter extends BaseAdapter {
 				
 				deviText.setBackgroundResource(R.drawable.shortcut_sanntidsskinn);
 				deviText.setTextColor(Color.rgb(250, 244, 0));
-				deviText.setPadding(2, 1, 8, 1);
+				deviText.setPadding(2, 1, 26, 1);
+				deviText.setSingleLine();
 				
 				holder.departureInfo.addView(deviText);
 			}
