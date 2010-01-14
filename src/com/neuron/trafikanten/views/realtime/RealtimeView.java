@@ -27,6 +27,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -505,6 +506,7 @@ class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_STATIONDEVILIST = "stationdevilist";
 	public static final String KEY_ITEMSSIZE = "devilistsize";
 	private LayoutInflater inflater;
+	private static final ScrollingMovementMethod scrollingMovementMethod = new ScrollingMovementMethod();
 	private Typeface departuresTypeface;
 	
 	/*
@@ -714,6 +716,8 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.destination = (TextView) convertView.findViewById(R.id.destination);
 			holder.departures = (TextView) convertView.findViewById(R.id.departures);
 			holder.departures.setTypeface(departuresTypeface);
+			holder.departures.setMovementMethod(scrollingMovementMethod);
+			holder.departures.setHorizontallyScrolling(true);
 			holder.departureInfo = (TableRow) convertView.findViewById(R.id.departureInfo);
 			
 			convertView.setTag(holder);

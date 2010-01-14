@@ -78,14 +78,12 @@
 				
 		android:textColor="#faf400"
 		android:background="@drawable/shortcut_sanntidsskinn"
-		android:paddingLeft="1dip"
+		android:paddingLeft="2dip"
 		android:paddingTop="1dip"
-		android:paddingRight="1dip"
+		android:paddingRight="2dip"
 		android:paddingBottom="1dip"
 		android:textSize="15dip"
 				
-				
-		android:ellipsize="marquee"
 		android:singleLine="true"
 		
 		android:text="9m 13:43 14:53"
