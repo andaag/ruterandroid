@@ -116,7 +116,6 @@ public class RealtimeView extends ListActivity {
         setContentView(R.layout.realtime);
         realtimeList = new RealtimeAdapter(this);
         devi = (LinearLayout) findViewById(R.id.devi);
-        Toast.makeText(this, "TODO : deviText for stations", Toast.LENGTH_SHORT).show();
 		infoText = (TextView) findViewById(R.id.emptyText);
         		
         /*
