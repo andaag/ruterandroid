@@ -36,10 +36,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -529,12 +527,10 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	private boolean renderPlatform = false;
 	
-	
 	private Context context;
 	
 	public RealtimeAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
-		Toast.makeText(context, "TODO : arrivalList lists future transports ONLY", Toast.LENGTH_SHORT).show();
 		departuresTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/typewriter.ttf");
 		this.context = context;
 	}
@@ -653,18 +649,15 @@ class RealtimeAdapter extends BaseAdapter {
 				/*
 				 * Data already exists, we add it to the arrival list and return
 				 */
-				if (d.arrivalList.length() == 0) {
-					d.arrivalList.append(HelperFunctions.renderTime(context, item.expectedDeparture));
-				} else {
-					d.arrivalList.append(",  ");
-					d.arrivalList.append(HelperFunctions.renderTime(context, item.expectedDeparture));
-				}
+				d.departures.append(",  ");
+				d.departures.append(HelperFunctions.renderTime(context, item.expectedDeparture));
 				return;
 			}
 		}
 		/*
 		 * Data does not exist, add it
 		 */
+		item.departures.append(HelperFunctions.renderTime(context, item.expectedDeparture));
 		realtimePlatformList.add(item);
 		itemsSize++;
 	}
@@ -763,12 +756,7 @@ class RealtimeAdapter extends BaseAdapter {
 		 * Render list of coming departures
 		 */
 		
-		if (data.arrivalList.length() > 0) {
-			holder.departures.setText(data.arrivalList);
-			holder.departures.setVisibility(View.VISIBLE);
-		} else {
-			holder.departures.setVisibility(View.GONE);
-		}
+		holder.departures.setText(data.departures);
 		
 		/*
 		 * Show devi icon if appliable

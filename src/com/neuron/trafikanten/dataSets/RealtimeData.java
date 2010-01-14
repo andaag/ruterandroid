@@ -41,14 +41,14 @@ public class RealtimeData implements Parcelable {
 	/*
 	 * List of coming arrivals, this is used for the list under current station in RealtimeView
 	 */
-	public StringBuffer arrivalList;
+	public StringBuffer departures;
 	/*
 	 * List of devi data, this is a int list, it links to RealtimeView.RealtimeAdapter.deviItems
 	 */
 	public ArrayList<Integer> devi;
 	
 	public RealtimeData() {
-		arrivalList = new StringBuffer();
+		departures = new StringBuffer();
 		devi = new ArrayList<Integer>();
 	}
 	
@@ -74,7 +74,7 @@ public class RealtimeData implements Parcelable {
 		aimedDeparture = in.readLong();
 		expectedDeparture = in.readLong();
 		
-		arrivalList = new StringBuffer(in.readString());
+		departures = new StringBuffer(in.readString());
 		
 		devi = new ArrayList<Integer>();
 		in.readList(devi, Integer.class.getClassLoader());
@@ -98,7 +98,7 @@ public class RealtimeData implements Parcelable {
 		out.writeLong(aimedDeparture);
 		out.writeLong(expectedDeparture);
 		
-		out.writeString(arrivalList.toString());
+		out.writeString(departures.toString());
 		out.writeList(devi);
 	}
 	
