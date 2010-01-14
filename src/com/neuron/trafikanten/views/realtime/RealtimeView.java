@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -39,8 +40,8 @@ import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -651,7 +652,7 @@ class RealtimeAdapter extends BaseAdapter {
 				/*
 				 * Data already exists, we add it to the arrival list and return
 				 */
-				d.departures.append(",  ");
+				d.departures.append(", ");
 				d.departures.append(HelperFunctions.renderTime(context, item.expectedDeparture));
 				return;
 			}
@@ -721,7 +722,7 @@ class RealtimeAdapter extends BaseAdapter {
 			//TODO : move these to xml file:
 			holder.departures.setHorizontallyScrolling(true);
 			
-			holder.departureInfo = (TableRow) convertView.findViewById(R.id.departureInfo);
+			holder.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
 			
 			convertView.setTag(holder);
 		} else {
@@ -735,6 +736,7 @@ class RealtimeAdapter extends BaseAdapter {
 		 * Render data to view.
 		 */
 		final RealtimeData data = getItem(pos);
+		holder.departures.setText(data.departures);
 		if (data.destination.equals(data.line)) {
 			holder.destination.setText("");
 			holder.line.setText(data.line);			
@@ -742,15 +744,6 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.destination.setText(data.destination);
 			holder.line.setText(data.line);
 		}
-		
-		/*
-		 * Render the data
-		 */
-		/*if (!data.realtime) {
-			holder.time.setText("" + context.getText(R.string.ca) + " " + HelperFunctions.renderTime(context, data.expectedDeparture));
-		} else {
-			holder.time.setText(HelperFunctions.renderTime(context, data.expectedDeparture));
-		}*/
 		
 		if (renderPlatform && data.departurePlatform != null) {
 			holder.platform.setText("Platform " + data.departurePlatform);
@@ -760,31 +753,42 @@ class RealtimeAdapter extends BaseAdapter {
 		}
 		
 		/*
-		 * Render list of coming departures
+		 * Setup devi
 		 */
-		
-		holder.departures.setText(data.departures);
-		
-		/*
-		 * Show devi icon if appliable
-		 */
-		/*if (data.devi.size() > 0) {
-			holder.deviIcon.setVisibility(View.VISIBLE);
+		if (data.devi.size() > 0 || data.stopVisitNote != null) {
+			holder.departureInfo.setVisibility(View.VISIBLE);
+			holder.departureInfo.removeAllViews();
+			
+			if (data.stopVisitNote != null) {
+				/*
+				 * Add stopvisitnote
+				 */
+				TextView deviText = new TextView(context);
+				deviText.setText(data.stopVisitNote);
+				
+				deviText.setBackgroundResource(R.drawable.shortcut_sanntidsskinn);
+				deviText.setTextColor(Color.rgb(250, 244, 0));
+				deviText.setPadding(2, 1, 8, 1);
+				
+				holder.departureInfo.addView(deviText);
+			}
+			for (Integer i : data.devi) {
+				/*
+				 * Add all devi items.
+				 */
+				final DeviData devi = deviItems.get(i);
+				TextView deviText = new TextView(context);
+				deviText.setText(devi.title);
+				
+				deviText.setBackgroundResource(R.drawable.shortcut_sanntidsskinn);
+				deviText.setTextColor(Color.rgb(250, 244, 0));
+				deviText.setPadding(2, 1, 8, 1);
+				
+				holder.departureInfo.addView(deviText);
+			}
 		} else {
-			holder.deviIcon.setVisibility(View.GONE);
-		}*/
-		
-		/*
-		 * And render stopVisitNote
-		 */
-		/*if (data.stopVisitNote != null) {
-			holder.stopVisitIcon.setVisibility(View.VISIBLE);
-			holder.stopVisitNote.setVisibility(View.VISIBLE);
-			holder.stopVisitNote.setText(data.stopVisitNote);
-		} else {
-			holder.stopVisitIcon.setVisibility(View.GONE);
-			holder.stopVisitNote.setVisibility(View.GONE);
-		}*/
+			holder.departureInfo.setVisibility(View.GONE);
+		}
 		
 		return convertView;
 	}
@@ -799,6 +803,6 @@ class RealtimeAdapter extends BaseAdapter {
 		TextView destination;
 		TextView departures;
 		
-		TableRow departureInfo;
+		LinearLayout departureInfo;
 	}
 };

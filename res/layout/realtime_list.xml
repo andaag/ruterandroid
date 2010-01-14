@@ -80,11 +80,10 @@
 		android:background="@drawable/shortcut_sanntidsskinn"
 		android:paddingLeft="2dip"
 		android:paddingTop="1dip"
-		android:paddingRight="2dip"
+		android:paddingRight="8dip"
 		android:paddingBottom="1dip"
 		android:textSize="15dip"
 		android:ellipsize="none"
-		android:layout_marginRight="6dip"
 				
 		android:singleLine="true"
 		
@@ -93,7 +92,7 @@
     	/>
     
     <!-- departureInfo contains stopVisitNote and devi -->
-    <TableRow
+    <LinearLayout
     	android:id="@+id/departureInfo"
     />
 
