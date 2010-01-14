@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -38,6 +40,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
@@ -92,8 +95,7 @@ public class RealtimeView extends ListActivity {
 	/*
 	 * UI
 	 */
-	/*private TextView deviText;
-	private ImageView deviIcon;*/
+	private LinearLayout devi;
 	private TextView infoText;
 	
 	/*
@@ -113,8 +115,7 @@ public class RealtimeView extends ListActivity {
          */
         setContentView(R.layout.realtime);
         realtimeList = new RealtimeAdapter(this);
-        /*deviText = (TextView) findViewById(R.id.deviText);
-        deviIcon = (ImageView) findViewById(R.id.deviIcon);*/
+        devi = (LinearLayout) findViewById(R.id.devi);
         Toast.makeText(this, "TODO : deviText for stations", Toast.LENGTH_SHORT).show();
 		infoText = (TextView) findViewById(R.id.emptyText);
         		
@@ -142,16 +143,6 @@ public class RealtimeView extends ListActivity {
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
         }
         
-        /*
-         * Setup onclick handler for devi text
-         */
-        /*deviText.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new SelectDeviTask(RealtimeView.this, deviItems);												
-			}
-        });*/
-
         registerForContextMenu(getListView());
         setListAdapter(realtimeList);
         refreshTitle();
@@ -179,24 +170,33 @@ public class RealtimeView extends ListActivity {
     		/*
     		 * Nothing to display
     		 */
-    		/*deviText.setVisibility(View.GONE);
-    		deviIcon.setVisibility(View.GONE);*/
+    		devi.setVisibility(View.GONE);
     	} else {
     		/*
     		 * Render devi information
     		 */
-    		/*deviText.setVisibility(View.VISIBLE);
-    		deviIcon.setVisibility(View.VISIBLE);
+    		devi.setVisibility(View.VISIBLE);
+    		devi.removeAllViews();
     		
-    		String text = "";
-    		for (DeviData deviData : deviItems) {
-    			if (text.length() == 0) {
-    				text = deviData.title;
-    			} else {
-    				text = text + "\n" + deviData.title;
-    			}
+    		for (final DeviData deviData : deviItems) {
+				TextView deviText = new TextView(this);
+				deviText.setText(deviData.title);
+				
+				deviText.setBackgroundResource(R.drawable.realtime_station_devi);
+				deviText.setTextColor(Color.BLACK);
+				deviText.setPadding(2, 1, 8, 1);
+				
+				devi.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+				    	final Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(deviData.link));
+				    	startActivity(intent);												
+					}
+		        });
+				
+				devi.addView(deviText);
     		}
-    		deviText.setText(text);*/   		
+  		
     	}
     }
     
