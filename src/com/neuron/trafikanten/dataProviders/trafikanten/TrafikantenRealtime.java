@@ -254,15 +254,9 @@ class RealtimeHandler extends DefaultHandler {
 		        } else {
 		        	data.realtime = false;
 		        }
-		    /*} else if (inAimedArrivalTime) {
-		        inAimedArrivalTime = false;
-		        data.aimedArrival = parseDateTime(buffer.toString());
-		    } else if (inExpectedArrivalTime) {
-		        inExpectedArrivalTime = false;
-		        data.expectedArrival = parseDateTime(buffer.toString());*/
-		    } else if (inAimedDepartureTime) {
+		    /*} else if (inAimedDepartureTime) {
 		        inAimedDepartureTime = false;
-		        data.aimedDeparture = parseDateTime(buffer.toString());
+		        data.aimedDeparture = parseDateTime(buffer.toString());*/
 		    } else if (inExpectedDepartureTime) {
 		        inExpectedDepartureTime = false;
 		        data.expectedDeparture = parseDateTime(buffer.toString());

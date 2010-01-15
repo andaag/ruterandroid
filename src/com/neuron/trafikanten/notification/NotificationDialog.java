@@ -86,12 +86,7 @@ public class NotificationDialog {
 				 * Convert hours/minutes to current date with set presets
 				 */
 				final Calendar calendar = Calendar.getInstance();
-				long departure;
-				if (sRealtimeData != null) {
-					departure = sRealtimeData.realtime ? sRealtimeData.expectedDeparture : sRealtimeData.aimedDeparture;					
-				} else {
-					departure = sRouteDeparture;
-				}
+				long departure = sRealtimeData != null ? sRealtimeData.expectedDeparture : sRouteDeparture;
 				assert(departure > 0);
 				calendar.setTimeInMillis(departure);
 				calendar.add(Calendar.HOUR_OF_DAY, -hourOfDay);
