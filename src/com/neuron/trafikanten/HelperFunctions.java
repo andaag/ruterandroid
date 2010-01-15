@@ -50,7 +50,12 @@ public class HelperFunctions {
 	 */
     public static String renderTime(Context context, long time) {
 		long diffMinutes = (time - System.currentTimeMillis()) / MINUTE;
-		if (diffMinutes < 1) {
+		
+		if (diffMinutes < -1) {
+			// Negative time!
+			diffMinutes = diffMinutes * -1;
+			return "-" + diffMinutes + "m";
+		} else if (diffMinutes < 1) {
 			return context.getText(R.string.now).toString();
 		} else if (diffMinutes < 9) {
 			return diffMinutes + "m";
