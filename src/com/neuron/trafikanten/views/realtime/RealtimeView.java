@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.method.ScrollingMovementMethod;
@@ -141,6 +142,20 @@ public class RealtimeView extends ListActivity {
         	realtimeList.notifyDataSetChanged();
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
         }
+
+        {
+        	// Auto refresh view every 10 seconds
+	        final Handler handler = new Handler();
+	        final Runnable r = new Runnable()
+	        {
+	            public void run() 
+	            {
+	                refresh();
+	                handler.postDelayed(this, 10000);
+	            }
+	        };
+	        handler.postDelayed(r, 10000);
+        }
         
         registerForContextMenu(getListView());
         setListAdapter(realtimeList);
@@ -152,7 +167,7 @@ public class RealtimeView extends ListActivity {
      * Refreshes the title
      */
     private void refreshTitle() {
-    	long lastUpdateDiff = (lastUpdate - System.currentTimeMillis()) / HelperFunctions.SECOND;
+    	long lastUpdateDiff = (System.currentTimeMillis() - lastUpdate) / HelperFunctions.SECOND;
     	if (lastUpdateDiff > 60) {
     		lastUpdateDiff = lastUpdateDiff / 60;
     		setTitle("Trafikanten - " + station.stopName + " (" + lastUpdateDiff + "m " + getText(R.string.old) + ")");
@@ -411,6 +426,11 @@ public class RealtimeView extends ListActivity {
 		return super.onContextItemSelected(item);
 	}
 	
+	private void refresh() {
+		refreshTitle();
+		realtimeList.notifyDataSetChanged(); // force refreshing times.
+	}
+	
 	/*
 	 * Resume state, restart search.
 	 * @see android.app.Activity#onResume()
@@ -418,8 +438,7 @@ public class RealtimeView extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		refreshTitle();
-		realtimeList.notifyDataSetChanged(); // force refreshing times.
+		refresh();
 	}
 
 	/*
@@ -648,15 +667,13 @@ class RealtimeAdapter extends BaseAdapter {
 				/*
 				 * Data already exists, we add it to the arrival list and return
 				 */
-				d.departures.append(", ");
-				d.departures.append(HelperFunctions.renderTime(context, item.expectedDeparture));
+				d.nextDepartures.add(item.expectedDeparture);
 				return;
 			}
 		}
 		/*
 		 * Data does not exist, add it
 		 */
-		item.departures.append(HelperFunctions.renderTime(context, item.expectedDeparture));
 		realtimePlatformList.add(item);
 		itemsSize++;
 	}
@@ -717,11 +734,6 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.departures.setHorizontallyScrolling(true);
 			holder.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
 			
-			
-
-		
-			
-
 			/*
 			 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
 			 */
@@ -743,10 +755,10 @@ class RealtimeAdapter extends BaseAdapter {
 		 * Render data to view.
 		 */
 		final RealtimeData data = getItem(pos);
-		holder.departures.setText(data.departures);
+		holder.departures.setText(data.renderDepartures(context));
 		if (data.destination.equals(data.line)) {
 			holder.destination.setText("");
-			holder.line.setText(data.line);			
+			holder.line.setText(data.line);
 		} else {
 			holder.destination.setText(data.destination);
 			holder.line.setText(data.line);

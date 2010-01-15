@@ -20,8 +20,11 @@ package com.neuron.trafikanten.dataSets;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.neuron.trafikanten.HelperFunctions;
 
 public class RealtimeData implements Parcelable {
 	public final static String PARCELABLE = "RealtimeData";
@@ -35,17 +38,33 @@ public class RealtimeData implements Parcelable {
 	public long expectedDeparture;
 	
 	/*
-	 * List of coming arrivals, this is used for the list under current station in RealtimeView
+	 * Data set of coming departures
 	 */
-	public StringBuffer departures;
+	public ArrayList<Long> nextDepartures;
+	
 	/*
 	 * List of devi data, this is a int list, it links to RealtimeView.RealtimeAdapter.deviItems
 	 */
 	public ArrayList<Integer> devi;
 	
 	public RealtimeData() {
-		departures = new StringBuffer();
+		nextDepartures = new ArrayList<Long>();
 		devi = new ArrayList<Integer>();
+	}
+	
+	/*
+	 * Renders all departures, expectedDeparture + nextDepartures
+	 */
+	public CharSequence renderDepartures(Context context) {
+		StringBuffer departures = new StringBuffer();
+		departures.append(HelperFunctions.renderTime(context, expectedDeparture));
+		
+		for (Long nextDeparture : nextDepartures) {
+			departures.append(", ");
+			departures.append(HelperFunctions.renderTime(context, nextDeparture));
+		}
+		return departures;
+		
 	}
 	
 	/*
@@ -66,7 +85,8 @@ public class RealtimeData implements Parcelable {
 
 		expectedDeparture = in.readLong();
 		
-		departures = new StringBuffer(in.readString());
+		nextDepartures = new ArrayList<Long>();
+		in.readList(nextDepartures, Long.class.getClassLoader());
 		
 		devi = new ArrayList<Integer>();
 		in.readList(devi, Integer.class.getClassLoader());
@@ -86,7 +106,7 @@ public class RealtimeData implements Parcelable {
 		
 		out.writeLong(expectedDeparture);
 		
-		out.writeString(departures.toString());
+		out.writeList(nextDepartures);
 		out.writeList(devi);
 	}
 	
