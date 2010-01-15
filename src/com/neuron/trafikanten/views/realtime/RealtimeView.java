@@ -29,6 +29,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.method.ScrollingMovementMethod;
@@ -143,25 +144,20 @@ public class RealtimeView extends ListActivity {
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
         }
 
-        {
-        	// Auto refresh view every 10 seconds
-	        final Handler handler = new Handler();
-	        final Runnable r = new Runnable()
-	        {
-	            public void run() 
-	            {
-	                refresh();
-	                handler.postDelayed(this, 10000);
-	            }
-	        };
-	        handler.postDelayed(r, 10000);
-        }
-        
         registerForContextMenu(getListView());
         setListAdapter(realtimeList);
         refreshTitle();
         refreshDevi();
     }
+    
+    final Handler autoRefreshHandler = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			refresh();
+			autoRefreshHandler.sendEmptyMessageDelayed(0, 10000);
+			return true;
+		}
+	});
     
     /*
      * Refreshes the title
@@ -170,7 +166,7 @@ public class RealtimeView extends ListActivity {
     	long lastUpdateDiff = (System.currentTimeMillis() - lastUpdate) / HelperFunctions.SECOND;
     	if (lastUpdateDiff > 60) {
     		lastUpdateDiff = lastUpdateDiff / 60;
-    		setTitle("Trafikanten - " + station.stopName + " (" + lastUpdateDiff + "m " + getText(R.string.old) + ")");
+    		setTitle("Trafikanten - " + station.stopName + "   (" + lastUpdateDiff + "m " + getText(R.string.old) + ")");
     	} else {
     		setTitle("Trafikanten - " + station.stopName);
     	}
@@ -432,21 +428,26 @@ public class RealtimeView extends ListActivity {
 	}
 	
 	/*
-	 * Resume state, restart search.
-	 * @see android.app.Activity#onResume()
+	 * Functions for dealing with program state.
 	 */
+	@Override
+	protected void onPause() {
+		super.onPause();
+		autoRefreshHandler.removeMessages(0);
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		refresh();
+		autoRefreshHandler.sendEmptyMessageDelayed(0, 10000);
 	}
 
-	/*
-	 * Make sure we kill off threads when freeing memory.
-	 * @see android.app.Activity#onDestroy()
-	 */
 	@Override
 	protected void onDestroy() {
+		/*
+		 * make sure background threads is properly killed off.
+		 */
 		if (realtimeProvider != null) {
 			realtimeProvider.Stop();
 		}
@@ -456,10 +457,6 @@ public class RealtimeView extends ListActivity {
 		super.onDestroy();
 	}
 
-	/*
-	 * saveInstanceState saves all variables needed for onCreate
-	 * @see android.app.Activity#onSaveInstanceState(android.os.Bundle)
-	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
