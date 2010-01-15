@@ -16,11 +16,12 @@
 		
 	<TextView
 		android:id="@+id/range"
+		android:layout_marginRight="35dip"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:layout_alignParentRight="true"
-		android:layout_marginRight="6dip"
+		android:layout_centerVertical="true"
 		/>
 		
 	<ImageView
@@ -29,6 +30,7 @@
 		android:layout_height="wrap_content"
 		android:src="@android:drawable/btn_star_big_on"
 		android:visible="false" 
+		android:layout_centerVertical="true"
 		android:layout_toLeftOf="@+id/range"
 		/>
 		
@@ -38,8 +40,7 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:layout_below="@+id/stopname"
-		android:layout_marginLeft="50dip"
-		android:layout_marginTop="-16dip"
+		android:layout_marginLeft="10dip"
 		/>
 		
 </RelativeLayout>
