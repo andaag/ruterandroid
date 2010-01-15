@@ -2,6 +2,7 @@
 <!-- This is the entry of every item in realtime.xml's list. -->
 <TableLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/tablelayout"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
     android:stretchColumns="1"

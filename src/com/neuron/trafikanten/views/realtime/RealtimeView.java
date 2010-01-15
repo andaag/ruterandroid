@@ -44,7 +44,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -161,6 +161,36 @@ public class RealtimeView extends ListActivity {
     	}
     }
     
+
+    /*
+     * Function for creating the default devi text, used both for line data and station data
+     */
+    public static TextView createDefaultDeviText(final Context context, final String title, final String url, boolean station) {
+    	TextView deviText = new TextView(context);
+		deviText.setText(title);
+		
+		deviText.setSingleLine();
+		deviText.setPadding(2, 1, 26, 1);
+		if (station) {
+			deviText.setTextColor(Color.BLACK);
+			deviText.setBackgroundResource(R.drawable.realtime_station_devi);
+		} else {
+			deviText.setTextColor(Color.rgb(250, 244, 0));
+			deviText.setBackgroundResource(R.drawable.shortcut_sanntidsskinn);
+		}
+		
+		if (url != null) {
+			deviText.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+			    	final Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(url));
+			    	context.startActivity(intent);												
+				}
+	        });
+		}
+		return deviText;
+    }
+    
     /*
      * Refreshes station specific devi data.
      */
@@ -178,23 +208,7 @@ public class RealtimeView extends ListActivity {
     		devi.removeAllViews();
     		
     		for (final DeviData deviData : deviItems) {
-				TextView deviText = new TextView(this);
-				deviText.setText(deviData.title);
-				
-				deviText.setBackgroundResource(R.drawable.realtime_station_devi);
-				deviText.setTextColor(Color.BLACK);
-				deviText.setPadding(2, 1, 26, 1);
-				deviText.setSingleLine();
-				
-				devi.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-				    	final Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(deviData.link));
-				    	startActivity(intent);												
-					}
-		        });
-				
-				devi.addView(deviText);
+				devi.addView(createDefaultDeviText(this, deviData.title, deviData.link, true));
     		}
   		
     	}
@@ -397,23 +411,6 @@ public class RealtimeView extends ListActivity {
 		return super.onContextItemSelected(item);
 	}
 	
-	
-	
-	/*
-	 * Click on a list item
-	 * @see android.app.ListActivity#onListItemClick(android.widget.ListView, android.view.View, int, long)
-	 */
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		RealtimeData data = (RealtimeData) realtimeList.getItem(position);
-		final long minutesDelayed = (data.expectedDeparture - data.aimedDeparture) / (60 * 1000);
-		
-		String info = data.destination + "\n" +
-			"  " + minutesDelayed + "m " + getText(R.string.late);
-		info = info + "\n   - " + getText(R.string.hintRealtimeHoldButton);
-		Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
-	}
-
 	/*
 	 * Resume state, restart search.
 	 * @see android.app.Activity#onResume()
@@ -507,7 +504,6 @@ class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_STATIONDEVILIST = "stationdevilist";
 	public static final String KEY_ITEMSSIZE = "devilistsize";
 	private LayoutInflater inflater;
-	private static final ScrollingMovementMethod scrollingMovementMethod = new ScrollingMovementMethod();
 	private Typeface departuresTypeface;
 	
 	/*
@@ -717,12 +713,29 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.destination = (TextView) convertView.findViewById(R.id.destination);
 			holder.departures = (TextView) convertView.findViewById(R.id.departures);
 			holder.departures.setTypeface(departuresTypeface);
-			holder.departures.setMovementMethod(scrollingMovementMethod);
-			
-			//TODO : move these to xml file:
+			holder.departures.setMovementMethod(ScrollingMovementMethod.getInstance());
 			holder.departures.setHorizontallyScrolling(true);
-			
 			holder.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
+			
+			
+
+		
+			
+
+			/*
+			 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
+			 */
+			{
+				final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
+				tableLayout.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						
+					}
+					
+				});
+				tableLayout.setLongClickable(true);
+			}
 			
 			convertView.setTag(holder);
 		} else {
@@ -763,30 +776,14 @@ class RealtimeAdapter extends BaseAdapter {
 				/*
 				 * Add stopvisitnote
 				 */
-				TextView deviText = new TextView(context);
-				deviText.setText(data.stopVisitNote);
-				
-				deviText.setBackgroundResource(R.drawable.shortcut_sanntidsskinn);
-				deviText.setTextColor(Color.rgb(250, 244, 0));
-				deviText.setPadding(2, 1, 26, 1);
-				deviText.setSingleLine();
-				
-				holder.departureInfo.addView(deviText);
+				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(context, data.stopVisitNote, null, false));
 			}
 			for (Integer i : data.devi) {
 				/*
 				 * Add all devi items.
 				 */
 				final DeviData devi = deviItems.get(i);
-				TextView deviText = new TextView(context);
-				deviText.setText(devi.title);
-				
-				deviText.setBackgroundResource(R.drawable.shortcut_sanntidsskinn);
-				deviText.setTextColor(Color.rgb(250, 244, 0));
-				deviText.setPadding(2, 1, 26, 1);
-				deviText.setSingleLine();
-				
-				holder.departureInfo.addView(deviText);
+				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(context, devi.title, devi.link, false));
 			}
 		} else {
 			holder.departureInfo.setVisibility(View.GONE);
