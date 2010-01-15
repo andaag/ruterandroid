@@ -727,13 +727,7 @@ class RealtimeAdapter extends BaseAdapter {
 			 */
 			{
 				final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
-				tableLayout.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						
-					}
-					
-				});
+				// can use tableLayout.setOnClickListener here as a workaround for click events.
 				tableLayout.setLongClickable(true);
 			}
 			
