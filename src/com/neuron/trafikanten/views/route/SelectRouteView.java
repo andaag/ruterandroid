@@ -30,6 +30,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -548,10 +549,11 @@ class SelectRouteAdapter extends BaseAdapter
 		
 		public SeperatorRouteEntry(Context context, int text) {
 			super(null);
-			//mText = new TextView(context, null, R.style.PlatformHeader);
 			mText = new TextView(context, null);
 			mText.setText(text);
 			mText.setGravity(Gravity.CENTER);
+			mText.setBackgroundResource(R.drawable.platformskin);
+			mText.setTextColor(Color.WHITE);
 			mView = mText;
 			
 		}
@@ -564,8 +566,9 @@ class SelectRouteAdapter extends BaseAdapter
         
         private void setupView(Context context, int paddingLeft, OnClickListener onClickListener) {
         	LinearLayout linearLayout = new LinearLayout(context);
-        	linearLayout.setPadding(paddingLeft + 2, 2, 2, 2);
+        	linearLayout.setPadding(paddingLeft + 6, 2, 2, 2);
         	linearLayout.setOrientation(LinearLayout.VERTICAL);
+        	linearLayout.setBackgroundResource(R.drawable.shortcut_stoppested_grey);
         	
             mTitle = new TextView(context);
             mTitle.setTextAppearance(context, android.R.style.TextAppearance_Medium);
