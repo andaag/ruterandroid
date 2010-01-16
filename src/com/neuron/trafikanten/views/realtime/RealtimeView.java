@@ -271,8 +271,7 @@ public class RealtimeView extends ListActivity {
 					realtimeList.notifyDataSetChanged();
 				}
 				realtimeProvider = null;
-				if (realtimeList.getCount() > 0) {
-					loadDevi();
+				loadDevi();
 				}
 			}
     	});
