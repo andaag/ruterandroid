@@ -272,7 +272,6 @@ public class RealtimeView extends ListActivity {
 				}
 				realtimeProvider = null;
 				loadDevi();
-				}
 			}
     	});
     	realtimeProvider.Fetch(station.stationId);
