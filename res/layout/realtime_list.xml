@@ -79,7 +79,7 @@
 				
 		android:textColor="#faf400"
 		android:background="@drawable/skin_sanntid_avganger"
-		android:paddingLeft="2dip"
+		android:paddingLeft="3dip"
 		android:paddingTop="1dip"
 		android:paddingRight="8dip"
 		android:paddingBottom="1dip"

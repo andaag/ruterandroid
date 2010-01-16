@@ -181,7 +181,7 @@ public class RealtimeView extends ListActivity {
 		deviText.setText(title);
 		
 		deviText.setSingleLine();
-		deviText.setPadding(2, 1, 26, 1);
+		deviText.setPadding(4, 2, 26, 2);
 		if (station) {
 			deviText.setTextColor(Color.BLACK);
 			deviText.setBackgroundResource(R.drawable.skin_stasjonsdevi);
