@@ -271,7 +271,9 @@ public class RealtimeView extends ListActivity {
 					realtimeList.notifyDataSetChanged();
 				}
 				realtimeProvider = null;
-				loadDevi();
+				if (realtimeList.getCount() > 0) {
+					loadDevi();
+				}
 			}
     	});
     	realtimeProvider.Fetch(station.stationId);
