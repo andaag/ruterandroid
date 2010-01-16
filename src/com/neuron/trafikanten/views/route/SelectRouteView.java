@@ -552,7 +552,7 @@ class SelectRouteAdapter extends BaseAdapter
 			mText = new TextView(context, null);
 			mText.setText(text);
 			mText.setGravity(Gravity.CENTER);
-			mText.setBackgroundResource(R.drawable.platformskin);
+			mText.setBackgroundResource(R.drawable.skin_platform);
 			mText.setTextColor(Color.WHITE);
 			mView = mText;
 			
@@ -568,7 +568,7 @@ class SelectRouteAdapter extends BaseAdapter
         	LinearLayout linearLayout = new LinearLayout(context);
         	linearLayout.setPadding(paddingLeft + 6, 2, 2, 2);
         	linearLayout.setOrientation(LinearLayout.VERTICAL);
-        	linearLayout.setBackgroundResource(R.drawable.shortcut_stoppested_grey);
+        	linearLayout.setBackgroundResource(R.drawable.skin_stoppested);
         	
             mTitle = new TextView(context);
             mTitle.setTextAppearance(context, android.R.style.TextAppearance_Medium);

@@ -29,7 +29,7 @@
 		android:id="@+id/symbol"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="13dip"
+		android:layout_marginTop="20dip"
 		android:layout_below="@+id/waittime"/>
 	
 	<TextView

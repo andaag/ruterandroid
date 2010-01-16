@@ -184,10 +184,10 @@ public class RealtimeView extends ListActivity {
 		deviText.setPadding(2, 1, 26, 1);
 		if (station) {
 			deviText.setTextColor(Color.BLACK);
-			deviText.setBackgroundResource(R.drawable.realtime_station_devi);
+			deviText.setBackgroundResource(R.drawable.skin_stasjonsdevi);
 		} else {
 			deviText.setTextColor(Color.rgb(250, 244, 0));
-			deviText.setBackgroundResource(R.drawable.shortcut_sanntidsskinn);
+			deviText.setBackgroundResource(R.drawable.skin_sanntiddevi);
 		}
 		
 		if (deviData != null) {

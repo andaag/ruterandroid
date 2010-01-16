@@ -15,7 +15,7 @@
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:gravity="center"
 		android:textColor="#ffffff"
-		android:background="@drawable/platformskin"
+		android:background="@drawable/skin_platform"
 		
 		android:text="1"
 		/>
@@ -24,7 +24,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:padding="4dip"
-		android:background="@drawable/shortcut_line_bg"
+		android:background="@drawable/skin_sanntid_header"
 		>
 		
 		<TextView
@@ -78,7 +78,7 @@
         android:layout_width="fill_parent"
 				
 		android:textColor="#faf400"
-		android:background="@drawable/shortcut_sanntidsskinn"
+		android:background="@drawable/skin_sanntid_avganger"
 		android:paddingLeft="2dip"
 		android:paddingTop="1dip"
 		android:paddingRight="8dip"
