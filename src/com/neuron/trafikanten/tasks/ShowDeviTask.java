@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -44,7 +45,14 @@ public class ShowDeviTask implements GenericTask {
 		validPeriod.setText("Gyldig fra " + dateFormater.format(data.validFrom).toString());
 		title.setText(stripCode(data.title));
 		description.setText(stripCode(data.description));
-		body.setText(stripCode(data.body));
+		
+		final CharSequence bodyText = stripCode(data.body);
+		if (bodyText.length() < 3) {
+			body.setVisibility(View.GONE);
+		}
+		else {
+			body.setText(stripCode(data.body));
+		}
 		
 		dialog.show();
     }
