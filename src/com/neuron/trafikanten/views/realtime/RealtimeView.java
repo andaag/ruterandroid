@@ -20,13 +20,11 @@ package com.neuron.trafikanten.views.realtime;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -63,6 +61,7 @@ import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.notification.NotificationDialog;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
+import com.neuron.trafikanten.tasks.ShowDeviTask;
 
 public class RealtimeView extends ListActivity {
 	private static final String TAG = "Trafikanten-RealtimeView";
@@ -175,8 +174,9 @@ public class RealtimeView extends ListActivity {
 
     /*
      * Function for creating the default devi text, used both for line data and station data
+     * deviData can be null if data is StopVisitNote
      */
-    public static TextView createDefaultDeviText(final Context context, final String title, final String url, boolean station) {
+    public static TextView createDefaultDeviText(final Activity context, final String title, final DeviData deviData, boolean station) {
     	TextView deviText = new TextView(context);
 		deviText.setText(title);
 		
@@ -190,12 +190,12 @@ public class RealtimeView extends ListActivity {
 			deviText.setBackgroundResource(R.drawable.shortcut_sanntidsskinn);
 		}
 		
-		if (url != null) {
+		if (deviData != null) {
 			deviText.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-			    	final Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(url));
-			    	context.startActivity(intent);												
+			    	new ShowDeviTask(context, deviData);
+									
 				}
 	        });
 		}
@@ -219,7 +219,7 @@ public class RealtimeView extends ListActivity {
     		devi.removeAllViews();
     		
     		for (final DeviData deviData : deviItems) {
-				devi.addView(createDefaultDeviText(this, deviData.title, deviData.link, true));
+				devi.addView(createDefaultDeviText(this, deviData.title, deviData, true));
     		}
   		
     	}
@@ -542,12 +542,12 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	private boolean renderPlatform = false;
 	
-	private Context context;
+	private Activity activity;
 	
-	public RealtimeAdapter(Context context) {
-		inflater = LayoutInflater.from(context);
-		departuresTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/typewriter.ttf");
-		this.context = context;
+	public RealtimeAdapter(Activity activity) {
+		inflater = LayoutInflater.from(activity);
+		departuresTypeface = Typeface.createFromAsset(activity.getAssets(), "fonts/typewriter.ttf");
+		this.activity = activity;
 	}
 	
 	/*
@@ -752,7 +752,7 @@ class RealtimeAdapter extends BaseAdapter {
 		 * Render data to view.
 		 */
 		final RealtimeData data = getItem(pos);
-		holder.departures.setText(data.renderDepartures(context));
+		holder.departures.setText(data.renderDepartures(activity));
 		if (data.destination.equals(data.line)) {
 			holder.destination.setText("");
 			holder.line.setText(data.line);
@@ -779,14 +779,14 @@ class RealtimeAdapter extends BaseAdapter {
 				/*
 				 * Add stopvisitnote
 				 */
-				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(context, data.stopVisitNote, null, false));
+				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(activity, data.stopVisitNote, null, false));
 			}
 			for (Integer i : data.devi) {
 				/*
 				 * Add all devi items.
 				 */
 				final DeviData devi = deviItems.get(i);
-				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(context, devi.title, devi.link, false));
+				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(activity, devi.title, devi, false));
 			}
 		} else {
 			holder.departureInfo.setVisibility(View.GONE);

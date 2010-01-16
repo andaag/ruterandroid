@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/common/res/layout/alert_dialog.xml
+**
+** Copyright 2006, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/body"
+    android:orientation="vertical"
+    android:layout_width="280dip"
+    android:layout_height="fill_parent"
+    android:baselineAligned="false"
+    android:paddingLeft="8dip"
+    android:paddingTop="10dip"
+    android:paddingRight="8dip"
+    android:paddingBottom="10dip">
+
+    <TextView android:id="@+id/validPeriod"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textSize="13dip"
+        
+        android:text="Gyldig fra 03.01.2010 14:30" />
+        
+    <TextView android:id="@+id/title"
+    	android:padding="6dip"
+    	android:textColor="#FFFF00"
+    	android:textSize="18dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        
+        
+        android:text="T-bane line 5 : Buss stovner vestli" />
+        
+    <TextView android:id="@+id/description"
+    	android:padding="6dip"
+    	android:textColor="#FFFFFF"
+    	android:textSize="16dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        
+        
+        android:text="Det kjøres buss for bane mellom Stovner og Vestli fra 4.januar 2010. Buss for bane har 15 minutters rute. " />
+        
+    <TextView android:id="@+id/devibody"
+    	android:paddingLeft="6dip"
+    	android:paddingRight="6dip"
+    	android:paddingBottom="6dip"
+    	android:paddingTop="30dip"
+
+        android:textColor="#FFFFFF"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        
+        android:text="Årsaken er oppgradering og fornyelse av adkomstveiene på Vestli stasjon og det er nødvendig å stenge stasjonen for trafikk. Buss vil derfor erstatte bane mellom Stovner og Vestli i anleggsperioden." />
+
+
+
+</LinearLayout>

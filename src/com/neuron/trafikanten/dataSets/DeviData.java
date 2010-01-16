@@ -27,8 +27,8 @@ public class DeviData implements Parcelable {
 	public final static String PARCELABLE = "DeviData";
 	
 	public String title;
-	public String link;
-	//public String description;
+	public String description;
+	public String body;
 	public ArrayList<String> lines;
 	public long validFrom;
 	public long validTo;
@@ -49,8 +49,8 @@ public class DeviData implements Parcelable {
 	 */
 	public DeviData(Parcel in) {
 		title = in.readString();
-		link = in.readString();
-		//description = in.readString();
+		description = in.readString();
+		body = in.readString();
 		
 		lines = new ArrayList<String>();
 		in.readStringList(lines);
@@ -67,8 +67,8 @@ public class DeviData implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeString(title);
-		out.writeString(link);
-		//out.writeString(description);
+		out.writeString(description);
+		out.writeString(body);
 		out.writeStringList(lines);
 		out.writeLong(validFrom);
 		out.writeLong(validTo);

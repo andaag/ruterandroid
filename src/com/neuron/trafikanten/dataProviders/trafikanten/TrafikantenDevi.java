@@ -149,8 +149,8 @@ class DeviHandler extends DefaultHandler {
 	 */
 	private boolean inItem = false; // Block data (contains everything under)
 	private boolean inTitle = false;
-	private boolean inLink = false;
-	//private boolean inDescription = false;
+	private boolean inDescription = false;
+	private boolean inBody = false;
 	private boolean inLines = false; // Block data (contains line)
 	private boolean inLine = false;
 	private boolean inValidFrom = false;
@@ -201,10 +201,10 @@ class DeviHandler extends DefaultHandler {
 	    } else {
 	    	if (localName.equals("title")) {
 	    		inTitle = true;
-	    	} else if (localName.equals("link")) {
-	    		inLink = true;
-		    /*} else if (localName.equals("description")) {
-		    	inDescription = true;*/
+		    } else if (localName.equals("description")) {
+		    	inDescription = true;
+	    	} else if (localName.equals("body")) {
+	    		inBody = true;
 		    } else if (localName.equals("lines")) {
 		    	inLines = true;
 		    } else if (inLines && localName.equals("line")) {
@@ -245,12 +245,12 @@ class DeviHandler extends DefaultHandler {
 	    	if (inTitle) {
 	    		inTitle = false;
 		        data.title = buffer.toString();
-	    	} else if (inLink) {
-	    		inLink = false;
-	    		data.link = buffer.toString();
-		    /*} else if (inDescription) {
+		    } else if (inDescription) {
 		    	inDescription = false;
-		        data.description = buffer.toString();*/
+		        data.description = buffer.toString();
+	    	} else if (inBody) {
+	    		inBody = false;
+	    		data.body = buffer.toString();
 		    } else if (inLine) { // 
 		    	inLine = false;
 		        data.lines.add(buffer.toString());
@@ -272,8 +272,7 @@ class DeviHandler extends DefaultHandler {
 	
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
-		//inDescription
-	    if (inTitle || inLink || 
+	    if (inTitle || inBody || inDescription ||
 	    		inLine || inValidFrom || inValidTo || inImportant) {
 	    	buffer.append(ch,start,length);
 	    }
