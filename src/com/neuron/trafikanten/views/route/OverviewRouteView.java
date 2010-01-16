@@ -235,7 +235,6 @@ public class OverviewRouteView extends ListActivity {
 	
 	/*
 	 * Make sure we kill off threads when freeing memory.
-	 * @see android.app.Activity#onDestroy()
 	 */
 	@Override
 	public void finish() {
