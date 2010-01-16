@@ -238,11 +238,11 @@ public class OverviewRouteView extends ListActivity {
 	 * @see android.app.Activity#onDestroy()
 	 */
 	@Override
-	protected void onDestroy() {
+	public void finish() {
 		if (routeProvider != null) {
 			routeProvider.Stop();
 		}
-		super.onDestroy();
+		super.finish();
 	}
 
 	/*

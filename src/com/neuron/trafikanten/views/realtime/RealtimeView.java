@@ -446,7 +446,7 @@ public class RealtimeView extends ListActivity {
 	}
 
 	@Override
-	protected void onDestroy() {
+	public void finish() {
 		/*
 		 * make sure background threads is properly killed off.
 		 */
@@ -456,7 +456,7 @@ public class RealtimeView extends ListActivity {
 		if (deviProvider != null) {
 			deviProvider.Stop();
 		}
-		super.onDestroy();
+		super.finish();
 	}
 
 	@Override
