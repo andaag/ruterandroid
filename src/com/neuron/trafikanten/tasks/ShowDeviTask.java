@@ -42,7 +42,7 @@ public class ShowDeviTask implements GenericTask {
 		final TextView description = (TextView) dialog.findViewById(R.id.description);
 		final TextView body = (TextView) dialog.findViewById(R.id.devibody);
 		
-		validPeriod.setText(getText(R.string.validFrom) + " " + dateFormater.format(data.validFrom).toString());
+		validPeriod.setText(activity.getText(R.string.validFrom) + " " + dateFormater.format(data.validFrom).toString());
 		title.setText(stripCode(data.title));
 		description.setText(stripCode(data.description));
 		
