@@ -52,9 +52,10 @@ public class StationData implements Parcelable {
 	}
 	
 	public StationData() { }
-	public StationData(String stopName, String extra, int stationId, int[] utmCoords) {
+	public StationData(String stopName, String extra, int stationId, boolean realtimeStop, int[] utmCoords) {
 		this.stopName = stopName;
 		this.extra = extra;
+		this.realtimeStop = realtimeStop;
 		this.stationId = stationId;
 		this.utmCoords = utmCoords;
 	}
@@ -65,7 +66,7 @@ public class StationData implements Parcelable {
 	}
 	
 	/*
-	 * Functions for writing to a bundle, this writes a "simple" set without coordinates.
+	 * Functions for writing to a bundle, this writes a "simple" set without coordinates, this is used for shortcuts
 	 */
 	private final static String BUNDLE_STOPNAME = "stationDataStopname";
 	private final static String BUNDLE_STATIONID = "stationDataStationid";
@@ -75,7 +76,7 @@ public class StationData implements Parcelable {
 	}
 	
 	/*
-	 * Load the bundle back into a station set
+	 * Load the bundle back into a station set, this is used for shortcuts
 	 */
 	public static StationData readSimpleBundle(Bundle bundle) {
 		return new StationData(bundle.getString(BUNDLE_STOPNAME), bundle.getInt(BUNDLE_STATIONID));

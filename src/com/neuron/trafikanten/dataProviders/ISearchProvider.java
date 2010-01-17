@@ -27,7 +27,7 @@ import com.neuron.trafikanten.dataSets.StationData;
  * Search Provider
  */
 public interface ISearchProvider extends IGenericProvider {
-	public void Search(String query);
+	public void Search(String query, boolean isRealtimeStopFiltered);
 	public void Search(double latitude, double longitude);
 	
 	abstract class SearchProviderHandler extends Handler {

@@ -54,6 +54,7 @@ public abstract class GenericStationDbAdapter {
 		KEY_EXTRA,
 		KEY_STATIONID,
 		KEY_USED,
+		KEY_REALTIMESTOP,
 		KEY_UTM_X,
 		KEY_UTM_Y,
 		KEY_LATITUDE,

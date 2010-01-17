@@ -67,10 +67,10 @@ public class TrafikantenSearch implements ISearchProvider {
 	 * Initiate a search of string query
 	 */
 	@Override
-	public void Search(String query) {
+	public void Search(String query, boolean isRealtimeStopFiltered) {
 		Stop();
 		Log.i(TAG,"Searching for station " + query);
-		thread = new TrafikantenSearchThread(resources, handler, query);
+		thread = new TrafikantenSearchThread(resources, isRealtimeStopFiltered, handler, query);
 		handler.onStarted();
 		thread.start();
 	}
@@ -104,13 +104,15 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 	private SearchProviderHandler handler;
 	private Resources resources;
 	private String query;
+	private boolean isRealtimeStopFiltered;
 	private double latitude;
 	private double longitude;
 	
-	public TrafikantenSearchThread(Resources resources, SearchProviderHandler handler, String query) {
+	public TrafikantenSearchThread(Resources resources, boolean isRealtimeStopFiltered, SearchProviderHandler handler, String query) {
 		this.handler = handler;
 		this.resources = resources;
 		this.query = query;
+		this.isRealtimeStopFiltered = isRealtimeStopFiltered;
 	}
 	
 	public TrafikantenSearchThread(Resources resources, SearchProviderHandler handler, double latitude, double longitude) {
@@ -132,7 +134,13 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 				/*
 				 * Setup URL for a normal station search query.
 				 */
-            	result = HelperFunctions.soapRequest(resources, R.raw.getmatches, new String[]{query}, Trafikanten.API_URL);
+				if (isRealtimeStopFiltered) {
+					final String urlString = "http://reis.trafikanten.no/siri/checkrealtimestop.aspx?name=" + query;
+	                final URL url = new URL(urlString);
+	                result = url.openStream();
+				} else {
+					result = HelperFunctions.soapRequest(resources, R.raw.getmatches, new String[]{query}, Trafikanten.API_URL);
+				}
 			} else {
 				/*
 				 * Setup URL for coordinate search.
@@ -152,7 +160,7 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new SearchHandler(handler));
+			reader.setContentHandler(new SearchHandler(handler, isRealtimeStopFiltered));
 			reader.parse(new InputSource(result));
 		} catch(Exception e) {
 			/*
@@ -186,7 +194,6 @@ class SearchHandler extends DefaultHandler {
 	 * Temporary variables for parsing. 
 	 */
 	private boolean inPlace = false;
-	//private boolean inZone = false;
 	private boolean inX = false;
 	private boolean inY = false;
 	private boolean inID = false;
@@ -199,12 +206,14 @@ class SearchHandler extends DefaultHandler {
 	
 	// Ignore is used to ignore anything except type Stop.
 	private boolean ignore = false;
+	private boolean isRealtimeStopFiltered; // if isRealtimeStopFiltered station.realtime = true always.
 	
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public SearchHandler(SearchProviderHandler handler)
+	public SearchHandler(SearchProviderHandler handler, boolean isRealtimeStopFiltered)
 	{
+		this.isRealtimeStopFiltered = isRealtimeStopFiltered;
 		this.handler = handler;
 	}
 	
@@ -284,6 +293,8 @@ class SearchHandler extends DefaultHandler {
             inPlace = false;
             if (!ignore) {
     	        final StationData sendData = station;
+    	        if (isRealtimeStopFiltered)
+    	        	sendData.realtimeStop = true;
     			handler.post(new Runnable() {
     				@Override
     				public void run() {

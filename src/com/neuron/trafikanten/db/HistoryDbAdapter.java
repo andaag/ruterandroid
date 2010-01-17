@@ -47,8 +47,9 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
     	while (cursor.moveToNext()) {
     		StationData station = new StationData(cursor.getString(0), 
     				cursor.getString(1), 
-    				cursor.getInt(2), 
-    				new int[] {cursor.getInt(4), cursor.getInt(5)});
+    				cursor.getInt(2),
+    				cursor.getInt(4) == 1, 
+    				new int[] {cursor.getInt(5), cursor.getInt(6)});
     		/*
     		 * Check for duplicates
     		 */
@@ -87,7 +88,7 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 			 * Update used to used + 1
 			 */
 			final String rowIdSql = "(SELECT MAX(" + KEY_ROWID + ") + 1 FROM " + table + ")"; 
-			final int realtimeStop = station.realtimeStop ? 1 : 0; 
+			final int realtimeStop = station.realtimeStop ? 1 : 0;
 			final String sql = String.format("UPDATE %s SET %s = %s + 1, %s = %s, %s = %s WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_REALTIMESTOP, realtimeStop, KEY_ROWID, rowIdSql, KEY_STATIONID, station.stationId);
 			final Cursor c = db.rawQuery(sql, null);
 			c.moveToFirst();
