@@ -121,6 +121,7 @@ Trykk på ett reise forslag for detaljer!</string>
         
         <!--  Generic -->
         <string name="exception">Feil</string>
+        <string name="parseError">Feil i trafikantens data</string>
         <string name="myLocation">Min Posisjon</string>
         <string name="settings">Settings</string>
         <string name="reset">Tilbakestill</string>

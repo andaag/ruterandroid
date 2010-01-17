@@ -255,7 +255,12 @@ public class RealtimeView extends ListActivity {
 			@Override
 			public void onError(Exception exception) {
 				Log.w(TAG,"onException " + exception);
-				Toast.makeText(RealtimeView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+				infoText.setVisibility(View.VISIBLE);
+				if (exception.getClass().getSimpleName().equals("ParseException")) {
+					infoText.setText("" + getText(R.string.parseError) + ":" + "\n\n" + exception);
+				} else {
+					infoText.setText("" + getText(R.string.exception) + ":" + "\n\n" + exception);
+				}
 				setProgressBarIndeterminateVisibility(false);
 			}
 

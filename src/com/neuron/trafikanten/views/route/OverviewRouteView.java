@@ -44,7 +44,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.HelperFunctions;
@@ -142,7 +141,12 @@ public class OverviewRouteView extends ListActivity {
 			@Override
 			public void onError(Exception exception) {
 				Log.w(TAG,"onException " + exception);
-				Toast.makeText(OverviewRouteView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+				infoText.setVisibility(View.VISIBLE);
+				if (exception.getClass().getSimpleName().equals("ParseException")) {
+					infoText.setText("" + getText(R.string.parseError) + ":" + "\n\n" + exception);
+				} else {
+					infoText.setText("" + getText(R.string.exception) + ":" + "\n\n" + exception);
+				}
 				setProgressBarIndeterminateVisibility(false);
 			}
 

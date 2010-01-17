@@ -174,7 +174,11 @@ public abstract class GenericSelectStationView extends ListActivity {
     		@Override
     		public void onError(Exception exception) {
     			Log.w(TAG,"onException " + exception);
-    			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+				if (exception.getClass().getSimpleName().equals("ParseException")) {
+	    			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.parseError) + ":" + "\n\n" + exception, Toast.LENGTH_LONG).show();
+				} else {
+	    			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + ":" + "\n\n" + exception, Toast.LENGTH_LONG).show();
+				}
     			Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
     		}
 
@@ -333,7 +337,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 	        @Override
 	        public void onError(Exception exception) {
 	                Log.w(TAG,"onException " + exception);
-	                Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+					if (exception.getClass().getSimpleName().equals("ParseException")) {
+		    			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.parseError) + ":" + "\n\n" + exception, Toast.LENGTH_LONG).show();
+					} else {
+		    			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + ":" + "\n\n" + exception, Toast.LENGTH_LONG).show();
+					}
 	                setProgressBar(false);
 	        }
 	
