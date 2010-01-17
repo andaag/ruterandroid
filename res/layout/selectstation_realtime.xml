@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    
+    <EditText android:id="@+id/search"
+        android:singleLine="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_for_station">
+        <requestFocus />
+    </EditText>
+    
+    <TextView
+    	android:id="@+id/infoText"
+    	android:layout_marginTop="50dip"
+    	android:layout_below="@+id/search"
+    	android:layout_width="300dip"
+    	android:layout_height="wrap_content"
+    	android:layout_centerVertical="true"
+    	android:layout_centerHorizontal="true"
+    	android:text="@string/searchStationHint" />
+    	
+        
+    <TextView
+    	android:id="@+id/infoBar"
+    	android:layout_alignParentBottom="true"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:gravity="center"
+		android:textColor="#ffffff"
+		android:background="@drawable/skin_platform"
+		android:text="@string/showingRealtimeOnly" />
+    	
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/search"
+        android:layout_above="@+id/infoBar"
+        />
+
+        
+</RelativeLayout>

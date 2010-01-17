@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
@@ -43,8 +44,10 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setContentView(R.layout.selectstation_route);
 		isRealtimeSelector = false;
+        super.onCreate(savedInstanceState);
 
 		if (savedInstanceState != null) {
 			/*

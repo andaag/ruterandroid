@@ -113,8 +113,6 @@ public abstract class GenericSelectStationView extends ListActivity {
         /*
          * Setup view
          */
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.selectstation);
 		registerForContextMenu(getListView());
 		infoText = (TextView) findViewById(R.id.infoText);
         

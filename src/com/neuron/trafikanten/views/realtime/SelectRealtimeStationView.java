@@ -18,12 +18,14 @@
 
 package com.neuron.trafikanten.views.realtime;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Window;
+
+import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.Trafikanten;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.views.GenericSelectStationView;
-
-import android.content.Intent;
-import android.os.Bundle;
 
 /*
  * This is the SelectStationView view used for the front page.
@@ -49,8 +51,11 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setContentView(R.layout.selectstation_realtime);
 		isRealtimeSelector = true;
+		super.onCreate(savedInstanceState);
+		
 		if (savedInstanceState == null && getIntent().hasExtra(Trafikanten.KEY_MYLOCATION)) {
 			/*
 			 * We have "MYLOCATION" shortcut request
