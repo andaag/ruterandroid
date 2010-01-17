@@ -190,15 +190,13 @@ public class RealtimeView extends ListActivity {
 			deviText.setBackgroundResource(R.drawable.skin_sanntiddevi);
 		}
 		
-		if (deviData != null) {
-			deviText.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-			    	new ShowDeviTask(context, deviData);
-									
-				}
-	        });
-		}
+		deviText.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+		    	new ShowDeviTask(context, deviData);
+								
+			}
+        });
 		return deviText;
     }
     
@@ -779,7 +777,16 @@ class RealtimeAdapter extends BaseAdapter {
 				/*
 				 * Add stopvisitnote
 				 */
-				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(activity, data.stopVisitNote, null, false));
+				final TextView stopVisitNote = new TextView(activity);
+				stopVisitNote.setText(data.stopVisitNote);
+				
+				stopVisitNote.setSingleLine();
+				stopVisitNote.setPadding(4, 2, 6, 2);
+				stopVisitNote.setTextColor(Color.rgb(250, 244, 0));
+				stopVisitNote.setBackgroundResource(R.drawable.skin_sanntid_avganger);
+				stopVisitNote.setMovementMethod(ScrollingMovementMethod.getInstance());
+				stopVisitNote.setHorizontallyScrolling(true);
+				holder.departureInfo.addView(stopVisitNote);
 			}
 			for (Integer i : data.devi) {
 				/*
