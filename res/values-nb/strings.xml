@@ -108,6 +108,9 @@ Trykk på ett reise forslag for detaljer!</string>
         <string name="multipleAddressesFound">Flere treff funnet, bruker første</string>
         <string name="selectContact">Velg Kontakt</string>
         
+        <!-- ShowDeviTask -->
+        <string name="validFrom">Gyldig fra</string>
+        
         <!-- SearchAddressTask -->
         <string name="searchAddressTask">Søk etter addresse:</string>
         <string name="addressHint">Addresse</string>

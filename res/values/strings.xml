@@ -112,6 +112,9 @@ Click a travel proposal for a detailed view!</string>
         <string name="multipleAddressesFound">Multiple addresses found, using first</string>
         <string name="selectContact">Select Contact</string>
         
+        <!-- ShowDeviTask -->
+        <string name="validFrom">Valid from</string>
+        
         <!-- SearchAddressTask -->
         <string name="searchAddressTask">Search for address:</string>
         <string name="addressHint">Address</string>
