@@ -30,6 +30,7 @@ public class StationData implements Parcelable {
 	public String extra; // Extra is shown under station name, on a seperate line.
 	public int stationId;
 	public int walkingDistance = 0;
+	public boolean realtimeStop;
 	
 	public boolean isFavorite; // This is used for rendering a star next to favorites, this is NOT stored.
 	
@@ -94,6 +95,7 @@ public class StationData implements Parcelable {
 		extra = in.readString();
 		
 		stationId = in.readInt();
+		realtimeStop = in.readInt() != 0;
 		walkingDistance = in.readInt();
 		
 		utmCoords[0] = in.readInt();
@@ -113,6 +115,7 @@ public class StationData implements Parcelable {
 		out.writeString(extra);
 		
 		out.writeInt(stationId);
+		out.writeInt(realtimeStop ? 1 : 0);
 		out.writeInt(walkingDistance);
 		
 		out.writeInt(utmCoords[0]);

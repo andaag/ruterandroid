@@ -194,6 +194,7 @@ class SearchHandler extends DefaultHandler {
 	private boolean inDistrict = false;
 	private boolean inType = false;
 	private boolean inStops = false;
+	private boolean inRealTimeStop = false;
 	private boolean inWalkingDistance = false;
 	
 	// Ignore is used to ignore anything except type Stop.
@@ -265,6 +266,8 @@ class SearchHandler extends DefaultHandler {
 			    inType = true;
 			} else if (localName.equals("Stops")) {
 			    inStops = true;
+			} else if (localName.equals("RealTimeStop")) {
+				inRealTimeStop = true;
 			} else if (localName.equals("WalkingDistance")) {
 				inWalkingDistance = true;
 			}
@@ -320,6 +323,9 @@ class SearchHandler extends DefaultHandler {
 		    	}
 	        } else if (inStops && localName.equals("Stops")) {
 	        	inStops = false;
+	        } else if (inWalkingDistance && localName.equals("RealTimeStop")) {
+	        	inRealTimeStop = false;
+	        	station.realtimeStop = buffer.equals("true");
 	        } else if (inWalkingDistance && localName.equals("WalkingDistance")) {
 	        	inWalkingDistance = false;
 	        	station.walkingDistance = Integer.parseInt(buffer.toString());
@@ -331,7 +337,7 @@ class SearchHandler extends DefaultHandler {
     @Override
     public void characters(char ch[], int start, int length) {
     	if (ignore) return;
-    	if (inX || inY || inID || inName || inDistrict || inType || inWalkingDistance) {
+    	if (inX || inY || inID || inName || inDistrict || inType || inRealTimeStop || inWalkingDistance) {
     		buffer.append(ch, start, length);
     	}
     }
