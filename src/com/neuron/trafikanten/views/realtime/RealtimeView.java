@@ -43,6 +43,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -59,6 +60,7 @@ import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHa
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
+import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.notification.NotificationDialog;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
 import com.neuron.trafikanten.tasks.ShowDeviTask;
@@ -88,7 +90,8 @@ public class RealtimeView extends ListActivity {
 	/*
 	 * Saved instance data
 	 */
-	private StationData station;
+	// HACK STATIONICONS, this does not need to be public static
+	public static StationData station;
 	private RealtimeAdapter realtimeList;
 	private long lastUpdate;
 	private ArrayList<DeviData> deviItems;
@@ -722,6 +725,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			holder.platform = (TextView) convertView.findViewById(R.id.platform);
 			holder.line = (TextView) convertView.findViewById(R.id.line);
+			holder.icon = (ImageView) convertView.findViewById(R.id.icon);
 			holder.destination = (TextView) convertView.findViewById(R.id.destination);
 			holder.departures = (TextView) convertView.findViewById(R.id.departures);
 			holder.departures.setTypeface(departuresTypeface);
@@ -765,6 +769,8 @@ class RealtimeAdapter extends BaseAdapter {
 		} else {
 			holder.platform.setVisibility(View.GONE);
 		}
+		
+		holder.icon.setImageResource(StationIcons.hackGetLineIcon(RealtimeView.station, data.line));
 		
 		/*
 		 * Setup devi
@@ -810,6 +816,7 @@ class RealtimeAdapter extends BaseAdapter {
 		
 		TextView line;
 		TextView destination;
+		ImageView icon;
 		TextView departures;
 		
 		LinearLayout departureInfo;
