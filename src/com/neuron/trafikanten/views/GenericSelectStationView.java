@@ -85,6 +85,13 @@ public abstract class GenericSelectStationView extends ListActivity {
 	public HistoryDbAdapter historyDbAdapter;
 	
 	/*
+	 * Whether we are a realtime selector or a route selector
+	 */
+	public final static int STATIONTYPE_REALTIME = 1;
+	public final static int STATIONTYPE_ROUTE = 2;
+	public int selectStationType;
+	
+	/*
 	 * Views 
 	 */
 	private TextView infoText;
@@ -542,7 +549,16 @@ class StationListAdapter extends BaseAdapter {
 	public void clear() { items.clear(); }
 	public ArrayList<StationData> getList() { return items; }
 	public void setList(ArrayList<StationData> items) { this.items = items; }
-	public void addItem(StationData item) { items.add(item); }
+	public void addItem(StationData item) {
+		if (parent.selectStationType == GenericSelectStationView.STATIONTYPE_REALTIME) {
+			// if we have a realtime station we add only realtime stops. 
+			if (item.realtimeStop) {
+				items.add(item);
+			}
+			return;
+		}
+		items.add(item); 
+	}
 	
 	/*
 	 * Standard android.widget.Adapter items, self explanatory.
