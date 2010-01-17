@@ -30,6 +30,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -570,13 +571,18 @@ class SelectRouteAdapter extends BaseAdapter
         	linearLayout.setOrientation(LinearLayout.VERTICAL);
         	linearLayout.setBackgroundResource(R.drawable.skin_stoppested);
         	
+        	final Resources resources = context.getResources();
+        	
             mTitle = new TextView(context);
             mTitle.setTextAppearance(context, android.R.style.TextAppearance_Medium);
             linearLayout.addView(mTitle, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+            mTitle.setTextColor(resources.getColorStateList(R.color.skin_stoppested));
 
             mSubText = new TextView(context);
             mSubText.setTextAppearance(context, android.R.style.TextAppearance_Small);
             linearLayout.addView(mSubText, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+            mSubText.setTextColor(resources.getColorStateList(R.color.skin_stoppested_subtext));
+            
             mView = linearLayout;
         }
         
@@ -613,6 +619,7 @@ class SelectRouteAdapter extends BaseAdapter
 			mCheckBox = new CheckBox(context);
 			mCheckBox.setText(title);
 			mCheckBox.setChecked(checked);
+			mCheckBox.setTextColor(context.getResources().getColorStateList(R.color.skin_stoppested));
 			
 			linearLayout.addView(mCheckBox, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			mView = linearLayout;
