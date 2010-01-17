@@ -50,7 +50,7 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		selectStationType = STATIONTYPE_REALTIME;
+		isRealtimeSelector = true;
 		if (savedInstanceState == null && getIntent().hasExtra(Trafikanten.KEY_MYLOCATION)) {
 			/*
 			 * We have "MYLOCATION" shortcut request

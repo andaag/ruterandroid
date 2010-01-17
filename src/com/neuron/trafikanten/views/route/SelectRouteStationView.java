@@ -44,7 +44,7 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		selectStationType = STATIONTYPE_ROUTE;
+		isRealtimeSelector = false;
 
 		if (savedInstanceState != null) {
 			/*

@@ -106,8 +106,8 @@ public class Trafikanten extends TabActivity {
         	final FavoriteDbAdapter favoriteDbAdapter = new FavoriteDbAdapter(this);
         	final HistoryDbAdapter historyDbAdapter = new HistoryDbAdapter(this);
         	
-        	favoriteDbAdapter.addFavoritesToList(realtimeStations);
-        	historyDbAdapter.addHistoryToList(realtimeStations);
+        	favoriteDbAdapter.addFavoritesToList(false, realtimeStations);
+        	historyDbAdapter.addHistoryToList(false, realtimeStations);
         }
         for(StationData station : realtimeStations) {
         	selectList.add(station.stopName);

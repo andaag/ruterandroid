@@ -30,7 +30,7 @@ import com.neuron.trafikanten.dataSets.StationData;
  * Class for storing favorite stations.
  */
 public class FavoriteDbAdapter extends GenericStationDbAdapter {
-	private static final int DATABASE_VERSION = 5;
+	private static final int DATABASE_VERSION = 6;
 	public FavoriteDbAdapter(Context context) {
 		super(context);
 		super.open("favorites", DATABASE_VERSION);
@@ -77,7 +77,8 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	 * Updates KEY_USED
 	 */
 	public void updateUsed(StationData station) {
-		final String sql = String.format("UPDATE %s SET %s = %s + 1 WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_STATIONID, station.stationId);
+		final int realtimeStop = station.realtimeStop ? 1 : 0; 
+		final String sql = String.format("UPDATE %s SET %s = %s + 1, %s = %d WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_REALTIMESTOP, realtimeStop, KEY_STATIONID, station.stationId);
 		final Cursor c = db.rawQuery(sql, null);
 		c.moveToFirst();
 		c.close();
@@ -86,7 +87,7 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	/*
 	 * Add favorites to a station list.
 	 */
-    public void addFavoritesToList(List<StationData> items) {
+    public void addFavoritesToList(boolean isRealtimeSelector, List<StationData> items) {
     	Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
     	while (cursor.moveToNext()) {
     		StationData station = new StationData(cursor.getString(0), 
@@ -94,7 +95,14 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
     				cursor.getInt(2), 
     				new int[] {cursor.getInt(4), cursor.getInt(5)});
     		station.isFavorite = true;
-    		items.add(station);
+    		if (isRealtimeSelector) {
+    			if (station.realtimeStop) {
+    				items.add(station);
+    			}
+    		} else {
+    			items.add(station);
+    		}
+    		
     	}
     	cursor.close();
     }

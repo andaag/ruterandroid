@@ -35,6 +35,7 @@ public abstract class GenericStationDbAdapter {
 	public static final String KEY_STOPNAME = "stopname";
 	public static final String KEY_USED = "used";
 	public static final String KEY_EXTRA = "extra";
+	public static final String KEY_REALTIMESTOP = "realtimestop";
 	public static final String KEY_UTM_X = "utmX";
 	public static final String KEY_UTM_Y = "utmY";
 	public static final String KEY_LATITUDE = "latitude";
@@ -64,6 +65,7 @@ public abstract class GenericStationDbAdapter {
     			+ KEY_STOPNAME + " text not null,"
     			+ KEY_USED + " int not null,"
     			+ KEY_EXTRA + " text,"
+    			+ KEY_REALTIMESTOP + " boolean not null,"
     			+ KEY_UTM_X + " int,"
     			+ KEY_UTM_Y + " int,"
     			+ KEY_LATITUDE + " real,"
@@ -133,6 +135,7 @@ public abstract class GenericStationDbAdapter {
     	values.put(KEY_STOPNAME, station.stopName);
     	values.put(KEY_USED, 1);
     	values.put(KEY_EXTRA, station.extra);
+    	values.put(KEY_REALTIMESTOP, station.realtimeStop);
     	values.put(KEY_UTM_X, station.utmCoords[0]);
     	values.put(KEY_UTM_Y, station.utmCoords[1]);
     	values.put(KEY_LATITUDE, station.latLongCoords[0]);

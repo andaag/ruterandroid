@@ -85,11 +85,9 @@ public abstract class GenericSelectStationView extends ListActivity {
 	public HistoryDbAdapter historyDbAdapter;
 	
 	/*
-	 * Whether we are a realtime selector or a route selector
+	 * if isRealtimeSelector we filter some stations
 	 */
-	public final static int STATIONTYPE_REALTIME = 1;
-	public final static int STATIONTYPE_ROUTE = 2;
-	public int selectStationType;
+	public boolean isRealtimeSelector;
 	
 	/*
 	 * Views 
@@ -128,8 +126,8 @@ public abstract class GenericSelectStationView extends ListActivity {
         stationListAdapter = new StationListAdapter(this);
         
         if (savedInstanceState == null) {
-        	favoriteDbAdapter.addFavoritesToList(stationListAdapter.getList());
-        	historyDbAdapter.addHistoryToList(stationListAdapter.getList());
+        	favoriteDbAdapter.addFavoritesToList(isRealtimeSelector, stationListAdapter.getList());
+        	historyDbAdapter.addHistoryToList(isRealtimeSelector, stationListAdapter.getList());
         } else {
         	final ArrayList<StationData> list = savedInstanceState.getParcelableArrayList(StationListAdapter.KEY_SEARCHSTATIONLIST);
         	stationListAdapter.setList(list);
@@ -198,7 +196,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 			@Override
 			public void onStarted() {
 				Log.i(TAG,"searchProvider started");
-				stationListAdapter.getList().clear();
+				stationListAdapter.clear();
 				stationListAdapter.notifyDataSetChanged();
 				setProgressBar(true);
 			}
@@ -408,8 +406,8 @@ public abstract class GenericSelectStationView extends ListActivity {
     	 * Reset view
     	 */
         stationListAdapter.clear();
-    	favoriteDbAdapter.addFavoritesToList(stationListAdapter.getList());
-    	historyDbAdapter.addHistoryToList(stationListAdapter.getList());
+    	favoriteDbAdapter.addFavoritesToList(isRealtimeSelector, stationListAdapter.getList());
+    	historyDbAdapter.addHistoryToList(isRealtimeSelector, stationListAdapter.getList());
     	refresh();
     	
     	/*
@@ -550,7 +548,7 @@ class StationListAdapter extends BaseAdapter {
 	public ArrayList<StationData> getList() { return items; }
 	public void setList(ArrayList<StationData> items) { this.items = items; }
 	public void addItem(StationData item) {
-		if (parent.selectStationType == GenericSelectStationView.STATIONTYPE_REALTIME) {
+		if (parent.isRealtimeSelector) {
 			// if we have a realtime station we add only realtime stops. 
 			if (item.realtimeStop) {
 				items.add(item);

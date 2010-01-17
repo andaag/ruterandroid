@@ -29,7 +29,7 @@ import com.neuron.trafikanten.dataSets.StationData;
  * Class for storing last X used stations.
  */
 public class HistoryDbAdapter extends GenericStationDbAdapter {
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	public HistoryDbAdapter(Context context) {
 		super(context);
 		super.open("history", DATABASE_VERSION);
@@ -39,7 +39,7 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 		super.open("history", DATABASE_VERSION);
 	}
 	
-	public void addHistoryToList(ArrayList<StationData> items) {
+	public void addHistoryToList(boolean isRealtimeSelector, ArrayList<StationData> items) {
 		/*
 		 * Get all items from the list
 		 */
@@ -61,7 +61,13 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
     		}
     		
     		if (!foundDuplicate) {
-    			items.add(station);
+        		if (isRealtimeSelector) {
+        			if (station.realtimeStop) {
+        				items.add(station);
+        			}
+        		} else {
+        			items.add(station);
+        		}
     		}
     	}
     	cursor.close();
@@ -81,7 +87,8 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 			 * Update used to used + 1
 			 */
 			final String rowIdSql = "(SELECT MAX(" + KEY_ROWID + ") + 1 FROM " + table + ")"; 
-			final String sql = String.format("UPDATE %s SET %s = %s + 1, %s = %s WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_ROWID, rowIdSql, KEY_STATIONID, station.stationId);
+			final int realtimeStop = station.realtimeStop ? 1 : 0; 
+			final String sql = String.format("UPDATE %s SET %s = %s + 1, %s = %s, %s = %s WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_REALTIMESTOP, realtimeStop, KEY_ROWID, rowIdSql, KEY_STATIONID, station.stationId);
 			final Cursor c = db.rawQuery(sql, null);
 			c.moveToFirst();
 			c.close();
@@ -95,8 +102,7 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 		/*
 		 * Then delete entries too old from the list.
 		 */
-		db.delete(table, KEY_ROWID +
-				" < (select min(_id) from (select _id from " + table + " order by _id desc limit 10))", null);
+		db.delete(table, KEY_ROWID + " < (select min(_id) from (select _id from " + table + " order by _id desc limit 10))", null);
 	}
 
 }
