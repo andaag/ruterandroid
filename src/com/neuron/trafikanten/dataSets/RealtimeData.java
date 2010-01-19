@@ -25,6 +25,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.R;
 
 public class RealtimeData implements Parcelable {
 	public final static String PARCELABLE = "RealtimeData";
@@ -40,7 +41,7 @@ public class RealtimeData implements Parcelable {
 	/*
 	 * Data set of coming departures
 	 */
-	public ArrayList<Long> nextDepartures;
+	public ArrayList<NextDeparture> nextDepartures;
 	
 	/*
 	 * List of devi data, this is a int list, it links to RealtimeView.RealtimeAdapter.deviItems
@@ -48,8 +49,12 @@ public class RealtimeData implements Parcelable {
 	public ArrayList<Integer> devi;
 	
 	public RealtimeData() {
-		nextDepartures = new ArrayList<Long>();
+		nextDepartures = new ArrayList<NextDeparture>();
 		devi = new ArrayList<Integer>();
+	}
+	
+	public void addDeparture(long expectedDeparture, boolean realtime) {
+		nextDepartures.add(new NextDeparture(expectedDeparture, realtime));
 	}
 	
 	/*
@@ -57,11 +62,19 @@ public class RealtimeData implements Parcelable {
 	 */
 	public CharSequence renderDepartures(Context context) {
 		StringBuffer departures = new StringBuffer();
+		if (!realtime) {
+			departures.append(context.getText(R.string.ca));
+			departures.append(" ");
+		}
 		departures.append(HelperFunctions.renderTime(context, expectedDeparture));
 		
-		for (Long nextDeparture : nextDepartures) {
+		for (NextDeparture nextDeparture : nextDepartures) {
 			departures.append(", ");
-			departures.append(HelperFunctions.renderTime(context, nextDeparture));
+			if (!nextDeparture.realtime) {
+				departures.append(context.getText(R.string.ca));
+				departures.append(" ");
+			}
+			departures.append(HelperFunctions.renderTime(context, nextDeparture.expectedDeparture));
 		}
 		return departures;
 		
@@ -85,8 +98,8 @@ public class RealtimeData implements Parcelable {
 
 		expectedDeparture = in.readLong();
 		
-		nextDepartures = new ArrayList<Long>();
-		in.readList(nextDepartures, Long.class.getClassLoader());
+		nextDepartures = new ArrayList<NextDeparture>();
+		in.readList(nextDepartures, NextDeparture.class.getClassLoader());
 		
 		devi = new ArrayList<Integer>();
 		in.readList(devi, Integer.class.getClassLoader());
@@ -122,5 +135,50 @@ public class RealtimeData implements Parcelable {
 		    return new RealtimeData[size];
 		}
 	};
+}
 
+class NextDeparture implements Parcelable {
+	public long expectedDeparture;
+	public boolean realtime;
+	public NextDeparture(long expectedDeparture, boolean realtime) {
+		this.expectedDeparture = expectedDeparture;
+		this.realtime = realtime;
+	}
+	
+	/*
+	 * @see android.os.Parcelable
+	 */
+	@Override
+	public int describeContents() {	return 0; }
+	
+	/*
+	 * Function for reading the parcel
+	 */
+	public NextDeparture(Parcel in) {
+		expectedDeparture = in.readLong();
+		realtime = in.readInt() != 0;
+	}
+	
+	/*
+	 * Writing current data to parcel.
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+	 */
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeLong(expectedDeparture);
+		out.writeInt(realtime ? 1 : 0);
+	}
+	
+	/*
+	 * Used for bundle.getParcel 
+	 */
+    public static final Parcelable.Creator<NextDeparture> CREATOR = new Parcelable.Creator<NextDeparture>() {
+		public NextDeparture createFromParcel(Parcel in) {
+		    return new NextDeparture(in);
+		}
+		
+		public NextDeparture[] newArray(int size) {
+		    return new NextDeparture[size];
+		}
+	};
 }

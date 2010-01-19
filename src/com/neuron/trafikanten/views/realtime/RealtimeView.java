@@ -670,7 +670,7 @@ class RealtimeAdapter extends BaseAdapter {
 				/*
 				 * Data already exists, we add it to the arrival list and return
 				 */
-				d.nextDepartures.add(item.expectedDeparture);
+				d.addDeparture(item.expectedDeparture, item.realtime);
 				return;
 			}
 		}
