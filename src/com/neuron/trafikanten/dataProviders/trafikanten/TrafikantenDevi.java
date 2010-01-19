@@ -53,9 +53,9 @@ public class TrafikantenDevi  implements IDeviProvider {
 	 * @see com.neuron.trafikanten.dataProviders.IDeviProvider#Fetch(int)
 	 */
 	@Override
-	public void Fetch(int stationId) {
+	public void Fetch(int stationId, String lines) {
 		Stop();
-		thread = new TrafikantenDeviThread(handler, stationId);
+		thread = new TrafikantenDeviThread(handler, stationId ,lines);
 		thread.start();
 	}
 
@@ -87,10 +87,12 @@ class TrafikantenDeviThread extends Thread implements Runnable {
 	private static final String TAG = "Trafikanten-T-DeviThread";
 	private DeviProviderHandler handler;
 	private int stationId;	
+	private String lines;
 	
-	public TrafikantenDeviThread(DeviProviderHandler handler, int stationId) {
+	public TrafikantenDeviThread(DeviProviderHandler handler, int stationId, String lines) {
 		this.handler = handler;
 		this.stationId = stationId;
+		this.lines = lines;
 	}
 	
 	/*
@@ -100,7 +102,7 @@ class TrafikantenDeviThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			final String urlString = "http://devi.trafikanten.no/rss.aspx?show=filter&stop=" + stationId;
+			final String urlString = "http://devi.trafikanten.no/rss.aspx?show=filter&stop=" + stationId + "&linename=" + lines;
 			Log.i(TAG,"Loading devi data : " + urlString);
 			HttpGet request = new HttpGet(urlString);
 			InputStream result = HelperFunctions.executeHttpRequest(request);

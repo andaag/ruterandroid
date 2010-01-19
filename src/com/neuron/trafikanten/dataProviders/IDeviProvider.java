@@ -23,7 +23,7 @@ import com.neuron.trafikanten.dataSets.DeviData;
 import android.os.Handler;
 
 public interface IDeviProvider extends IGenericProvider {
-	public void Fetch(int stationId);
+	public void Fetch(int stationId, String lines);
 	
 	abstract class DeviProviderHandler extends Handler {
 	    public abstract void onData(DeviData deviData);

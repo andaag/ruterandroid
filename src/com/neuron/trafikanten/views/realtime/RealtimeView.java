@@ -331,7 +331,35 @@ public class RealtimeView extends ListActivity {
 			}
     		
     	});
-    	deviProvider.Fetch(station.stationId);
+    	
+    	
+    	/*
+    	 * Create list of lines - first create lineList
+    	 */
+    	ArrayList<String> lineList = new ArrayList<String>();
+    	{
+	    	final int count = realtimeList.getCount();
+	    	for (int i = 0; i < count; i++) {
+	    		final RealtimeData realtimeData = realtimeList.getItem(i);
+	    		if (!lineList.contains(realtimeData.line)) {
+	    			lineList.add(realtimeData.line);
+	    		}
+	    	}
+    	}
+    	/*
+    	 * Create list of lines - then merge it into a comma seperated list
+    	 */
+    	StringBuffer deviLines = new StringBuffer();
+    	{
+    		final int count = lineList.size();
+	    	deviLines.append(lineList.get(0));
+	    	for (int i = 1; i < count; i++) {
+	    		deviLines.append(",");
+	    		deviLines.append(lineList.get(i));
+	    	}
+    	}
+    	
+    	deviProvider.Fetch(station.stationId, deviLines.toString());
     }
     
 	/*
@@ -661,7 +689,7 @@ class RealtimeAdapter extends BaseAdapter {
 	}
 	
 	/*
-	 * Adding an item puts it in the platform category, and compressed duplicate data to one entry.	
+	 * Adding an item puts it in the platform category, and compressed duplicate data to one entry.
 	 */
 	public void addItem(RealtimeData item) {
 		RealtimePlatformList realtimePlatformList = getOrCreatePlatform(item.departurePlatform);
