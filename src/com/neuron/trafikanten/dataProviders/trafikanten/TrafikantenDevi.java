@@ -19,6 +19,7 @@
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -102,7 +103,7 @@ class TrafikantenDeviThread extends Thread implements Runnable {
 	
 	public void run() {
 		try {
-			final String urlString = "http://devi.trafikanten.no/rss.aspx?show=filter&stop=" + stationId + "&linename=" + lines;
+			final String urlString = "http://devi.trafikanten.no/rss.aspx?show=filter&stop=" + stationId + "&linename=" + URLEncoder.encode(lines,"UTF-8");
 			Log.i(TAG,"Loading devi data : " + urlString);
 			HttpGet request = new HttpGet(urlString);
 			InputStream result = HelperFunctions.executeHttpRequest(request);

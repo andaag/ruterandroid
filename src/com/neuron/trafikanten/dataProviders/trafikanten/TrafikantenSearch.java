@@ -20,6 +20,7 @@ package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -100,7 +101,7 @@ public class TrafikantenSearch implements ISearchProvider {
 
 
 class TrafikantenSearchThread extends Thread implements Runnable {
-	//private static final String TAG = "Trafikanten-T-SearchThread";
+	private static final String TAG = "Trafikanten-T-SearchThread";
 	private SearchProviderHandler handler;
 	private Resources resources;
 	private String query;
@@ -135,7 +136,8 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 				 * Setup URL for a normal station search query.
 				 */
 				if (isRealtimeStopFiltered) {
-					final String urlString = "http://reis.trafikanten.no/siri/checkrealtimestop.aspx?name=" + query;
+					final String urlString = "http://reis.trafikanten.no/siri/checkrealtimestop.aspx?name=" + URLEncoder.encode(query, "UTF-8");
+					Log.i(TAG,"Searching with url " + urlString);
 	                final URL url = new URL(urlString);
 	                result = url.openStream();
 				} else {
