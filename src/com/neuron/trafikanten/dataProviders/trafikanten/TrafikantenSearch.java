@@ -151,6 +151,7 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 				final UTMRef utmRef = latLong.toUTMRef();
 				                
 				final String urlString = "http://reis.trafikanten.no/topp2009/getcloseststops.aspx?x="+ (int)utmRef.getEasting() + "&y="+ (int) utmRef.getNorthing() + "&proposals=10";
+				Log.i(TAG,"Searching with url " + urlString);
                 final URL url = new URL(urlString);
                 result = url.openStream();
 			}
@@ -336,9 +337,10 @@ class SearchHandler extends DefaultHandler {
 		    	}
 	        } else if (inStops && localName.equals("Stops")) {
 	        	inStops = false;
-	        } else if (inWalkingDistance && localName.equals("RealTimeStop")) {
+	        } else if (inRealTimeStop && localName.equals("RealTimeStop")) {
 	        	inRealTimeStop = false;
-	        	station.realtimeStop = buffer.equals("true");
+	        	// TODO : Should get api clearification here, this should not be neccesary...
+	        	station.realtimeStop = buffer.toString().toLowerCase().equals("true");
 	        } else if (inWalkingDistance && localName.equals("WalkingDistance")) {
 	        	inWalkingDistance = false;
 	        	station.walkingDistance = Integer.parseInt(buffer.toString());
