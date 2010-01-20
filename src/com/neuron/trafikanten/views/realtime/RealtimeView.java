@@ -45,7 +45,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -789,12 +788,12 @@ class RealtimeAdapter extends BaseAdapter {
 		 */
 		final RealtimeData data = getItem(pos);
 		holder.departures.setText(data.renderDepartures(activity));
+		holder.destination.setText(data.line);
 		if (data.destination.equals(data.line)) {
-			holder.destination.setText("");
-			holder.line.setText(data.line);
+			holder.line.setVisibility(View.GONE);
 		} else {
-			holder.destination.setText(data.destination);
 			holder.line.setText(data.line);
+			holder.line.setVisibility(View.VISIBLE);
 		}
 		
 		if (renderPlatform && data.departurePlatform != null) {
