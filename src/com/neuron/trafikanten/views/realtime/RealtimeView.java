@@ -45,6 +45,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -220,7 +221,7 @@ public class RealtimeView extends ListActivity {
     		devi.removeAllViews();
     		
     		for (final DeviData deviData : deviItems) {
-				devi.addView(createDefaultDeviText(this, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+				devi.addView(createDefaultDeviText(this, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
     		}
   		
     	}

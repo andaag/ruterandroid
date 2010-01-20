@@ -16,7 +16,7 @@
     <!-- departureInfo contains stopVisitNote and devi -->
     <LinearLayout
     	android:id="@+id/devi"
-    	android:layout_width="wrap_content"
+    	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
     	android:layout_alignParentBottom="true"
     />
