@@ -73,7 +73,7 @@ public class SkyhookLocation implements ILocationProvider {
 			/*
 			 * Notify we've found a location
 			 */
-			//Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
+			Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
 			final double latitude = location.getLatitude();
 			final double longitude = location.getLongitude();
 			final double accuracy = Math.round(location.getHPE());

@@ -45,6 +45,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -220,7 +221,7 @@ public class RealtimeView extends ListActivity {
     		devi.removeAllViews();
     		
     		for (final DeviData deviData : deviItems) {
-				devi.addView(createDefaultDeviText(this, deviData.title, deviData, true));
+				devi.addView(createDefaultDeviText(this, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
     		}
   		
     	}
@@ -817,6 +818,7 @@ class RealtimeAdapter extends BaseAdapter {
 				 * Add stopvisitnote
 				 */
 				final TextView stopVisitNote = new TextView(activity);
+				final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 				stopVisitNote.setText(data.stopVisitNote);
 				
 				stopVisitNote.setSingleLine();
@@ -825,14 +827,15 @@ class RealtimeAdapter extends BaseAdapter {
 				stopVisitNote.setBackgroundResource(R.drawable.skin_sanntid_avganger);
 				stopVisitNote.setMovementMethod(ScrollingMovementMethod.getInstance());
 				stopVisitNote.setHorizontallyScrolling(true);
-				holder.departureInfo.addView(stopVisitNote);
+				
+				holder.departureInfo.addView(stopVisitNote, layoutParams);
 			}
 			for (Integer i : data.devi) {
 				/*
 				 * Add all devi items.
 				 */
 				final DeviData devi = deviItems.get(i);
-				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(activity, devi.title, devi, false));
+				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(activity, devi.title, devi, false), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 			}
 		} else {
 			holder.departureInfo.setVisibility(View.GONE);
