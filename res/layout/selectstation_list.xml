@@ -6,6 +6,8 @@
 	android:background="@drawable/skin_stoppested"
 	>
 	
+	<!-- When this file is updated REMEMBER to update selectstation_list_multiselect.xml -->
+	
 	<TextView
 		android:id="@+id/stopname"
 		android:paddingLeft="6dip"

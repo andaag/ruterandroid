@@ -8,12 +8,15 @@
 	android:background="@drawable/skin_stoppested"
 	>
 	
+	<!-- When this file is updated REMEMBER to update selectstation_list.xml -->
+	
 	<CheckBox
 		android:id="@+id/stopname"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceMedium"
 		android:layout_marginTop="-2dip"
+		android:textColor="@color/skin_stoppested"
 		/>
 		
 	<TextView
@@ -30,7 +33,7 @@
 		android:id="@+id/star"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:src="@android:drawable/btn_star_big_on"
+		android:src="@drawable/btn_star_big_on"
 		android:visible="false" 
 		android:layout_centerVertical="true"
 		android:layout_toLeftOf="@+id/range"
@@ -44,6 +47,7 @@
 		android:layout_below="@+id/stopname"
 		android:layout_marginLeft="40dip"
 		android:layout_marginTop="-17dip"
+		android:textColor="@color/skin_stoppested_subtext"
 		/>
 		
 </RelativeLayout>
