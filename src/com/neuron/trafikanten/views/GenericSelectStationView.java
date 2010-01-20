@@ -423,7 +423,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		/*
 		 * Take current selected station, and return with it.
 		 */
-		StationData station = (StationData) stationListAdapter.getItem(position);
+		final StationData station = (StationData) stationListAdapter.getItem(position);
 		stationSelected(station);
 	}
 	
@@ -486,6 +486,13 @@ public abstract class GenericSelectStationView extends ListActivity {
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+    
+	/*
+	 * This function is used only by route, and return true if multiselect is enabled and the station is selected.
+	 */
+	public boolean route_isStationSelected(StationData station) {
+		return false;
 	}
 	
 	/*
@@ -578,7 +585,7 @@ class StationListAdapter extends BaseAdapter {
 	 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
 	 */
 	@Override
-	public View getView(int pos, View convertView, ViewGroup arg2) {
+	public View getView(final int pos, View convertView, ViewGroup arg2) {
 		final StationData station = items.get(pos);
 		/*
 		 * Setup holder, for performance and readability.
@@ -602,16 +609,6 @@ class StationListAdapter extends BaseAdapter {
 			 * Old view found, we can reuse that instead of inflating.
 			 */
 			holder = (ViewHolder) convertView.getTag();
-		}
-		
-		if (layout == R.layout.selectstation_list_multiselect) {
-			CheckBox stopCheckBox = (CheckBox) convertView.findViewById(R.id.stopname);
-			stopCheckBox.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					parent.stationSelected(station);
-				}
-			});
 		}
 		
 		/*
@@ -648,6 +645,20 @@ class StationListAdapter extends BaseAdapter {
 			holder.star.setVisibility(View.VISIBLE);
 		} else {
 			holder.star.setVisibility(View.GONE);
+		}
+		
+		/*
+		 * If we're rendering checkboxes we need checkbox states
+		 */
+		if (layout == R.layout.selectstation_list_multiselect) {
+			final CheckBox stopCheckBox = (CheckBox) convertView.findViewById(R.id.stopname);
+			stopCheckBox.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					parent.stationSelected(station);
+				}
+			});
+			stopCheckBox.setChecked(parent.route_isStationSelected(station));
 		}
 		
 		return convertView;

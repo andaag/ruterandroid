@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -143,7 +144,13 @@ public class SelectRouteStationView extends GenericSelectStationView {
 				selectedStations.add(station);
 			}
 		}
-		
+	}
+	
+	
+
+	@Override
+	public boolean route_isStationSelected(StationData station) {
+		return (multiSelect == MULTISELECT_ENABLED) && selectedStations.contains(station); 
 	}
 
 	@Override
