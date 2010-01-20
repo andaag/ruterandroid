@@ -29,7 +29,7 @@
 		android:id="@+id/star"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:src="@android:drawable/btn_star_big_on"
+		android:src="@drawable/btn_star_big_on"
 		android:visible="false" 
 		android:layout_centerVertical="true"
 		android:layout_toLeftOf="@+id/range"
