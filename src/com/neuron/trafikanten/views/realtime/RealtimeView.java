@@ -789,7 +789,7 @@ class RealtimeAdapter extends BaseAdapter {
 		 */
 		final RealtimeData data = getItem(pos);
 		holder.departures.setText(data.renderDepartures(activity));
-		holder.destination.setText(data.line);
+		holder.destination.setText(data.destination);
 		if (data.destination.equals(data.line)) {
 			holder.line.setVisibility(View.GONE);
 		} else {
