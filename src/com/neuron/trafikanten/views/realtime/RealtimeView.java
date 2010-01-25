@@ -353,9 +353,10 @@ public class RealtimeView extends ListActivity {
     	StringBuffer deviLines = new StringBuffer();
     	{
     		final int count = lineList.size();
-	    	deviLines.append(lineList.get(0));
-	    	for (int i = 1; i < count; i++) {
-	    		deviLines.append(",");
+	    	for (int i = 0; i < count; i++) {
+	    		if (i > 0) {
+	    			deviLines.append(",");
+	    		}
 	    		deviLines.append(lineList.get(i));
 	    	}
     	}

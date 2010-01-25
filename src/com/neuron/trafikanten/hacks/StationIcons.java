@@ -21,13 +21,17 @@ public class StationIcons {
 			return R.drawable.icon_bus;
 		}
 		
-		final Integer lineI = Integer.parseInt(line);
-		if (lineI != null) {
-			if (lineI <= 6) {
-				return R.drawable.icon_subway;
-			} else if (lineI <= 19) {
-				return R.drawable.icon_tram;
+		try {
+			final Integer lineI = Integer.parseInt(line);
+			if (lineI != null) {
+				if (lineI <= 6) {
+					return R.drawable.icon_subway;
+				} else if (lineI <= 19) {
+					return R.drawable.icon_tram;
+				}
 			}
+		} catch (NumberFormatException e) {
+			// if we can't parse we default to bus
 		}
 		
 		// Default to bus.
