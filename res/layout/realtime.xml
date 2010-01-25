@@ -18,7 +18,24 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/devi"
+        android:layout_above="@+id/caInfoText"
         />
+        
+    <TextView android:id="@+id/caInfoText"
+    	android:paddingTop="2dip"
+    	android:paddingLeft="6dip"
+    	android:paddingRight="6dip"
+    	android:paddingBottom="5dip"
+    	android:background="@drawable/skin_sanntid_avganger"
+    	
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text='"ca" betyr at det ikke er sanntid for avgangen,
+da er det tider fra rutetabellen som vises.'
+        android:gravity="center"
+        android:textColor="#FFF"
+        android:layout_alignParentBottom="true"
+    />
     
     <TextView
     	android:id="@+id/emptyText"
