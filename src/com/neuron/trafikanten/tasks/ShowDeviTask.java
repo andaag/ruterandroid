@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import android.app.Activity;
 import android.app.Dialog;
 import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
 
 import com.neuron.trafikanten.R;
@@ -34,7 +33,7 @@ public class ShowDeviTask implements GenericTask {
     
     private void showDialog() {
 		dialog = new Dialog(activity, android.R.style.Theme);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setTitle(R.string.deviTitle);
 		dialog.setContentView(R.layout.dialog_showdevi);
 		
 		final TextView validPeriod = (TextView) dialog.findViewById(R.id.validPeriod);

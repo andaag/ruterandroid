@@ -118,6 +118,7 @@ we fallback to route information.</string>
         
         <!-- ShowDeviTask -->
         <string name="validFrom">Valid from</string>
+        <string name="deviTitle">Trafikanten - Deviations</string>
         
         <!-- SearchAddressTask -->
         <string name="searchAddressTask">Search for address:</string>

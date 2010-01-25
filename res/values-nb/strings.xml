@@ -114,6 +114,7 @@ da er det tider fra rutetabellen som vises.</string>
         
         <!-- ShowDeviTask -->
         <string name="validFrom">Gyldig fra</string>
+        <string name="deviTitle">Trafikanten - Avvik</string>
         
         <!-- SearchAddressTask -->
         <string name="searchAddressTask">Søk etter addresse:</string>
