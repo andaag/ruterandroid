@@ -31,13 +31,18 @@
 			android:id="@+id/line"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:paddingLeft="3px"
+			android:paddingRight="3px"
 			
 			android:background="#ffffff"
 			android:textColor="#3c65bf"
-			android:padding="1dip"
+			android:paddingTop="1dip"
+			android:paddingBottom="1dip"
 			android:textStyle="bold"
 			android:typeface="sans"
 			android:textSize="14dip"
+			android:gravity="center"
+			android:singleLine="true"
 			
 			android:text="301"
 			/>

@@ -820,10 +820,9 @@ class RealtimeAdapter extends BaseAdapter {
 		holder.departures.setText(data.renderDepartures(activity));
 		holder.destination.setText(data.destination);
 		if (data.destination.equals(data.line)) {
-			holder.line.setVisibility(View.GONE);
+			holder.line.setText("-");
 		} else {
 			holder.line.setText(data.line);
-			holder.line.setVisibility(View.VISIBLE);
 		}
 		
 		if (renderPlatform && data.departurePlatform != null) {
