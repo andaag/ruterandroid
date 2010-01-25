@@ -151,7 +151,6 @@ public abstract class GenericSelectStationView extends ListActivity {
                 		resetView();
                 	} else {
                 		searchProvider.Search(searchEdit.getText().toString(), isRealtimeSelector);
-                    	searchEdit.setText("");
                 	}
                 	return true;
                 }
