@@ -19,10 +19,17 @@
 -->
 
 
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/scrollview"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:id="@+id/body"
     android:orientation="vertical"
-    android:layout_width="280dip"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:baselineAligned="false"
     android:paddingLeft="8dip"
@@ -73,6 +80,6 @@
         
         android:text="Årsaken er oppgradering og fornyelse av adkomstveiene på Vestli stasjon og det er nødvendig å stenge stasjonen for trafikk. Buss vil derfor erstatte bane mellom Stovner og Vestli i anleggsperioden." />
 
-
-
 </LinearLayout>
+
+</ScrollView>

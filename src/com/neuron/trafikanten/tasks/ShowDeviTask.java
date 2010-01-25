@@ -33,7 +33,7 @@ public class ShowDeviTask implements GenericTask {
     }
     
     private void showDialog() {
-		dialog = new Dialog(activity);
+		dialog = new Dialog(activity, android.R.style.Theme);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.dialog_showdevi);
 		
