@@ -5,21 +5,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-        
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/devi"
-        />
-        
+
     <!-- departureInfo contains stopVisitNote and devi -->
     <LinearLayout
     	android:id="@+id/devi"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
-    	android:layout_alignParentBottom="true"
     />
+        
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/devi"
+        />
     
     <TextView
     	android:id="@+id/emptyText"
