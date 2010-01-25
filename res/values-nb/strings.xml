@@ -59,7 +59,7 @@ Husk å gi Trafikanten rating på android market</string>
 
         <!-- SelectStationView -->
         <string name="address">Addresse Søk</string>
-        <string name="showingRealtimeOnly">Viser kun stasjoner med sanntid data.</string>
+        <string name="showingRealtimeOnly">Viser kun stasjoner med sanntid.</string>
         <string name="map">Kart</string>
         <string name="contact">Kontakt</string>
         <string name="addFavorite">Legg til i favoritter</string>

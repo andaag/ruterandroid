@@ -62,7 +62,7 @@ Please rate trafikanten on android market!</string>
 	<string name="favorites">Favorites</string>
 
         <!-- SelectStationView -->
-        <string name="showingRealtimeOnly">Showing only stations with realtime data.</string>
+        <string name="showingRealtimeOnly">Showing only stations with realtime information.</string>
         <string name="address">Address Search</string>
         <string name="map">Map</string>
         <string name="contact">Contact</string>
