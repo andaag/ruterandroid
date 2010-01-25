@@ -92,6 +92,9 @@ Trykk på ett reise forslag for detaljer!</string>
         <string name="late">forsinket</string>
         <string name="warnings">Advarsler</string>
         <string name="hintRealtimeHoldButton">Hold nede for flere valg!</string>
+        <string name="caHelpText">"ca" betyr at det ikke er sanntid for avgangen,
+da er det tider fra rutetabellen som vises.</string>
+<string name="changeCaTextVisibility">Vis/Skjul "ca" help text</string>
         
         <!-- Tasks -->
         <string name="searchRouteTask">Kalkulerer rute...</string>

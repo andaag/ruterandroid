@@ -96,6 +96,9 @@ Click a travel proposal for a detailed view!</string>
         <string name="late">late</string>
         <string name="warnings">Warnings</string>
         <string name="hintRealtimeHoldButton">Long-press for more options!</string>
+        <string name="caHelpText">"ca" means realtime information is unavailable,
+we fallback to route information.</string>
+		<string name="changeCaTextVisibility">Show/Hide "ca" help text</string>
         
         <!-- Tasks -->
         <string name="searchRouteTask">Calculating route...</string>

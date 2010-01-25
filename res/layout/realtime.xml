@@ -30,8 +30,7 @@
     	
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text='"ca" betyr at det ikke er sanntid for avgangen,
-da er det tider fra rutetabellen som vises.'
+        android:text="@string/caHelpText"
         android:gravity="center"
         android:textColor="#FFF"
         android:layout_alignParentBottom="true"

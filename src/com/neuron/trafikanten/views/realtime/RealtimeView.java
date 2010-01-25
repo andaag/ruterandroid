@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -68,6 +69,7 @@ import com.neuron.trafikanten.tasks.ShowDeviTask;
 
 public class RealtimeView extends ListActivity {
 	private static final String TAG = "Trafikanten-RealtimeView";
+	private static final String SETTING_HIDECA = "realtime_hideCaText";
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	public static final String KEY_DEVILIST = "devilist";
 	
@@ -75,6 +77,7 @@ public class RealtimeView extends ListActivity {
 	 * Options menu:
 	 */
 	private static final int REFRESH_ID = Menu.FIRST;
+	private static final int HIDECA_ID = Menu.FIRST + 1;
 	
 	/*
 	 * Context menu:
@@ -145,6 +148,13 @@ public class RealtimeView extends ListActivity {
         	realtimeList.loadInstanceState(savedInstanceState);
         	realtimeList.notifyDataSetChanged();
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
+        }
+        
+        final SharedPreferences settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
+        boolean hideCaText = settings.getBoolean(SETTING_HIDECA, false);
+        if (hideCaText) {
+        	final TextView caText = (TextView) findViewById(R.id.caInfoText);
+        	caText.setVisibility(View.GONE);
         }
 
         registerForContextMenu(getListView());
@@ -372,10 +382,14 @@ public class RealtimeView extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		final MenuItem myLocation = menu.add(0, REFRESH_ID, 0, R.string.refresh);
 		myLocation.setIcon(R.drawable.ic_menu_refresh);
+        
+        final MenuItem showHideCaText = menu.add(0, HIDECA_ID, 0, R.string.changeCaTextVisibility);
+        showHideCaText.setIcon(android.R.drawable.ic_menu_info_details);
+
 		return true;
 	}
 
-	/*
+	/*O
 	 * Options menu item selected, options menu visible on menu button.
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
@@ -384,6 +398,20 @@ public class RealtimeView extends ListActivity {
         switch(item.getItemId()) {
         case REFRESH_ID:
         	load();
+        	break;
+        case HIDECA_ID:
+            final SharedPreferences settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
+            boolean hideCaText = !settings.getBoolean(SETTING_HIDECA, false);
+        	final TextView caText = (TextView) findViewById(R.id.caInfoText);
+        	SharedPreferences.Editor editor = settings.edit();
+            if (hideCaText) {
+            	caText.setVisibility(View.GONE);
+            	editor.putBoolean("realtime_hideCaText", true);
+            } else {
+            	caText.setVisibility(View.VISIBLE);
+            	editor.putBoolean("realtime_hideCaText", false);
+            }
+            editor.commit();
         	break;
         }
 		return super.onOptionsItemSelected(item);
