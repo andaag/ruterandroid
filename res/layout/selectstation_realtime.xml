@@ -34,7 +34,7 @@
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:gravity="center"
 		android:textColor="#ffffff"
-		android:background="@drawable/skin_platform"
+		android:background="@drawable/skin_hint"
 		android:text="@string/showingRealtimeOnly" />
     	
     <ListView
