@@ -54,11 +54,11 @@ public class HelperFunctions {
 		if (diffMinutes < -1) {
 			// Negative time!
 			diffMinutes = diffMinutes * -1;
-			return "-" + diffMinutes + "m";
+			return "-" + diffMinutes + " min";
 		} else if (diffMinutes < 1) {
 			return context.getText(R.string.now).toString();
 		} else if (diffMinutes < 9) {
-			return diffMinutes + "m";
+			return diffMinutes + " min";
 		}
 		return hourFormater.format(time).toString();
     }
@@ -70,7 +70,7 @@ public class HelperFunctions {
 		if (time < MINUTE)
 			return null;
 		if (time < HOUR) {
-			return "" + time / MINUTE + "m";
+			return "" + time / MINUTE + " min";
 		}
 		return hourFormater.format(time).toString();    	
     }
