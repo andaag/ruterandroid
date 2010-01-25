@@ -169,7 +169,7 @@ public class RealtimeView extends ListActivity {
     	long lastUpdateDiff = (System.currentTimeMillis() - lastUpdate) / HelperFunctions.SECOND;
     	if (lastUpdateDiff > 60) {
     		lastUpdateDiff = lastUpdateDiff / 60;
-    		setTitle("Trafikanten - " + station.stopName + "   (" + lastUpdateDiff + "m " + getText(R.string.old) + ")");
+    		setTitle("Trafikanten - " + station.stopName + "   (" + lastUpdateDiff + " min " + getText(R.string.old) + ")");
     	} else {
     		setTitle("Trafikanten - " + station.stopName);
     	}

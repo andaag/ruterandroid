@@ -191,9 +191,9 @@ public class DetailedRouteView extends ListActivity {
 			/*
 			 * Setup actual text
 			 */
-			viewHolder.infoText.setText("" + getText(R.string.travelTime) + " " + ((arrival - departure) / HelperFunctions.MINUTE) + "m\n" +
-					getText(R.string.waitTime) + " " + waitTime + "m\n" +
-					getText(R.string.walkTime) + " " + walkTime + "m");
+			viewHolder.infoText.setText("" + getText(R.string.travelTime) + " " + ((arrival - departure) / HelperFunctions.MINUTE) + " min\n" +
+					getText(R.string.waitTime) + " " + waitTime + " min\n" +
+					getText(R.string.walkTime) + " " + walkTime + " min");
 		} else {
 			viewHolder.infoText.setVisibility(View.INVISIBLE);
 		}

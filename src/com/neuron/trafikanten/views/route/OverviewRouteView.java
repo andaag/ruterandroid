@@ -403,12 +403,12 @@ class OverviewRouteAdapter extends BaseAdapter {
 					/*routeInfoText.addString(line + " (", null, 0);
 					routeInfoText.addString(minDiff + "m", new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
 					routeInfoText.addString(")", null, 0);*/
-					routeInfoText.addString(line + " (" + minDiff + "m)", null, 0);
+					routeInfoText.addString(line + " (" + minDiff + " min)", null, 0);
 				} else {
 					/*routeInfoText.addString(", " + line + " (", null, 0);
 					routeInfoText.addString(minDiff + "m", new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
 					routeInfoText.addString(")", null, 0);*/
-					routeInfoText.addString(", " + line + " (" + minDiff + "m)", null, 0);
+					routeInfoText.addString(", " + line + " (" + minDiff + " min)", null, 0);
 				}
 			}
 		}
@@ -426,7 +426,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			footerText.addString(" arrival ", null, 0);
 			footerText.addString(HelperFunctions.hourFormater.format(arrival),new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
 			footerText.addString(" total ", null, 0);
-			footerText.addString(new Long(minDiff).toString() + "m",new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
+			footerText.addString(new Long(minDiff).toString() + " min",new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
 			holder.footer.setText(footerText.toSpannableString());
 			holder.footer.setSingleLine();
 		}

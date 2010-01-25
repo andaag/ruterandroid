@@ -69,7 +69,7 @@ public class RealtimeData implements Parcelable {
 		departures.append(HelperFunctions.renderTime(context, expectedDeparture));
 		
 		for (NextDeparture nextDeparture : nextDepartures) {
-			departures.append(", ");
+			departures.append("  ");
 			if (!nextDeparture.realtime) {
 				departures.append(context.getText(R.string.ca));
 				departures.append(" ");
