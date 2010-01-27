@@ -610,7 +610,7 @@ class RealtimeAdapter extends BaseAdapter {
 	
 	public RealtimeAdapter(RealtimeView parent) {
 		inflater = LayoutInflater.from(parent);
-		departuresTypeface = Typeface.createFromAsset(parent.getAssets(), "fonts/typewriter.ttf");
+		departuresTypeface = Typeface.createFromAsset(parent.getAssets(), "fonts/DejaVuSansMono.ttf");
 		this.parent = parent;
 	}
 	

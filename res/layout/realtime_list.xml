@@ -88,7 +88,8 @@
 		android:paddingTop="1dip"
 		android:paddingRight="8dip"
 		android:paddingBottom="1dip"
-		android:textSize="15dip"
+		android:textSize="14dip"
+		android:gravity="center_vertical"
 		android:ellipsize="none"
 				
 		android:singleLine="true"
