@@ -69,7 +69,7 @@ import com.neuron.trafikanten.tasks.ShowDeviTask;
 
 public class RealtimeView extends ListActivity {
 	private static final String TAG = "Trafikanten-RealtimeView";
-	private static final String SETTING_HIDECA = "realtime_hideCaText";
+	public static final String SETTING_HIDECA = "realtime_hideCaText";
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	public static final String KEY_DEVILIST = "devilist";
 	
@@ -112,6 +112,11 @@ public class RealtimeView extends ListActivity {
 	private IRealtimeProvider realtimeProvider;
 	private IDeviProvider deviProvider;
 	
+	/*
+	 * Other
+	 */
+    public SharedPreferences settings;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,6 +130,7 @@ public class RealtimeView extends ListActivity {
         realtimeList = new RealtimeAdapter(this);
         devi = (LinearLayout) findViewById(R.id.devi);
 		infoText = (TextView) findViewById(R.id.emptyText);
+		settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
         		
         /*
          * Load instance state
@@ -148,13 +154,6 @@ public class RealtimeView extends ListActivity {
         	realtimeList.loadInstanceState(savedInstanceState);
         	realtimeList.notifyDataSetChanged();
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
-        }
-        
-        final SharedPreferences settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
-        boolean hideCaText = settings.getBoolean(SETTING_HIDECA, false);
-        if (hideCaText) {
-        	final TextView caText = (TextView) findViewById(R.id.caInfoText);
-        	caText.setVisibility(View.GONE);
         }
 
         registerForContextMenu(getListView());
@@ -400,16 +399,15 @@ public class RealtimeView extends ListActivity {
         	load();
         	break;
         case HIDECA_ID:
-            final SharedPreferences settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
-            boolean hideCaText = !settings.getBoolean(SETTING_HIDECA, false);
         	final TextView caText = (TextView) findViewById(R.id.caInfoText);
+        	boolean hideCaText = !(caText.getVisibility() == View.GONE);
         	SharedPreferences.Editor editor = settings.edit();
             if (hideCaText) {
             	caText.setVisibility(View.GONE);
-            	editor.putBoolean("realtime_hideCaText", true);
+            	editor.putBoolean(SETTING_HIDECA, true);
             } else {
             	caText.setVisibility(View.VISIBLE);
-            	editor.putBoolean("realtime_hideCaText", false);
+            	editor.putBoolean(SETTING_HIDECA, false);
             }
             editor.commit();
         	break;
@@ -596,6 +594,8 @@ class RealtimeAdapter extends BaseAdapter {
 	private int itemsSize = 0; // Cached for performance, this is len(items) + len(item[0]) + len(item[1]) ...
 	public int itemsAddedWithoutNotify = 0; // List of items added during load without a .notifyDataUpdated
 	
+	private boolean caVisibilityChecked = false; 
+	
 	/*
 	 * Devi data:
 	 */
@@ -606,12 +606,12 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	private boolean renderPlatform = false;
 	
-	private Activity activity;
+	private RealtimeView parent;
 	
-	public RealtimeAdapter(Activity activity) {
-		inflater = LayoutInflater.from(activity);
-		departuresTypeface = Typeface.createFromAsset(activity.getAssets(), "fonts/typewriter.ttf");
-		this.activity = activity;
+	public RealtimeAdapter(RealtimeView parent) {
+		inflater = LayoutInflater.from(parent);
+		departuresTypeface = Typeface.createFromAsset(parent.getAssets(), "fonts/typewriter.ttf");
+		this.parent = parent;
 	}
 	
 	/*
@@ -811,7 +811,7 @@ class RealtimeAdapter extends BaseAdapter {
 		 * Render data to view.
 		 */
 		final RealtimeData data = getItem(pos);
-		holder.departures.setText(data.renderDepartures(activity));
+		holder.departures.setText(data.renderDepartures(parent));
 		holder.destination.setText(data.destination);
 		if (data.destination.equals(data.line)) {
 			holder.line.setText("-");
@@ -829,6 +829,18 @@ class RealtimeAdapter extends BaseAdapter {
 		holder.icon.setImageResource(StationIcons.hackGetLineIcon(RealtimeView.station, data.line));
 		
 		/*
+		 * check "ca info text" visibility
+		 */
+		if (!caVisibilityChecked && !data.realtime) {
+			caVisibilityChecked = true;
+			boolean hideCaText = parent.settings.getBoolean(RealtimeView.SETTING_HIDECA, false);
+			if (!hideCaText) {
+	        	final TextView caText = (TextView) parent.findViewById(R.id.caInfoText);
+	        	caText.setVisibility(View.VISIBLE);
+			}
+		}
+		
+		/*
 		 * Setup devi
 		 */
 		if (data.devi.size() > 0 || data.stopVisitNote != null) {
@@ -839,7 +851,7 @@ class RealtimeAdapter extends BaseAdapter {
 				/*
 				 * Add stopvisitnote
 				 */
-				final TextView stopVisitNote = new TextView(activity);
+				final TextView stopVisitNote = new TextView(parent);
 				final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 				stopVisitNote.setText(data.stopVisitNote);
 				
@@ -857,7 +869,7 @@ class RealtimeAdapter extends BaseAdapter {
 				 * Add all devi items.
 				 */
 				final DeviData devi = deviItems.get(i);
-				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(activity, devi.title, devi, false), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(parent, devi.title, devi, false), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 			}
 		} else {
 			holder.departureInfo.setVisibility(View.GONE);
