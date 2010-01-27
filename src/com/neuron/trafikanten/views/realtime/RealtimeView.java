@@ -534,9 +534,9 @@ public class RealtimeView extends ListActivity {
 
 class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable {
 	private static final long serialVersionUID = -8158771022676013360L;
-	public String platform;
+	public int platform;
 	
-	public RealtimePlatformList(String platform) {
+	public RealtimePlatformList(int platform) {
 		super();
 		this.platform = platform;
 	}
@@ -551,7 +551,7 @@ class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable
 	 * Function for reading the parcel
 	 */
 	public RealtimePlatformList(Parcel in) {
-		platform = in.readString();
+		platform = in.readInt();
 		in.readList(this, RealtimeData.class.getClassLoader());
 	}
 	
@@ -561,7 +561,7 @@ class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeString(platform);
+		out.writeInt(platform);
 		out.writeList(this);
 	}
 	
@@ -680,18 +680,12 @@ class RealtimeAdapter extends BaseAdapter {
 	/*
 	 * Simple function that gets (or creates a new) platform in items
 	 */
-	public RealtimePlatformList getOrCreatePlatform(String platform) {
-		/*
-		 * We cant deal with null platforms
-		 */
-		if (platform == null)
-			platform = "";
-		
+	public RealtimePlatformList getOrCreatePlatform(int platform) {
 		/*
 		 * If the platform already exists in the database just return it
 		 */
 		for (RealtimePlatformList realtimePlatformList : items) {
-			if (realtimePlatformList.platform.equals(platform)) {
+			if (realtimePlatformList.platform == platform) {
 				return realtimePlatformList;
 			}
 		}
@@ -706,7 +700,7 @@ class RealtimeAdapter extends BaseAdapter {
 		 */
 		int pos = 0;
 		for (; pos < items.size(); pos++) {
-			if (platform.compareTo(items.get(pos).platform) < 0) {
+			if (platform < items.get(pos).platform) {
 				break;
 			}
 		}
@@ -825,7 +819,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.line.setText(data.line);
 		}
 		
-		if (renderPlatform && data.departurePlatform != null) {
+		if (renderPlatform && data.departurePlatform != 0) {
 			holder.platform.setText("Platform " + data.departurePlatform);
 			holder.platform.setVisibility(View.VISIBLE);
 		} else {

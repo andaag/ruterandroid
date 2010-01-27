@@ -262,7 +262,22 @@ class RealtimeHandler extends DefaultHandler {
 		        data.expectedDeparture = parseDateTime(buffer.toString());
 		    } else if (inDeparturePlatformName) {
 		        inDeparturePlatformName = false;
-		        data.departurePlatform = buffer.toString();
+		        /*
+		         * platform should be parsed as int, they recomend parsing them as int.
+		         * 
+					from	Torbjørn Barslett <tb@trafikanten.no>
+					sender-time	Sent at 4:02 PM (GMT+01:00). Current time there: 5:09 PM. ✆
+					to	Anders Aagaard <aagaande@gmail.com>,
+					Bent Flyen <bent.flyen@trafikanten.no>
+					cc	QA <qa@trafikanten.no>
+					date	Tue, Jan 26, 2010 at 4:02 PM
+					subject	SV: Trafikanten oppdatering
+		         */
+		        try {
+		        	data.departurePlatform = Integer.parseInt(buffer.toString());
+		        } catch (NumberFormatException e) {
+		        	data.departurePlatform = 0;
+		        }
 		    } else if (inStopVisitNote) {
 		        inStopVisitNote = false;
 		        data.stopVisitNote = buffer.toString();
