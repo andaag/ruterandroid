@@ -384,7 +384,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 * Add Icon to proposalIcons
 			 */
 			{
-				final int symbolImage = DataProviderFactory.getImageResource(routeData.transportType);
+				final int symbolImage = routeData.transportType;
 				if (symbolImage > 0) {
 					final ImageView imageView = new ImageView(context);
 					imageView.setImageResource(symbolImage);
@@ -398,7 +398,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 */
 			{
 				final long minDiff = (routeData.arrival - routeData.departure) / HelperFunctions.MINUTE;
-				final String line = routeData.transportType == IRouteProvider.TRANSPORT_WALK ? context.getText(R.string.walk).toString() : routeData.line;
+				final String line = routeData.transportType == R.drawable.icon_walk ? context.getText(R.string.walk).toString() : routeData.line;
 				if (routeInfoText.length() == 0) {
 					/*routeInfoText.addString(line + " (", null, 0);
 					routeInfoText.addString(minDiff + "m", new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);

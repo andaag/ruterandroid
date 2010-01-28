@@ -43,8 +43,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataProviders.IRouteProvider;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.notification.NotificationDialog;
@@ -183,7 +181,7 @@ public class DetailedRouteView extends ListActivity {
 			
 			for (RouteData data : list) {
 				waitTime = waitTime + data.waitTime;
-				if (data.transportType == IRouteProvider.TRANSPORT_WALK) {
+				if (data.transportType == R.drawable.icon_walk) {
 					walkTime = walkTime + (int)((data.arrival - data.departure) / HelperFunctions.MINUTE);					
 				}
 			}
@@ -342,7 +340,7 @@ class RouteAdapter extends BaseAdapter {
 		 */
 		final RouteData routeData = items.get(pos);
 		
-		if (routeData.transportType == IRouteProvider.TRANSPORT_WALK) {
+		if (routeData.transportType == R.drawable.icon_walk) {
 			holder.transportDestination.setText(R.string.walk);
 		} else {
 			holder.transportDestination.setText(routeData.destination);
@@ -359,7 +357,7 @@ class RouteAdapter extends BaseAdapter {
 		/*
 		 * Setup symbol.
 		 */
-		final int symbolImage = DataProviderFactory.getImageResource(routeData.transportType);
+		final int symbolImage = routeData.transportType;
 		if (symbolImage > 0) {
 			holder.symbol.setVisibility(View.VISIBLE);
 			holder.symbol.setImageResource(symbolImage);

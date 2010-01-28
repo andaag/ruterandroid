@@ -24,17 +24,6 @@ import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 
 public interface IRouteProvider extends IGenericProvider {
-
-	/*
-	 * Generic transportation id's, note that .getImageResource is called, so feel free to use custom transportation types.
-	 */
-	public final static int TRANSPORT_UNKNOWN = 0;
-	public final static int TRANSPORT_TRAIN = 1;
-	public final static int TRANSPORT_TRAM = 2;
-	public final static int TRANSPORT_BUS = 3;
-	public final static int TRANSPORT_SUBWAY = 4;
-	public final static int TRANSPORT_WALK = 5;
-	
 	public void Search(RouteSearchData routeSearch);
 	
 	abstract class RouteProviderHandler extends Handler {

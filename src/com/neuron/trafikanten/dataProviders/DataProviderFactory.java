@@ -28,7 +28,6 @@ import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenDevi;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
-import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenTransports;
 
 /*
  * Class used for getting the right Search/Realtime/Route etc provider.
@@ -72,13 +71,4 @@ public class DataProviderFactory {
 	public static IDeviProvider getDeviProvider(DeviProviderHandler handler) {
 		return new TrafikantenDevi(handler);
 	}
-	
-	/*
-	 * Get Transports Provider
-	 */
-	public static int getImageResource(int transportType) {
-		return TrafikantenTransports.getImageResource(transportType);
-	}
-	
-
 }
