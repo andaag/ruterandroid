@@ -20,7 +20,6 @@ package com.neuron.trafikanten.views.realtime;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.SharedPreferences;
@@ -116,6 +115,7 @@ public class RealtimeView extends ListActivity {
 	 * Other
 	 */
     public SharedPreferences settings;
+    public Typeface departuresTypeface;
 	
     /** Called when the activity is first created. */
     @Override
@@ -131,6 +131,7 @@ public class RealtimeView extends ListActivity {
         devi = (LinearLayout) findViewById(R.id.devi);
 		infoText = (TextView) findViewById(R.id.emptyText);
 		settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
+		departuresTypeface = Typeface.createFromAsset(getAssets(), "fonts/DejaVuSans.ttf");
         		
         /*
          * Load instance state
@@ -189,7 +190,7 @@ public class RealtimeView extends ListActivity {
      * Function for creating the default devi text, used both for line data and station data
      * deviData can be null if data is StopVisitNote
      */
-    public static TextView createDefaultDeviText(final Activity context, final String title, final DeviData deviData, boolean station) {
+    public static TextView createDefaultDeviText(final RealtimeView context, final String title, final DeviData deviData, boolean station) {
     	TextView deviText = new TextView(context);
 		deviText.setText(title);
 		
@@ -202,6 +203,7 @@ public class RealtimeView extends ListActivity {
 			deviText.setTextColor(Color.rgb(250, 244, 0));
 			deviText.setBackgroundResource(R.drawable.skin_sanntiddevi);
 		}
+		deviText.setTypeface(context.departuresTypeface);
 		
 		deviText.setOnClickListener(new OnClickListener() {
 			@Override
@@ -582,7 +584,6 @@ class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_STATIONDEVILIST = "stationdevilist";
 	public static final String KEY_ITEMSSIZE = "devilistsize";
 	private LayoutInflater inflater;
-	private Typeface departuresTypeface;
 	
 	/*
 	 * Structure:
@@ -610,7 +611,6 @@ class RealtimeAdapter extends BaseAdapter {
 	
 	public RealtimeAdapter(RealtimeView parent) {
 		inflater = LayoutInflater.from(parent);
-		departuresTypeface = Typeface.createFromAsset(parent.getAssets(), "fonts/DejaVuSansMono.ttf");
 		this.parent = parent;
 	}
 	
@@ -785,7 +785,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.icon = (ImageView) convertView.findViewById(R.id.icon);
 			holder.destination = (TextView) convertView.findViewById(R.id.destination);
 			holder.departures = (TextView) convertView.findViewById(R.id.departures);
-			holder.departures.setTypeface(departuresTypeface);
+			holder.departures.setTypeface(parent.departuresTypeface);
 			holder.departures.setMovementMethod(ScrollingMovementMethod.getInstance());
 			holder.departures.setHorizontallyScrolling(true);
 			holder.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
@@ -861,6 +861,7 @@ class RealtimeAdapter extends BaseAdapter {
 				stopVisitNote.setBackgroundResource(R.drawable.skin_sanntid_avganger);
 				stopVisitNote.setMovementMethod(ScrollingMovementMethod.getInstance());
 				stopVisitNote.setHorizontallyScrolling(true);
+				stopVisitNote.setTypeface(parent.departuresTypeface);
 				
 				holder.departureInfo.addView(stopVisitNote, layoutParams);
 			}
