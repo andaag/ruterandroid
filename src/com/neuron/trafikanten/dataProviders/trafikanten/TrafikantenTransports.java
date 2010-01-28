@@ -25,13 +25,13 @@ public class TrafikantenTransports {
 	static public int getImageResource(int transportType) {
 		switch (transportType) {
 		case IRouteProvider.TRANSPORT_TRAIN:
-			return R.drawable.icon_train;
+			return R.drawable.icon32_line_train;
 		case IRouteProvider.TRANSPORT_TRAM:
-			return R.drawable.icon_tram;
+			return R.drawable.icon32_line_tram;
 		case IRouteProvider.TRANSPORT_BUS:
-			return R.drawable.icon_bus;
+			return R.drawable.icon32_line_bus;
 		case IRouteProvider.TRANSPORT_SUBWAY:
-			return R.drawable.icon_subway;
+			return R.drawable.icon32_line_underground;
 		case IRouteProvider.TRANSPORT_WALK:
 			return R.drawable.icon_walk;
 		}

@@ -74,8 +74,6 @@
 			android:layout_height="wrap_content"
 			android:gravity="right"
 			android:layout_marginRight="12dip"
-			android:src="@drawable/icon_boat"
-			
 			/>
 	</TableRow>
 			

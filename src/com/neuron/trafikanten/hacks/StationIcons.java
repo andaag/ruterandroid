@@ -14,20 +14,20 @@ public class StationIcons {
 	public static int hackGetLineIcon(StationData station, String line) {
 		final String stopName = station.stopName.toLowerCase();
 		if (stopName.contains("tog")) {
-			return R.drawable.icon_train;
+			return R.drawable.icon32_line_train;
 		} else if (stopName.contains("t-bane")) {
-			return R.drawable.icon_tram;
+			return R.drawable.icon32_line_tram;
 		} else if (stopName.contains("buss")) {
-			return R.drawable.icon_bus;
+			return R.drawable.icon32_line_bus;
 		}
 		
 		try {
 			final Integer lineI = Integer.parseInt(line);
 			if (lineI != null) {
 				if (lineI <= 6) {
-					return R.drawable.icon_subway;
+					return R.drawable.icon32_line_underground;
 				} else if (lineI <= 19) {
-					return R.drawable.icon_tram;
+					return R.drawable.icon32_line_tram;
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -35,6 +35,6 @@ public class StationIcons {
 		}
 		
 		// Default to bus.
-		return R.drawable.icon_bus;
+		return R.drawable.icon32_line_bus;
 	}
 }
