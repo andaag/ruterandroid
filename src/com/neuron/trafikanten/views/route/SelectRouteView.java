@@ -40,6 +40,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -359,8 +360,9 @@ public class SelectRouteView extends ListActivity {
 			 * Create a dialog for selecting travel day and time.
 			 */
 			final Dialog dialog = new Dialog(this);
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog.setContentView(R.layout.selectroute_dialog_timepick);
-			dialog.setTitle(R.string.setTravelTime);
+
 			/*
 			 * Setup the travel at/arrive before spinner.
 			 */
