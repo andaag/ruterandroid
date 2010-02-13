@@ -44,6 +44,7 @@ import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.dataSets.StationData;
+import com.neuron.trafikanten.hacks.WaittimeBug;
 
 public class TrafikantenRoute implements IRouteProvider {
 	private RouteProviderHandler handler;
@@ -209,7 +210,6 @@ class RouteHandler extends DefaultHandler {
 	private static RouteProposal travelProposal;
 	private RouteData travelStage; // temporary only, these are moved to travelStageList
 
-	
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
 
 	/*
@@ -344,6 +344,9 @@ class RouteHandler extends DefaultHandler {
 			inTravelProposal = false;
 			
 	        final RouteProposal sendData = travelProposal;
+	        
+	        //hack:
+	        WaittimeBug.onSendData(sendData);
 			handler.post(new Runnable() {
 				@Override
 				public void run() {
