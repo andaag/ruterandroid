@@ -397,7 +397,11 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 * Add text line
 			 */
 			{
-				final long minDiff = (routeData.arrival - routeData.departure) / HelperFunctions.MINUTE;
+				long minDiff = (routeData.arrival - routeData.departure) / HelperFunctions.MINUTE;
+				//Hack:
+				if (minDiff > HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE)
+					minDiff = minDiff - (HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE);
+				
 				final String line = routeData.transportType == R.drawable.icon_walk ? context.getText(R.string.walk).toString() : routeData.line;
 				if (routeInfoText.length() == 0) {
 					/*routeInfoText.addString(line + " (", null, 0);
@@ -419,7 +423,11 @@ class OverviewRouteAdapter extends BaseAdapter {
 			/*
 			 * Footer text
 			 */
-			final long minDiff = (arrival - departure) / HelperFunctions.MINUTE;
+			long minDiff = (arrival - departure) / HelperFunctions.MINUTE;
+			//Hack:
+			if (minDiff > HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE)
+				minDiff = minDiff - (HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE);
+			
 			RenderOverviewText footerText = new RenderOverviewText();
 			footerText.addString("Departure ", null, 0);
 			footerText.addString(HelperFunctions.hourFormater.format(departure),new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);

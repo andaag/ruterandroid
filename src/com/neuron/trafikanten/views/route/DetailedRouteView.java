@@ -189,7 +189,13 @@ public class DetailedRouteView extends ListActivity {
 			/*
 			 * Setup actual text
 			 */
-			viewHolder.infoText.setText("" + getText(R.string.travelTime) + " " + ((arrival - departure) / HelperFunctions.MINUTE) + " min\n" +
+			//Hack:
+			long travelTime = (arrival - departure) / HelperFunctions.MINUTE;
+			if (travelTime > HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE)
+				travelTime = travelTime - (HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE);
+
+			
+			viewHolder.infoText.setText("" + getText(R.string.travelTime) + " " + travelTime + " min\n" +
 					getText(R.string.waitTime) + " " + waitTime + " min\n" +
 					getText(R.string.walkTime) + " " + walkTime + " min");
 		} else {

@@ -9,6 +9,8 @@ import com.neuron.trafikanten.dataSets.RouteProposal;
  */
 public class WaittimeBug {
 	public static void onSendData(RouteProposal travelStage) {
+		if (travelStage.travelStageList.size() == 0) 
+			return;
 		RouteData previousRouteData = null;
 		int days = 0;
 		for (RouteData routeData : travelStage.travelStageList) {
@@ -19,14 +21,13 @@ public class WaittimeBug {
 					 */
 					days++;
 				}
-				routeData.departure = routeData.departure + (days * HelperFunctions.HOUR * 24);
-				routeData.arrival = routeData.arrival + (days * HelperFunctions.HOUR * 24);
+				routeData.departure = routeData.departure + (days * (HelperFunctions.HOUR * 24));
+				routeData.arrival = routeData.arrival + (days * (HelperFunctions.HOUR * 24));
 				
 				routeData.waitTime = (int)((routeData.departure - previousRouteData.arrival) / HelperFunctions.MINUTE);
 			}
 			previousRouteData = routeData;
 		}
-		
 	}
 
 }
