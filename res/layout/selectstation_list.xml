@@ -24,7 +24,7 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:layout_alignParentRight="true"
-		android:layout_centerVertical="true"
+		android:layout_centerInParent="true"
 		/>
 		
 	<ImageView
@@ -32,8 +32,8 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:src="@drawable/btn_star_big_on"
-		android:visible="false" 
-		android:layout_centerVertical="true"
+		android:visible="false"
+		android:layout_centerInParent="true"
 		android:layout_toLeftOf="@+id/range"
 		/>
 		
