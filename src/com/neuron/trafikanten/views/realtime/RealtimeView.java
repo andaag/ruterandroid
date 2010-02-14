@@ -769,7 +769,6 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	@Override
 	public View getView(int pos, View convertView, ViewGroup arg2) {
-		final RealtimeData data = getItem(pos);
 		/*
 		 * Setup holder, for performance and readability.
 		 */
@@ -791,6 +790,15 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.departures.setHorizontallyScrolling(true);
 			holder.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
 			
+			/*
+			 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
+			 */
+			{
+				final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
+				// can use tableLayout.setOnClickListener here as a workaround for click events.
+				tableLayout.setLongClickable(true);
+			}
+			
 			convertView.setTag(holder);
 		} else {
 			/*
@@ -800,24 +808,9 @@ class RealtimeAdapter extends BaseAdapter {
 		}
 		
 		/*
-		 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
-		 */
-		{
-			final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
-			tableLayout.setLongClickable(true);
-			tableLayout.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (data.stopVisitNote != null)
-						Toast.makeText(parent, data.line + " " + data.destination + "\n" + data.stopVisitNote, Toast.LENGTH_SHORT).show();
-				}
-			});
-		}
-			
-		
-		/*
 		 * Render data to view.
 		 */
+		final RealtimeData data = getItem(pos);
 		holder.departures.setText(data.renderDepartures(parent));
 		holder.destination.setText(data.destination);
 		if (data.destination.equals(data.line)) {
@@ -850,10 +843,28 @@ class RealtimeAdapter extends BaseAdapter {
 		/*
 		 * Setup devi
 		 */
-		if (data.devi.size() > 0) {
+		if (data.devi.size() > 0 || data.stopVisitNote != null) {
 			holder.departureInfo.setVisibility(View.VISIBLE);
 			holder.departureInfo.removeAllViews();
-
+			
+			if (data.stopVisitNote != null) {
+				/*
+				 * Add stopvisitnote
+				 */
+				final TextView stopVisitNote = new TextView(parent);
+				final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+				stopVisitNote.setText(data.stopVisitNote);
+				
+				stopVisitNote.setSingleLine();
+				stopVisitNote.setPadding(4, 2, 6, 2);
+				stopVisitNote.setTextColor(Color.rgb(250, 244, 0));
+				stopVisitNote.setBackgroundResource(R.drawable.skin_sanntid_avganger);
+				stopVisitNote.setMovementMethod(ScrollingMovementMethod.getInstance());
+				stopVisitNote.setHorizontallyScrolling(true);
+				stopVisitNote.setTypeface(parent.departuresTypeface);
+				
+				holder.departureInfo.addView(stopVisitNote, layoutParams);
+			}
 			for (Integer i : data.devi) {
 				/*
 				 * Add all devi items.
