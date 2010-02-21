@@ -35,7 +35,6 @@ public class RealtimeData implements Parcelable {
 	public int departurePlatform = 0;
 	public String stopVisitNote;
 	
-	//public long aimedDeparture;
 	public long expectedDeparture;
 	
 	/*
@@ -53,8 +52,8 @@ public class RealtimeData implements Parcelable {
 		devi = new ArrayList<Integer>();
 	}
 	
-	public void addDeparture(long expectedDeparture, boolean realtime) {
-		nextDepartures.add(new NextDeparture(expectedDeparture, realtime));
+	public void addDeparture(long expectedDeparture, boolean realtime, String stopVisitNote) {
+		nextDepartures.add(new NextDeparture(expectedDeparture, realtime, stopVisitNote));
 	}
 	
 	/*
@@ -77,7 +76,6 @@ public class RealtimeData implements Parcelable {
 			departures.append(HelperFunctions.renderTime(context, nextDeparture.expectedDeparture));
 		}
 		return departures;
-		
 	}
 	
 	/*
@@ -135,50 +133,62 @@ public class RealtimeData implements Parcelable {
 		    return new RealtimeData[size];
 		}
 	};
-}
-
-class NextDeparture implements Parcelable {
-	public long expectedDeparture;
-	public boolean realtime;
-	public NextDeparture(long expectedDeparture, boolean realtime) {
-		this.expectedDeparture = expectedDeparture;
-		this.realtime = realtime;
-	}
+	
 	
 	/*
-	 * @see android.os.Parcelable
+	 * NextDepartures class
 	 */
-	@Override
-	public int describeContents() {	return 0; }
-	
-	/*
-	 * Function for reading the parcel
-	 */
-	public NextDeparture(Parcel in) {
-		expectedDeparture = in.readLong();
-		realtime = in.readInt() != 0;
-	}
-	
-	/*
-	 * Writing current data to parcel.
-	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
-	 */
-	@Override
-	public void writeToParcel(Parcel out, int flags) {
-		out.writeLong(expectedDeparture);
-		out.writeInt(realtime ? 1 : 0);
-	}
-	
-	/*
-	 * Used for bundle.getParcel 
-	 */
-    public static final Parcelable.Creator<NextDeparture> CREATOR = new Parcelable.Creator<NextDeparture>() {
-		public NextDeparture createFromParcel(Parcel in) {
-		    return new NextDeparture(in);
+	public class NextDeparture implements Parcelable {
+		public long expectedDeparture;
+		public boolean realtime;
+		public String stopVisitNote;
+		public NextDeparture(long expectedDeparture, boolean realtime, String stopVisitNote) {
+			this.expectedDeparture = expectedDeparture;
+			this.realtime = realtime;
+			this.stopVisitNote = stopVisitNote;
 		}
 		
-		public NextDeparture[] newArray(int size) {
-		    return new NextDeparture[size];
+		/*
+		 * @see android.os.Parcelable
+		 */
+		@Override
+		public int describeContents() {	return 0; }
+		
+		/*
+		 * Function for reading the parcel
+		 */
+		public NextDeparture(Parcel in) {
+			expectedDeparture = in.readLong();
+			realtime = in.readInt() != 0;
+			stopVisitNote = in.readString();
 		}
-	};
+		
+		/*
+		 * Writing current data to parcel.
+		 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+		 */
+		@Override
+		public void writeToParcel(Parcel out, int flags) {
+			out.writeLong(expectedDeparture);
+			out.writeInt(realtime ? 1 : 0);
+			out.writeString(stopVisitNote);
+		}
+		
+		/*
+		 * Used for bundle.getParcel 
+		 */
+	    public final Parcelable.Creator<NextDeparture> CREATOR = new Parcelable.Creator<NextDeparture>() {
+			public NextDeparture createFromParcel(Parcel in) {
+			    return new NextDeparture(in);
+			}
+			
+			public NextDeparture[] newArray(int size) {
+			    return new NextDeparture[size];
+			}
+		};
+	}
 }
+
+
+
+
