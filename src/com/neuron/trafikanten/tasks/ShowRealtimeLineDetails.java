@@ -3,7 +3,6 @@ package com.neuron.trafikanten.tasks;
 import android.app.Activity;
 import android.app.Dialog;
 import android.view.Window;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,15 +32,9 @@ public class ShowRealtimeLineDetails implements GenericTask {
     	infoLine.setClickable(false);
     	infoLine.setLongClickable(false);
     	body.addView(infoLine);
-
     }
     
     private void renderDeparture(LinearLayout body, long expectedDeparture, boolean realtime, String stopVisitNote) {
-    	final LinearLayout container = new LinearLayout(activity);
-    	final HorizontalScrollView scroll = new HorizontalScrollView(activity);
-    	scroll.addView(container);
-    	
-    	
     	StringBuffer info = new StringBuffer();
     	info.append(data.line + " " + data.destination + " ");
     	if (!realtime) {
@@ -49,12 +42,10 @@ public class ShowRealtimeLineDetails implements GenericTask {
     		info.append(" ");
     	}
     	info.append(HelperFunctions.renderTime(activity, expectedDeparture));
-    	addText(container, info.toString(), 0);
+    	addText(body, info.toString(), 0);
     	if (stopVisitNote != null) {
-    		addText(container, stopVisitNote, 10);
+    		addText(body, stopVisitNote, 10);
     	}
-    	
-    	body.addView(scroll);
     }
     
     private void showDialog() {
