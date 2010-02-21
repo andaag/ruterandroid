@@ -25,12 +25,13 @@ public class ShowRealtimeLineDetails implements GenericTask {
         showDialog();
     }
     
-    private void addText(LinearLayout body, String text) {
+    private void addText(LinearLayout body, String text, int paddingLeft) {
     	TextView infoLine = new TextView(activity);
     	infoLine.setMovementMethod(ScrollingMovementMethod.getInstance());
     	infoLine.setHorizontallyScrolling(true);
     	infoLine.setSingleLine();
     	infoLine.setText(text);
+    	infoLine.setPadding(paddingLeft, 0, 0, 1);
     	body.addView(infoLine);
 
     }
@@ -43,9 +44,9 @@ public class ShowRealtimeLineDetails implements GenericTask {
     		info.append(" ");
     	}
     	info.append(HelperFunctions.renderTime(activity, expectedDeparture));
-    	addText(body, info.toString());
+    	addText(body, info.toString(), 0);
     	if (stopVisitNote != null) {
-    		addText(body, "      " + stopVisitNote);
+    		addText(body, stopVisitNote, 10);
     	}
     }
     
