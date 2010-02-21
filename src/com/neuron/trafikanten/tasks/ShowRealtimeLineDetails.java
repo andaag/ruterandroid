@@ -2,8 +2,8 @@ package com.neuron.trafikanten.tasks;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.text.method.ScrollingMovementMethod;
 import android.view.Window;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,16 +27,21 @@ public class ShowRealtimeLineDetails implements GenericTask {
     
     private void addText(LinearLayout body, String text, int paddingLeft) {
     	TextView infoLine = new TextView(activity);
-    	infoLine.setMovementMethod(ScrollingMovementMethod.getInstance());
-    	infoLine.setHorizontallyScrolling(true);
     	infoLine.setSingleLine();
     	infoLine.setText(text);
     	infoLine.setPadding(paddingLeft, 0, 0, 1);
+    	infoLine.setClickable(false);
+    	infoLine.setLongClickable(false);
     	body.addView(infoLine);
 
     }
     
     private void renderDeparture(LinearLayout body, long expectedDeparture, boolean realtime, String stopVisitNote) {
+    	final LinearLayout container = new LinearLayout(activity);
+    	final HorizontalScrollView scroll = new HorizontalScrollView(activity);
+    	scroll.addView(container);
+    	
+    	
     	StringBuffer info = new StringBuffer();
     	info.append(data.line + " " + data.destination + " ");
     	if (!realtime) {
@@ -44,10 +49,12 @@ public class ShowRealtimeLineDetails implements GenericTask {
     		info.append(" ");
     	}
     	info.append(HelperFunctions.renderTime(activity, expectedDeparture));
-    	addText(body, info.toString(), 0);
+    	addText(container, info.toString(), 0);
     	if (stopVisitNote != null) {
-    		addText(body, stopVisitNote, 10);
+    		addText(container, stopVisitNote, 10);
     	}
+    	
+    	body.addView(scroll);
     }
     
     private void showDialog() {
