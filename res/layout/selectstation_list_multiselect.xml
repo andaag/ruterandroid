@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!-- This file is used to support multiselect in station selectors from route view -->
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
@@ -8,14 +6,14 @@
 	android:background="@drawable/skin_stoppested"
 	>
 	
-	<!-- When this file is updated REMEMBER to update selectstation_list.xml -->
+	<!-- This file is used to support multiselect in station selectors from route view -->
+	<!-- When this file is updated REMEMBER to update selectstation_list_multiselect.xml -->
 	
 	<CheckBox
 		android:id="@+id/stopname"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:layout_marginTop="-2dip"
 		android:textColor="@color/skin_stoppested"
 		/>
 		
@@ -34,7 +32,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:src="@drawable/btn_star_big_on"
-		android:visible="false" 
+		android:visible="false"
 		android:layout_centerInParent="true"
 		android:layout_toLeftOf="@+id/range"
 		/>
