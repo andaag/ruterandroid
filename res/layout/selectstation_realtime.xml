@@ -12,7 +12,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_for_station">
-        <requestFocus />
     </EditText>
     
     <TextView
@@ -42,8 +41,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/search"
-        android:layout_above="@+id/infoBar"
-        />
+        android:layout_above="@+id/infoBar"/>
 
         
 </RelativeLayout>
