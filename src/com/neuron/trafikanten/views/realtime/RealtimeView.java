@@ -164,6 +164,15 @@ public class RealtimeView extends ListActivity {
         refreshDevi();
     }
     
+    private void stopProviders() {
+    	if (realtimeProvider != null)
+    		realtimeProvider.Stop();
+    	if (deviProvider != null)
+    		deviProvider.Stop();
+    	realtimeProvider = null;
+    	deviProvider = null;
+    }
+    
     final Handler autoRefreshHandler = new Handler(new Handler.Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
@@ -244,10 +253,7 @@ public class RealtimeView extends ListActivity {
     private void load() {
         lastUpdate = System.currentTimeMillis();
     	setProgressBarIndeterminateVisibility(true);
-    	if (realtimeProvider != null)
-    		realtimeProvider.Stop();
-    	if (deviProvider != null)
-    		deviProvider.Stop();
+    	stopProviders();
     	
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
@@ -266,6 +272,7 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onError(Exception exception) {
+				stopProviders();
 				Log.w(TAG,"onException " + exception);
 				infoText.setVisibility(View.VISIBLE);
 				if (exception.getClass().getSimpleName().equals("ParseException")) {
@@ -325,6 +332,7 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onError(Exception exception) {
+				stopProviders();
 				Log.w(TAG,"onException " + exception);
 				Toast.makeText(RealtimeView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
 				setProgressBarIndeterminateVisibility(false);				
@@ -511,12 +519,7 @@ public class RealtimeView extends ListActivity {
 		/*
 		 * make sure background threads is properly killed off.
 		 */
-		if (realtimeProvider != null) {
-			realtimeProvider.Stop();
-		}
-		if (deviProvider != null) {
-			deviProvider.Stop();
-		}
+		stopProviders();
 		super.finish();
 	}
 
