@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RealtimeData;
-import com.neuron.trafikanten.dataSets.RealtimeData.NextDeparture;
+import com.neuron.trafikanten.dataSets.RealtimeDataNextDeparture;
 
 public class ShowRealtimeLineDetails implements GenericTask {
     //private static final String TAG = "Trafikanten-SelectDeviTask";
@@ -56,7 +56,7 @@ public class ShowRealtimeLineDetails implements GenericTask {
 		
 		final LinearLayout body = (LinearLayout) dialog.findViewById(R.id.body); 
 		renderDeparture(body, data.expectedDeparture, data.realtime, data.stopVisitNote);
-		for (NextDeparture departure : data.nextDepartures) {
+		for (RealtimeDataNextDeparture departure : data.nextDepartures) {
 			renderDeparture(body, departure.expectedDeparture, departure.realtime, departure.stopVisitNote);
 		}
 		
