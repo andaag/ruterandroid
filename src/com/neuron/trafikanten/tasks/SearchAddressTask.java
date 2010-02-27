@@ -61,8 +61,8 @@ public class SearchAddressTask implements GenericTask {
                 switch (keyCode) {
                 case KeyEvent.KEYCODE_ENTER:
                 case KeyEvent.KEYCODE_DPAD_CENTER:
-                	geoMap(searchEdit.getText().toString());
                 	dialog.dismiss();
+                	geoMap(searchEdit.getText().toString());
                 	return true;
                 }
 				return false;
