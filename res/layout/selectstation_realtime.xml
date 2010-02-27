@@ -11,8 +11,9 @@
         android:singleLine="true"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/search_for_station">
-    </EditText>
+        android:hint="@string/search_for_station"
+        android:inputType="text"
+        android:imeOptions="actionSearch"/>
     
     <TextView
     	android:id="@+id/infoText"
