@@ -60,6 +60,8 @@ public class TrafikantenSearch implements ISearchProvider {
 	public void Stop() {
 		if (thread != null) {
 			thread.interrupt();
+			try {thread.join();
+			} catch (InterruptedException e) {}
 			thread = null;
 		}
 	}

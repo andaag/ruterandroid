@@ -75,6 +75,8 @@ public class TrafikantenRoute implements IRouteProvider {
 	public void Stop() {
 		if (thread != null) {
 			thread.interrupt();
+			try {thread.join();
+			} catch (InterruptedException e) {}
 			thread = null;
 		}
 	}
