@@ -20,14 +20,10 @@ package com.neuron.trafikanten.dataProviders;
 
 import com.neuron.trafikanten.dataSets.DeviData;
 
-import android.os.Handler;
-
 public interface IDeviProvider extends IGenericProvider {
 	public void Fetch(int stationId, String lines);
 	
-	abstract class DeviProviderHandler extends Handler {
+	abstract class DeviProviderHandler extends GenericProviderHandler {
 	    public abstract void onData(DeviData deviData);
-	    public abstract void onError(Exception e);
-	    public abstract void onFinished();
 	}
 }

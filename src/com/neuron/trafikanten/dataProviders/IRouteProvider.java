@@ -18,17 +18,13 @@
 
 package com.neuron.trafikanten.dataProviders;
 
-import android.os.Handler;
-
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 
 public interface IRouteProvider extends IGenericProvider {
 	public void Search(RouteSearchData routeSearch);
 	
-	abstract class RouteProviderHandler extends Handler {
+	abstract class RouteProviderHandler extends GenericProviderHandler {
 	    public abstract void onData(RouteProposal routeProposal);
-	    public abstract void onError(Exception e);
-	    public abstract void onFinished();
 	}
 }

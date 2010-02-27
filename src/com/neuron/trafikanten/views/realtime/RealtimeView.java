@@ -147,7 +147,7 @@ public class RealtimeView extends ListActivity {
         	} else {
         		station = StationData.readSimpleBundle(bundle);
         	}
-            load();
+        	load();
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
@@ -302,7 +302,6 @@ public class RealtimeView extends ListActivity {
     	setProgressBarIndeterminateVisibility(true);
     	realtimeList.itemsAddedWithoutNotify = 0;
     	deviItems = new ArrayList<DeviData>();
-
     	deviProvider = DataProviderFactory.getDeviProvider(new DeviProviderHandler() {
 			@Override
 			public void onData(DeviData deviData) {
