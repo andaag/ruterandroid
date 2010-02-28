@@ -6,19 +6,45 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+
+    <LinearLayout 
+    	android:id="@+id/searchLine"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:paddingLeft="8dip"
+	    android:paddingRight="12dip"
+	    android:paddingTop="2dip"
+	    android:paddingBottom="1dip"
+    	android:background="@drawable/android_search_plate_browser">
     
-    <EditText android:id="@+id/search"
-        android:singleLine="true"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search_for_station">
-        <requestFocus />
-    </EditText>
+	    <EditText android:id="@+id/search"
+	        android:singleLine="true"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:hint="@string/search_for_station"
+
+	        android:inputType="text"
+	        android:imeOptions="actionSearch"
+	        android:layout_weight="1.0"
+	        android:gravity="center_vertical"
+	        />
+        
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="6dip"
+            android:layout_marginBottom="4dip"
+            android:background="@drawable/android_textfield_searchwidget"
+        />
+        
+    </LinearLayout>
     
     <TextView
     	android:id="@+id/infoText"
     	android:layout_marginTop="50dip"
-    	android:layout_below="@+id/search"
+    	android:layout_below="@+id/searchLine"
     	android:layout_width="300dip"
     	android:layout_height="wrap_content"
     	android:layout_centerVertical="true"
@@ -39,7 +65,7 @@
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/search"
+        android:layout_below="@+id/searchLine"
         android:layout_above="@+id/multiSelectButton"
         />
         
