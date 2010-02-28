@@ -24,20 +24,20 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:layout_alignParentRight="true"
-		android:layout_centerInParent="true"
+		
+		android:layout_alignParentTop="true"
+		android:layout_marginTop="10dip"
 		/>
+	<!--  On imageview bottom line is hero hacks -->
 		
 	<ImageView
 		android:id="@+id/star"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_height="fill_parent"
 		android:src="@drawable/btn_star_big_on"
 		android:visible="false"
-		android:layout_centerInParent="true"
 		android:layout_toLeftOf="@+id/range"
 		
-		
-		android:layout_alignParentTop="true"
 		android:layout_marginTop="10dip"
 		/>
 	<!--  On imageview bottom line is hero hacks -->
@@ -50,10 +50,6 @@
 		android:layout_below="@+id/stopname"
 		android:layout_marginLeft="10dip"
 		android:textColor="@color/skin_stoppested_subtext"
-		
-		android:layout_alignParentTop="true"
-		android:layout_marginTop="10dip"
 		/>
-	<!--  On imageview bottom line is hero hacks -->
 		
 </RelativeLayout>
