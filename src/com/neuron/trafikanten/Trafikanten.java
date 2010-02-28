@@ -48,18 +48,17 @@ public class Trafikanten extends TabActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Trafikanten.activity = this;
+	 	setTitle("Trafikanten - " + getText(R.string.app_version));
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
-        
         if (isShortcut()) {
-        	return;
+        	setVisible(false);
         }
         
         /*
          * Setup tab host
          */
 	 	final TabHost tabHost = getTabHost();
-	 	setTitle("Trafikanten - " + getText(R.string.app_version));
 	 	
 	 	{
 	 		/*
@@ -146,7 +145,6 @@ public class Trafikanten extends TabActivity {
 			public void onCancel(DialogInterface dialog) {
 				finish();				
 			}
-        	
         });
         dialog.show();
         
@@ -193,23 +191,5 @@ public class Trafikanten extends TabActivity {
 	public static void tabHostSetProgressBarIndeterminateVisibility(boolean value)
 	{
 		activity.setProgressBarIndeterminateVisibility(value);
-	}
-	
-	/*
-	 * onPause - stop anything needed.
-	 * @see android.app.Activity#onPause()
-	 */
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	/*
-	 * Resume state, refresh settings
-	 * @see android.app.Activity#onResume()
-	 */
-	@Override
-	protected void onResume() {
-		super.onResume();
 	}
 }
