@@ -24,18 +24,23 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:layout_alignParentRight="true"
-		android:layout_centerInParent="true"
+		
+		android:layout_alignParentTop="true"
+		android:layout_marginTop="13dip"
 		/>
+	<!--  On imageview bottom lines are hero hacks -->
 		
 	<ImageView
 		android:id="@+id/star"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_height="fill_parent"
 		android:src="@drawable/btn_star_big_on"
 		android:visible="false"
-		android:layout_centerInParent="true"
 		android:layout_toLeftOf="@+id/range"
+		
+		android:layout_marginTop="10dip"
 		/>
+	<!--  On imageview bottom lines are hero hacks -->
 		
 	<TextView
 		android:id="@+id/address"

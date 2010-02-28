@@ -26,9 +26,9 @@
 		android:layout_alignParentRight="true"
 		
 		android:layout_alignParentTop="true"
-		android:layout_marginTop="10dip"
+		android:layout_marginTop="13dip"
 		/>
-	<!--  On imageview bottom line is hero hacks -->
+	<!--  On imageview bottom lines are hero hacks -->
 		
 	<ImageView
 		android:id="@+id/star"
@@ -40,7 +40,7 @@
 		
 		android:layout_marginTop="10dip"
 		/>
-	<!--  On imageview bottom line is hero hacks -->
+	<!--  On imageview bottom lines are hero hacks -->
 		
 	<TextView
 		android:id="@+id/address"
