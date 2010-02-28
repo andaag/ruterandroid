@@ -37,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -104,6 +105,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	public StationListAdapter stationListAdapter;
 	
+	/*
+	 * Other
+	 */
+	private EditText searchEdit;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -141,7 +147,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         /*
          * Setup the search editbox to search on Enter.
          */
-		final EditText searchEdit = (EditText) findViewById(R.id.search);
+		searchEdit = (EditText) findViewById(R.id.search);
 		searchEdit.setOnKeyListener(new OnKeyListener() {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() != KeyEvent.ACTION_DOWN) {
@@ -153,20 +159,34 @@ public abstract class GenericSelectStationView extends ListActivity {
                 	/*
                 	 * On Search show dialog, clear current list and initiate search thread.
                 	 */
-                	
-                	if (searchEdit.getText().toString().length() == 0) {
-                		resetView();
-                	} else {
-                		searchProvider.Search(searchEdit.getText().toString(), isRealtimeSelector);
-                	}
+                	doSearch();
                 	return true;
                 }
 				return false;
 			}
 		});
+		/*
+		 * Setup our fancy button:
+		 */
+		final Button searchButton = (Button) findViewById(R.id.searchButton);
+		searchButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				doSearch();
+				
+			}
+		});
 		
 		createSearchProvider();
 		setListAdapter(stationListAdapter);
+    }
+    
+    private void doSearch() {
+    	if (searchEdit.getText().toString().length() == 0) {
+    		resetView();
+    	} else {
+    		searchProvider.Search(searchEdit.getText().toString(), isRealtimeSelector);
+    	}
     }
     
     /*
