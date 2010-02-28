@@ -71,7 +71,7 @@ public class LocationTask implements GenericTask {
 		@Override
 		public void run() {
 			showContinueAfterMs = showContinueAfterMs - 5000;
-			if (showContinueAfterMs <= 0) {
+			if (showContinueAfterMs <= 0 && latitude != 0) {
 				continueButton.setVisibility(View.VISIBLE);
 			} else {
 				buttonRefresher.postDelayed(updateButton, 5000);
