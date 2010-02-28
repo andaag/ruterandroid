@@ -35,7 +35,12 @@
 		android:visible="false"
 		android:layout_centerInParent="true"
 		android:layout_toLeftOf="@+id/range"
+		
+		
+		android:layout_alignParentTop="true"
+		android:layout_marginTop="10dip"
 		/>
+	<!--  On imageview bottom line is hero hacks -->
 		
 	<TextView
 		android:id="@+id/address"
@@ -45,6 +50,10 @@
 		android:layout_below="@+id/stopname"
 		android:layout_marginLeft="10dip"
 		android:textColor="@color/skin_stoppested_subtext"
+		
+		android:layout_alignParentTop="true"
+		android:layout_marginTop="10dip"
 		/>
+	<!--  On imageview bottom line is hero hacks -->
 		
 </RelativeLayout>
