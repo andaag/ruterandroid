@@ -114,7 +114,7 @@ public class SearchAddressTask implements GenericTask {
 	    builder.setItems(items, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				SearchAddressTask.this.foundLocation(addresses.get(which + 1));
+				SearchAddressTask.this.foundLocation(addresses.get(which));
 			}
 	    });
 	    
