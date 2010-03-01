@@ -137,13 +137,6 @@ public abstract class GenericSelectStationView extends ListActivity {
         }
 		refresh();
 		
-		/*
-		 * Hack for hero, avoiding keyboard popup during start:
-		 */
-		infoText.setFocusable(true);
-		infoText.requestFocus();
-		infoText.setFocusable(false);
-        
         /*
          * Setup the search editbox to search on Enter.
          */
@@ -165,6 +158,12 @@ public abstract class GenericSelectStationView extends ListActivity {
 				return false;
 			}
 		});
+		/*
+		 * Hack for hero, avoiding keyboard popup during start:
+		 */
+		searchEdit.setFocusable(false);
+		searchEdit.setFocusable(true);
+		
 		/*
 		 * Setup our fancy button:
 		 */
