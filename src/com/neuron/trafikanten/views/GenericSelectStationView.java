@@ -21,6 +21,7 @@ package com.neuron.trafikanten.views;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -161,8 +163,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 		/*
 		 * Hack for hero, avoiding keyboard popup during start:
 		 */
-		searchEdit.setFocusable(false);
-		searchEdit.setFocusable(true);
+		final InputMethodManager mgr =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		
 		/*
 		 * Setup our fancy button:
