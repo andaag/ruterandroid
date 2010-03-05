@@ -73,8 +73,8 @@ public class TrafikantenSearch implements ISearchProvider {
 	public void Search(String query, boolean isRealtimeStopFiltered) {
 		Stop();
 		Log.i(TAG,"Searching for station " + query);
-		thread = new TrafikantenSearchThread(resources, isRealtimeStopFiltered, handler, query);
 		handler.onStarted();
+		thread = new TrafikantenSearchThread(resources, isRealtimeStopFiltered, handler, query);
 		thread.start();
 	}
 	

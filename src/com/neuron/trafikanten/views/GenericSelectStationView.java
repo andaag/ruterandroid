@@ -25,17 +25,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -139,6 +142,12 @@ public abstract class GenericSelectStationView extends ListActivity {
         }
 		refresh();
 		
+		
+		/*
+		 * Hack for hero:
+		 */
+		final InputMethodManager mgr =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		
         /*
          * Setup the search editbox to search on Enter.
          */
@@ -154,17 +163,61 @@ public abstract class GenericSelectStationView extends ListActivity {
                 	/*
                 	 * On Search show dialog, clear current list and initiate search thread.
                 	 */
+                	searchEdit.setInputType(InputType.TYPE_NULL); // disable soft input
+                	
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchEdit.getApplicationWindowToken(), 0);
+
                 	doSearch();
                 	return true;
                 }
 				return false;
 			}
 		});
+
+		
+		
 		/*
 		 * Hack for hero, avoiding keyboard popup during start:
 		 */
+
+	    final int inType = searchEdit.getInputType(); // backup the input type
+	    searchEdit.setInputType(InputType.TYPE_NULL); // disable soft input
+
+		searchEdit.setOnTouchListener(new OnTouchListener(){
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				searchEdit.setInputType(inType); // restore input type
+			    searchEdit.onTouchEvent(event); // call native handler
+			    return true; // consume touch even
+			}
+			});
+		mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+		//mgr.hideSoftInputFromWindow(searchEdit.getApplicationWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+		
+		/*searchEdit.setVisibility(View.GONE);
 		final InputMethodManager mgr =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 		mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		searchEdit.setVisibility(View.VISIBLE);*/
+
+		
+		
+		//int inType = searchEdit.getInputType();
+		//searchEdit.setInputType(1); // reenable soft input
+		//Log.i("DEBUG CODE","inType : " + inType);
+		/*final InputMethodManager mgr =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		mgr.hideSoftInputFromWindow(searchEdit.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		//getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		searchEdit.setInputType(inType);*/
+		
+		//		searchEdit.setInputType(InputType.TYPE_NULL); // disable soft input HACK for hero device.
+		//getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		//ditText edtView=(EditText)findViewById(R.id.editTextConvertValue); edtView.setInputType(0);
+		//mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);
+		
+		/*InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);*/
 		
 		/*
 		 * Setup our fancy button:
@@ -178,11 +231,21 @@ public abstract class GenericSelectStationView extends ListActivity {
 			}
 		});
 		
+		/*
+		 * Hack
+		 */
+		searchButton.setFocusable(true);
+		searchButton.setFocusableInTouchMode(true);
+		searchButton.requestFocus();
+		
 		createSearchProvider();
 		setListAdapter(stationListAdapter);
     }
     
     private void doSearch() {
+		InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputMethodManager.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);
+    	
     	if (searchEdit.getText().toString().length() == 0) {
     		resetView();
     	} else {

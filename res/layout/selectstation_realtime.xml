@@ -34,8 +34,7 @@
             android:layout_height="fill_parent"
             android:layout_marginLeft="6dip"
             android:layout_marginBottom="4dip"
-            android:background="@drawable/android_textfield_searchwidget"
-        />
+            android:background="@drawable/android_textfield_searchwidget"/>
         
     </LinearLayout>
     

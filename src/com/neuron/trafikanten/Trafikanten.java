@@ -24,13 +24,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
@@ -59,6 +62,23 @@ public class Trafikanten extends TabActivity {
          * Setup tab host
          */
 	 	final TabHost tabHost = getTabHost();
+	 	
+	 	{
+	 		/*
+	 		 * Add hack for software keyboard devices
+	 		 */
+            /*InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(tabHost.getApplicationWindowToken(), 0);
+
+	 	   tabHost.setOnTabChangedListener(new OnTabChangeListener()
+	        {
+	        public void onTabChanged(String tabId)
+	            {
+	            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+	            imm.hideSoftInputFromWindow(tabHost.getApplicationWindowToken(), 0);
+	            }
+	        });*/
+	 	}
 	 	
 	 	{
 	 		/*
