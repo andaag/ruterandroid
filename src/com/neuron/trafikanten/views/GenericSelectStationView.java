@@ -142,12 +142,6 @@ public abstract class GenericSelectStationView extends ListActivity {
         }
 		refresh();
 		
-		
-		/*
-		 * Hack for hero:
-		 */
-		final InputMethodManager mgr =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-		
         /*
          * Setup the search editbox to search on Enter.
          */
@@ -163,11 +157,6 @@ public abstract class GenericSelectStationView extends ListActivity {
                 	/*
                 	 * On Search show dialog, clear current list and initiate search thread.
                 	 */
-                	searchEdit.setInputType(InputType.TYPE_NULL); // disable soft input
-                	
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(searchEdit.getApplicationWindowToken(), 0);
-
                 	doSearch();
                 	return true;
                 }
@@ -178,7 +167,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		
 		
 		/*
-		 * Hack for hero, avoiding keyboard popup during start:
+		 * Hack : Tweaks for devices with software keyboards, avoid keyboard in program start.
 		 */
 
 	    final int inType = searchEdit.getInputType(); // backup the input type
@@ -192,33 +181,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 			    return true; // consume touch even
 			}
 			});
-		mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-		//mgr.hideSoftInputFromWindow(searchEdit.getApplicationWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-		
-		/*searchEdit.setVisibility(View.GONE);
-		final InputMethodManager mgr =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-		mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-		searchEdit.setVisibility(View.VISIBLE);*/
 
-		
-		
-		//int inType = searchEdit.getInputType();
-		//searchEdit.setInputType(1); // reenable soft input
-		//Log.i("DEBUG CODE","inType : " + inType);
-		/*final InputMethodManager mgr =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-		mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-		mgr.hideSoftInputFromWindow(searchEdit.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-		//getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		searchEdit.setInputType(inType);*/
-		
-		//		searchEdit.setInputType(InputType.TYPE_NULL); // disable soft input HACK for hero device.
-		//getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		//ditText edtView=(EditText)findViewById(R.id.editTextConvertValue); edtView.setInputType(0);
-		//mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);
-		
-		/*InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		mgr.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);*/
-		
 		/*
 		 * Setup our fancy button:
 		 */
@@ -227,6 +190,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 			@Override
 			public void onClick(View v) {
 				doSearch();
+				Toast.makeText(GenericSelectStationView.this, "DEBUG CODE : onclick", Toast.LENGTH_SHORT).show();
 				
 			}
 		});

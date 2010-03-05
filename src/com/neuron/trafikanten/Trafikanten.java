@@ -65,19 +65,16 @@ public class Trafikanten extends TabActivity {
 	 	
 	 	{
 	 		/*
-	 		 * Add hack for software keyboard devices
+	 		 * Hack : Tweaks for devices with software keyboards, hide keyboard when switching tabs.
 	 		 */
-            /*InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(tabHost.getApplicationWindowToken(), 0);
-
-	 	   tabHost.setOnTabChangedListener(new OnTabChangeListener()
+            tabHost.setOnTabChangedListener(new OnTabChangeListener()
 	        {
 	        public void onTabChanged(String tabId)
 	            {
 	            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 	            imm.hideSoftInputFromWindow(tabHost.getApplicationWindowToken(), 0);
 	            }
-	        });*/
+	        });
 	 	}
 	 	
 	 	{
