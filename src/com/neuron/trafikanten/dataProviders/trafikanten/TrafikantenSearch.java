@@ -85,8 +85,8 @@ public class TrafikantenSearch implements ISearchProvider {
 	public void Search(double latitude, double longitude) {
 		Stop();
 		Log.i(TAG,"Searching for coordinates " + latitude + " " + longitude);
-		thread = new TrafikantenSearchThread(resources, handler, latitude, longitude);
 		handler.onStarted();
+		thread = new TrafikantenSearchThread(resources, handler, latitude, longitude);
 		thread.start();
 	}
 	
