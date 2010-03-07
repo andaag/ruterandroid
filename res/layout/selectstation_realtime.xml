@@ -12,8 +12,9 @@
 	    android:orientation="horizontal"
 	    android:paddingLeft="8dip"
 	    android:paddingRight="12dip"
-	    android:paddingTop="2dip"
-	    android:paddingBottom="1dip"
+	    android:paddingTop="5dip"
+	    android:paddingBottom="0dip"
+	    android:layout_marginBottom="5dip"
     	android:background="@drawable/android_search_plate_browser">
     
 	    <EditText android:id="@+id/search"
