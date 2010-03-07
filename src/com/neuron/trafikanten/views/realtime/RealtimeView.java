@@ -45,6 +45,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -105,6 +106,7 @@ public class RealtimeView extends ListActivity {
 	 */
 	private LinearLayout devi;
 	private TextView infoText;
+	private TextView caText;
 	
 	/*
 	 * Data providers
@@ -131,6 +133,7 @@ public class RealtimeView extends ListActivity {
         realtimeList = new RealtimeAdapter(this);
         devi = (LinearLayout) findViewById(R.id.devi);
 		infoText = (TextView) findViewById(R.id.emptyText);
+		caText = (TextView) findViewById(R.id.caInfoText);
 		settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
 		departuresTypeface = Typeface.createFromAsset(getAssets(), "fonts/DejaVuSans.ttf");
         		
@@ -250,6 +253,7 @@ public class RealtimeView extends ListActivity {
     /*
      * Load data, variable used to prevent updating data set on every iteration.
      */
+    private boolean caVisibilityChecked;
     private void load() {
         lastUpdate = System.currentTimeMillis();
     	setProgressBarIndeterminateVisibility(true);
@@ -259,9 +263,17 @@ public class RealtimeView extends ListActivity {
     	realtimeList.notifyDataSetChanged();
 
 		realtimeList.itemsAddedWithoutNotify = 0;
+		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
     	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
+				if (!caVisibilityChecked && !realtimeData.realtime) {
+					/*
+					 * check "ca info text" visibility
+					 */
+					caVisibilityChecked = true;
+		        	caText.setVisibility(View.VISIBLE);
+				}
 				realtimeList.addItem(realtimeData);
 				realtimeList.itemsAddedWithoutNotify++;
 				if (realtimeList.itemsAddedWithoutNotify > 5) {
@@ -408,7 +420,6 @@ public class RealtimeView extends ListActivity {
         	load();
         	break;
         case HIDECA_ID:
-        	final TextView caText = (TextView) findViewById(R.id.caInfoText);
         	boolean hideCaText = !(caText.getVisibility() == View.GONE);
         	SharedPreferences.Editor editor = settings.edit();
             if (hideCaText) {
@@ -596,8 +607,6 @@ class RealtimeAdapter extends BaseAdapter {
 	private ArrayList<RealtimePlatformList> items = new ArrayList<RealtimePlatformList>();
 	private int itemsSize = 0; // Cached for performance, this is len(items) + len(item[0]) + len(item[1]) ...
 	public int itemsAddedWithoutNotify = 0; // List of items added during load without a .notifyDataUpdated
-	
-	private boolean caVisibilityChecked = false; 
 	
 	/*
 	 * Devi data:
@@ -834,18 +843,6 @@ class RealtimeAdapter extends BaseAdapter {
 		}
 		
 		holder.icon.setImageResource(StationIcons.hackGetLineIcon(RealtimeView.station, data.line));
-		
-		/*
-		 * check "ca info text" visibility
-		 */
-		if (!caVisibilityChecked && !data.realtime) {
-			caVisibilityChecked = true;
-			boolean hideCaText = parent.settings.getBoolean(RealtimeView.SETTING_HIDECA, false);
-			if (!hideCaText) {
-	        	final TextView caText = (TextView) parent.findViewById(R.id.caInfoText);
-	        	caText.setVisibility(View.VISIBLE);
-			}
-		}
 		
 		/*
 		 * Setup devi

@@ -190,8 +190,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 			@Override
 			public void onClick(View v) {
 				doSearch();
-				Toast.makeText(GenericSelectStationView.this, "DEBUG CODE : onclick", Toast.LENGTH_SHORT).show();
-				
 			}
 		});
 		
