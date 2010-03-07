@@ -193,13 +193,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 			}
 		});
 		
-		/*
-		 * Hack
-		 */
-		searchButton.setFocusable(true);
-		searchButton.setFocusableInTouchMode(true);
-		searchButton.requestFocus();
-		
 		createSearchProvider();
 		setListAdapter(stationListAdapter);
     }
