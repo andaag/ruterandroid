@@ -57,7 +57,7 @@ public class HelperFunctions {
 			return "-" + diffMinutes + " min";
 		} else if (diffMinutes < 1) {
 			return context.getText(R.string.now).toString();
-		} else if (diffMinutes < 9) {
+		} else if (diffMinutes <= 9) {
 			return diffMinutes + " min";
 		}
 		return hourFormater.format(time).toString();
