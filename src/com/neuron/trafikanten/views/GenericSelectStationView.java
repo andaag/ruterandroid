@@ -52,10 +52,9 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.Trafikanten;
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataProviders.ISearchProvider;
-import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
+import com.neuron.trafikanten.dataProviders.IGenericProvider;
+import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
+import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
@@ -102,7 +101,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	/*
 	 * Task tracking
 	 */
-	private ISearchProvider searchProvider;
+	private TrafikantenSearch searchProvider;
 	private GenericTask activeTask;
 	
 	/*
@@ -193,9 +192,42 @@ public abstract class GenericSelectStationView extends ListActivity {
 			}
 		});
 		
-		createSearchProvider();
 		setListAdapter(stationListAdapter);
     }
+    
+    private IGenericProvider.GenericProviderHandlerNew<StationData> searchHandler = new IGenericProvider.GenericProviderHandlerNew<StationData>(){
+
+		@Override
+		public void onData(StationData data) {
+	          stationListAdapter.addItem(data);
+	          stationListAdapter.notifyDataSetChanged();			
+		}
+
+		@Override
+		public void onPostExecute(Exception exception) {
+			searchProvider = null;
+			setProgressBar(false);
+			if (exception != null) {
+		        Log.w(TAG,"onException " + exception);
+		        if (exception.getClass().getSimpleName().equals("ParseException")) {
+		            Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.parseError) + ":" + "\n\n" + exception, Toast.LENGTH_LONG).show();
+		        } else {
+		            Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + ":" + "\n\n" + exception, Toast.LENGTH_LONG).show();
+		        }
+		    } else {
+		    	refresh();
+		    }
+		}
+
+		@Override
+		public void onPreExecute() {
+	        Log.i(TAG,"searchProvider started");
+	        stationListAdapter.clear();
+	        stationListAdapter.notifyDataSetChanged();
+	        setProgressBar(true);			
+		}
+    	
+    };
     
     private void doSearch() {
 		InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -204,46 +236,8 @@ public abstract class GenericSelectStationView extends ListActivity {
     	if (searchEdit.getText().toString().length() == 0) {
     		resetView();
     	} else {
-    		searchProvider.Search(searchEdit.getText().toString(), isRealtimeSelector);
+    		searchProvider = new TrafikantenSearch(getResources(), searchEdit.getText().toString(), isRealtimeSelector, searchHandler);
     	}
-    }
-    
-    /*
-     * Setup a stored search provider, this is shared between multiple functions
-     */
-    private void createSearchProvider() {
-       	searchProvider = DataProviderFactory.getSearchProvider(getResources(), new SearchProviderHandler() {
-    		@Override
-    		public void onData(StationData station) {
-    			stationListAdapter.addItem(station);
-    			stationListAdapter.notifyDataSetChanged();
-    		}
-
-    		@Override
-    		public void onError(Exception exception) {
-    			Log.w(TAG,"onException " + exception);
-				if (exception.getClass().getSimpleName().equals("ParseException")) {
-	    			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.parseError) + ":" + "\n\n" + exception, Toast.LENGTH_LONG).show();
-				} else {
-	    			Toast.makeText(GenericSelectStationView.this, "" + getText(R.string.exception) + ":" + "\n\n" + exception, Toast.LENGTH_LONG).show();
-				}
-    			Trafikanten.tabHostSetProgressBarIndeterminateVisibility(false);
-    		}
-
-    		@Override
-    		public void onFinished() {
-    			setProgressBar(false);
-    			refresh();
-    		}
-
-			@Override
-			public void onStarted() {
-				Log.i(TAG,"searchProvider started");
-				stationListAdapter.clear();
-				stationListAdapter.notifyDataSetChanged();
-				setProgressBar(true);
-			}
-    	});
     }
     
     public void setAdapterLayout(int layout) {
@@ -398,7 +392,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	                Log.i(TAG,"selectContactTask finished");
 	                setProgressBar(false);
 	                activeTask = null;
-	                searchProvider.Search(latitude,longitude);
+	        		searchProvider = new TrafikantenSearch(getResources(), latitude,longitude, searchHandler);
 	        }
 	
 	        @Override
@@ -412,7 +406,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Deal with a location search
 	 */
 	public void findMyLocationTask() {
-		searchProvider.Stop();
+		searchProvider.interrupt();
 		activeTask = new LocationTask(this, getReturnCoordinatesHandler());
 	}
 	
@@ -420,7 +414,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Deal with address search
 	 */
 	private void searchAddressTask() {
-		searchProvider.Stop();
+		searchProvider.interrupt();
 		activeTask = new SearchAddressTask(this, getReturnCoordinatesHandler());
 	}
 	
@@ -428,7 +422,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Deal with contact selection
 	 */
     private void selectContact() {
-        searchProvider.Stop();
+        searchProvider.interrupt();
         
         activeTask = new SelectContactTask(this, getReturnCoordinatesHandler());
 }
@@ -553,12 +547,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 			activeTask.stop();
 		}
 		super.onPause();
-	}
-	
-	@Override
-	protected void onDestroy() {
-		searchProvider.Stop();
-		super.onDestroy();
 	}
 
 	/*

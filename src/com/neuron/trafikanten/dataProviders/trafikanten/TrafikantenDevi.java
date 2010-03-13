@@ -88,7 +88,7 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 class DeviHandler extends DefaultHandler {
 	private DeviData data;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-	private final TrafikantenDevi asyncTask;
+	private final TrafikantenDevi parent;
 	
 	/*
 	 * Temporary variables for parsing. 
@@ -107,9 +107,9 @@ class DeviHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public DeviHandler(TrafikantenDevi asyncTask)
+	public DeviHandler(TrafikantenDevi parent)
 	{
-		this.asyncTask = asyncTask;
+		this.parent = parent;
 	}
 	
 	/*
@@ -166,7 +166,7 @@ class DeviHandler extends DefaultHandler {
 	    	if (dateDiffHours < 3) {
 	    		/*
 	    		 * We ignore devi events that are over 3 hours into the future, as realtime data only shows 3 hours into the future.	    		 */
-	    		asyncTask.ThreadHandlePostData(data);
+	    		parent.ThreadHandlePostData(data);
 	    	}
 	    } else { 
 	    	if (inTitle) {

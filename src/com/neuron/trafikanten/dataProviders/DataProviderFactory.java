@@ -21,9 +21,7 @@ package com.neuron.trafikanten.dataProviders;
 import android.content.res.Resources;
 
 import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
-import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
-import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
 
 /*
  * Class used for getting the right Search/Realtime/Route etc provider.
@@ -38,13 +36,6 @@ public class DataProviderFactory {
 	 */
 	public static String getDataProviderString() {
 		return "Trafikanten";
-	}
-	
-	/*
-	 * Get Search Provider
-	 */
-	public static ISearchProvider getSearchProvider(Resources resources, SearchProviderHandler handler) {
-		return new TrafikantenSearch(resources, handler);
 	}
 	
 	/*

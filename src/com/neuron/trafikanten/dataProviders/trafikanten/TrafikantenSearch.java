@@ -38,103 +38,38 @@ import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.ISearchProvider;
-import com.neuron.trafikanten.dataProviders.ISearchProvider.SearchProviderHandler;
+import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
+import com.neuron.trafikanten.dataProviders.IGenericProvider.GenericProviderHandlerNew;
 import com.neuron.trafikanten.dataSets.StationData;
 
-public class TrafikantenSearch implements ISearchProvider {
+
+public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 	private static final String TAG = "Trafikanten-TrafikantenSearch";
-	private SearchProviderHandler handler;
-	private Resources resources;
-	private TrafikantenSearchThread thread;
 	
-	public TrafikantenSearch(Resources resources, SearchProviderHandler handler) {
-		this.handler = handler;
+	public final Resources resources;
+	private double latitude = 0;
+	private double longitude = 0;
+	
+	private String query = null;
+	private boolean isRealtimeStopFiltered = false;
+	
+	public TrafikantenSearch(Resources resources, double latitude, double longitude, GenericProviderHandlerNew<StationData> handler) {
+		super(handler);
 		this.resources = resources;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		start();
 	}
 	
-	/*
-	 * Kill off running thread to stop current search. 
-	 */
-	@Override
-	public void Stop() {
-		if (thread != null) {
-			thread.interrupt();
-			try {thread.join();
-			} catch (InterruptedException e) {}
-			thread = null;
-		}
-	}
-
-	/*
-	 * Initiate a search of string query
-	 */
-	@Override
-	public void Search(String query, boolean isRealtimeStopFiltered) {
-		Stop();
-		Log.i(TAG,"Searching for station " + query);
-		handler.onStarted();
-		thread = new TrafikantenSearchThread(resources, isRealtimeStopFiltered, handler, query);
-		thread.start();
-	}
-	
-	/*
-	 * Initiate a search of coordinates
-	 */
-	@Override
-	public void Search(double latitude, double longitude) {
-		Stop();
-		Log.i(TAG,"Searching for coordinates " + latitude + " " + longitude);
-		handler.onStarted();
-		thread = new TrafikantenSearchThread(resources, handler, latitude, longitude);
-		thread.start();
-	}
-	
-	/*
-	 * Call a normal stop on finalize
-	 * @see java.lang.Object#finalize()
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		Stop();
-		super.finalize();
-	}
-	
-	@Override
-	public boolean running() {
-		return (thread != null && thread.isAlive());
-	}
-}
-
-
-class TrafikantenSearchThread extends Thread implements Runnable {
-	private static final String TAG = "Trafikanten-T-SearchThread";
-	private SearchProviderHandler handler;
-	private Resources resources;
-	private String query;
-	private boolean isRealtimeStopFiltered;
-	private double latitude;
-	private double longitude;
-	
-	public TrafikantenSearchThread(Resources resources, boolean isRealtimeStopFiltered, SearchProviderHandler handler, String query) {
-		this.handler = handler;
+	public TrafikantenSearch(Resources resources, String query, boolean isRealtimeStopFiltered, GenericProviderHandlerNew<StationData> handler) {
+		super(handler);
 		this.resources = resources;
 		this.query = query;
 		this.isRealtimeStopFiltered = isRealtimeStopFiltered;
+		start();
 	}
 	
-	public TrafikantenSearchThread(Resources resources, SearchProviderHandler handler, double latitude, double longitude) {
-		this.handler = handler;
-		this.resources = resources;
-		
-		this.latitude = latitude;
-		this.longitude = longitude;
-	}
-	
-	/*
-	 * Run current thread.
-	 * This function setups the url and the xmlreader, and passes data to the SearchHandler. 
-	 */
+    @Override
 	public void run() {
 		try {
 			InputStream result;
@@ -170,27 +105,18 @@ class TrafikantenSearchThread extends Thread implements Runnable {
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new SearchHandler(handler, isRealtimeStopFiltered));
+			reader.setContentHandler(new SearchHandler(this, isRealtimeStopFiltered));
 			reader.parse(new InputSource(result));
 		} catch(Exception e) {
-			/*
-			 * All exceptions except thread interruptions are passed to callback.
-			 */
-			if (e.getClass() == InterruptedException.class)
+			if (e.getClass() == InterruptedException.class) {
+				ThreadHandlePostExecute(null);
 				return;
-			
-			/*
-			 * Send exception
-			 */
-			final Exception sendException = e;
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					handler.onError(sendException);
-				}
-			});
+			}
+			ThreadHandlePostExecute(e);
+			return;
 		}
-	}
+		ThreadHandlePostExecute(null);
+    }
 }
 
 /*
@@ -198,7 +124,8 @@ class TrafikantenSearchThread extends Thread implements Runnable {
  */
 class SearchHandler extends DefaultHandler {
 	private StationData station;
-	private SearchProviderHandler handler;
+	private final TrafikantenSearch parent;
+	private final boolean isRealtimeStopFiltered; // if isRealtimeStopFiltered station.realtime = true always.
 	
 	/*
 	 * Temporary variables for parsing. 
@@ -216,15 +143,14 @@ class SearchHandler extends DefaultHandler {
 	
 	// Ignore is used to ignore anything except type Stop.
 	private boolean ignore = false;
-	private boolean isRealtimeStopFiltered; // if isRealtimeStopFiltered station.realtime = true always.
 	
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public SearchHandler(SearchProviderHandler handler, boolean isRealtimeStopFiltered)
+	public SearchHandler(TrafikantenSearch parent, boolean isRealtimeStopFiltered)
 	{
 		this.isRealtimeStopFiltered = isRealtimeStopFiltered;
-		this.handler = handler;
+		this.parent = parent;
 	}
 	
 	/*
@@ -245,20 +171,6 @@ class SearchHandler extends DefaultHandler {
 			station.extra = address;
 		}
 	}
-	
-	/*
-	 * End of document, call onCompleted with complete stationList
-	 */
-	@Override
-	public void endDocument() throws SAXException {
-		handler.post(new Runnable() {
-			@Override
-			public void run() {
-				handler.onFinished();			
-			}
-		});
-	}
-	
 
     @Override 
     public void startElement(String namespaceURI, String localName, 
@@ -302,15 +214,9 @@ class SearchHandler extends DefaultHandler {
              */
             inPlace = false;
             if (!ignore) {
-    	        final StationData sendData = station;
     	        if (isRealtimeStopFiltered)
-    	        	sendData.realtimeStop = true;
-    			handler.post(new Runnable() {
-    				@Override
-    				public void run() {
-    					handler.onData(sendData);	
-    				}
-    			});
+    	        	station.realtimeStop = true;
+    	        parent.ThreadHandlePostData(station);
             }
             ignore = false;
         } else {

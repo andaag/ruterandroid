@@ -85,7 +85,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 class RealtimeHandler extends DefaultHandler {
 	private RealtimeData data;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-	private final TrafikantenRealtime asyncTask;
+	private final TrafikantenRealtime parent;
 	
 	/*
 	 * Temporary variables for parsing. 
@@ -104,9 +104,9 @@ class RealtimeHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public RealtimeHandler(TrafikantenRealtime asyncTask)
+	public RealtimeHandler(TrafikantenRealtime parent)
 	{
-		this.asyncTask = asyncTask;
+		this.parent = parent;
 	}
 	
 	/*
@@ -156,7 +156,7 @@ class RealtimeHandler extends DefaultHandler {
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */
 	        inMonitoredStopVisit = false;
-	        asyncTask.ThreadHandlePostData(data);
+	        parent.ThreadHandlePostData(data);
 	    } else { 
 	    	if (inPublishedLineName) {
 		        inPublishedLineName = false;
