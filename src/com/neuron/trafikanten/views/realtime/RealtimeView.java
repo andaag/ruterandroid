@@ -54,7 +54,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProvider;
-import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenDevi;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
@@ -183,7 +182,7 @@ public class RealtimeView extends ListActivity {
     	if (realtimeProvider != null)
     		realtimeProvider.interrupt();
     	if (deviProvider != null)
-    		deviProvider.cancel(true);
+    		deviProvider.interrupt();
     	Log.i("DEBUG CODE","done stopping providers");
     }
     
@@ -359,7 +358,7 @@ public class RealtimeView extends ListActivity {
 	    	}
     	}
     	
-    	deviProvider = new TrafikantenDevi(station.stationId, deviLines.toString(), new DeviProviderHandler() {
+    	deviProvider = new TrafikantenDevi(station.stationId, deviLines.toString(), new IGenericProvider.GenericProviderHandlerNew<DeviData>() {
 			@Override
 			public void onData(DeviData deviData) {
 				if (deviData.lines.size() > 0) {

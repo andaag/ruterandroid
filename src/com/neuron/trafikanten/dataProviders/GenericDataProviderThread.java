@@ -41,7 +41,7 @@ public abstract class GenericDataProviderThread<T> extends Thread {
     	msg.obj = e;
     	threadHandler.sendMessage(msg);
     }
-    public void ThreadHandlePostData(RealtimeData data) {
+    public void ThreadHandlePostData(T data) {
     	Message msg = threadHandler.obtainMessage(MSG_DATA);
     	msg.obj = data;
     	threadHandler.sendMessage(msg);

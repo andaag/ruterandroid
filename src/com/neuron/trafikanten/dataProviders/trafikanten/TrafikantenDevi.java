@@ -34,28 +34,26 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
+import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
+import com.neuron.trafikanten.dataProviders.IGenericProvider.GenericProviderHandlerNew;
 import com.neuron.trafikanten.dataSets.DeviData;
 
-public class TrafikantenDevi extends AsyncTask<Void, DeviData, Void> {
+public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 	private static final String TAG = "Trafikanten-T-DeviThread";
-	private final DeviProviderHandler handler;
 	private final int stationId;
 	private final String lines;
 	
-	private Exception exception = null;
-	
-	public TrafikantenDevi(int stationId, String lines, DeviProviderHandler handler) {
+	public TrafikantenDevi(int stationId, String lines, GenericProviderHandlerNew<DeviData> handler) {
+		super(handler);
 		this.stationId = stationId;
 		this.lines = lines;
-		this.handler = handler;
 	}
-
-    protected Void doInBackground(Void... unused) {
+	
+    @Override
+	public void run() {
 		try {
 			final String urlString = "http://devi.trafikanten.no/rss.aspx?show=filter&stop=" + stationId + "&linename=" + URLEncoder.encode(lines,"UTF-8");
 			Log.i(TAG,"Loading devi data : " + urlString);
@@ -73,36 +71,15 @@ public class TrafikantenDevi extends AsyncTask<Void, DeviData, Void> {
 			
 			reader.parse(new InputSource(result));			
 		} catch(Exception e) {
-			if (e.getClass() == InterruptedException.class)
-				return null;
-			this.exception = e;
+			if (e.getClass() == InterruptedException.class) {
+				ThreadHandlePostExecute(null);
+				return;
+			}
+			ThreadHandlePostExecute(e);
+			return;
 		}
-		return null;
+		ThreadHandlePostExecute(null);
     }
-    
-    /*
-     * Comes from the thread
-     */
-    public void addData(DeviData data) {
-    	publishProgress(data);
-    }
-
-    /*
-     * Anything under this updates the ui 
-     */
-    protected void onProgressUpdate(DeviData... progress) {
-        handler.onData(progress[0]);
-    }
-
-    @Override
-	protected void onPreExecute() {
-    	handler.onPreExecute();
-	}
-
-	protected void onPostExecute(Void unused) {
-		handler.onPostExecute(exception);
-    }
-	
 }
 
 /*
@@ -189,7 +166,7 @@ class DeviHandler extends DefaultHandler {
 	    	if (dateDiffHours < 3) {
 	    		/*
 	    		 * We ignore devi events that are over 3 hours into the future, as realtime data only shows 3 hours into the future.	    		 */
-	    		asyncTask.addData(data);
+	    		asyncTask.ThreadHandlePostData(data);
 	    	}
 	    } else { 
 	    	if (inTitle) {
