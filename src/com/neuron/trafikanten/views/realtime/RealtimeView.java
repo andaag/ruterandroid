@@ -272,6 +272,7 @@ public class RealtimeView extends ListActivity {
         lastUpdate = System.currentTimeMillis();
     	stopProviders();
     	
+    	finishedLoading = false;
 		realtimeList.itemsAddedWithoutNotify = 0;
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
@@ -564,6 +565,7 @@ public class RealtimeView extends ListActivity {
 		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 		outState.putParcelableArrayList(KEY_DEVILIST, deviItems);
+		Log.i("DEBUG CODE", "onSaveState finished loading : " + finishedLoading);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
 
 		realtimeList.saveInstanceState(outState);
