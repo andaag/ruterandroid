@@ -28,4 +28,10 @@ public interface IGenericProvider {
 	    public abstract void onError(Exception e);
 	    public abstract void onFinished();
 	}
+	
+	abstract class GenericProviderHandlerNew<T> {
+	    public abstract void onData(T data);
+	    public abstract void onPostExecute(Exception e);
+	    public abstract void onPreExecute();
+	}
 }

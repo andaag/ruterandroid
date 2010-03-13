@@ -19,7 +19,6 @@
 package com.neuron.trafikanten.dataProviders;
 
 import com.neuron.trafikanten.dataSets.DeviData;
-import com.neuron.trafikanten.dataSets.RealtimeData;
 
 public interface IDeviProvider extends IGenericProvider {
 	public void Fetch(int stationId, String lines);
