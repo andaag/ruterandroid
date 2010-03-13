@@ -4,7 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
+import com.neuron.trafikanten.dataSets.LocationData;
 import com.skyhookwireless.wps.WPSAuthentication;
 import com.skyhookwireless.wps.WPSContinuation;
 import com.skyhookwireless.wps.WPSLocation;
@@ -12,17 +14,20 @@ import com.skyhookwireless.wps.WPSPeriodicLocationCallback;
 import com.skyhookwireless.wps.WPSReturnCode;
 import com.skyhookwireless.wps.XPS;
 
-public class TrafikantenLocationProvider {
+/*
+ * NOTE, this is using GenericDataProviderThread. This makes it a thread, but it's a thread that never runs.
+ * The reason for this is allowing us to use the GenericDataProviderThread's ThreadPost etc functions from skyhooks callback thread.
+ */
+public class TrafikantenLocationProvider extends GenericDataProviderThread<LocationData> {
 	public static final int SETTING_LOCATION_ACCURACY = 80; // Needed accuracy for auto continue when waiting for a fix.
 	private final static String TAG = "Trafikanten-SkyhookLocation";
-	private final IGenericProviderHandler<LocationData> handler;
 	private boolean _stop = true;
 	
 	private WPSAuthentication _auth;
 	private XPS _xps;
 
 	public TrafikantenLocationProvider(Context context, IGenericProviderHandler<LocationData> handler) {
-		this.handler = handler;
+		super(handler);
 		_auth = new WPSAuthentication("aagaande", "http://code.google.com/p/trafikanten/");
 		
 		/*
@@ -45,16 +50,17 @@ public class TrafikantenLocationProvider {
 		_stop = false;
 		_xps.getXPSLocation(_auth, (int) 2, XPS.EXACT_ACCURACY, _locationListener);
 	}
+	
+	
 
-	public void stop() {
+	@Override
+	public void interrupt() {
 		_stop = true;
 		_xps.abort();
+
+		super.interrupt();
 	}
-	
-	public boolean running() {
-		return (!_stop);
-	}
-	
+
 	/*
 	 * Location Listener, notify caller.
 	 */
@@ -78,16 +84,13 @@ public class TrafikantenLocationProvider {
 			 * Notify we've found a location
 			 */
 			Log.i(TAG,"Recieved location update " + location.getNAP() + " " + location.getHPE());
-			final double latitude = location.getLatitude();
-			final double longitude = location.getLongitude();
-			final double accuracy = Math.round(location.getHPE());
-			handler.onData(new LocationData(latitude, longitude, accuracy));
+			ThreadHandlePostData(new LocationData(location.getLatitude(), location.getLongitude(), Math.round(location.getHPE())));
 	    	return WPSContinuation.WPS_CONTINUE;
 		}
 
 		@Override
 		public void done() {
-			handler.onPostExecute(null);
+			ThreadHandlePostExecute(null);
 		}
 
 		@Override
@@ -98,18 +101,6 @@ public class TrafikantenLocationProvider {
 			return WPSContinuation.WPS_CONTINUE;
 		}
 	};
-	
-	public class LocationData {
-		public final double latitude;
-		public final double longitude;
-		public final double accuracy;
-		
-		public LocationData(double latitude, double longitude, double accuracy) {
-			this.latitude = latitude;
-			this.longitude = longitude;
-			this.accuracy = accuracy;
-		}
-	}
 
 }
 

@@ -32,8 +32,8 @@ import android.widget.Toast;
 
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
+import com.neuron.trafikanten.dataSets.LocationData;
 import com.neuron.trafikanten.locationProviders.skyhook.TrafikantenLocationProvider;
-import com.neuron.trafikanten.locationProviders.skyhook.TrafikantenLocationProvider.LocationData;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
 /*
@@ -138,7 +138,7 @@ public class LocationTask implements GenericTask {
 		dialog.setOnCancelListener(new OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
-				locationProvider.stop();
+				locationProvider.interrupt();
 				handler.onCanceled();				
 			}
 		});
@@ -148,7 +148,7 @@ public class LocationTask implements GenericTask {
     
     private void returnLocation() 
     {
-    	locationProvider.stop();
+    	locationProvider.interrupt();
 		if (latitude == 0) {
 			Toast.makeText(activity, R.string.noLocationFoundError, Toast.LENGTH_SHORT).show();
 			return;
@@ -158,7 +158,7 @@ public class LocationTask implements GenericTask {
     
 	@Override
 	public void stop() {
-		locationProvider.stop();
+		locationProvider.interrupt();
 		handler.onCanceled();
 		dialog.dismiss();
 	}
