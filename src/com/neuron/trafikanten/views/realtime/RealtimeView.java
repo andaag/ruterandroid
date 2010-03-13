@@ -181,7 +181,7 @@ public class RealtimeView extends ListActivity {
     private void stopProviders() {
     	Log.i("DEBUG CODE","stopproviders");
     	if (realtimeProvider != null)
-    		realtimeProvider.cancel(true);
+    		realtimeProvider.interrupt();
     	if (deviProvider != null)
     		deviProvider.cancel(true);
     	Log.i("DEBUG CODE","done stopping providers");
@@ -325,7 +325,6 @@ public class RealtimeView extends ListActivity {
 			}
 						
 		});
-		realtimeProvider.execute();
     }
     
     /*

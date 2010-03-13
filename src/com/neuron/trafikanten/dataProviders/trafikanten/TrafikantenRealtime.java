@@ -32,26 +32,48 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 
-public class TrafikantenRealtime extends AsyncTask<Void, RealtimeData, Void> {
+public class TrafikantenRealtime extends Thread {
 	private static final String TAG = "Trafikanten-T-RealtimeThread";
-	private Exception exception = null;
+	private final static int MSG_DATA = 0;
+	private final static int MSG_POSTEXECUTE = 1;
 	
 	private final int stationId;
 	private final RealtimeProviderHandler handler;
+	private final Handler threadHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			if (isInterrupted()) return;
+			switch (msg.what) {
+			case MSG_DATA:
+				handler.onData((RealtimeData) msg.obj);
+				break;
+			case MSG_POSTEXECUTE:
+				if (msg.obj != null)
+					handler.onPostExecute((Exception) msg.obj);
+				else
+					handler.onPostExecute(null);
+				break;
+			}
+		}
+	};
 	
 	public TrafikantenRealtime(int stationId, RealtimeProviderHandler handler) {
 		this.stationId = stationId;
 		this.handler = handler;
+		handler.onPreExecute();
+		start();
 	}
 	
-    protected Void doInBackground(Void... unused) {
+    @Override
+	public void run() {
 		try {
 			final String urlString = "http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId;
 			Log.i(TAG,"Loading realtime data : " + urlString);
@@ -68,34 +90,29 @@ public class TrafikantenRealtime extends AsyncTask<Void, RealtimeData, Void> {
 			reader.setContentHandler(new RealtimeHandler(this));
 			reader.parse(new InputSource(result));
 		} catch(Exception e) {
-			if (e.getClass() == InterruptedException.class)
-				return null;
-			this.exception = e;
+			if (e.getClass() == InterruptedException.class) {
+				ThreadHandlePostExecute(null);
+				return;
+			}
+			ThreadHandlePostExecute(e);
+			return;
 		}
-		return null;
+		ThreadHandlePostExecute(null);
+    }
+    
+    private void ThreadHandlePostExecute(Exception e) {
+    	Message msg = threadHandler.obtainMessage(MSG_POSTEXECUTE);
+    	msg.obj = e;
+    	threadHandler.sendMessage(msg);
     }
     
     /*
      * Comes from the thread
      */
-    public void addData(RealtimeData data) {
-    	publishProgress(data);
-    }
-
-    /*
-     * Anything under this updates the ui 
-     */
-    protected void onProgressUpdate(RealtimeData... progress) {
-        handler.onData(progress[0]);
-    }
-
-    @Override
-	protected void onPreExecute() {
-    	handler.onPreExecute();
-	}
-
-	protected void onPostExecute(Void unused) {
-		handler.onPostExecute(exception);
+    public void ThreadHandlePostData(RealtimeData data) {
+    	Message msg = threadHandler.obtainMessage(MSG_DATA);
+    	msg.obj = data;
+    	threadHandler.sendMessage(msg);
     }
 }
 
@@ -176,7 +193,7 @@ class RealtimeHandler extends DefaultHandler {
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */
 	        inMonitoredStopVisit = false;
-	        asyncTask.addData(data);
+	        asyncTask.ThreadHandlePostData(data);
 	    } else { 
 	    	if (inPublishedLineName) {
 		        inPublishedLineName = false;
