@@ -18,9 +18,6 @@
 
 package com.neuron.trafikanten.db;
 
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataSets.StationData;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -28,6 +25,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
+
+import com.neuron.trafikanten.dataSets.StationData;
 
 public abstract class GenericStationDbAdapter {
     public static final String KEY_ROWID = "_id";
@@ -102,7 +101,7 @@ public abstract class GenericStationDbAdapter {
     	if (db == null) {
     		database_version = version;
     		database_name = database;
-    		table = DataProviderFactory.getDataProviderString();
+    		table = "Trafikanten";
 	        dbHelper = new DatabaseHelper(context);
 	        db = dbHelper.getWritableDatabase();
     	}

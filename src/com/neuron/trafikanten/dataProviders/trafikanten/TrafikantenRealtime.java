@@ -36,7 +36,7 @@ import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
-import com.neuron.trafikanten.dataProviders.IGenericProvider.GenericProviderHandlerNew;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 
 public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData> {
@@ -44,7 +44,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 	
 	private final int stationId;
 	
-	public TrafikantenRealtime(int stationId, GenericProviderHandlerNew<RealtimeData> handler) {
+	public TrafikantenRealtime(int stationId, IGenericProviderHandler<RealtimeData> handler) {
 		super(handler);
 		this.stationId = stationId;
 		start();

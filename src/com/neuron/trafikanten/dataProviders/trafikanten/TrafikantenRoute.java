@@ -38,93 +38,26 @@ import android.content.res.Resources;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.IRouteProvider;
-import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
+import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.hacks.WaittimeBug;
 
-public class TrafikantenRoute implements IRouteProvider {
-	private RouteProviderHandler handler;
-	private TrafikantenRouteThread thread;
-	private Resources resources;
+public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
+	private final Resources resources;
+	private final RouteSearchData routeSearch;
 	
-	public TrafikantenRoute(Resources resources, RouteProviderHandler handler) {
-		this.handler = handler;
-		this.resources = resources;
-	}
-
-	/*
-	 * Search for route
-	 * @see com.neuron.trafikanten.dataProviders.IRouteProvider#Search(com.neuron.trafikanten.dataSets.RouteData)
-	 */
-	@Override
-	public void Search(RouteSearchData routeSearch) {
-		Stop();
-		thread = new TrafikantenRouteThread(resources, handler, routeSearch);
-		thread.start();
-		
-	}
-
-	/*
-	 * Stop running thread
-	 */
-	@Override
-	public void Stop() {
-		if (thread != null) {
-			thread.interrupt();
-			try {thread.join();
-			} catch (InterruptedException e) {}
-			thread = null;
-		}
-	}
-	
-	/*
-	 * Call a normal stop on finalize
-	 * @see java.lang.Object#finalize()
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		Stop();
-		super.finalize();
-	}
-	
-	@Override
-	public boolean running() {
-		return (thread != null && thread.isAlive());
-	}
-}
-
-class TrafikantenRouteThread extends Thread implements Runnable {
-	//private final static String TAG = "Trafikanten-T-RouteThread";
-	private RouteProviderHandler handler;
-	private Resources resources;
-	private RouteSearchData routeSearch;
-	
-	public TrafikantenRouteThread(Resources resources, RouteProviderHandler handler, RouteSearchData routeSearch) {
-		this.handler = handler;
+	public TrafikantenRoute(Resources resources, RouteSearchData routeSearch, IGenericProviderHandler<RouteProposal> handler) {
+		super(handler);
 		this.resources = resources;
 		this.routeSearch = routeSearch;
+		start();
 	}
 	
-	/*
-	 * Run current thread.
-	 * This function setups the url and the xmlreader, and passes data to the RouteHandler. 
-	 */
-	
-	/*public String soapGetFrom(ArrayList<StationData> stationList) throws IOException {
-		String xml = "";
-		for(StationData station : stationList) {
-			// TODO : From/airdistance/departure time has to be included atleast.
-			String[] args = new String[] { new Integer(station.airDistance).toString() };
-			xml = xml + HelperFunctions.mergeXmlArgument(resources, R.raw.gettravelsadvancedfrom, args);
-		}
-		return xml;
-	}
-	// TODO : soapGetTo*/
-	
+    @Override
 	public void run() {
 		try {
 			/*
@@ -187,32 +120,23 @@ class TrafikantenRouteThread extends Thread implements Runnable {
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new RouteHandler(handler));
+			reader.setContentHandler(new RouteHandler(this));
 			
 			reader.parse(new InputSource(result));
 		} catch(Exception e) {
-			/*
-			 * All exceptions except thread interruptions are passed to callback.
-			 */
-			if (e.getClass() == InterruptedException.class)
+			if (e.getClass() == InterruptedException.class) {
+				ThreadHandlePostExecute(null);
 				return;
-
-			/*
-			 * Send exception
-			 */
-			final Exception sendException = e;
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					handler.onError(sendException);
-				}
-			});
+			}
+			ThreadHandlePostExecute(e);
+			return;
 		}
-	}
+		ThreadHandlePostExecute(null);
+    }
 }
 
 class RouteHandler extends DefaultHandler {
-	private RouteProviderHandler handler;
+	private final TrafikantenRoute parent;
 	// For parsing:
 	private static RouteProposal travelProposal;
 	private RouteData travelStage; // temporary only, these are moved to travelStageList
@@ -241,30 +165,8 @@ class RouteHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 
-	public RouteHandler(RouteProviderHandler handler) {
-		this.handler = handler;
-	}
-	
-	
-	
-	@Override
-	public void startDocument() throws SAXException {
-		super.startDocument();
-	}
-
-
-
-	/*
-	 * End of document, call onCompleted with complete stationList
-	 */
-	@Override
-	public void endDocument() throws SAXException {
-		handler.post(new Runnable() {
-			@Override
-			public void run() {
-				handler.onFinished();			
-			}
-		});
+	public RouteHandler(TrafikantenRoute parent) {
+		this.parent = parent;
 	}
 	
 	/*
@@ -350,17 +252,9 @@ class RouteHandler extends DefaultHandler {
 			 */
 			inTravelProposal = false;
 			
-	        final RouteProposal sendData = travelProposal;
-	        
 	        //hack:
-	        WaittimeBug.onSendData(sendData);
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					handler.onData(sendData);	
-				}
-			});
-			
+	        WaittimeBug.onSendData(travelProposal);
+	        parent.ThreadHandlePostData(travelProposal);
 		} else {
 			if (!inTravelStage) {
 		        if (inDepartureTime && localName.equals("DepartureTime")) {

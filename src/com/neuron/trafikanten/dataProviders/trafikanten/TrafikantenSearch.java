@@ -39,7 +39,7 @@ import android.util.Log;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
-import com.neuron.trafikanten.dataProviders.IGenericProvider.GenericProviderHandlerNew;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.StationData;
 
 
@@ -53,7 +53,7 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 	private String query = null;
 	private boolean isRealtimeStopFiltered = false;
 	
-	public TrafikantenSearch(Resources resources, double latitude, double longitude, GenericProviderHandlerNew<StationData> handler) {
+	public TrafikantenSearch(Resources resources, double latitude, double longitude, IGenericProviderHandler<StationData> handler) {
 		super(handler);
 		this.resources = resources;
 		this.latitude = latitude;
@@ -61,7 +61,7 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 		start();
 	}
 	
-	public TrafikantenSearch(Resources resources, String query, boolean isRealtimeStopFiltered, GenericProviderHandlerNew<StationData> handler) {
+	public TrafikantenSearch(Resources resources, String query, boolean isRealtimeStopFiltered, IGenericProviderHandler<StationData> handler) {
 		super(handler);
 		this.resources = resources;
 		this.query = query;

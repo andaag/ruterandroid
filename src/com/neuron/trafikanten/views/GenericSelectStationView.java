@@ -52,9 +52,8 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.IGenericProvider;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
-import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
@@ -195,7 +194,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		setListAdapter(stationListAdapter);
     }
     
-    private IGenericProvider.GenericProviderHandlerNew<StationData> searchHandler = new IGenericProvider.GenericProviderHandlerNew<StationData>(){
+    private IGenericProviderHandler<StationData> searchHandler = new IGenericProviderHandler<StationData>(){
 
 		@Override
 		public void onData(StationData data) {
@@ -533,6 +532,14 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	public boolean route_isStationSelected(StationData station) {
 		return false;
+	}
+	
+	@Override
+	protected void onStop() {
+		if (searchProvider != null) {
+			searchProvider.interrupt();
+		}
+		super.onStop();
 	}
 	
 	/*

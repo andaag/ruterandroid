@@ -38,7 +38,7 @@ import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
-import com.neuron.trafikanten.dataProviders.IGenericProvider.GenericProviderHandlerNew;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.DeviData;
 
 public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
@@ -46,7 +46,7 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 	private final int stationId;
 	private final String lines;
 	
-	public TrafikantenDevi(int stationId, String lines, GenericProviderHandlerNew<DeviData> handler) {
+	public TrafikantenDevi(int stationId, String lines, IGenericProviderHandler<DeviData> handler) {
 		super(handler);
 		this.stationId = stationId;
 		this.lines = lines;

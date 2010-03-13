@@ -48,9 +48,8 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataProviders.IRouteProvider;
-import com.neuron.trafikanten.dataProviders.IRouteProvider.RouteProviderHandler;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
+import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
@@ -79,7 +78,7 @@ public class OverviewRouteView extends ListActivity {
 	 * Wanted Route, this is used as a base for the search.
 	 */
 	private RouteSearchData routeSearch;
-	private IRouteProvider routeProvider;
+	private TrafikantenRoute routeProvider;
 	
 	/*
 	 * UI
@@ -123,47 +122,46 @@ public class OverviewRouteView extends ListActivity {
 	 * Load station data
 	 */
 	private void load() {
-    	setProgressBarIndeterminateVisibility(true);
     	if (routeProvider != null)
-    		routeProvider.Stop();
+    		routeProvider.interrupt();
     	
     	routeList.getList().clear();
     	routeList.notifyDataSetChanged();
     	
-    	routeProvider = DataProviderFactory.getRouteProvider(getResources(), new RouteProviderHandler() {
+    	routeProvider = new TrafikantenRoute(getResources(), routeSearch, new IGenericProviderHandler<RouteProposal>() {
+
 			@Override
-			public void onData(RouteProposal routeProposal) {
-				routeList.addItem(routeProposal);
+			public void onData(RouteProposal data) {
+				routeList.addItem(data);
 				routeList.notifyDataSetChanged();
 				infoText.setVisibility(routeList.getCount() > 0 ? View.GONE : View.VISIBLE);
 			}
 
 			@Override
-			public void onError(Exception exception) {
-				Log.w(TAG,"onException " + exception);
-				infoText.setVisibility(View.VISIBLE);
-				if (exception.getClass().getSimpleName().equals("ParseException")) {
-					infoText.setText("" + getText(R.string.parseError) + ":" + "\n\n" + exception);
-				} else {
-					infoText.setText("" + getText(R.string.exception) + ":" + "\n\n" + exception);
-				}
+			public void onPostExecute(Exception exception) {
 				setProgressBarIndeterminateVisibility(false);
+				routeProvider = null; 
+				if (exception != null) {
+					Log.w(TAG,"onException " + exception);
+					infoText.setVisibility(View.VISIBLE);
+					if (exception.getClass().getSimpleName().equals("ParseException")) {
+						infoText.setText("" + getText(R.string.parseError) + ":" + "\n\n" + exception);
+					} else {
+						infoText.setText("" + getText(R.string.exception) + ":" + "\n\n" + exception);
+					}
+					setProgressBarIndeterminateVisibility(false);
+				} else {
+					infoText.setText(R.string.noRoutesFound);
+				}
+				
 			}
 
 			@Override
-			public void onFinished() {
-				infoText.setText(R.string.noRoutesFound);
-				setProgressBarIndeterminateVisibility(false);
-				routeProvider = null; 
-				/*
-				 * Show info text if view is empty
-				 */
-				/*final TextView infoText = (TextView) findViewById(R.id.emptyText);
-				infoText.setVisibility(routeList.getCount() > 0 ? View.GONE : View.VISIBLE);*/
+			public void onPreExecute() {
+		    	setProgressBarIndeterminateVisibility(true);
 			}
     		
     	});
-    	routeProvider.Search(routeSearch);
 	}
 	
 	/*
@@ -237,15 +235,12 @@ public class OverviewRouteView extends ListActivity {
 		return super.onContextItemSelected(item);
 	}
 	
-	/*
-	 * Make sure we kill off threads when freeing memory.
-	 */
 	@Override
-	public void finish() {
+	protected void onStop() {
 		if (routeProvider != null) {
-			routeProvider.Stop();
+			routeProvider.interrupt();
 		}
-		super.finish();
+		super.onStop();
 	}
 
 	/*

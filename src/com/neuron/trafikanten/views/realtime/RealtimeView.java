@@ -53,7 +53,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.IGenericProvider;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenDevi;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
@@ -275,7 +275,7 @@ public class RealtimeView extends ListActivity {
 
 		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
 				
-		realtimeProvider = new TrafikantenRealtime(station.stationId, new IGenericProvider.GenericProviderHandlerNew<RealtimeData>() {
+		realtimeProvider = new TrafikantenRealtime(station.stationId, new IGenericProviderHandler<RealtimeData>() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
 				if (!caVisibilityChecked && !realtimeData.realtime) {
@@ -358,7 +358,7 @@ public class RealtimeView extends ListActivity {
 	    	}
     	}
     	
-    	deviProvider = new TrafikantenDevi(station.stationId, deviLines.toString(), new IGenericProvider.GenericProviderHandlerNew<DeviData>() {
+    	deviProvider = new TrafikantenDevi(station.stationId, deviLines.toString(), new IGenericProviderHandler<DeviData>() {
 			@Override
 			public void onData(DeviData deviData) {
 				if (deviData.lines.size() > 0) {
