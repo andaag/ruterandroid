@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.neuron.trafikanten.dataProviders.IGenericProvider.GenericProviderHandlerNew;
-import com.neuron.trafikanten.dataSets.RealtimeData;
 
 public abstract class GenericDataProviderThread<T> extends Thread {
 	private final static int MSG_DATA = 0;
