@@ -90,6 +90,11 @@ public class TrafikantenRoute implements IRouteProvider {
 		Stop();
 		super.finalize();
 	}
+	
+	@Override
+	public boolean running() {
+		return (thread != null && thread.isAlive());
+	}
 }
 
 class TrafikantenRouteThread extends Thread implements Runnable {

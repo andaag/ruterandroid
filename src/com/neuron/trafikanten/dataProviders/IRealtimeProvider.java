@@ -27,7 +27,9 @@ import com.neuron.trafikanten.dataSets.RealtimeData;
 public interface IRealtimeProvider extends IGenericProvider {
 	public void Fetch(int stationId);
 	
-	abstract class RealtimeProviderHandler extends GenericProviderHandler {
+	abstract class RealtimeProviderHandler {
 	    public abstract void onData(RealtimeData realtimeData);
+	    public abstract void onPostExecute(Exception e);
+	    public abstract void onPreExecute();
 	}
 }

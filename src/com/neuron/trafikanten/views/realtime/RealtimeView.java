@@ -55,9 +55,9 @@ import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.DataProviderFactory;
 import com.neuron.trafikanten.dataProviders.IDeviProvider;
-import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
 import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
+import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
@@ -72,6 +72,7 @@ public class RealtimeView extends ListActivity {
 	public static final String SETTING_HIDECA = "realtime_hideCaText";
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	public static final String KEY_DEVILIST = "devilist";
+	private static final String KEY_FINISHEDLOADING = "finishedLoading";
 	
 	/*
 	 * Options menu:
@@ -99,6 +100,7 @@ public class RealtimeView extends ListActivity {
 	private RealtimeAdapter realtimeList;
 	private long lastUpdate;
 	private ArrayList<DeviData> deviItems;
+	private boolean finishedLoading = false; // we're finishedLoading when devi has loaded successfully.
 	
 	/*
 	 * UI
@@ -110,19 +112,20 @@ public class RealtimeView extends ListActivity {
 	/*
 	 * Data providers
 	 */
-	private IRealtimeProvider realtimeProvider;
-	private IDeviProvider deviProvider;
+	private TrafikantenRealtime realtimeProvider = null;
+	private IDeviProvider deviProvider = null;
 	
 	/*
 	 * Other
 	 */
     public SharedPreferences settings;
     public Typeface departuresTypeface;
-	
-    /** Called when the activity is first created. */
+    
+	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("DEBUG CODE","ONCREATE ");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
         /*
@@ -150,14 +153,30 @@ public class RealtimeView extends ListActivity {
         		station = StationData.readSimpleBundle(bundle);
         	}
         	load();
+        	Log.i("DEBUG CODE","first load");
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
         	deviItems = savedInstanceState.getParcelableArrayList(KEY_DEVILIST);
+        	finishedLoading = savedInstanceState.getBoolean(KEY_FINISHEDLOADING);
         	
         	realtimeList.loadInstanceState(savedInstanceState);
         	realtimeList.notifyDataSetChanged();
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
+        	
+        	if (!finishedLoading) {
+        		Log.i("DEBUG CODE","finished loading is false, trying again.");
+        		/*
+        		 * We're not done loading data, check if we're still trying.
+        		 */
+        		if ((realtimeProvider == null) && (deviProvider == null || !deviProvider.running())) {
+        			Log.i("DEBUG CODE","nothing running in background, loading");
+        			load();
+        		} else  {
+        			Log.i("DEBUG CODE","background stuff running, leaving em");
+        		}
+        			
+        	}
         }
 
         registerForContextMenu(getListView());
@@ -167,12 +186,20 @@ public class RealtimeView extends ListActivity {
     }
     
     private void stopProviders() {
+    	Log.i("DEBUG CODE","stopproviders");
     	if (realtimeProvider != null)
-    		realtimeProvider.Stop();
+    		realtimeProvider.cancel(true);
     	if (deviProvider != null)
     		deviProvider.Stop();
     	realtimeProvider = null;
     	deviProvider = null;
+    	try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	Log.i("DEBUG CODE","done stopping providers");
     }
     
     final Handler autoRefreshHandler = new Handler(new Handler.Callback() {
@@ -255,15 +282,14 @@ public class RealtimeView extends ListActivity {
     private boolean caVisibilityChecked;
     private void load() {
         lastUpdate = System.currentTimeMillis();
-    	setProgressBarIndeterminateVisibility(true);
     	stopProviders();
     	
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
-
 		realtimeList.itemsAddedWithoutNotify = 0;
+
 		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
-    	realtimeProvider = DataProviderFactory.getRealtimeProvider(new RealtimeProviderHandler() {
+		realtimeProvider = new TrafikantenRealtime(station.stationId, new RealtimeProviderHandler() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
 				if (!caVisibilityChecked && !realtimeData.realtime) {
@@ -278,39 +304,42 @@ public class RealtimeView extends ListActivity {
 				if (realtimeList.itemsAddedWithoutNotify > 5) {
 					realtimeList.itemsAddedWithoutNotify = 0;
 					realtimeList.notifyDataSetChanged();
-				}
+				}				
 			}
 
 			@Override
-			public void onError(Exception exception) {
-				stopProviders();
-				Log.w(TAG,"onException " + exception);
-				infoText.setVisibility(View.VISIBLE);
-				if (exception.getClass().getSimpleName().equals("ParseException")) {
-					infoText.setText("" + getText(R.string.parseError) + ":" + "\n\n" + exception);
-				} else {
-					infoText.setText("" + getText(R.string.exception) + ":" + "\n\n" + exception);
-				}
+			public void onPostExecute(Exception exception) {
 				setProgressBarIndeterminateVisibility(false);
-			}
-
-			@Override
-			public void onFinished() {
-				refreshTitle();
-				setProgressBarIndeterminateVisibility(false);
-				/*
-				 * Show info text if view is empty
-				 */
-				infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
-				if (realtimeList.itemsAddedWithoutNotify > 0) {
-					realtimeList.itemsAddedWithoutNotify = 0;
-					realtimeList.notifyDataSetChanged();
-				}
 				realtimeProvider = null;
-				loadDevi();
+				if (exception != null) {
+					Log.w(TAG,"onException " + exception);
+					infoText.setVisibility(View.VISIBLE);
+					if (exception.getClass().getSimpleName().equals("ParseException")) {
+						infoText.setText("" + getText(R.string.parseError) + ":" + "\n\n" + exception);
+					} else {
+						infoText.setText("" + getText(R.string.exception) + ":" + "\n\n" + exception);
+					}
+				} else {
+					refreshTitle();
+					/*
+					 * Show info text if view is empty
+					 */
+					infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
+					if (realtimeList.itemsAddedWithoutNotify > 0) {
+						realtimeList.itemsAddedWithoutNotify = 0;
+						realtimeList.notifyDataSetChanged();
+					}
+					loadDevi();	
+				}
 			}
-    	});
-    	realtimeProvider.Fetch(station.stationId);
+
+			@Override
+			public void onPreExecute() {
+				setProgressBarIndeterminateVisibility(true);				
+			}
+						
+		});
+		realtimeProvider.execute();
     }
     
     /*
@@ -320,6 +349,7 @@ public class RealtimeView extends ListActivity {
     	setProgressBarIndeterminateVisibility(true);
     	realtimeList.itemsAddedWithoutNotify = 0;
     	deviItems = new ArrayList<DeviData>();
+    	Log.i("DEBUG CODE","loading devi");
     	deviProvider = DataProviderFactory.getDeviProvider(new DeviProviderHandler() {
 			@Override
 			public void onData(DeviData deviData) {
@@ -351,6 +381,8 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onFinished() {
+				Log.i("DEBUG CODE","onFinished - devi");
+				finishedLoading = true;
 				refreshDevi();
 				setProgressBarIndeterminateVisibility(false);
 				deviProvider = null;
@@ -514,6 +546,7 @@ public class RealtimeView extends ListActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		Log.i("DEBUG CODE","onPause");
 		autoRefreshHandler.removeMessages(0);
 	}
 
@@ -521,16 +554,18 @@ public class RealtimeView extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 		refresh();
+		Log.i("DEBUG CODE","onResume");
 		autoRefreshHandler.sendEmptyMessageDelayed(0, 10000);
 	}
-
+	
 	@Override
-	public void finish() {
+	protected void onStop() {
 		/*
 		 * make sure background threads is properly killed off.
 		 */
+		Log.i("DEBUG CODE","onStop");
 		stopProviders();
-		super.finish();
+		super.onStop();
 	}
 
 	@Override
@@ -539,6 +574,7 @@ public class RealtimeView extends ListActivity {
 		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 		outState.putParcelableArrayList(KEY_DEVILIST, deviItems);
+		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
 
 		realtimeList.saveInstanceState(outState);
 	}

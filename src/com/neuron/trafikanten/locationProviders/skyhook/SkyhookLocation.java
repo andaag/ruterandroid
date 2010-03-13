@@ -51,6 +51,10 @@ public class SkyhookLocation implements ILocationProvider {
 		_xps.abort();
 	}
 	
+	public boolean running() {
+		return (!_stop);
+	}
+	
 	/*
 	 * Location Listener, notify caller.
 	 */

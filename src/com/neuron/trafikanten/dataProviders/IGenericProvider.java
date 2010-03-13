@@ -22,6 +22,7 @@ import android.os.Handler;
 
 public interface IGenericProvider {
 	public void Stop();
+	public boolean running();
 	
 	abstract class GenericProviderHandler extends Handler {
 	    public abstract void onError(Exception e);

@@ -99,6 +99,11 @@ public class TrafikantenSearch implements ISearchProvider {
 		Stop();
 		super.finalize();
 	}
+	
+	@Override
+	public boolean running() {
+		return (thread != null && thread.isAlive());
+	}
 }
 
 

@@ -83,6 +83,10 @@ public class TrafikantenDevi  implements IDeviProvider {
 		super.finalize();
 	}
 	
+	@Override
+	public boolean running() {
+		return (thread != null && thread.isAlive());
+	}
 	
 }
 

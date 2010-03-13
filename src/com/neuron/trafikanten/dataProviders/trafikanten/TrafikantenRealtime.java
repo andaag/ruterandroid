@@ -32,80 +32,32 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.dataProviders.IRealtimeProvider;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 
-public class TrafikantenRealtime implements IRealtimeProvider {
-	private RealtimeProviderHandler handler;
-	private TrafikantenRealtimeThread thread;
-	
-	public TrafikantenRealtime(RealtimeProviderHandler handler) {
-		this.handler = handler;
-	}
-	
-	/*
-	 * Stop running thread
-	 */
-	@Override
-	public void Stop() {
-		if (thread != null) {
-			thread.interrupt();
-			try {thread.join();
-			} catch (InterruptedException e) {}
-			thread = null;
-		}
-	}
-
-	/*
-	 * Fetch Realtime information for stationId
-	 * @see com.neuron.trafikanten.dataProviders.IRealtimeProvider#Fetch(int)
-	 */
-	@Override
-	public void Fetch(int stationId) {
-		Stop();
-		thread = new TrafikantenRealtimeThread(handler, stationId);
-		thread.start();
-	}
-	
-	/*
-	 * Call a normal stop on finalize
-	 * @see java.lang.Object#finalize()
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		Stop();
-		super.finalize();
-	}
-}
-
-class TrafikantenRealtimeThread extends Thread implements Runnable {
+public class TrafikantenRealtime extends AsyncTask<Void, RealtimeData, Void> {
 	private static final String TAG = "Trafikanten-T-RealtimeThread";
-	private RealtimeProviderHandler handler;
-	private int stationId;	
+	private Exception exception = null;
 	
-	public TrafikantenRealtimeThread(RealtimeProviderHandler handler, int stationId) {
-		this.handler = handler;
+	private final int stationId;
+	private final RealtimeProviderHandler handler;
+	
+	public TrafikantenRealtime(int stationId, RealtimeProviderHandler handler) {
 		this.stationId = stationId;
+		this.handler = handler;
 	}
 	
-	/*
-	 * Run current thread.
-	 * This function setups the url and the xmlreader, and passes data to the RealtimeHandler. 
-	 */
-	
-	public void run() {
+    protected Void doInBackground(Void... unused) {
 		try {
 			final String urlString = "http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId;
 			Log.i(TAG,"Loading realtime data : " + urlString);
 			HttpGet request = new HttpGet(urlString);
 			InputStream result = HelperFunctions.executeHttpRequest(request);
 
-
-			
 			/*
 			 * Setup SAXParser and XMLReader
 			 */
@@ -113,28 +65,38 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new RealtimeHandler(handler));
-			
+			reader.setContentHandler(new RealtimeHandler(this));
 			reader.parse(new InputSource(result));
 		} catch(Exception e) {
-			/*
-			 * All exceptions except thread interruptions are passed to callback.
-			 */
 			if (e.getClass() == InterruptedException.class)
-				return;
-			
-			/*
-			 * Send exception
-			 */
-			final Exception sendException = e;
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					handler.onError(sendException);
-				}
-			});
+				return null;
+			this.exception = e;
 		}
+		return null;
+    }
+    
+    /*
+     * Comes from the thread
+     */
+    public void addData(RealtimeData data) {
+    	publishProgress(data);
+    }
+
+    /*
+     * Anything under this updates the ui 
+     */
+    protected void onProgressUpdate(RealtimeData... progress) {
+        handler.onData(progress[0]);
+    }
+
+    @Override
+	protected void onPreExecute() {
+    	handler.onPreExecute();
 	}
+
+	protected void onPostExecute(Void unused) {
+		handler.onPostExecute(exception);
+    }
 }
 
 /*
@@ -143,7 +105,7 @@ class TrafikantenRealtimeThread extends Thread implements Runnable {
 class RealtimeHandler extends DefaultHandler {
 	private RealtimeData data;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-	private RealtimeProviderHandler handler;
+	private final TrafikantenRealtime asyncTask;
 	
 	/*
 	 * Temporary variables for parsing. 
@@ -152,9 +114,6 @@ class RealtimeHandler extends DefaultHandler {
 	private boolean inPublishedLineName = false;
 	private boolean inDestinationName = false;
 	private boolean inMonitored = false;
-
-	/*private boolean inAimedArrivalTime = false;
-	private boolean inExpectedArrivalTime = false;*/
 
 	private boolean inAimedDepartureTime = false;
 	private boolean inExpectedDepartureTime = false;
@@ -165,22 +124,9 @@ class RealtimeHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public RealtimeHandler(RealtimeProviderHandler handler)
+	public RealtimeHandler(TrafikantenRealtime asyncTask)
 	{
-		this.handler = handler;
-	}
-	
-	/*
-	 * End of document, call onCompleted with complete realtimeList
-	 */
-	@Override
-	public void endDocument() throws SAXException {
-		handler.post(new Runnable() {
-			@Override
-			public void run() {
-				handler.onFinished();			
-			}
-		});
+		this.asyncTask = asyncTask;
 	}
 	
 	/*
@@ -209,10 +155,6 @@ class RealtimeHandler extends DefaultHandler {
 		        inDestinationName = true;
 		    } else if (localName.equals("Monitored")) {
 		        inMonitored = true;
-		    /*} else if (localName.equals("AimedArrivalTime")) {
-		        inAimedArrivalTime = true;
-		    } else if (localName.equals("ExpectedArrivalTime")) {
-		        inExpectedArrivalTime = true;*/
 		    } else if (localName.equals("AimedDepartureTime")) {
 		        inAimedDepartureTime = true;
 		    } else if (localName.equals("ExpectedDepartureTime")) {
@@ -234,13 +176,7 @@ class RealtimeHandler extends DefaultHandler {
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */
 	        inMonitoredStopVisit = false;
-	        final RealtimeData sendData = data;
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					handler.onData(sendData);	
-				}
-			});
+	        asyncTask.addData(data);
 	    } else { 
 	    	if (inPublishedLineName) {
 		        inPublishedLineName = false;
@@ -256,9 +192,6 @@ class RealtimeHandler extends DefaultHandler {
 		        } else {
 		        	data.realtime = false;
 		        }
-		    /*} else if (inAimedDepartureTime) {
-		        inAimedDepartureTime = false;
-		        data.aimedDeparture = parseDateTime(buffer.toString());*/
 		    } else if (inExpectedDepartureTime) {
 		        inExpectedDepartureTime = false;
 		        data.expectedDeparture = parseDateTime(buffer.toString());
@@ -290,7 +223,6 @@ class RealtimeHandler extends DefaultHandler {
 	
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
-		//inAimedArrivalTime || inExpectedArrivalTime
 	    if (inPublishedLineName || inDestinationName ||
 	    		inMonitored || inAimedDepartureTime || inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
 	    	buffer.append(ch,start,length);
