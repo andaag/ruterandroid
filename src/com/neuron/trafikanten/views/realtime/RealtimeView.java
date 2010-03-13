@@ -262,6 +262,7 @@ public class RealtimeView extends ListActivity {
      */
     private boolean caVisibilityChecked;
     private void load() {
+    	Log.i("DEBUG CODE", "load()");
         lastUpdate = System.currentTimeMillis();
     	stopProviders();
     	
@@ -275,6 +276,7 @@ public class RealtimeView extends ListActivity {
 		realtimeProvider = new TrafikantenRealtime(station.stationId, new IGenericProviderHandler<RealtimeData>() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
+				Log.i("DEBUG CODE", "load() - onData");
 				if (!caVisibilityChecked && !realtimeData.realtime) {
 					/*
 					 * check "ca info text" visibility
@@ -292,6 +294,7 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onPostExecute(Exception exception) {
+				Log.i("DEBUG CODE", "load() - onPostExecute");
 				setProgressBarIndeterminateVisibility(false);
 				realtimeProvider = null;
 				if (exception != null) {
@@ -328,6 +331,7 @@ public class RealtimeView extends ListActivity {
      * Load devi data
      */
     private void loadDevi() {
+    	Log.i("DEBUG CODE", "loadDevi()");
     	/*
     	 * Create list of lines - first create lineList
     	 */
@@ -358,6 +362,7 @@ public class RealtimeView extends ListActivity {
     	deviProvider = new TrafikantenDevi(station.stationId, deviLines.toString(), new IGenericProviderHandler<DeviData>() {
 			@Override
 			public void onData(DeviData deviData) {
+				Log.i("DEBUG CODE", "loadDevi() - onData");
 				if (deviData.lines.size() > 0) {
 					/*
 					 * Line specific data
@@ -378,6 +383,7 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onPostExecute(Exception exception) {
+				Log.i("DEBUG CODE", "loadDevi() - onPostExecute");
 				setProgressBarIndeterminateVisibility(false);
 				finishedLoading = true;
 				deviProvider = null;
@@ -644,6 +650,7 @@ class RealtimeAdapter extends BaseAdapter {
 		items.clear();
 		deviItems.clear();
 		itemsSize = 0;
+		itemsAddedWithoutNotify = 0;
 	}
 	/*
 	 * Saving instance state
