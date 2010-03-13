@@ -236,7 +236,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     		resetView();
     	} else {
     		if (searchProvider != null)
-    			searchProvider.interrupt();
+    			searchProvider.kill();
     		searchProvider = new TrafikantenSearch(getResources(), searchEdit.getText().toString(), isRealtimeSelector, searchHandler);
     	}
     }
@@ -394,7 +394,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	                setProgressBar(false);
 	                activeTask = null;
 	        		if (searchProvider != null)
-	        			searchProvider.interrupt();
+	        			searchProvider.kill();
 	        		searchProvider = new TrafikantenSearch(getResources(), latitude,longitude, searchHandler);
 	        }
 	
@@ -410,7 +410,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	public void findMyLocationTask() {
 		if (searchProvider != null)
-			searchProvider.interrupt();
+			searchProvider.kill();
 		activeTask = new LocationTask(this, getReturnCoordinatesHandler());
 	}
 	
@@ -419,7 +419,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	private void searchAddressTask() {
 		if (searchProvider != null)
-			searchProvider.interrupt();
+			searchProvider.kill();
 		activeTask = new SearchAddressTask(this, getReturnCoordinatesHandler());
 	}
 	
@@ -428,7 +428,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
     private void selectContact() {
 		if (searchProvider != null)
-			searchProvider.interrupt();        
+			searchProvider.kill();        
         activeTask = new SelectContactTask(this, getReturnCoordinatesHandler());
 }
 
@@ -543,7 +543,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	@Override
 	protected void onStop() {
 		if (searchProvider != null)
-			searchProvider.interrupt();
+			searchProvider.kill();
 		super.onStop();
 	}
 	

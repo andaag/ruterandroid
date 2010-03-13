@@ -123,7 +123,7 @@ public class OverviewRouteView extends ListActivity {
 	 */
 	private void load() {
     	if (routeProvider != null)
-    		routeProvider.interrupt();
+    		routeProvider.kill();
     	
     	routeList.getList().clear();
     	routeList.notifyDataSetChanged();
@@ -238,7 +238,7 @@ public class OverviewRouteView extends ListActivity {
 	@Override
 	protected void onStop() {
 		if (routeProvider != null) {
-			routeProvider.interrupt();
+			routeProvider.kill();
 		}
 		super.onStop();
 	}

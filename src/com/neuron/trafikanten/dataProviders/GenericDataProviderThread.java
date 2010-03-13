@@ -1,18 +1,23 @@
 package com.neuron.trafikanten.dataProviders;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 public abstract class GenericDataProviderThread<T> extends Thread {
 	private final static int MSG_DATA = 0;
 	private final static int MSG_POSTEXECUTE = 1;
+	private AtomicBoolean stopped = new AtomicBoolean(false);
 	
 	private final IGenericProviderHandler<T> handler;
 	private final Handler threadHandler = new Handler() {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void handleMessage(Message msg) {
-			if (isInterrupted()) return;
+			Log.i("DEBUG CODE", "Thread " + getId() + " isInterrupted : " + stopped.get() + " sending " + msg.what);
+			if (stopped.get()) return;
 			switch (msg.what) {
 			case MSG_DATA:
 				handler.onData( (T) msg.obj);
@@ -23,6 +28,11 @@ public abstract class GenericDataProviderThread<T> extends Thread {
 			}
 		}
 	};
+	
+	public void kill() {
+		stopped.set(true);
+		interrupt();
+	}
 	
 	public GenericDataProviderThread(IGenericProviderHandler<T> handler) {
 		this.handler = handler;

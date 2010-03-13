@@ -54,11 +54,11 @@ public class TrafikantenLocationProvider extends GenericDataProviderThread<Locat
 	
 
 	@Override
-	public void interrupt() {
+	public void kill() {
 		_stop = true;
 		_xps.abort();
 
-		super.interrupt();
+		super.kill(); // this isn't a thread, so this is sortof pointless.
 	}
 
 	/*

@@ -165,6 +165,8 @@ public class RealtimeView extends ListActivity {
         	if (!finishedLoading) {
         		Log.i("DEBUG CODE","finished loading is false, trying again.");
     			load();
+        	} else {
+        		Log.i("DEBUG CODE","finished loading is true");
         	}
         }
 
@@ -176,10 +178,14 @@ public class RealtimeView extends ListActivity {
     
     private void stopProviders() {
     	Log.i("DEBUG CODE","stopproviders");
-    	if (realtimeProvider != null)
-    		realtimeProvider.interrupt();
-    	if (deviProvider != null)
-    		deviProvider.interrupt();
+    	if (realtimeProvider != null) {
+    		realtimeProvider.kill();
+    		Log.i("DEBUG CODE", "set interrupted for thread " + realtimeProvider.getId());
+    	}
+    	if (deviProvider != null) {
+    		deviProvider.kill();
+    		Log.i("DEBUG CODE", "set interrupted for thread " + deviProvider.getId());
+    	}
     	Log.i("DEBUG CODE","done stopping providers");
     }
     
@@ -262,7 +268,7 @@ public class RealtimeView extends ListActivity {
      */
     private boolean caVisibilityChecked;
     private void load() {
-    	Log.i("DEBUG CODE", "load()");
+    	Log.i("DEBUG CODE", "load()   - NEW LOAD STARTING");
         lastUpdate = System.currentTimeMillis();
     	stopProviders();
     	
@@ -323,8 +329,8 @@ public class RealtimeView extends ListActivity {
 			public void onPreExecute() {
 				setProgressBarIndeterminateVisibility(true);				
 			}
-						
 		});
+		Log.i("DEBUG CODE", "load()   - NEW THREAD ID : " + realtimeProvider.getId());
     }
     
     /*
@@ -406,6 +412,7 @@ public class RealtimeView extends ListActivity {
 				setProgressBarIndeterminateVisibility(true);
 			}
     	});
+    	Log.i("DEBUG CODE", "loadDevi()   - NEW THREAD ID : " + deviProvider.getId());
     }
     
 	/*
