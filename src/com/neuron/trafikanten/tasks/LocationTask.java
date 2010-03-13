@@ -31,16 +31,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.locationProviders.ILocationProvider;
-import com.neuron.trafikanten.locationProviders.LocationProviderFactory;
-import com.neuron.trafikanten.locationProviders.ILocationProvider.LocationProviderHandler;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
+import com.neuron.trafikanten.locationProviders.skyhook.TrafikantenLocationProvider;
+import com.neuron.trafikanten.locationProviders.skyhook.TrafikantenLocationProvider.LocationData;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
 /*
  * Calculate our location, and search for a station
  */
 public class LocationTask implements GenericTask {
-	private ILocationProvider locationProvider;
+	private TrafikantenLocationProvider locationProvider;
 	private Activity activity;
 	private ReturnCoordinatesHandler handler;
 	private TextView message;
@@ -100,21 +100,33 @@ public class LocationTask implements GenericTask {
 		});
 		updateButton.run();
 		
-		locationProvider = LocationProviderFactory.getLocationProvider(activity, new LocationProviderHandler() {
+		locationProvider = new TrafikantenLocationProvider(activity, new IGenericProviderHandler<LocationData>() {
 
 			@Override
-			public void onLocation(double latitude, double longitude,
-					double accuracy) {
-				LocationTask.this.latitude = latitude;
-				LocationTask.this.longitude = longitude;
-        		message.setText(activity.getText(R.string.locationWaiting).toString() + "\n" + activity.getText(R.string.current) + " " + accuracy + "m");
-        		if (LocationProviderFactory.SETTING_LOCATION_ACCURACY > accuracy && accuracy > 0) {
+			public void onData(LocationData data) {
+				LocationTask.this.latitude = data.latitude;
+				LocationTask.this.longitude = data.longitude;
+        		message.setText(activity.getText(R.string.locationWaiting).toString() + "\n" + activity.getText(R.string.current) + " " + data.accuracy + "m");
+        		if (TrafikantenLocationProvider.SETTING_LOCATION_ACCURACY > data.accuracy && data.accuracy > 0) {
         			/*
         			 * Return instant location ok only if accuracy is enough, and it's not a cached gps location (accuracy 0.0 meters)
         			 */
         			returnLocation();
         			dialog.dismiss();
         		}
+				
+				
+			}
+
+			@Override
+			public void onPostExecute(Exception e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPreExecute() {
+				// TODO Auto-generated method stub
 				
 			}
 			
@@ -126,7 +138,7 @@ public class LocationTask implements GenericTask {
 		dialog.setOnCancelListener(new OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
-				locationProvider.Stop();
+				locationProvider.stop();
 				handler.onCanceled();				
 			}
 		});
@@ -136,7 +148,7 @@ public class LocationTask implements GenericTask {
     
     private void returnLocation() 
     {
-    	locationProvider.Stop();
+    	locationProvider.stop();
 		if (latitude == 0) {
 			Toast.makeText(activity, R.string.noLocationFoundError, Toast.LENGTH_SHORT).show();
 			return;
@@ -146,7 +158,7 @@ public class LocationTask implements GenericTask {
     
 	@Override
 	public void stop() {
-		locationProvider.Stop();
+		locationProvider.stop();
 		handler.onCanceled();
 		dialog.dismiss();
 	}

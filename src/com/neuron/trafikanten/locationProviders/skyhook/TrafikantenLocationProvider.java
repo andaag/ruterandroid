@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.locationProviders.ILocationProvider;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.skyhookwireless.wps.WPSAuthentication;
 import com.skyhookwireless.wps.WPSContinuation;
 import com.skyhookwireless.wps.WPSLocation;
@@ -12,16 +12,16 @@ import com.skyhookwireless.wps.WPSPeriodicLocationCallback;
 import com.skyhookwireless.wps.WPSReturnCode;
 import com.skyhookwireless.wps.XPS;
 
-public class SkyhookLocation implements ILocationProvider {
+public class TrafikantenLocationProvider {
+	public static final int SETTING_LOCATION_ACCURACY = 80; // Needed accuracy for auto continue when waiting for a fix.
 	private final static String TAG = "Trafikanten-SkyhookLocation";
-	public static final int PROVIDER_SKYHOOK = 1;
-	private LocationProviderHandler handler;
+	private final IGenericProviderHandler<LocationData> handler;
 	private boolean _stop = true;
 	
 	private WPSAuthentication _auth;
 	private XPS _xps;
 
-	public SkyhookLocation(Context context, LocationProviderHandler handler) {
+	public TrafikantenLocationProvider(Context context, IGenericProviderHandler<LocationData> handler) {
 		this.handler = handler;
 		_auth = new WPSAuthentication("aagaande", "http://code.google.com/p/trafikanten/");
 		
@@ -33,6 +33,7 @@ public class SkyhookLocation implements ILocationProvider {
                 200*1024,
                 1000*1024,
                 null);
+		handler.onPreExecute();
 		getPeriodicLocation();
 	}
 	
@@ -45,8 +46,7 @@ public class SkyhookLocation implements ILocationProvider {
 		_xps.getXPSLocation(_auth, (int) 2, XPS.EXACT_ACCURACY, _locationListener);
 	}
 
-	@Override
-	public void Stop() {
+	public void stop() {
 		_stop = true;
 		_xps.abort();
 	}
@@ -81,19 +81,14 @@ public class SkyhookLocation implements ILocationProvider {
 			final double latitude = location.getLatitude();
 			final double longitude = location.getLongitude();
 			final double accuracy = Math.round(location.getHPE());
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					handler.onLocation(latitude, longitude, accuracy);
-				}
-			});
-			
-	        
+			handler.onData(new LocationData(latitude, longitude, accuracy));
 	    	return WPSContinuation.WPS_CONTINUE;
 		}
 
 		@Override
-		public void done() {}
+		public void done() {
+			handler.onPostExecute(null);
+		}
 
 		@Override
 		public WPSContinuation handleError(WPSReturnCode arg0) {
@@ -103,4 +98,18 @@ public class SkyhookLocation implements ILocationProvider {
 			return WPSContinuation.WPS_CONTINUE;
 		}
 	};
+	
+	public class LocationData {
+		public final double latitude;
+		public final double longitude;
+		public final double accuracy;
+		
+		public LocationData(double latitude, double longitude, double accuracy) {
+			this.latitude = latitude;
+			this.longitude = longitude;
+			this.accuracy = accuracy;
+		}
+	}
+
 }
+
