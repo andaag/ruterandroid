@@ -34,80 +34,28 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.dataProviders.IDeviProvider;
 import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
 import com.neuron.trafikanten.dataSets.DeviData;
 
-public class TrafikantenDevi  implements IDeviProvider {
-	private DeviProviderHandler handler;
-	private TrafikantenDeviThread thread;
-	
-	public TrafikantenDevi(DeviProviderHandler handler) {
-		this.handler = handler;
-	}
-
-	/*
-	 * Fetch Devi data for a station id
-	 * @see com.neuron.trafikanten.dataProviders.IDeviProvider#Fetch(int)
-	 */
-	@Override
-	public void Fetch(int stationId, String lines) {
-		Stop();
-		thread = new TrafikantenDeviThread(handler, stationId ,lines);
-		thread.start();
-	}
-
-	/*
-	 * Stop running thread
-	 */
-	@Override
-	public void Stop() {
-		if (thread != null) {
-			thread.interrupt();
-			try {thread.join();
-			} catch (InterruptedException e) {}
-			thread = null;
-		}
-	}
-
-	/*
-	 * Call a normal stop on finalize
-	 * @see java.lang.Object#finalize()
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		Stop();
-		super.finalize();
-	}
-	
-	@Override
-	public boolean running() {
-		return (thread != null && thread.isAlive());
-	}
-	
-}
-
-class TrafikantenDeviThread extends Thread implements Runnable {
+public class TrafikantenDevi extends AsyncTask<Void, DeviData, Void> {
 	private static final String TAG = "Trafikanten-T-DeviThread";
-	private DeviProviderHandler handler;
-	private int stationId;	
-	private String lines;
+	private final DeviProviderHandler handler;
+	private final int stationId;
+	private final String lines;
 	
-	public TrafikantenDeviThread(DeviProviderHandler handler, int stationId, String lines) {
-		this.handler = handler;
+	private Exception exception = null;
+	
+	public TrafikantenDevi(int stationId, String lines, DeviProviderHandler handler) {
 		this.stationId = stationId;
 		this.lines = lines;
+		this.handler = handler;
 	}
-	
-	/*
-	 * Run current thread.
-	 * This function setups the url and the xmlreader, and passes data to the DeviHandler. 
-	 */
-	
-	public void run() {
+
+    protected Void doInBackground(Void... unused) {
 		try {
 			final String urlString = "http://devi.trafikanten.no/rss.aspx?show=filter&stop=" + stationId + "&linename=" + URLEncoder.encode(lines,"UTF-8");
 			Log.i(TAG,"Loading devi data : " + urlString);
@@ -121,28 +69,40 @@ class TrafikantenDeviThread extends Thread implements Runnable {
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new DeviHandler(handler));
+			reader.setContentHandler(new DeviHandler(this));
 			
-			reader.parse(new InputSource(result));
+			reader.parse(new InputSource(result));			
 		} catch(Exception e) {
-			/*
-			 * All exceptions except thread interruptions are passed to callback.
-			 */
 			if (e.getClass() == InterruptedException.class)
-				return;
-			
-			/*
-			 * Send exception
-			 */
-			final Exception sendException = e;
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					handler.onError(sendException);
-				}
-			});
+				return null;
+			this.exception = e;
 		}
+		return null;
+    }
+    
+    /*
+     * Comes from the thread
+     */
+    public void addData(DeviData data) {
+    	publishProgress(data);
+    }
+
+    /*
+     * Anything under this updates the ui 
+     */
+    protected void onProgressUpdate(DeviData... progress) {
+        handler.onData(progress[0]);
+    }
+
+    @Override
+	protected void onPreExecute() {
+    	handler.onPreExecute();
 	}
+
+	protected void onPostExecute(Void unused) {
+		handler.onPostExecute(exception);
+    }
+	
 }
 
 /*
@@ -151,7 +111,7 @@ class TrafikantenDeviThread extends Thread implements Runnable {
 class DeviHandler extends DefaultHandler {
 	private DeviData data;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-	private DeviProviderHandler handler;
+	private final TrafikantenDevi asyncTask;
 	
 	/*
 	 * Temporary variables for parsing. 
@@ -170,22 +130,9 @@ class DeviHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public DeviHandler(DeviProviderHandler handler)
+	public DeviHandler(TrafikantenDevi asyncTask)
 	{
-		this.handler = handler;
-	}
-	
-	/*
-	 * End of document, call onCompleted with complete realtimeList
-	 */
-	@Override
-	public void endDocument() throws SAXException {
-		handler.post(new Runnable() {
-			@Override
-			public void run() {
-				handler.onFinished();			
-			}
-		});
+		this.asyncTask = asyncTask;
 	}
 	
 	/*
@@ -242,13 +189,7 @@ class DeviHandler extends DefaultHandler {
 	    	if (dateDiffHours < 3) {
 	    		/*
 	    		 * We ignore devi events that are over 3 hours into the future, as realtime data only shows 3 hours into the future.	    		 */
-		        final DeviData sendData = data;
-				handler.post(new Runnable() {
-					@Override
-					public void run() {
-						handler.onData(sendData);	
-					}
-				});
+	    		asyncTask.addData(data);
 	    	}
 	    } else { 
 	    	if (inTitle) {

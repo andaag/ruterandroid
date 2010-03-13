@@ -53,10 +53,9 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataProviders.DataProviderFactory;
-import com.neuron.trafikanten.dataProviders.IDeviProvider;
 import com.neuron.trafikanten.dataProviders.IDeviProvider.DeviProviderHandler;
 import com.neuron.trafikanten.dataProviders.IRealtimeProvider.RealtimeProviderHandler;
+import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenDevi;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
@@ -113,7 +112,7 @@ public class RealtimeView extends ListActivity {
 	 * Data providers
 	 */
 	private TrafikantenRealtime realtimeProvider = null;
-	private IDeviProvider deviProvider = null;
+	private TrafikantenDevi deviProvider = null;
 	
 	/*
 	 * Other
@@ -169,13 +168,7 @@ public class RealtimeView extends ListActivity {
         		/*
         		 * We're not done loading data, check if we're still trying.
         		 */
-        		if ((realtimeProvider == null) && (deviProvider == null || !deviProvider.running())) {
-        			Log.i("DEBUG CODE","nothing running in background, loading");
-        			load();
-        		} else  {
-        			Log.i("DEBUG CODE","background stuff running, leaving em");
-        		}
-        			
+    			load();
         	}
         }
 
@@ -190,15 +183,7 @@ public class RealtimeView extends ListActivity {
     	if (realtimeProvider != null)
     		realtimeProvider.cancel(true);
     	if (deviProvider != null)
-    		deviProvider.Stop();
-    	realtimeProvider = null;
-    	deviProvider = null;
-    	try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    		deviProvider.cancel(true);
     	Log.i("DEBUG CODE","done stopping providers");
     }
     
@@ -284,9 +269,10 @@ public class RealtimeView extends ListActivity {
         lastUpdate = System.currentTimeMillis();
     	stopProviders();
     	
+		realtimeList.itemsAddedWithoutNotify = 0;
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
-		realtimeList.itemsAddedWithoutNotify = 0;
+    	deviItems = new ArrayList<DeviData>();
 
 		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
 		realtimeProvider = new TrafikantenRealtime(station.stationId, new RealtimeProviderHandler() {
@@ -346,55 +332,6 @@ public class RealtimeView extends ListActivity {
      * Load devi data
      */
     private void loadDevi() {
-    	setProgressBarIndeterminateVisibility(true);
-    	realtimeList.itemsAddedWithoutNotify = 0;
-    	deviItems = new ArrayList<DeviData>();
-    	Log.i("DEBUG CODE","loading devi");
-    	deviProvider = DataProviderFactory.getDeviProvider(new DeviProviderHandler() {
-			@Override
-			public void onData(DeviData deviData) {
-				if (deviData.lines.size() > 0) {
-					/*
-					 * Line specific data
-					 */
-					realtimeList.addDeviItem(deviData);
-					realtimeList.itemsAddedWithoutNotify++;
-					if (realtimeList.itemsAddedWithoutNotify > 5) {
-						realtimeList.itemsAddedWithoutNotify = 0;
-						realtimeList.notifyDataSetChanged();
-					}
-				} else {
-					/*
-					 * Station specific data
-					 */
-					deviItems.add(deviData);
-				}
-			}
-
-			@Override
-			public void onError(Exception exception) {
-				stopProviders();
-				Log.w(TAG,"onException " + exception);
-				Toast.makeText(RealtimeView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
-				setProgressBarIndeterminateVisibility(false);				
-			}
-
-			@Override
-			public void onFinished() {
-				Log.i("DEBUG CODE","onFinished - devi");
-				finishedLoading = true;
-				refreshDevi();
-				setProgressBarIndeterminateVisibility(false);
-				deviProvider = null;
-				if (realtimeList.itemsAddedWithoutNotify > 0) {
-					realtimeList.itemsAddedWithoutNotify = 0;
-					realtimeList.notifyDataSetChanged();
-				}				
-			}
-    		
-    	});
-    	
-    	
     	/*
     	 * Create list of lines - first create lineList
     	 */
@@ -422,7 +359,51 @@ public class RealtimeView extends ListActivity {
 	    	}
     	}
     	
-    	deviProvider.Fetch(station.stationId, deviLines.toString());
+    	deviProvider = new TrafikantenDevi(station.stationId, deviLines.toString(), new DeviProviderHandler() {
+			@Override
+			public void onData(DeviData deviData) {
+				if (deviData.lines.size() > 0) {
+					/*
+					 * Line specific data
+					 */
+					realtimeList.addDeviItem(deviData);
+					realtimeList.itemsAddedWithoutNotify++;
+					if (realtimeList.itemsAddedWithoutNotify > 5) {
+						realtimeList.itemsAddedWithoutNotify = 0;
+						realtimeList.notifyDataSetChanged();
+					}
+				} else {
+					/*
+					 * Station specific data
+					 */
+					deviItems.add(deviData);
+				}				
+			}
+
+			@Override
+			public void onPostExecute(Exception exception) {
+				setProgressBarIndeterminateVisibility(false);
+				finishedLoading = true;
+				deviProvider = null;
+
+				if (exception != null) {
+					Log.w(TAG,"onException " + exception);
+					Toast.makeText(RealtimeView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+		
+				} else {
+					refreshDevi();
+					if (realtimeList.itemsAddedWithoutNotify > 0) {
+						realtimeList.itemsAddedWithoutNotify = 0;
+						realtimeList.notifyDataSetChanged();
+					}
+				}
+			}
+
+			@Override
+			public void onPreExecute() {
+				setProgressBarIndeterminateVisibility(true);
+			}
+    	});
     }
     
 	/*
@@ -711,7 +692,7 @@ class RealtimeAdapter extends BaseAdapter {
 			deviItems.add(item);
 		}
 	}
-	
+		
 	/*
 	 * Get a list of devi's assosiated with a line
 	 */

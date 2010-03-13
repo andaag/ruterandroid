@@ -19,11 +19,14 @@
 package com.neuron.trafikanten.dataProviders;
 
 import com.neuron.trafikanten.dataSets.DeviData;
+import com.neuron.trafikanten.dataSets.RealtimeData;
 
 public interface IDeviProvider extends IGenericProvider {
 	public void Fetch(int stationId, String lines);
 	
-	abstract class DeviProviderHandler extends GenericProviderHandler {
+	abstract class DeviProviderHandler {
 	    public abstract void onData(DeviData deviData);
+	    public abstract void onPostExecute(Exception e);
+	    public abstract void onPreExecute();
 	}
 }
