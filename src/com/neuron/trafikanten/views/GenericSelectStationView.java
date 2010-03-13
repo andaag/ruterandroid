@@ -235,6 +235,8 @@ public abstract class GenericSelectStationView extends ListActivity {
     	if (searchEdit.getText().toString().length() == 0) {
     		resetView();
     	} else {
+    		if (searchProvider != null)
+    			searchProvider.interrupt();
     		searchProvider = new TrafikantenSearch(getResources(), searchEdit.getText().toString(), isRealtimeSelector, searchHandler);
     	}
     }
@@ -391,6 +393,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	                Log.i(TAG,"selectContactTask finished");
 	                setProgressBar(false);
 	                activeTask = null;
+	        		if (searchProvider != null)
+	        			searchProvider.interrupt();
 	        		searchProvider = new TrafikantenSearch(getResources(), latitude,longitude, searchHandler);
 	        }
 	
@@ -405,7 +409,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Deal with a location search
 	 */
 	public void findMyLocationTask() {
-		searchProvider.interrupt();
+		if (searchProvider != null)
+			searchProvider.interrupt();
 		activeTask = new LocationTask(this, getReturnCoordinatesHandler());
 	}
 	
@@ -413,7 +418,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Deal with address search
 	 */
 	private void searchAddressTask() {
-		searchProvider.interrupt();
+		if (searchProvider != null)
+			searchProvider.interrupt();
 		activeTask = new SearchAddressTask(this, getReturnCoordinatesHandler());
 	}
 	
@@ -421,8 +427,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Deal with contact selection
 	 */
     private void selectContact() {
-        searchProvider.interrupt();
-        
+		if (searchProvider != null)
+			searchProvider.interrupt();        
         activeTask = new SelectContactTask(this, getReturnCoordinatesHandler());
 }
 
@@ -536,9 +542,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	
 	@Override
 	protected void onStop() {
-		if (searchProvider != null) {
+		if (searchProvider != null)
 			searchProvider.interrupt();
-		}
 		super.onStop();
 	}
 	

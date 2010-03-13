@@ -164,9 +164,6 @@ public class RealtimeView extends ListActivity {
         	
         	if (!finishedLoading) {
         		Log.i("DEBUG CODE","finished loading is false, trying again.");
-        		/*
-        		 * We're not done loading data, check if we're still trying.
-        		 */
     			load();
         	}
         }

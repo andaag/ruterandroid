@@ -50,6 +50,7 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 		super(handler);
 		this.stationId = stationId;
 		this.lines = lines;
+		start();
 	}
 	
     @Override
