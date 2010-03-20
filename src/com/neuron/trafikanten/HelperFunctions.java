@@ -32,6 +32,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.Log;
@@ -116,21 +117,25 @@ public class HelperFunctions {
 		return userAgentString;
 	}
 	
+	
+	/*
+	 * Updates statistics for byte downloaded.
+	 */
+	private static final String KEY_DOWNLOADBYTE = "downloadkb";
+	private static void updateStatistics(Context context, long size) {
+		if (size == 0) return;
+		final SharedPreferences preferences = context.getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
+		Long downloadByte = preferences.getLong(KEY_DOWNLOADBYTE, 0) + size;
+		
+		final SharedPreferences.Editor editor = preferences.edit();
+    	editor.putLong(KEY_DOWNLOADBYTE, downloadByte);
+		editor.commit();
+	}
+	
 	/*
 	 * Decides on whether or not we should use gzip compression or not.
 	 */
 	public static InputStream executeHttpRequest(Context context, HttpUriRequest request) throws IOException {
-		/*
-		 * Disable gzip compression on wifi
-		 */
-		/*ConnectivityManager connectivityManager =(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE); 
-		NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-		if ((networkInfo != null) && networkInfo.isConnected() && 
-                (networkInfo.getType() == ConnectivityManager.TYPE_WIFI)) { 
-			gzip = false;
-		}*/
-		
-		
 		/*
 		 * Add gzip header
 		 */
@@ -144,6 +149,13 @@ public class HelperFunctions {
 		InputStream content = response.getEntity().getContent();
 		
 		Header contentEncoding = response.getFirstHeader("Content-Encoding");
+		Header contentLength = response.getFirstHeader("Content-Length");
+		if (contentLength != null) {
+			updateStatistics(context, Long.parseLong(contentLength.getValue()));
+		} else {
+			Log.e(TAG,"Contentlength is invalid!");
+		}
+		
 		if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
 			content = new GZIPInputStream(content);
 			Log.i(TAG,"Recieved compressed data - OK");
