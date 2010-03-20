@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.content.res.Resources;
+import android.content.Context;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
@@ -47,12 +47,12 @@ import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.hacks.WaittimeBug;
 
 public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
-	private final Resources resources;
+	private final Context context;
 	private final RouteSearchData routeSearch;
 	
-	public TrafikantenRoute(Resources resources, RouteSearchData routeSearch, IGenericProviderHandler<RouteProposal> handler) {
+	public TrafikantenRoute(Context context, RouteSearchData routeSearch, IGenericProviderHandler<RouteProposal> handler) {
 		super(handler);
-		this.resources = resources;
+		this.context = context;
 		this.routeSearch = routeSearch;
 		start();
 	}
@@ -76,7 +76,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			 */
 			final StringBuffer soapFromStation = new StringBuffer();
 			for (StationData station : routeSearch.fromStation) {
-				soapFromStation.append(HelperFunctions.mergeXmlArgument(resources, R.raw.gettravelsadvancedstation, 
+				soapFromStation.append(HelperFunctions.mergeXmlArgument(context.getResources(), R.raw.gettravelsadvancedstation, 
 						new String[] {new Integer(station.walkingDistance).toString(), new Integer(station.stationId).toString() } ));
 			}
 			/*
@@ -84,7 +84,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			 */
 			final StringBuffer soapToStation = new StringBuffer();
 			for (StationData station : routeSearch.toStation) {
-				soapToStation.append(HelperFunctions.mergeXmlArgument(resources, R.raw.gettravelsadvancedstation, 
+				soapToStation.append(HelperFunctions.mergeXmlArgument(context.getResources(), R.raw.gettravelsadvancedstation, 
 						new String[] {new Integer(station.walkingDistance).toString(), new Integer(station.stationId).toString() } ));
 			}
 			
@@ -111,7 +111,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			final String[] args = new String[]{Boolean.toString(travelAt), travelTimeString.toString(), 
 					soapFromStation.toString(), soapToStation.toString(),
 					changeMargin, changePunish, proposals, walkingFactor};
-			final InputStream result = HelperFunctions.soapRequest(resources, R.raw.gettravelsadvanced, args, Trafikanten.API_URL);
+			final InputStream result = HelperFunctions.soapRequest(context, R.raw.gettravelsadvanced, args, Trafikanten.API_URL);
 
 			/*
 			 * Setup SAXParser and XMLReader

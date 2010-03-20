@@ -128,7 +128,7 @@ public class OverviewRouteView extends ListActivity {
     	routeList.getList().clear();
     	routeList.notifyDataSetChanged();
     	
-    	routeProvider = new TrafikantenRoute(getResources(), routeSearch, new IGenericProviderHandler<RouteProposal>() {
+    	routeProvider = new TrafikantenRoute(this, routeSearch, new IGenericProviderHandler<RouteProposal>() {
 
 			@Override
 			public void onData(RouteProposal data) {

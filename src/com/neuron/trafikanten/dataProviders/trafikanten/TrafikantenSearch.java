@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.http.client.methods.HttpGet;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -33,7 +34,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.UTMRef;
-import android.content.res.Resources;
+import android.content.Context;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
@@ -46,24 +47,24 @@ import com.neuron.trafikanten.dataSets.StationData;
 public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 	private static final String TAG = "Trafikanten-TrafikantenSearch";
 	
-	public final Resources resources;
+	public final Context context;
 	private double latitude = 0;
 	private double longitude = 0;
 	
 	private String query = null;
 	private boolean isRealtimeStopFiltered = false;
 	
-	public TrafikantenSearch(Resources resources, double latitude, double longitude, IGenericProviderHandler<StationData> handler) {
+	public TrafikantenSearch(Context context, double latitude, double longitude, IGenericProviderHandler<StationData> handler) {
 		super(handler);
-		this.resources = resources;
+		this.context = context;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		start();
 	}
 	
-	public TrafikantenSearch(Resources resources, String query, boolean isRealtimeStopFiltered, IGenericProviderHandler<StationData> handler) {
+	public TrafikantenSearch(Context context, String query, boolean isRealtimeStopFiltered, IGenericProviderHandler<StationData> handler) {
 		super(handler);
-		this.resources = resources;
+		this.context = context;
 		this.query = query;
 		this.isRealtimeStopFiltered = isRealtimeStopFiltered;
 		start();
@@ -83,7 +84,7 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 	                final URL url = new URL(urlString);
 	                result = url.openStream();
 				} else {
-					result = HelperFunctions.soapRequest(resources, R.raw.getmatches, new String[]{query}, Trafikanten.API_URL);
+					result = HelperFunctions.soapRequest(context, R.raw.getmatches, new String[]{query}, Trafikanten.API_URL);
 				}
 			} else {
 				/*
@@ -94,8 +95,8 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 				                
 				final String urlString = "http://reis.trafikanten.no/topp2009/getcloseststops.aspx?x="+ (int)utmRef.getEasting() + "&y="+ (int) utmRef.getNorthing() + "&proposals=10";
 				Log.i(TAG,"Searching with url " + urlString);
-                final URL url = new URL(urlString);
-                result = url.openStream();
+				final HttpGet request = new HttpGet(urlString);
+				result = HelperFunctions.executeHttpRequest(context, request);
 			}
 			
 			/*

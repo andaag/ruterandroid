@@ -32,6 +32,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
@@ -41,11 +42,13 @@ import com.neuron.trafikanten.dataSets.RealtimeData;
 
 public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData> {
 	private static final String TAG = "Trafikanten-T-RealtimeThread";
+	private final Context context;
 	
 	private final int stationId;
 	
-	public TrafikantenRealtime(int stationId, IGenericProviderHandler<RealtimeData> handler) {
+	public TrafikantenRealtime(Context context, int stationId, IGenericProviderHandler<RealtimeData> handler) {
 		super(handler);
+		this.context = context;
 		this.stationId = stationId;
 		start();
 	}
@@ -56,7 +59,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 			final String urlString = "http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId;
 			Log.i(TAG,"Loading realtime data : " + urlString);
 			HttpGet request = new HttpGet(urlString);
-			InputStream result = HelperFunctions.executeHttpRequest(request);
+			InputStream result = HelperFunctions.executeHttpRequest(context, request);
 
 			/*
 			 * Setup SAXParser and XMLReader

@@ -237,7 +237,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     	} else {
     		if (searchProvider != null)
     			searchProvider.kill();
-    		searchProvider = new TrafikantenSearch(getResources(), searchEdit.getText().toString(), isRealtimeSelector, searchHandler);
+    		searchProvider = new TrafikantenSearch(this, searchEdit.getText().toString(), isRealtimeSelector, searchHandler);
     	}
     }
     
@@ -395,7 +395,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	                activeTask = null;
 	        		if (searchProvider != null)
 	        			searchProvider.kill();
-	        		searchProvider = new TrafikantenSearch(getResources(), latitude,longitude, searchHandler);
+	        		searchProvider = new TrafikantenSearch(GenericSelectStationView.this, latitude,longitude, searchHandler);
 	        }
 	
 	        @Override

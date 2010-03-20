@@ -21,6 +21,7 @@ package com.neuron.trafikanten;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
@@ -32,6 +33,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.util.Log;
 
 /*
@@ -101,10 +103,23 @@ public class HelperFunctions {
 		return(xml.toString());
 	}
 	
+	private static String userAgentString = null;
+	private static String getUserAgent(Context context) {
+		if (userAgentString == null) {
+			CharSequence appVersion = context.getText(R.string.app_version);
+
+			userAgentString = "TrafikantenAndroid/" + appVersion + " (aagaande) Device/" + 
+				Build.VERSION.RELEASE + " (" + Locale.getDefault() + "; " + Build.MODEL + ")";			
+			
+			// + Locale.getDefault() + ")";
+		}
+		return userAgentString;
+	}
+	
 	/*
 	 * Decides on whether or not we should use gzip compression or not.
 	 */
-	public static InputStream executeHttpRequest(HttpUriRequest request) throws IOException {
+	public static InputStream executeHttpRequest(Context context, HttpUriRequest request) throws IOException {
 		/*
 		 * Disable gzip compression on wifi
 		 */
@@ -119,7 +134,8 @@ public class HelperFunctions {
 		/*
 		 * Add gzip header
 		 */
-		request.addHeader("Accept-Encoding", "gzip");
+		request.setHeader("Accept-Encoding", "gzip");
+		request.setHeader("User-Agent",getUserAgent(context));
 		
 		/*
 		 * Get the response, if we use gzip use the GZIPInputStream
@@ -142,19 +158,19 @@ public class HelperFunctions {
 	/*
 	 * Send a soap request to the server
 	 */
-	public static InputStream soapRequest(Resources resources, String soap, final String url) throws IOException {
+	public static InputStream soapRequest(Context context, String soap, final String url) throws IOException {
         HttpPost httppost = new HttpPost(url);
         httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
         httppost.setEntity(new StringEntity(soap));
     	//Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
     	
-    	return executeHttpRequest(httppost);
+    	return executeHttpRequest(context, httppost);
 	}
 	/*
 	 * Send a soap request, takes resource id, arguments and the soap url, returns inputStream.
 	 */
-	public static InputStream soapRequest(Resources resources, final int rid, final String[] args, final String url) throws IOException {
-        final String soap = mergeXmlArgument(resources, rid, args);
-        return soapRequest(resources, soap, url);
+	public static InputStream soapRequest(Context context, final int rid, final String[] args, final String url) throws IOException {
+        final String soap = mergeXmlArgument(context.getResources(), rid, args);
+        return soapRequest(context, soap, url);
 	}
 }

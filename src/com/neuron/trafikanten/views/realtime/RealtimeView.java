@@ -280,7 +280,7 @@ public class RealtimeView extends ListActivity {
 
 		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
 				
-		realtimeProvider = new TrafikantenRealtime(station.stationId, new IGenericProviderHandler<RealtimeData>() {
+		realtimeProvider = new TrafikantenRealtime(this, station.stationId, new IGenericProviderHandler<RealtimeData>() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
 				Log.i("DEBUG CODE", "load() - onData");
@@ -366,7 +366,7 @@ public class RealtimeView extends ListActivity {
 	    	}
     	}
     	
-    	deviProvider = new TrafikantenDevi(station.stationId, deviLines.toString(), new IGenericProviderHandler<DeviData>() {
+    	deviProvider = new TrafikantenDevi(this, station.stationId, deviLines.toString(), new IGenericProviderHandler<DeviData>() {
 			@Override
 			public void onData(DeviData deviData) {
 				Log.i("DEBUG CODE", "loadDevi() - onData");
