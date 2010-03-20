@@ -123,7 +123,6 @@ public class RealtimeView extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("DEBUG CODE","ONCREATE ");
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
         /*
@@ -151,7 +150,6 @@ public class RealtimeView extends ListActivity {
         		station = StationData.readSimpleBundle(bundle);
         	}
         	load();
-        	Log.i("DEBUG CODE","first load");
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
@@ -163,10 +161,7 @@ public class RealtimeView extends ListActivity {
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
         	
         	if (!finishedLoading) {
-        		Log.i("DEBUG CODE","finished loading is false, trying again.");
     			load();
-        	} else {
-        		Log.i("DEBUG CODE","finished loading is true");
         	}
         }
 
@@ -177,16 +172,12 @@ public class RealtimeView extends ListActivity {
     }
     
     private void stopProviders() {
-    	Log.i("DEBUG CODE","stopproviders");
     	if (realtimeProvider != null) {
     		realtimeProvider.kill();
-    		Log.i("DEBUG CODE", "set interrupted for thread " + realtimeProvider.getId());
     	}
     	if (deviProvider != null) {
     		deviProvider.kill();
-    		Log.i("DEBUG CODE", "set interrupted for thread " + deviProvider.getId());
     	}
-    	Log.i("DEBUG CODE","done stopping providers");
     }
     
     final Handler autoRefreshHandler = new Handler(new Handler.Callback() {
@@ -268,7 +259,6 @@ public class RealtimeView extends ListActivity {
      */
     private boolean caVisibilityChecked;
     private void load() {
-    	Log.i("DEBUG CODE", "load()   - NEW LOAD STARTING");
         lastUpdate = System.currentTimeMillis();
     	stopProviders();
     	
@@ -283,7 +273,6 @@ public class RealtimeView extends ListActivity {
 		realtimeProvider = new TrafikantenRealtime(this, station.stationId, new IGenericProviderHandler<RealtimeData>() {
 			@Override
 			public void onData(RealtimeData realtimeData) {
-				Log.i("DEBUG CODE", "load() - onData");
 				if (!caVisibilityChecked && !realtimeData.realtime) {
 					/*
 					 * check "ca info text" visibility
@@ -301,7 +290,6 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onPostExecute(Exception exception) {
-				Log.i("DEBUG CODE", "load() - onPostExecute");
 				setProgressBarIndeterminateVisibility(false);
 				realtimeProvider = null;
 				if (exception != null) {
@@ -331,14 +319,12 @@ public class RealtimeView extends ListActivity {
 				setProgressBarIndeterminateVisibility(true);				
 			}
 		});
-		Log.i("DEBUG CODE", "load()   - NEW THREAD ID : " + realtimeProvider.getId());
     }
     
     /*
      * Load devi data
      */
     private void loadDevi() {
-    	Log.i("DEBUG CODE", "loadDevi()");
     	/*
     	 * Create list of lines - first create lineList
     	 */
@@ -369,7 +355,6 @@ public class RealtimeView extends ListActivity {
     	deviProvider = new TrafikantenDevi(this, station.stationId, deviLines.toString(), new IGenericProviderHandler<DeviData>() {
 			@Override
 			public void onData(DeviData deviData) {
-				Log.i("DEBUG CODE", "loadDevi() - onData");
 				if (deviData.lines.size() > 0) {
 					/*
 					 * Line specific data
@@ -390,7 +375,6 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onPostExecute(Exception exception) {
-				Log.i("DEBUG CODE", "loadDevi() - onPostExecute");
 				setProgressBarIndeterminateVisibility(false);
 				finishedLoading = true;
 				deviProvider = null;
@@ -413,7 +397,6 @@ public class RealtimeView extends ListActivity {
 				setProgressBarIndeterminateVisibility(true);
 			}
     	});
-    	Log.i("DEBUG CODE", "loadDevi()   - NEW THREAD ID : " + deviProvider.getId());
     }
     
 	/*
@@ -537,7 +520,6 @@ public class RealtimeView extends ListActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.i("DEBUG CODE","onPause");
 		autoRefreshHandler.removeMessages(0);
 	}
 
@@ -545,7 +527,6 @@ public class RealtimeView extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 		refresh();
-		Log.i("DEBUG CODE","onResume");
 		autoRefreshHandler.sendEmptyMessageDelayed(0, 10000);
 	}
 	
@@ -554,7 +535,6 @@ public class RealtimeView extends ListActivity {
 		/*
 		 * make sure background threads is properly killed off.
 		 */
-		Log.i("DEBUG CODE","onStop");
 		stopProviders();
 		super.onStop();
 	}
@@ -565,7 +545,6 @@ public class RealtimeView extends ListActivity {
 		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 		outState.putParcelableArrayList(KEY_DEVILIST, deviItems);
-		Log.i("DEBUG CODE", "onSaveState finished loading : " + finishedLoading);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
 
 		realtimeList.saveInstanceState(outState);

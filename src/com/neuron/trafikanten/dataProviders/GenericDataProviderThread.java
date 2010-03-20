@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 public abstract class GenericDataProviderThread<T> extends Thread {
 	private final static int MSG_DATA = 0;
@@ -16,7 +15,6 @@ public abstract class GenericDataProviderThread<T> extends Thread {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void handleMessage(Message msg) {
-			Log.i("DEBUG CODE", "Thread " + getId() + " isInterrupted : " + stopped.get() + " sending " + msg.what);
 			if (stopped.get()) return;
 			switch (msg.what) {
 			case MSG_DATA:
