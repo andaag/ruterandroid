@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -61,6 +60,7 @@ import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.LocationTask;
 import com.neuron.trafikanten.tasks.SearchAddressTask;
 import com.neuron.trafikanten.tasks.SelectContactTask;
+import com.neuron.trafikanten.tasks.ShowHelpTask;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 import com.neuron.trafikanten.views.map.GenericMap;
 
@@ -356,8 +356,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         	resetView();
         	break;
         case HELP_ID:
-        	final Intent intent = new Intent("android.intent.action.VIEW", Uri.parse("http://code.google.com/p/trafikanten/"));
-        	startActivity(intent);
+        	new ShowHelpTask(this);
         	break;
         default:
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());

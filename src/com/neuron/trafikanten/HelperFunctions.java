@@ -43,6 +43,7 @@ import android.util.Log;
 public class HelperFunctions {
 	private final static String TAG = "Trafikanten-HelperFunctions";
 	public final static SimpleDateFormat hourFormater = new SimpleDateFormat("HH:mm");
+	public static final String KEY_DOWNLOADBYTE = "downloadkb";
 	public static final int SECOND = 1000;
 	public static final int MINUTE = 60 * SECOND;
 	public static final int HOUR = 60 * MINUTE;
@@ -121,7 +122,6 @@ public class HelperFunctions {
 	/*
 	 * Updates statistics for byte downloaded.
 	 */
-	private static final String KEY_DOWNLOADBYTE = "downloadkb";
 	private static void updateStatistics(Context context, long size) {
 		if (size == 0) return;
 		final SharedPreferences preferences = context.getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);

@@ -32,7 +32,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -57,6 +56,7 @@ import android.widget.LinearLayout.LayoutParams;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.dataSets.StationData;
+import com.neuron.trafikanten.tasks.ShowHelpTask;
 import com.neuron.trafikanten.views.route.SelectRouteAdapter.GenericRouteEntry;
 import com.neuron.trafikanten.views.route.SelectRouteAdapter.SeperatorRouteEntry;
 import com.neuron.trafikanten.views.route.SelectRouteAdapter.SimpleTextRouteEntry;
@@ -283,8 +283,7 @@ public class SelectRouteView extends ListActivity {
         	resetView();
         	break;
         case HELP_ID:
-        	final Intent intent = new Intent("android.intent.action.VIEW", Uri.parse("http://code.google.com/p/trafikanten/"));
-        	startActivity(intent);
+        	new ShowHelpTask(this);
         	break;
         default:
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());
