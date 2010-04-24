@@ -16,6 +16,13 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Trafikanten's api is under trafikanten's control and may not be used 
+ * without written permission from trafikanten.no.
+ * 
+ * See Developer.README
+ */
+
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.InputStream;

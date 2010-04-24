@@ -28,7 +28,7 @@ public class TrafikantenLocationProvider extends GenericDataProviderThread<Locat
 
 	public TrafikantenLocationProvider(Context context, IGenericProviderHandler<LocationData> handler) {
 		super(handler);
-		_auth = new WPSAuthentication("aagaande", "http://code.google.com/p/trafikanten/");
+		_auth = new WPSAuthentication("aagaande", "trafikanten");
 		
 		/*
 		 * Setup cache for XPS
