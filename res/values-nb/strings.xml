@@ -36,7 +36,7 @@
     <string name="avoidWalking">Ungå å gå</string>
     <string name="changeMargin">Minste byttetid</string>
     
-    <string name="departingAt">Reiser : </string>
+    <string name="departingAt">Reiser: </string>
     <string name="search">Søk</string>
     
     <!-- SelectRouteView -->
@@ -52,12 +52,12 @@ Du kan lage snarvei på hjemme skjermen:\n
  - Sanntids data for en stasjon.\n
 Press lenge på en stasjon for flere valg.\n
 \n\n
-Husk å gi Trafikanten rating på android market</string>
+Husk å gi Trafikanten rating på Android market</string>
 	<string name="selectMultipleStations">Velg flere stasjoner</string>
 	<string name="favorites">Favoritter</string>
 
         <!-- SelectStationView -->
-        <string name="address">Addresse Søk</string>
+        <string name="address">Søk etter adresse</string>
         <string name="showingRealtimeOnly">Viser kun stasjoner med sanntid.</string>
         <string name="map">Kart</string>
         <string name="contact">Kontakt</string>
@@ -66,16 +66,16 @@ Husk å gi Trafikanten rating på android market</string>
         <string name="removeHistory">Fjern fra history</string>
 
         <!-- OverviewRouteView -->
-        <string name="proposal">Reise Forslag :</string>
+        <string name="proposal">Reiseforslag:</string>
 
         <!-- DetailedRouteView -->
-        <string name="travelTime">Reisetid : </string>
-        <string name="waitTime">Ventetid : </string>
-        <string name="walkTime">Gå tid : </string>
+        <string name="travelTime">Reisetid: </string>
+        <string name="waitTime">Ventetid: </string>
+        <string name="walkTime">Gåtid: </string>
         <string name="walk">Gå</string>
         <string name="noRoutesFound">Ingen rute funnet!</string>  
-        <string name="routeLoading">Laster reise informasjon...\n\n
-Trykk på ett reise forslag for detaljer!</string>
+        <string name="routeLoading">Laster reiseinformasjon ...\n\n
+Trykk på ett reiseforslag for detaljer!</string>
         
         <!-- GenericMap -->
         <string name="selectStation">Velg stasjon</string>
@@ -102,12 +102,12 @@ da er det tider fra rutetabellen som vises.</string>
         
         <!-- LocationTask -->
         <string name="locationWaiting">Venter for posisjon...</string>
-        <string name="current">Nøyaktighet :</string>
+        <string name="current">Nøyaktighet:</string>
         <string name="noLocationFoundError">Ingen posisjon funnet, vent eller trykk tilbake for å avbryte</string>
         <string name="locationContinue">Fortsett</string>
         
         <!-- SelectContactTask -->
-        <string name="failedToFindAddress">Klarte ikke finne addressen på kartet</string>
+        <string name="failedToFindAddress">Klarte ikke finne adressen på kartet</string>
         <string name="multipleAddressesFound">Flere treff funnet, bruker første</string>
         <string name="selectContact">Velg Kontakt</string>
         
@@ -116,8 +116,8 @@ da er det tider fra rutetabellen som vises.</string>
         <string name="deviTitle">Trafikanten - Avvik</string>
         
         <!-- SearchAddressTask -->
-        <string name="searchAddressTask">Søk etter addresse:</string>
-        <string name="addressHint">Addresse</string>
+        <string name="searchAddressTask">Søk etter adresse:</string>
+        <string name="addressHint">Adresse</string>
         
         <!-- Notifications -->
         <string name="alarm">Alarm</string> <!-- This is shared by everything that can call notifications -->
@@ -126,7 +126,7 @@ da er det tider fra rutetabellen som vises.</string>
         <!--  Generic -->
         <string name="exception">Feil</string>
         <string name="parseError">Feil i trafikantens data</string>
-        <string name="myLocation">Min Posisjon</string>
+        <string name="myLocation">Min posisjon</string>
         <string name="settings">Settings</string>
         <string name="reset">Tilbakestill</string>
         <string name="help">Hjelp</string>

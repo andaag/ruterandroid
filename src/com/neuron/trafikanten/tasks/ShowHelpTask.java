@@ -72,7 +72,7 @@ public class ShowHelpTask implements GenericTask {
 		dialog.setTitle("Hjelp");
 		dialog.setContentView(R.layout.dialog_progress);
 		
-		SpannableStringBuilder builder = new SpannableStringBuilder("Trafikanten for android er utviklet av Anders Aagaard i sammarbeid med ");
+		SpannableStringBuilder builder = new SpannableStringBuilder("Trafikanten for android er utviklet av Anders Aagaard i samarbeid med ");
 		addTextSpan(builder, "www.trafikanten.no", new URLSpan("http://www.trafikanten.no/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		builder.append(".\n\n");
 		
@@ -81,7 +81,7 @@ public class ShowHelpTask implements GenericTask {
 		
 		builder.append(" eller via ");
 		addTextSpan(builder, "hjemmesiden", new URLSpan("http://code.google.com/p/trafikanten/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-		builder.append(". Alle feilmeldinger/tilbakemeldinger skal gå til meg, ikke til trafikanten.\n\n");
+		builder.append(". Alle feilmeldinger/tilbakemeldinger skal gå til meg, ikke til Trafikanten.\n\n");
 		
 		/*builder.append(" Du kan ringe trafikanten direkte på ");
 		addTextSpan(builder, "177", new URLSpan("tel:177"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -99,11 +99,11 @@ public class ShowHelpTask implements GenericTask {
 	
 		
 		
-		builder.append("Din båndbredde bruk : " + new DecimalFormat("0.##").format(downloadMb) + "mb. \n");
+		builder.append("Din båndbreddebruk: " + new DecimalFormat("0.##").format(downloadMb) + "MB. \n");
 		builder.append("Eksempel på hva dette har kostet deg:\n");
-		builder.append(" - for 1kr/mb : " + new DecimalFormat("0.##").format(pris) + "kr.\n");
-		builder.append(" - for 20kr (!) /mb : " + new DecimalFormat("0.##").format(prisLarge) + "kr.\n");
-		builder.append("Priser pr mb varierer på mobil leverandør. For prisinformason på mobilleverandører se ");
+		builder.append(" - for 1kr/MB : " + new DecimalFormat("0.##").format(pris) + " kr.\n");
+		builder.append(" - for 20kr (!) /MB : " + new DecimalFormat("0.##").format(prisLarge) + " kr.\n");
+		builder.append("Priser pr mb varierer på mobil leverandør. For prisinformasjon på mobilleverandører se ");
 		
 		
 		//builder.append("\nFor informasjon om kostnad hos din leverandør sjekk ");
