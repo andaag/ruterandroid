@@ -24,10 +24,12 @@ import java.text.SimpleDateFormat;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -40,6 +42,17 @@ public class ShowHelpTask implements GenericTask {
 	public final static SimpleDateFormat dateFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private Activity activity;
     private Dialog dialog;
+    private ClickableSpan sendMailSpan = new ClickableSpan() {
+		@Override
+		public void onClick(View widget) {
+			final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND); 
+			emailIntent.setType("plain/text"); 
+			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"aagaande@gmail.com"}); 
+			emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trafikanten android"); 
+			activity.startActivity(emailIntent);
+		}
+    	
+    };
     
     public ShowHelpTask(Activity activity) 
     {
@@ -64,7 +77,7 @@ public class ShowHelpTask implements GenericTask {
 		builder.append(".\n\n");
 		
 		builder.append("Jeg tar gjerne tilbakemeldinger på ");
-		addTextSpan(builder, "mail", new URLSpan("aagaande@gmail.com"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		addTextSpan(builder, "mail", sendMailSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		
 		builder.append(" eller via ");
 		addTextSpan(builder, "hjemmesiden", new URLSpan("http://code.google.com/p/trafikanten/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
