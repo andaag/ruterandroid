@@ -53,8 +53,8 @@ Du kan lage snarvei på hjemme skjermen:\n
 Press lenge på en stasjon for flere valg.\n
 \n\n
 Husk å gi Trafikanten rating på Android market</string>
-	<string name="selectMultipleStations">Velg flere stasjoner</string>
-	<string name="favorites">Favoritter</string>
+  <string name="selectMultipleStations">Velg flere stasjoner</string>
+  <string name="favorites">Favoritter</string>
 
         <!-- SelectStationView -->
         <string name="address">Søk etter adresse</string>
@@ -75,7 +75,7 @@ Husk å gi Trafikanten rating på Android market</string>
         <string name="walk">Gå</string>
         <string name="noRoutesFound">Ingen rute funnet!</string>  
         <string name="routeLoading">Laster reiseinformasjon ...\n\n
-Trykk på ett reiseforslag for detaljer!</string>
+Trykk på et reiseforslag for detaljer!</string>
         
         <!-- GenericMap -->
         <string name="selectStation">Velg stasjon</string>
