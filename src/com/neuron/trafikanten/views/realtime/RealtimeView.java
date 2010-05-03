@@ -843,7 +843,7 @@ class RealtimeAdapter extends BaseAdapter {
 		}
 		
 		if (renderPlatform && data.departurePlatform != 0) {
-			holder.platform.setText("Platform " + data.departurePlatform);
+			holder.platform.setText("Plattform " + data.departurePlatform);
 			holder.platform.setVisibility(View.VISIBLE);
 		} else {
 			holder.platform.setVisibility(View.GONE);
