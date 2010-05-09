@@ -261,13 +261,13 @@ public class RealtimeView extends ListActivity {
     		
     		if (timeDiff >= 60) {
     			DeviData deviData = new DeviData();
-    			deviData.title = "Local time wrong";
-    			deviData.description = "Your local time is different from trafikanten server time!";
-    			deviData.body = "The realtime view will show data based on trafikanten server time, but reminders/route data could be wrong!\n\n";
+    			deviData.title = (String) getText(R.string.clockDiffTitle);
+    			deviData.description = (String) getText(R.string.clockDiffDescription); 
+    			deviData.body = (String) getText(R.string.clockDiffBodyHead);
     			if (timeDifference < 0) {
-    				deviData.body = deviData.body + "Your clock is " +  timeDiff + "s behind trafikanten's servers";   				
+    				deviData.body = deviData.body + "\n\n" + getText(R.string.clockDiffBodyYourClock) + " " +  timeDiff + "s " + getText(R.string.clockDiffBodyBehind);   				
     			} else {
-    				deviData.body = deviData.body + "Your clock is " +  timeDiff + "s ahead of trafikanten's servers";
+    				deviData.body = deviData.body + "\n\n" + getText(R.string.clockDiffBodyYourClock) + " " +  timeDiff + "s " + getText(R.string.clockDiffBodyAhead);
     			}
     			
     			deviData.validFrom = 0;

@@ -98,6 +98,14 @@ Click a travel proposal for a detailed view!</string>
         <string name="caHelpText">"ca" means realtime information is unavailable,
 we fallback to route information.</string>
 		<string name="changeCaTextVisibility">Show/Hide "ca" help text</string>
+		
+		<!--  Realtime Clock incorrect -->
+		<string name="clockDiffTitle">Local clock incorrect!</string>
+		<string name="clockDiffDescription">The local system clock does not match Trafikanten's server time!</string>
+		<string name="clockDiffBodyHead">The realtime view will show data based on Trafikanten time, but reminders/route data could be wrong!</string>
+		<string name="clockDiffBodyYourClock">Your clock is</string>
+		<string name="clockDiffBodyBehind">behind Trafikanten's time.</string>
+		<string name="clockDiffBodyAhead">ahead of Trafikanten's time.</string>
         
         <!-- Tasks -->
         <string name="searchRouteTask">Calculating route...</string>
