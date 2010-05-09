@@ -195,6 +195,10 @@ public abstract class GenericSelectStationView extends ListActivity {
     }
     
     private IGenericProviderHandler<StationData> searchHandler = new IGenericProviderHandler<StationData>(){
+		@Override
+		public void onExtra(int what, Object obj) {
+			/* Class has no extra data */
+		}
 
 		@Override
 		public void onData(StationData data) {

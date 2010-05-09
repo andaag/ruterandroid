@@ -23,6 +23,9 @@ public abstract class GenericDataProviderThread<T> extends Thread {
 			case MSG_POSTEXECUTE:
 				handler.onPostExecute((Exception) msg.obj);
 				break;
+			default:
+				handler.onExtra(msg.what, msg.obj);
+				break;
 			}
 		}
 	};

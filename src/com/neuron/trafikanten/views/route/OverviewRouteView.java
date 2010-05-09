@@ -129,7 +129,11 @@ public class OverviewRouteView extends ListActivity {
     	routeList.notifyDataSetChanged();
     	
     	routeProvider = new TrafikantenRoute(this, routeSearch, new IGenericProviderHandler<RouteProposal>() {
-
+    		@Override
+    		public void onExtra(int what, Object obj) {
+    			/* Class has no extra data */
+    		}
+    		
 			@Override
 			public void onData(RouteProposal data) {
 				routeList.addItem(data);

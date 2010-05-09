@@ -101,7 +101,11 @@ public class LocationTask implements GenericTask {
 		updateButton.run();
 		
 		locationProvider = new TrafikantenLocationProvider(activity, new IGenericProviderHandler<LocationData>() {
-
+			@Override
+			public void onExtra(int what, Object obj) {
+				/* Class has no extra data */
+			}
+			
 			@Override
 			public void onData(LocationData data) {
 				LocationTask.this.latitude = data.latitude;

@@ -71,7 +71,7 @@ public class RealtimeView extends ListActivity {
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	public static final String KEY_DEVILIST = "devilist";
 	private static final String KEY_FINISHEDLOADING = "finishedLoading";
-	
+	private static final String KEY_TIMEDIFFERENCE = "timeDifference";
 	/*
 	 * Options menu:
 	 */
@@ -99,6 +99,7 @@ public class RealtimeView extends ListActivity {
 	private long lastUpdate;
 	private ArrayList<DeviData> deviItems;
 	private boolean finishedLoading = false; // we're finishedLoading when devi has loaded successfully.
+	private long timeDifference = 0; // This is the time desync between system clock and trafikanten servers.
 	
 	/*
 	 * UI
@@ -155,6 +156,7 @@ public class RealtimeView extends ListActivity {
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
         	deviItems = savedInstanceState.getParcelableArrayList(KEY_DEVILIST);
         	finishedLoading = savedInstanceState.getBoolean(KEY_FINISHEDLOADING);
+        	timeDifference = savedInstanceState.getLong(KEY_TIMEDIFFERENCE);
         	
         	realtimeList.loadInstanceState(savedInstanceState);
         	realtimeList.notifyDataSetChanged();
@@ -272,6 +274,15 @@ public class RealtimeView extends ListActivity {
 				
 		realtimeProvider = new TrafikantenRealtime(this, station.stationId, new IGenericProviderHandler<RealtimeData>() {
 			@Override
+			public void onExtra(int what, Object obj) {
+				switch (what) {
+				case TrafikantenRealtime.MSG_TIMEDATA:
+					timeDifference = (Long) obj;
+					break;
+				}
+			}
+			
+			@Override
 			public void onData(RealtimeData realtimeData) {
 				if (!caVisibilityChecked && !realtimeData.realtime) {
 					/*
@@ -353,6 +364,11 @@ public class RealtimeView extends ListActivity {
     	}
     	
     	deviProvider = new TrafikantenDevi(this, station.stationId, deviLines.toString(), new IGenericProviderHandler<DeviData>() {
+    		@Override
+    		public void onExtra(int what, Object obj) {
+    			/* Class has no extra data */
+    		}
+
 			@Override
 			public void onData(DeviData deviData) {
 				if (deviData.lines.size() > 0) {
@@ -546,6 +562,7 @@ public class RealtimeView extends ListActivity {
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 		outState.putParcelableArrayList(KEY_DEVILIST, deviItems);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
+		outState.putLong(KEY_TIMEDIFFERENCE, timeDifference);
 
 		realtimeList.saveInstanceState(outState);
 	}

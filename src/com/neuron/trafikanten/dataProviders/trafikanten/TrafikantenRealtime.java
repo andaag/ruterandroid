@@ -49,7 +49,7 @@ import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 
 public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData> {
-	private final static int MSG_TIMEDATA = 10;
+	public final static int MSG_TIMEDATA = 10;
 	private static final String TAG = "Trafikanten-T-RealtimeThread";
 	private final Context context;
 	
@@ -95,7 +95,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
     /*
      * Extra thread function to send time difference
      */
-    public void ThreadHandleTimeData(long data) {
+    public void ThreadHandleTimeData(Long data) {
     	Message msg = threadHandler.obtainMessage(MSG_TIMEDATA);
     	msg.obj = data;
     	threadHandler.sendMessage(msg);
