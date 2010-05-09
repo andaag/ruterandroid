@@ -2,7 +2,7 @@
 <resources>
         <!-- Static strings -->
     <string name="app_name">Trafikanten</string>
-    <string name="app_version">2.0</string>
+    <string name="app_version">2.0.1</string>
     
     <!-- Front page -->
     <string name="realtime">Realtime</string>
