@@ -106,6 +106,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
  * Realtime XML Parser
  */
 class RealtimeHandler extends DefaultHandler {
+	private static final String TAG = "Trafikanten-T-RealtimeThread-Handler";
 	private RealtimeData data;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
 	private final TrafikantenRealtime parent;
@@ -184,7 +185,9 @@ class RealtimeHandler extends DefaultHandler {
 		if (inResponseTimestamp) {
 			final long trafikantenTime = parseDateTime(buffer.toString());
 			timeDifference = System.currentTimeMillis() - trafikantenTime;
+			Log.i(TAG,"Timedifference between local clock and trafikanten server : " + timeDifference + "ms (" + (timeDifference / 1000) + "s)");
 			timeDifferenceSet = true;
+			inResponseTimestamp = false;
 			parent.ThreadHandleTimeData(timeDifference);
 		}
 	    if (!inMonitoredStopVisit) return;
@@ -240,7 +243,7 @@ class RealtimeHandler extends DefaultHandler {
 	
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
-	    if (timeDifferenceSet || inPublishedLineName || inDestinationName ||
+	    if (inResponseTimestamp || inPublishedLineName || inDestinationName ||
 	    		inMonitored || inAimedDepartureTime || inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
 	    	buffer.append(ch,start,length);
 	    }

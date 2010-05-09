@@ -16,11 +16,13 @@ public class ShowRealtimeLineDetails implements GenericTask {
     private Activity activity;
     private RealtimeData data;
     private Dialog dialog;
+    private long currentTime;
     
-    public ShowRealtimeLineDetails(Activity activity, RealtimeData data) 
+    public ShowRealtimeLineDetails(Activity activity, long currentTime, RealtimeData data) 
     {
         this.activity = activity;
         this.data = data;
+        this.currentTime = currentTime;
         showDialog();
     }
     
@@ -41,7 +43,7 @@ public class ShowRealtimeLineDetails implements GenericTask {
     		info.append(activity.getText(R.string.ca));
     		info.append(" ");
     	}
-    	info.append(HelperFunctions.renderTime(activity, expectedDeparture));
+    	info.append(HelperFunctions.renderTime(currentTime, activity, expectedDeparture));
     	addText(body, info.toString(), 0);
     	if (stopVisitNote != null) {
     		addText(body, stopVisitNote, 10);

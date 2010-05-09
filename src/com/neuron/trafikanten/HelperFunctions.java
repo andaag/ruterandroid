@@ -52,8 +52,8 @@ public class HelperFunctions {
 	 * Render time in the way trafikanten.no wants
 	 *   From 1-9 minutes we use "X m", above that we use HH:MM
 	 */
-    public static String renderTime(Context context, long time) {
-		int diffMinutes = Math.round(((float)(time - System.currentTimeMillis())) / MINUTE);
+    public static String renderTime(Long currentTime, Context context, long time) {
+		int diffMinutes = Math.round(((float)(time - currentTime)) / MINUTE);
 
 		if (diffMinutes < -1) {
 			// Negative time!

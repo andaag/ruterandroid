@@ -99,7 +99,7 @@ public class RealtimeView extends ListActivity {
 	private long lastUpdate;
 	private ArrayList<DeviData> deviItems;
 	private boolean finishedLoading = false; // we're finishedLoading when devi has loaded successfully.
-	private long timeDifference = 0; // This is the time desync between system clock and trafikanten servers.
+	public long timeDifference = 0; // This is the time desync between system clock and trafikanten servers.
 	
 	/*
 	 * UI
@@ -842,7 +842,7 @@ class RealtimeAdapter extends BaseAdapter {
 			tableLayout.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					new ShowRealtimeLineDetails(parent, data);
+					new ShowRealtimeLineDetails(parent, parent.timeDifference + System.currentTimeMillis(), data);
 				}
 			});
 			tableLayout.setLongClickable(true);
@@ -851,7 +851,7 @@ class RealtimeAdapter extends BaseAdapter {
 		/*
 		 * Render data to view.
 		 */
-		holder.departures.setText(data.renderDepartures(parent));
+		holder.departures.setText(data.renderDepartures(parent.timeDifference + System.currentTimeMillis(), parent));
 		holder.destination.setText(data.destination);
 		if (data.destination.equals(data.line)) {
 			holder.line.setText("-");

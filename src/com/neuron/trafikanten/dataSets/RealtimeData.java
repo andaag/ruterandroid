@@ -59,13 +59,13 @@ public class RealtimeData implements Parcelable {
 	/*
 	 * Renders all departures, expectedDeparture + nextDepartures
 	 */
-	public CharSequence renderDepartures(Context context) {
+	public CharSequence renderDepartures(Long currentTime, Context context) {
 		StringBuffer departures = new StringBuffer();
 		if (!realtime) {
 			departures.append(context.getText(R.string.ca));
 			departures.append(" ");
 		}
-		departures.append(HelperFunctions.renderTime(context, expectedDeparture));
+		departures.append(HelperFunctions.renderTime(currentTime, context, expectedDeparture));
 		
 		for (RealtimeDataNextDeparture nextDeparture : nextDepartures) {
 			departures.append("  ");
@@ -73,7 +73,7 @@ public class RealtimeData implements Parcelable {
 				departures.append(context.getText(R.string.ca));
 				departures.append(" ");
 			}
-			departures.append(HelperFunctions.renderTime(context, nextDeparture.expectedDeparture));
+			departures.append(HelperFunctions.renderTime(currentTime, context, nextDeparture.expectedDeparture));
 		}
 		return departures;
 	}
