@@ -842,7 +842,7 @@ class RealtimeAdapter extends BaseAdapter {
 			tableLayout.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					new ShowRealtimeLineDetails(parent, parent.timeDifference + System.currentTimeMillis(), data);
+					new ShowRealtimeLineDetails(parent, System.currentTimeMillis() - parent.timeDifference, data);
 				}
 			});
 			tableLayout.setLongClickable(true);
@@ -851,7 +851,7 @@ class RealtimeAdapter extends BaseAdapter {
 		/*
 		 * Render data to view.
 		 */
-		holder.departures.setText(data.renderDepartures(parent.timeDifference + System.currentTimeMillis(), parent));
+		holder.departures.setText(data.renderDepartures(System.currentTimeMillis() - parent.timeDifference, parent));
 		holder.destination.setText(data.destination);
 		if (data.destination.equals(data.line)) {
 			holder.line.setText("-");
