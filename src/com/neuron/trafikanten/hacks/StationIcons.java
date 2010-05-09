@@ -33,7 +33,7 @@ public class StationIcons {
 				return R.drawable.icon32_line_tram;
 			} else if (lineI == 300 || lineI == 400 || lineI == 440 || lineI == 450 || lineI == 460 || lineI == 500 || lineI == 550 || lineI == 560) {
 				return R.drawable.icon32_line_train;
-			} else if ((lineI >= 91 && lineI <= 94) || lineI == 601 || lineI == 602 || lineI ==  716) {
+			} else if ((lineI >= 91 && lineI <= 94) || lineI == 256 || lineI == 601 || lineI == 602 || lineI ==  716) {
 				return R.drawable.icon32_line_boat;
 			}
 		} catch (NumberFormatException e) {
