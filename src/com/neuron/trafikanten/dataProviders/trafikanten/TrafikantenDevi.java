@@ -112,7 +112,11 @@ class DeviHandler extends DefaultHandler {
 	private boolean inLine = false;
 	private boolean inValidFrom = false;
 	private boolean inValidTo = false;
+	private boolean inPublished = false;
 	private boolean inImportant = false;
+	
+	
+	private boolean notInPublished = false; // if true skip sending data
 
 	
 	//Temporary variable for character data:
@@ -141,6 +145,7 @@ class DeviHandler extends DefaultHandler {
 	        if (localName.equals("item")) {
 	        	inItem = true;
 	            data = new DeviData();
+	            notInPublished = false;
 	        }
 	    } else {
 	    	if (localName.equals("title")) {
@@ -157,6 +162,8 @@ class DeviHandler extends DefaultHandler {
 		    	inValidFrom = true;
 		    } else if (localName.equals("ValidTo")) {
 		    	inValidTo = true;
+		    } else if (localName.equals("Published")) {
+		    	inPublished = true;
 		    } else if (localName.equals("Important")) {
 		    	inImportant = true;
 		    }
@@ -174,9 +181,10 @@ class DeviHandler extends DefaultHandler {
 	    	inItem = false;
 	    	
 	    	long dateDiffHours = (data.validFrom - Calendar.getInstance().getTimeInMillis()) / HelperFunctions.HOUR;
-	    	if (dateDiffHours < 3) {
+	    	if (dateDiffHours < 3 || notInPublished) {
 	    		/*
-	    		 * We ignore devi events that are over 3 hours into the future, as realtime data only shows 3 hours into the future.	    		 */
+	    		 * We ignore devi events that are over 3 hours into the future, as realtime data only shows 3 hours into the future.	    		 
+	    		 */
 	    		parent.ThreadHandlePostData(data);
 	    	}
 	    } else { 
@@ -200,6 +208,12 @@ class DeviHandler extends DefaultHandler {
 		    } else if (inValidTo) {
 		    	inValidTo = false;
 		        data.validTo = parseDateTime(buffer.toString());
+		    } else if (inPublished) {
+		    	inPublished = false;
+		        long publishDate = parseDateTime(buffer.toString());
+		        if (System.currentTimeMillis() > publishDate) {
+		        	notInPublished = true;
+		        }
 		    } else if (inImportant) {
 		        inImportant = false;
 		        data.important = buffer.toString().equals("True");
@@ -211,7 +225,7 @@ class DeviHandler extends DefaultHandler {
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
 	    if (inTitle || inBody || inDescription ||
-	    		inLine || inValidFrom || inValidTo || inImportant) {
+	    		inLine || inValidFrom || inValidTo ||  inPublished || inImportant) {
 	    	buffer.append(ch,start,length);
 	    }
 	}
