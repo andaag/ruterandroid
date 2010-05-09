@@ -237,7 +237,17 @@ public class RealtimeView extends ListActivity {
      * Refreshes station specific devi data.
      */
     private void refreshDevi() {
-    	if (deviItems == null || deviItems.size() == 0) {
+    	/*
+    	 * Calculate a time difference it's easier to work with
+    	 */
+    	long timeDiff = timeDifference / 1000;
+    	if (timeDiff < 0)
+    		timeDiff = timeDiff * -1;
+    	
+    	/*
+    	 * Render devi    	
+    	 */
+    	if ((deviItems == null || deviItems.size() == 0) && timeDiff < 60) {
     		/*
     		 * Nothing to display
     		 */
@@ -248,6 +258,23 @@ public class RealtimeView extends ListActivity {
     		 */
     		devi.setVisibility(View.VISIBLE);
     		devi.removeAllViews();
+    		
+    		if (timeDiff >= 60) {
+    			DeviData deviData = new DeviData();
+    			deviData.title = "Local time wrong";
+    			deviData.description = "Your local time is different from trafikanten server time!";
+    			deviData.body = "The realtime view will show data based on trafikanten server time, but reminders/route data could be wrong!\n\n";
+    			if (timeDifference < 0) {
+    				deviData.body = deviData.body + "Your clock is " +  timeDiff + "s behind trafikanten's servers";   				
+    			} else {
+    				deviData.body = deviData.body + "Your clock is " +  timeDiff + "s ahead of trafikanten's servers";
+    			}
+    			
+    			deviData.validFrom = 0;
+    			deviData.validTo = 0;
+    			
+    			devi.addView(createDefaultDeviText(this, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+    		}
     		
     		for (final DeviData deviData : deviItems) {
 				devi.addView(createDefaultDeviText(this, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
