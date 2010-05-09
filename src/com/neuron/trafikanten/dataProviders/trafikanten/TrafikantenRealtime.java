@@ -40,6 +40,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
+import android.os.Message;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
@@ -48,6 +49,7 @@ import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 
 public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData> {
+	private final static int MSG_TIMEDATA = 10;
 	private static final String TAG = "Trafikanten-T-RealtimeThread";
 	private final Context context;
 	
@@ -87,6 +89,17 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 		}
 		ThreadHandlePostExecute(null);
     }
+    
+    
+    
+    /*
+     * Extra thread function to send time difference
+     */
+    public void ThreadHandleTimeData(long data) {
+    	Message msg = threadHandler.obtainMessage(MSG_TIMEDATA);
+    	msg.obj = data;
+    	threadHandler.sendMessage(msg);
+    }
 }
 
 /*
@@ -101,6 +114,8 @@ class RealtimeHandler extends DefaultHandler {
 	 * Temporary variables for parsing. 
 	 */
 	private boolean inMonitoredStopVisit = false; // Top block
+	private boolean inResponseTimestamp = false; // Top block
+	
 	private boolean inPublishedLineName = false;
 	private boolean inDestinationName = false;
 	private boolean inMonitored = false;
@@ -110,6 +125,9 @@ class RealtimeHandler extends DefaultHandler {
 	private boolean inDeparturePlatformName = false;
 
 	private boolean inStopVisitNote = false;
+	
+	private long timeDifference = 0; // calculated from ResponseTimestamp
+	private boolean timeDifferenceSet = false;
 	
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
@@ -138,6 +156,9 @@ class RealtimeHandler extends DefaultHandler {
 	            inMonitoredStopVisit = true;
 	            data = new RealtimeData();
 	        }
+	        if (!timeDifferenceSet && localName.equals("ResponseTimestamp")) {
+	            inResponseTimestamp = true;
+	        }
 	    } else {
 	    	if (localName.equals("PublishedLineName")) {
 		        inPublishedLineName = true;
@@ -160,6 +181,12 @@ class RealtimeHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
+		if (inResponseTimestamp) {
+			final long trafikantenTime = parseDateTime(buffer.toString());
+			timeDifference = System.currentTimeMillis() - trafikantenTime;
+			timeDifferenceSet = true;
+			parent.ThreadHandleTimeData(timeDifference);
+		}
 	    if (!inMonitoredStopVisit) return;
 	    if (inMonitoredStopVisit && localName.equals("MonitoredStopVisit")) {
 	        /*
@@ -213,7 +240,7 @@ class RealtimeHandler extends DefaultHandler {
 	
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
-	    if (inPublishedLineName || inDestinationName ||
+	    if (timeDifferenceSet || inPublishedLineName || inDestinationName ||
 	    		inMonitored || inAimedDepartureTime || inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
 	    	buffer.append(ch,start,length);
 	    }

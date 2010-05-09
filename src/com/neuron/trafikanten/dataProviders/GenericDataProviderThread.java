@@ -11,7 +11,7 @@ public abstract class GenericDataProviderThread<T> extends Thread {
 	private AtomicBoolean stopped = new AtomicBoolean(false);
 	
 	private final IGenericProviderHandler<T> handler;
-	private final Handler threadHandler = new Handler() {
+	public final Handler threadHandler = new Handler() {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void handleMessage(Message msg) {
