@@ -19,8 +19,8 @@
     <string name="when">Når</string>
     
     
-    <string name="selectWhereToTravelTo">Velg sted å dra fra</string>
-    <string name="selectWhereToTravelFrom">Velg sted å dra til</string>
+    <string name="selectWhereToTravelTo">Velg sted å dra til</string>
+    <string name="selectWhereToTravelFrom">Velg sted å dra fra</string>
     <string name="travelingFrom">Reiser fra</string>
     <string name="travelingTo">Reiser til</string>
     <string name="travelFrom">Reis fra</string>
