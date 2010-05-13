@@ -398,22 +398,25 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onData(DeviData deviData) {
-				if (deviData.lines.size() > 0) {
-					/*
-					 * Line specific data
-					 */
-					realtimeList.addDeviItem(deviData);
-					realtimeList.itemsAddedWithoutNotify++;
-					if (realtimeList.itemsAddedWithoutNotify > 5) {
-						realtimeList.itemsAddedWithoutNotify = 0;
-						realtimeList.notifyDataSetChanged();
+				for (final String deviName : deviData.stops) {
+					if (deviName.equals(station.stopName)) {
+						/*
+						 * Station specific data
+						 */
+						deviItems.add(deviData);
+						break;
 					}
-				} else {
-					/*
-					 * Station specific data
-					 */
-					deviItems.add(deviData);
-				}				
+				}
+
+				/*
+				 * Line data (will be ignored if line isn't shown in view, so no point in checking data.lines)
+				 */
+				realtimeList.addDeviItem(deviData);
+				realtimeList.itemsAddedWithoutNotify++;
+				if (realtimeList.itemsAddedWithoutNotify > 5) {
+					realtimeList.itemsAddedWithoutNotify = 0;
+					realtimeList.notifyDataSetChanged();
+				}
 			}
 
 			@Override

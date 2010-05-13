@@ -187,7 +187,7 @@ class DeviHandler extends DefaultHandler {
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */
 	    	inItem = false;
-	    	if (skip) {
+	    	if (!skip) {
 	    		parent.ThreadHandlePostData(data);
 	    	}
 	    } else { 
@@ -207,7 +207,17 @@ class DeviHandler extends DefaultHandler {
 		    	inLines = false;
 		    } else if (inStop) { // 
 		    	inStop = false;
-		        data.stops.add(buffer.toString());
+		    	
+		    	/*
+		    	 * We filter (region) from data so we're forced to do it here as well. It should not be an issue as devi is filtered on line + station already.
+		    	 */
+		    	String stopName = buffer.toString();
+				int startAddress = stopName.indexOf('(');
+				if (startAddress > 0) {
+					stopName = stopName.substring(0, startAddress - 1);
+				}
+					
+		        data.stops.add(stopName);
 		    } else if (inStops) { //  && localName.equals("stops") is unneeded, as we check inLine first, and if we have no "stop" data we must have "stops" data
 		    	inStops = false;
 		    } else if (inValidFrom) {
