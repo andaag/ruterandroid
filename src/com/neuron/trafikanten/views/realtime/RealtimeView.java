@@ -296,6 +296,7 @@ public class RealtimeView extends ListActivity {
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
     	deviItems = new ArrayList<DeviData>();
+    	devi.setVisibility(View.GONE);
 
 		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
 				
