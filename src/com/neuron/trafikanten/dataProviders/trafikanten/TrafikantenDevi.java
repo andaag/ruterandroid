@@ -116,7 +116,8 @@ class DeviHandler extends DefaultHandler {
 	private boolean inImportant = false;
 	
 	
-	private boolean notInPublished = false; // if true skip sending data
+	private boolean skip = false; // if true skip sending data
+	private boolean hasPublished = false; // if true skip sending data
 
 	
 	//Temporary variable for character data:
@@ -145,7 +146,8 @@ class DeviHandler extends DefaultHandler {
 	        if (localName.equals("item")) {
 	        	inItem = true;
 	            data = new DeviData();
-	            notInPublished = false;
+	            skip = false;
+	            hasPublished = false;
 	        }
 	    } else {
 	    	if (localName.equals("title")) {
@@ -179,12 +181,7 @@ class DeviHandler extends DefaultHandler {
 	         * on StopMatch we're at the end, and we need to add the station to the station list.
 	         */
 	    	inItem = false;
-	    	
-	    	long dateDiffHours = (data.validFrom - Calendar.getInstance().getTimeInMillis()) / HelperFunctions.HOUR;
-	    	if (dateDiffHours < 3 || notInPublished) {
-	    		/*
-	    		 * We ignore devi events that are over 3 hours into the future, as realtime data only shows 3 hours into the future.	    		 
-	    		 */
+	    	if (skip) {
 	    		parent.ThreadHandlePostData(data);
 	    	}
 	    } else { 
@@ -205,14 +202,29 @@ class DeviHandler extends DefaultHandler {
 		    } else if (inValidFrom) {
 		    	inValidFrom = false;
 		        data.validFrom = parseDateTime(buffer.toString());
+		        
+		        /*
+		         * If data is validFrom in the next 3 hours we should show it, as realtime data can show 3 hours into the future.
+		         */
+		        long dateDiffHours = (data.validFrom - Calendar.getInstance().getTimeInMillis()) / HelperFunctions.HOUR;
+		        if (!hasPublished && dateDiffHours > 3) {
+		        	/*
+		        	 * This data starts more than 3 hours into the future, hide it.
+		        	 */
+		        	skip = true;
+		        }
 		    } else if (inValidTo) {
 		    	inValidTo = false;
 		        data.validTo = parseDateTime(buffer.toString());
 		    } else if (inPublished) {
+		    	// incase validFrom has been parsed, we ignore validFrom if published exists.
+		    	hasPublished = true;
+		    	skip = false;
+		    	
 		    	inPublished = false;
 		        long publishDate = parseDateTime(buffer.toString());
 		        if (System.currentTimeMillis() > publishDate) {
-		        	notInPublished = true;
+		        	skip = true;
 		        }
 		    } else if (inImportant) {
 		        inImportant = false;
