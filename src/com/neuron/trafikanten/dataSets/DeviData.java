@@ -29,12 +29,14 @@ public class DeviData implements Parcelable {
 	public String title;
 	public String description;
 	public String body;
+	public ArrayList<String> stops;
 	public ArrayList<String> lines;
 	public long validFrom;
 	public long validTo;
 	public boolean important;
 	
 	public DeviData() {
+		stops = new ArrayList<String>();
 		lines = new ArrayList<String>();
 	}
 
@@ -51,6 +53,9 @@ public class DeviData implements Parcelable {
 		title = in.readString();
 		description = in.readString();
 		body = in.readString();
+
+		stops = new ArrayList<String>();
+		in.readStringList(stops);
 		
 		lines = new ArrayList<String>();
 		in.readStringList(lines);
@@ -69,6 +74,7 @@ public class DeviData implements Parcelable {
 		out.writeString(title);
 		out.writeString(description);
 		out.writeString(body);
+		out.writeStringList(stops);
 		out.writeStringList(lines);
 		out.writeLong(validFrom);
 		out.writeLong(validTo);

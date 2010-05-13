@@ -108,6 +108,8 @@ class DeviHandler extends DefaultHandler {
 	private boolean inTitle = false;
 	private boolean inDescription = false;
 	private boolean inBody = false;
+	private boolean inStops = false; // Block data (contains stop)
+	private boolean inStop = false;
 	private boolean inLines = false; // Block data (contains line)
 	private boolean inLine = false;
 	private boolean inValidFrom = false;
@@ -160,6 +162,10 @@ class DeviHandler extends DefaultHandler {
 		    	inLines = true;
 		    } else if (inLines && localName.equals("line")) {
 		        inLine = true;
+		    } else if (localName.equals("stops")) {
+		    	inStops = true;
+		    } else if (inStops && localName.equals("stop")) {
+		        inStop = true;
 		    } else if (localName.equals("ValidFrom")) {
 		    	inValidFrom = true;
 		    } else if (localName.equals("ValidTo")) {
@@ -199,6 +205,11 @@ class DeviHandler extends DefaultHandler {
 		        data.lines.add(buffer.toString());
 		    } else if (inLines) { //  && localName.equals("lines") is unneeded, as we check inLine first, and if we have no "line" data we must have "lines" data
 		    	inLines = false;
+		    } else if (inStop) { // 
+		    	inStop = false;
+		        data.stops.add(buffer.toString());
+		    } else if (inStops) { //  && localName.equals("stops") is unneeded, as we check inLine first, and if we have no "stop" data we must have "stops" data
+		    	inStops = false;
 		    } else if (inValidFrom) {
 		    	inValidFrom = false;
 		        data.validFrom = parseDateTime(buffer.toString());
@@ -237,7 +248,7 @@ class DeviHandler extends DefaultHandler {
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
 	    if (inTitle || inBody || inDescription ||
-	    		inLine || inValidFrom || inValidTo ||  inPublished || inImportant) {
+	    		inStop || inLine || inValidFrom || inValidTo ||  inPublished || inImportant) {
 	    	buffer.append(ch,start,length);
 	    }
 	}
