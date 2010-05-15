@@ -156,4 +156,9 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	public void setProgressBar(boolean value) {
 		setProgressBarIndeterminateVisibility(value);
 	}
+	
+	@Override
+	public int getInfoHelpText() {
+		return R.string.searchStationRouteNoStationsFound;
+	}
 }

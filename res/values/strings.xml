@@ -57,6 +57,11 @@ You can make a shortcut on the home screen:\n
 Longpress on a station to mark it as favorite.\n
 \n\n
 Please rate trafikanten on android market!</string>
+    <string name="searchStationRealtimeNoStationsFound">No stations found.\n\n
+Note that only stations with realtime data will show here. Try using the route planner!\n
+You can also click menu and search for an address instead.</string>
+    <string name="searchStationRouteNoStationsFound">No stations found.\n\n
+Try clicking menu and searching for an address instead!</string>
 	<string name="selectMultipleStations">Select multiple stations</string>
 	<string name="favorites">Favorites</string>
 

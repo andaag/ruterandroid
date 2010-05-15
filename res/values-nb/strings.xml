@@ -53,6 +53,11 @@ Du kan lage snarvei på hjemme skjermen:\n
 Press lenge på en stasjon for flere valg.\n
 \n\n
 Husk å gi Trafikanten rating på Android market</string>
+    <string name="searchStationRealtimeNoStationsFound">Fant ingen stasjoner.\n\n
+Kun stasjoner med sanntiddata vil vises her. Prøv å søke med ruteplanleggeren.
+Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
+    <string name="searchStationRouteNoStationsFound">Fant ingen stasjoner.\n\n
+Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
   <string name="selectMultipleStations">Velg flere stasjoner</string>
   <string name="favorites">Favoritter</string>
 

@@ -242,6 +242,8 @@ public abstract class GenericSelectStationView extends ListActivity {
     		if (searchProvider != null)
     			searchProvider.kill();
     		searchProvider = new TrafikantenSearch(this, searchEdit.getText().toString(), isRealtimeSelector, searchHandler);
+    		infoText.setVisibility(View.GONE);
+    		infoText.setText(getInfoHelpText());
     	}
     }
     
@@ -476,9 +478,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 	}
 	
 	/*
-	 * Custom handler for station selected
+	 * Custom handlers
 	 */
 	public abstract void stationSelected(StationData station);
+	public abstract int getInfoHelpText();
+	public abstract void setProgressBar(boolean value);
 	
 	public void updateHistory(StationData station) {
 		if (!station.isFavorite) {
@@ -488,10 +492,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 		}
 	}
 	
-	/*
-	 * Custom function for set progress bar status
-	 */
-	public abstract void setProgressBar(boolean value);
+
 	    
 	/*
 	 * Refresh view, this involves checking list against current favorites and setting .isFavorite to render star.

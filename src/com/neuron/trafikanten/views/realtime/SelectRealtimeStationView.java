@@ -72,4 +72,9 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
 	public void setProgressBar(boolean value) {
 		Trafikanten.tabHostSetProgressBarIndeterminateVisibility(value);
 	}
+
+	@Override
+	public int getInfoHelpText() {
+		return R.string.searchStationRealtimeNoStationsFound;
+	}
 }
