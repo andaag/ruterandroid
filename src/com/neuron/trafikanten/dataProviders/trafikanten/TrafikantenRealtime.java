@@ -77,7 +77,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new RealtimeHandler(this));
+			reader.setContentHandler(new RealtimeHandler(this, System.currentTimeMillis()));
 			reader.parse(new InputSource(result));
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {
@@ -133,8 +133,9 @@ class RealtimeHandler extends DefaultHandler {
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public RealtimeHandler(TrafikantenRealtime parent)
+	public RealtimeHandler(TrafikantenRealtime parent, long timeDifferenceBase)
 	{
+		this.timeDifference = timeDifferenceBase;
 		this.parent = parent;
 	}
 	
@@ -184,7 +185,8 @@ class RealtimeHandler extends DefaultHandler {
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 		if (inResponseTimestamp) {
 			final long trafikantenTime = parseDateTime(buffer.toString());
-			timeDifference = System.currentTimeMillis() - trafikantenTime;
+			// Current time - sendtime for query - trafikanten time = desync.
+			timeDifference = System.currentTimeMillis() - (System.currentTimeMillis() - timeDifference) - trafikantenTime;
 			Log.i(TAG,"Timedifference between local clock and trafikanten server : " + timeDifference + "ms (" + (timeDifference / 1000) + "s)");
 			timeDifferenceSet = true;
 			inResponseTimestamp = false;
