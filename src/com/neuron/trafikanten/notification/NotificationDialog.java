@@ -78,7 +78,7 @@ public class NotificationDialog {
 		sRealtimeData = null;
 	}
 	
-	public static TimePickerDialog getDialog(final Context context) {
+	public static TimePickerDialog getDialog(final Context context, final long timeDifference) {
     	return new TimePickerDialog(context, new OnTimeSetListener() {
 			@Override
 			public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -102,7 +102,7 @@ public class NotificationDialog {
 					/*
 					 * Realtime data
 					 */
-					notificationData = new NotificationData(sStation, sRealtimeData, calendar.getTimeInMillis(), sWith);
+					notificationData = new NotificationData(sStation, sRealtimeData, calendar.getTimeInMillis() - timeDifference, sWith);
 				} else {
 					/*
 					 * Route data

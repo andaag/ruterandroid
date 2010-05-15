@@ -498,7 +498,7 @@ public class RealtimeView extends ListActivity {
 			/*
 			 * notify dialog
 			 */
-			return NotificationDialog.getDialog(this);
+			return NotificationDialog.getDialog(this, timeDifference);
 		}
 		return super.onCreateDialog(id);
 	}

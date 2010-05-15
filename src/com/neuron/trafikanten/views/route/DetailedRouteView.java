@@ -214,7 +214,7 @@ public class DetailedRouteView extends ListActivity {
 			/*
 			 * notify dialog
 			 */
-			return NotificationDialog.getDialog(this);
+			return NotificationDialog.getDialog(this, 0);
 		}
 		return super.onCreateDialog(id);
 	}
