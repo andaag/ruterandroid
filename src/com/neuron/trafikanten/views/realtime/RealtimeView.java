@@ -259,7 +259,7 @@ public class RealtimeView extends ListActivity {
     		devi.setVisibility(View.VISIBLE);
     		devi.removeAllViews();
     		
-    		if (timeDiff >= 60) {
+    		if (timeDiff >= 90) {
     			DeviData deviData = new DeviData();
     			deviData.title = (String) getText(R.string.clockDiffTitle);
     			deviData.description = (String) getText(R.string.clockDiffDescription); 
