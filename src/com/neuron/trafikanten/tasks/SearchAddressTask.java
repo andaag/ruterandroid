@@ -86,8 +86,12 @@ public class SearchAddressTask implements GenericTask {
 	    final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 	    builder.setTitle(R.string.searchAddressTask);
 	    
+	    
+	    final List<Address> duplicateAddresses = new ArrayList<Address>();
+	    
 	    /*
-	     * First take all addresses, convert them into strings and check for duplicates.
+	     * First take all addresses, convert them into strings
+	     * remove duplicates so addressStrings index matches address index
 	     */
 	    ArrayList<String> addressStrings = new ArrayList<String>();
 	    for(Address address : addresses) {
@@ -99,7 +103,17 @@ public class SearchAddressTask implements GenericTask {
     		
     		if (!addressStrings.contains(result)) {
     			addressStrings.add(result);
+    		} else {
+    			duplicateAddresses.add(address);
+    			Log.d(TAG, "  - Address is dupe!");
     		}
+	    }
+	    /*
+	     * Remove duplicates
+	     */
+	    while(duplicateAddresses.size() > 0) {
+	    	addresses.remove(duplicateAddresses.get(0));
+	    	duplicateAddresses.remove(0);
 	    }
 	    
 	    /*

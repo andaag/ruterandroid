@@ -44,7 +44,7 @@
     
     <TextView
     	android:id="@+id/infoText"
-    	android:layout_marginTop="50dip"
+    	android:layout_marginTop="30dip"
     	android:layout_below="@+id/searchLine"
     	android:layout_width="300dip"
     	android:layout_height="wrap_content"
