@@ -18,6 +18,7 @@
 
 package com.neuron.trafikanten.notification;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -102,7 +103,7 @@ public class NotificationDialog {
 					/*
 					 * Realtime data
 					 */
-					notificationData = new NotificationData(sStation, sRealtimeData, calendar.getTimeInMillis() - timeDifference, sWith);
+					notificationData = new NotificationData(sStation, sRealtimeData, calendar.getTimeInMillis() + timeDifference, sWith);
 				} else {
 					/*
 					 * Route data
