@@ -142,8 +142,7 @@ we fallback to route information.</string>
         <string name="fromShort">from</string>
         
         <!--  Generic -->
-        <string name="exception">Exception</string>
-        <string name="parseError">Failed reading data from trafikanten.no</string>
+        <string name="trafikantenError">Couldn't read data from Trafikanten.no.\nPlease check that your network connection is working.\n\nIf you get this message repeatadly on the same station, contact me via android market and I will notify Trafikanten.no.</string>
         <string name="myLocation">My Location</string>
         <string name="settings">Settings</string>
         <string name="reset">Reset</string>

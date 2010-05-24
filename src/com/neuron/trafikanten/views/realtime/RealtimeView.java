@@ -283,6 +283,15 @@ public class RealtimeView extends ListActivity {
     	}
     }
     
+    private void clearView() {
+    	finishedLoading = false;
+		realtimeList.itemsAddedWithoutNotify = 0;
+    	realtimeList.clear();
+    	realtimeList.notifyDataSetChanged();
+    	deviItems = new ArrayList<DeviData>();
+    	devi.setVisibility(View.GONE);
+    }
+    
     /*
      * Load data, variable used to prevent updating data set on every iteration.
      */
@@ -291,12 +300,7 @@ public class RealtimeView extends ListActivity {
         lastUpdate = System.currentTimeMillis();
     	stopProviders();
     	
-    	finishedLoading = false;
-		realtimeList.itemsAddedWithoutNotify = 0;
-    	realtimeList.clear();
-    	realtimeList.notifyDataSetChanged();
-    	deviItems = new ArrayList<DeviData>();
-    	devi.setVisibility(View.GONE);
+    	clearView();
 
 		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
 				
@@ -333,12 +337,9 @@ public class RealtimeView extends ListActivity {
 				realtimeProvider = null;
 				if (exception != null) {
 					Log.w(TAG,"onException " + exception);
+					clearView();
 					infoText.setVisibility(View.VISIBLE);
-					if (exception.getClass().getSimpleName().equals("ParseException")) {
-						infoText.setText("" + getText(R.string.parseError) + ":" + "\n\n" + exception);
-					} else {
-						infoText.setText("" + getText(R.string.exception) + ":" + "\n\n" + exception);
-					}
+					infoText.setText(R.string.trafikantenError);
 				} else {
 					refreshTitle();
 					/*
@@ -428,7 +429,7 @@ public class RealtimeView extends ListActivity {
 
 				if (exception != null) {
 					Log.w(TAG,"onException " + exception);
-					Toast.makeText(RealtimeView.this, "" + getText(R.string.exception) + "\n" + exception, Toast.LENGTH_LONG).show();
+					Toast.makeText(RealtimeView.this, R.string.trafikantenError, Toast.LENGTH_LONG).show();
 		
 				} else {
 					refreshDevi();
