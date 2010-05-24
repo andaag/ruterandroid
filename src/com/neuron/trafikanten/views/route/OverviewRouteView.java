@@ -150,7 +150,11 @@ public class OverviewRouteView extends ListActivity {
 			    	routeList.notifyDataSetChanged();
 					Log.w(TAG,"onException " + exception);
 					infoText.setVisibility(View.VISIBLE);
-					infoText.setText(R.string.trafikantenError);
+			        if (exception.getClass().getSimpleName().equals("ParseException")) {
+			        	infoText.setText(R.string.trafikantenErrorParse);
+			        } else {
+			        	infoText.setText(R.string.trafikantenErrorOther);
+			        }
 					setProgressBarIndeterminateVisibility(false);
 				} else {
 					infoText.setText(R.string.noRoutesFound);

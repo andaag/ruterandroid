@@ -339,7 +339,11 @@ public class RealtimeView extends ListActivity {
 					Log.w(TAG,"onException " + exception);
 					clearView();
 					infoText.setVisibility(View.VISIBLE);
-					infoText.setText(R.string.trafikantenError);
+			        if (exception.getClass().getSimpleName().equals("ParseException")) {
+			        	infoText.setText(R.string.trafikantenErrorParse);
+			        } else {
+			        	infoText.setText(R.string.trafikantenErrorOther);
+			        }
 				} else {
 					refreshTitle();
 					/*
@@ -429,7 +433,12 @@ public class RealtimeView extends ListActivity {
 
 				if (exception != null) {
 					Log.w(TAG,"onException " + exception);
-					Toast.makeText(RealtimeView.this, R.string.trafikantenError, Toast.LENGTH_LONG).show();
+			        if (exception.getClass().getSimpleName().equals("ParseException")) {
+			        	Toast.makeText(RealtimeView.this, R.string.trafikantenErrorParse, Toast.LENGTH_LONG).show();
+			        } else {
+			        	Toast.makeText(RealtimeView.this, R.string.trafikantenErrorOther, Toast.LENGTH_LONG).show();
+			        }
+
 		
 				} else {
 					refreshDevi();

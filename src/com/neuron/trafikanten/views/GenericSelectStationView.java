@@ -212,7 +212,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 			setProgressBar(false);
 			if (exception != null) {
 		        Log.w(TAG,"onException " + exception);
-	            Toast.makeText(GenericSelectStationView.this, R.string.trafikantenError, Toast.LENGTH_LONG).show();
+		        if (exception.getClass().getSimpleName().equals("ParseException")) {
+		        	Toast.makeText(GenericSelectStationView.this, R.string.trafikantenErrorParse, Toast.LENGTH_LONG).show();
+		        } else {
+		        	Toast.makeText(GenericSelectStationView.this, R.string.trafikantenErrorOther, Toast.LENGTH_LONG).show();
+		        }
 		    } else {
 		    	refresh();
 		    }
@@ -381,7 +385,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 	        @Override
 	        public void onError(Exception exception) {
 	                Log.w(TAG,"onException " + exception);
-	    			Toast.makeText(GenericSelectStationView.this, R.string.trafikantenError, Toast.LENGTH_LONG).show();
+			        if (exception.getClass().getSimpleName().equals("ParseException")) {
+			        	Toast.makeText(GenericSelectStationView.this, R.string.trafikantenErrorParse, Toast.LENGTH_LONG).show();
+			        } else {
+			        	Toast.makeText(GenericSelectStationView.this, R.string.trafikantenErrorOther, Toast.LENGTH_LONG).show();
+			        }
 	                setProgressBar(false);
 	        }
 	

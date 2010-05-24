@@ -137,7 +137,8 @@ da er det tider fra rutetabellen som vises.</string>
         <string name="fromShort">fra</string>
         
         <!--  Generic -->
-        <string name="trafikantenError">Klarte ikke lese data fra Trafikanten.no.\nSjekk at du har internet tilkobling.\n\nHvis du får denne feilen flere ganger på samme stasjon, send meg mail via android market så skal jeg gi beskjed til Trafikanten.no.</string>
+        <string name="trafikantenErrorParse">Klarte ikke lese data fra Trafikanten.no\nDette blir somregel fikset raskt,\nprøv igjen senere.</string>
+        <string name="trafikantenErrorOther">Klarte ikke hente data fra Trafikanten.no\nSjekk internet tilkoblingen din.</string>
         <string name="myLocation">Min posisjon</string>
         <string name="settings">Settings</string>
         <string name="reset">Tilbakestill</string>
