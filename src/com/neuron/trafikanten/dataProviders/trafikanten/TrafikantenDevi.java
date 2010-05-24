@@ -80,7 +80,7 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 			final XMLReader reader = parser.getXMLReader();
 			reader.setContentHandler(new DeviHandler(this));
 			
-			reader.parse(new InputSource(result));			
+			reader.parse(new InputSource(result));		
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {
 				ThreadHandlePostExecute(null);
