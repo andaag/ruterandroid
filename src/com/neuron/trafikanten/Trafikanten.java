@@ -172,6 +172,7 @@ public class Trafikanten extends TabActivity {
         final Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
         shortcutIntent.setClassName(this, this.getClass().getName());
         shortcutIntent.putExtra(KEY_MYLOCATION, true);
+        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP); 
         /*
          * Setup container
          */
@@ -186,6 +187,7 @@ public class Trafikanten extends TabActivity {
 	private void createShortcutStation(StationData station) {
         final Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
         shortcutIntent.setClassName(this, RealtimeView.class.getName());
+        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         
         final Bundle bundle = new Bundle();
         station.writeSimpleBundle(bundle);
