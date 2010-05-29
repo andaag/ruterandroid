@@ -53,6 +53,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.dataSets.StationData;
@@ -73,6 +74,7 @@ public class SelectRouteView extends ListActivity {
 	private SelectRouteAdapter listMenu;
 
 	private RouteSearchData routeSearch;
+	private GoogleAnalyticsTracker tracker;
 	
 	/*
 	 * Options menu items:
@@ -84,6 +86,13 @@ public class SelectRouteView extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.selectroute);
+		
+        /*
+         * Analytics
+         */
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.start("UA-16690738-1", this);
+		tracker.trackPageView("/selectRouteView");
 		
 		listMenu = new SelectRouteAdapter();
 		
@@ -283,7 +292,7 @@ public class SelectRouteView extends ListActivity {
         	resetView();
         	break;
         case HELP_ID:
-        	new ShowHelpTask(this);
+        	new ShowHelpTask(this, tracker);
         	break;
         default:
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());

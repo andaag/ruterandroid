@@ -34,6 +34,7 @@ import android.provider.Contacts;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
@@ -44,12 +45,14 @@ import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 public class SelectContactTask implements GenericTask {
     private static final String TAG = "Trafikanten-SelectContactTask";
     private Activity activity;
+    private GoogleAnalyticsTracker tracker;
     ReturnCoordinatesHandler handler;
     private Dialog dialog; 
     
-    public SelectContactTask(Activity activity, ReturnCoordinatesHandler handler) 
+    public SelectContactTask(Activity activity, GoogleAnalyticsTracker tracker, ReturnCoordinatesHandler handler) 
     {
         this.activity = activity;
+        this.tracker = tracker;
         this.handler = handler;
         showDialog();
     }
@@ -67,6 +70,7 @@ public class SelectContactTask implements GenericTask {
                 nameList.add(cursor.getString(0));
         }
         cursor.close();
+        tracker.trackEvent("Task", "SelectContact", null, nameList.size());
         
         /*
          * Setup select contact alert dialog

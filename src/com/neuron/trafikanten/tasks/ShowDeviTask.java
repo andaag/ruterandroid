@@ -25,18 +25,21 @@ import android.app.Dialog;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.DeviData;
 
 public class ShowDeviTask implements GenericTask {
 	public final static SimpleDateFormat dateFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private Activity activity;
+    private GoogleAnalyticsTracker tracker;
     private DeviData data;
     private Dialog dialog;
     
-    public ShowDeviTask(Activity activity, DeviData data) 
+    public ShowDeviTask(Activity activity, GoogleAnalyticsTracker tracker, DeviData data) 
     {
         this.activity = activity;
+        this.tracker = tracker;
         this.data = data;
         showDialog();
     }
@@ -64,7 +67,9 @@ public class ShowDeviTask implements GenericTask {
 		} else {
 			validPeriod.setVisibility(View.GONE);
 		}
-		title.setText(stripCode(data.title));
+		final CharSequence strippedTitle = stripCode(data.title); 
+		title.setText(strippedTitle);
+		tracker.trackEvent("Task", "ShowDevi", strippedTitle.toString(), 0);
 		description.setText(stripCode(data.description));
 		
 		final CharSequence bodyText = stripCode(data.body);

@@ -225,6 +225,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 		    } else {
 		    	refresh();
 		    }
+			
+			/*
+			 * Everything on screen loaded, dispatch google analytics data
+			 */
+			tracker.dispatch();
 		}
 
 		@Override
@@ -368,7 +373,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         	resetView();
         	break;
         case HELP_ID:
-        	new ShowHelpTask(this);
+        	new ShowHelpTask(this, tracker);
         	break;
         default:
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());
@@ -422,7 +427,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	public void findMyLocationTask() {
 		if (searchProvider != null)
 			searchProvider.kill();
-		activeTask = new LocationTask(this, getReturnCoordinatesHandler());
+		activeTask = new LocationTask(this, tracker, getReturnCoordinatesHandler());
 	}
 	
 	/*
@@ -431,7 +436,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private void searchAddressTask() {
 		if (searchProvider != null)
 			searchProvider.kill();
-		activeTask = new SearchAddressTask(this, getReturnCoordinatesHandler());
+		activeTask = new SearchAddressTask(this, tracker, getReturnCoordinatesHandler());
 	}
 	
 	/*
@@ -440,7 +445,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     private void selectContact() {
 		if (searchProvider != null)
 			searchProvider.kill();        
-        activeTask = new SelectContactTask(this, getReturnCoordinatesHandler());
+        activeTask = new SelectContactTask(this, tracker, getReturnCoordinatesHandler());
 }
 
 	/*

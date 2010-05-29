@@ -51,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
@@ -119,12 +120,20 @@ public class RealtimeView extends ListActivity {
 	 */
     public SharedPreferences settings;
     public Typeface departuresTypeface;
+    public static GoogleAnalyticsTracker tracker;
     
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        
+        /*
+         * Analytics
+         */
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.start("UA-16690738-1", this);
+		tracker.trackPageView("/realtime");
         
         /*
          * Setup view and adapter.
@@ -226,7 +235,7 @@ public class RealtimeView extends ListActivity {
 		deviText.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-		    	new ShowDeviTask(context, deviData);
+		    	new ShowDeviTask(context, tracker, deviData);
 								
 			}
         });
@@ -447,6 +456,11 @@ public class RealtimeView extends ListActivity {
 						realtimeList.notifyDataSetChanged();
 					}
 				}
+				
+				/*
+				 * Everything on screen loaded, dispatch google analytics data
+				 */
+				tracker.dispatch();
 			}
 
 			@Override
@@ -462,8 +476,8 @@ public class RealtimeView extends ListActivity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		final MenuItem myLocation = menu.add(0, REFRESH_ID, 0, R.string.refresh);
-		myLocation.setIcon(R.drawable.ic_menu_refresh);
+		final MenuItem refresh = menu.add(0, REFRESH_ID, 0, R.string.refresh);
+		refresh.setIcon(R.drawable.ic_menu_refresh);
         
         final MenuItem showHideCaText = menu.add(0, HIDECA_ID, 0, R.string.changeCaTextVisibility);
         showHideCaText.setIcon(android.R.drawable.ic_menu_info_details);
@@ -479,6 +493,7 @@ public class RealtimeView extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         case REFRESH_ID:
+        	tracker.trackEvent("Realtime", "Refresh", null, 0);
         	load();
         	break;
         case HIDECA_ID:
@@ -508,7 +523,7 @@ public class RealtimeView extends ListActivity {
 			/*
 			 * notify dialog
 			 */
-			return NotificationDialog.getDialog(this, timeDifference);
+			return NotificationDialog.getDialog(this, tracker, timeDifference);
 		}
 		return super.onCreateDialog(id);
 	}
@@ -560,7 +575,7 @@ public class RealtimeView extends ListActivity {
 		case DEVI_ID:
 			final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId);
 			final ArrayList<DeviData> deviPopup = realtimeList.getDevi(realtimeData);
-			new SelectDeviTask(this, deviPopup);
+			new SelectDeviTask(this, tracker, deviPopup);
 
 		}
 		return super.onContextItemSelected(item);
@@ -883,7 +898,7 @@ class RealtimeAdapter extends BaseAdapter {
 			tableLayout.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					new ShowRealtimeLineDetails(parent, System.currentTimeMillis() - parent.timeDifference, data);
+					new ShowRealtimeLineDetails(parent, RealtimeView.tracker, System.currentTimeMillis() - parent.timeDifference, data);
 				}
 			});
 			tableLayout.setLongClickable(true);

@@ -6,6 +6,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RealtimeData;
@@ -14,13 +15,15 @@ import com.neuron.trafikanten.dataSets.RealtimeDataNextDeparture;
 public class ShowRealtimeLineDetails implements GenericTask {
     //private static final String TAG = "Trafikanten-SelectDeviTask";
     private Activity activity;
+    private GoogleAnalyticsTracker tracker;
     private RealtimeData data;
     private Dialog dialog;
     private long currentTime;
     
-    public ShowRealtimeLineDetails(Activity activity, long currentTime, RealtimeData data) 
+    public ShowRealtimeLineDetails(Activity activity, GoogleAnalyticsTracker tracker, long currentTime, RealtimeData data) 
     {
         this.activity = activity;
+        this.tracker = tracker;
         this.data = data;
         this.currentTime = currentTime;
         showDialog();
@@ -61,6 +64,7 @@ public class ShowRealtimeLineDetails implements GenericTask {
 		for (RealtimeDataNextDeparture departure : data.nextDepartures) {
 			renderDeparture(body, departure.expectedDeparture, departure.realtime, departure.stopVisitNote);
 		}
+		tracker.trackEvent("Task", "ShowRealtimeLineDetails", null, data.nextDepartures.size());
 		
 		dialog.show();
     }

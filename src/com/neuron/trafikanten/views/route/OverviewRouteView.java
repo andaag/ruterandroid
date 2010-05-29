@@ -46,6 +46,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
@@ -84,6 +85,7 @@ public class OverviewRouteView extends ListActivity {
 	 * UI
 	 */
 	private TextView infoText;
+	private GoogleAnalyticsTracker tracker;
 	
 	public static void ShowRoute(Activity activity, RouteSearchData routeSearch) {
 		Intent intent = new Intent(activity, OverviewRouteView.class);
@@ -95,6 +97,14 @@ public class OverviewRouteView extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        
+        /*
+         * Analytics
+         */
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.start("UA-16690738-1", this);
+		tracker.trackPageView("/overviewRouteView");
+		
 		/*
 		 * Setup the view
 		 */
@@ -160,6 +170,10 @@ public class OverviewRouteView extends ListActivity {
 					infoText.setText(R.string.noRoutesFound);
 				}
 				
+				/*
+				 * Everything on screen loaded, dispatch google analytics data
+				 */
+				tracker.dispatch();
 			}
 
 			@Override
@@ -190,7 +204,7 @@ public class OverviewRouteView extends ListActivity {
 			/*
 			 * notify dialog
 			 */
-			return NotificationDialog.getDialog(this, 0);
+			return NotificationDialog.getDialog(this, tracker, 0);
 		}
 		return super.onCreateDialog(id);
 	}

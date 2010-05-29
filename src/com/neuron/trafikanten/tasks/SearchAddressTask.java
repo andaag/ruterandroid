@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
@@ -28,14 +29,16 @@ public class SearchAddressTask implements GenericTask {
 	private static final String TAG = "Trafikanten-SearchAddressTask";
 	
 	private Activity activity;
+	private GoogleAnalyticsTracker tracker;
 	private List<Address> addresses;
 	ReturnCoordinatesHandler handler;
 	private Dialog dialog; 
 	    
 	
-	public SearchAddressTask(Activity activity, ReturnCoordinatesHandler handler) 
+	public SearchAddressTask(Activity activity, GoogleAnalyticsTracker tracker, ReturnCoordinatesHandler handler) 
 	{
 		this.activity = activity;
+		this.tracker = tracker;
 		this.handler = handler;
 		showAddressField();
 	}
@@ -153,6 +156,7 @@ public class SearchAddressTask implements GenericTask {
 		final Geocoder geocoder = new Geocoder(activity);
 		try {
 			addresses = geocoder.getFromLocationName(searchAddress, 10, 57, 3, 71, 32);
+			tracker.trackEvent("Task", "SearchAddress", searchAddress, addresses.size());
 
 			switch(addresses.size()) {
 			case 0:

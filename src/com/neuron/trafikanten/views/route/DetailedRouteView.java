@@ -41,6 +41,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RouteData;
@@ -51,6 +52,7 @@ public class DetailedRouteView extends ListActivity {
 	//private final static String TAG = "Trafikanten-DetailedRouteView";
 	private RouteAdapter routeList;
 	private ViewHolder viewHolder = new ViewHolder();
+	private GoogleAnalyticsTracker tracker;
 	
 	/*
 	 * Context menu:
@@ -85,6 +87,12 @@ public class DetailedRouteView extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        /*
+         * Analytics
+         */
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.start("UA-16690738-1", this);
+		tracker.trackPageView("/detailedRouteView");
 		/*
 		 * Setup the view
 		 */
@@ -214,7 +222,7 @@ public class DetailedRouteView extends ListActivity {
 			/*
 			 * notify dialog
 			 */
-			return NotificationDialog.getDialog(this, 0);
+			return NotificationDialog.getDialog(this, tracker, 0);
 		}
 		return super.onCreateDialog(id);
 	}

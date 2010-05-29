@@ -35,12 +35,14 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 
 public class ShowHelpTask implements GenericTask {
 	public final static SimpleDateFormat dateFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private Activity activity;
+    private GoogleAnalyticsTracker tracker;
     private Dialog dialog;
     private ClickableSpan sendMailSpan = new ClickableSpan() {
 		@Override
@@ -54,9 +56,10 @@ public class ShowHelpTask implements GenericTask {
     	
     };
     
-    public ShowHelpTask(Activity activity) 
+    public ShowHelpTask(Activity activity, GoogleAnalyticsTracker tracker) 
     {
         this.activity = activity;
+        this.tracker = tracker;
         showDialog();
     }
     
@@ -68,6 +71,7 @@ public class ShowHelpTask implements GenericTask {
     }
     
     private void showDialog() {
+    	tracker.trackEvent("Task", "ShowHelp", null, 0);
 		dialog = new Dialog(activity);
 		dialog.setTitle("Hjelp");
 		dialog.setContentView(R.layout.dialog_progress);

@@ -25,6 +25,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.dataSets.DeviData;
 
 /*
@@ -34,12 +35,14 @@ import com.neuron.trafikanten.dataSets.DeviData;
 public class SelectDeviTask implements GenericTask {
     //private static final String TAG = "Trafikanten-SelectDeviTask";
     private Activity activity;
+    private GoogleAnalyticsTracker tracker;
     private ArrayList<DeviData> devi;
     private Dialog dialog;
     
-    public SelectDeviTask(Activity activity, ArrayList<DeviData> devi) 
+    public SelectDeviTask(Activity activity, GoogleAnalyticsTracker tracker, ArrayList<DeviData> devi) 
     {
         this.activity = activity;
+        this.tracker = tracker;
         this.devi = devi;
         showDialog();
     }
@@ -55,6 +58,7 @@ public class SelectDeviTask implements GenericTask {
         for (DeviData deviData : devi) {
         	deviList.add(deviData.title);
         }
+        tracker.trackEvent("Task", "SelectDevi", null, deviList.size());
         
         /*
          * Setup select devi dialog
@@ -80,7 +84,7 @@ public class SelectDeviTask implements GenericTask {
     }
     
     private void deviSelected(DeviData deviData) {
-    	new ShowDeviTask(activity, deviData);
+    	new ShowDeviTask(activity, tracker, deviData);
     }
 
 	@Override

@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.google.android.FixedMyLocationOverlay;
 import com.google.android.TransparentPanel;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -52,6 +53,7 @@ public class GenericMap extends MapActivity {
 	private MyLocationOverlay locationOverlay;
 	private static GenericStationOverlay stationOverlay;
 	private static ViewHolder viewHolder = new ViewHolder();
+	private GoogleAnalyticsTracker tracker;
 	
 	/*
 	 * Holder for currently selected station in panel
@@ -83,6 +85,10 @@ public class GenericMap extends MapActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
+		
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.start("UA-16690738-1", this);
+		tracker.trackPageView("/map");
 		
 		/*
 		 * Setup map view

@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TimePicker;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataSets.NotificationData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
@@ -78,7 +79,7 @@ public class NotificationDialog {
 		sRealtimeData = null;
 	}
 	
-	public static TimePickerDialog getDialog(final Context context, final long timeDifference) {
+	public static TimePickerDialog getDialog(final Context context, final GoogleAnalyticsTracker tracker, final long timeDifference) {
     	return new TimePickerDialog(context, new OnTimeSetListener() {
 			@Override
 			public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -103,11 +104,13 @@ public class NotificationDialog {
 					 * Realtime data
 					 */
 					notificationData = new NotificationData(sStation, sRealtimeData, calendar.getTimeInMillis() + timeDifference, sWith);
+					tracker.trackEvent("Notification", "Realtime", null, 0);
 				} else {
 					/*
 					 * Route data
 					 */
 					notificationData = new NotificationData(sRouteProposalList, sProposalPosition, sRouteDeparture, calendar.getTimeInMillis(), sWith);
+					tracker.trackEvent("Notification", "Route", null, 0);
 				}
 				bundle.putParcelable(NotificationData.PARCELABLE, notificationData);
 				
