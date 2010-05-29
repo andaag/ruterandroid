@@ -492,6 +492,13 @@ public class SelectRouteView extends ListActivity {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(RouteSearchData.PARCELABLE, routeSearch);
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		//Stop the tracker when it is no longer needed.
+		tracker.stop();
+	}
 }
 
 

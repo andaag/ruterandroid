@@ -278,6 +278,13 @@ public class DetailedRouteView extends ListActivity {
 		outState.putInt(KEY_PROPOSALPOSITION, proposalPosition);
 	}
 	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		//Stop the tracker when it is no longer needed.
+		tracker.stop();
+	}
+	
 	/*
 	 * Class for holding the view.
 	 */

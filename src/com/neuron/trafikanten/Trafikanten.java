@@ -217,4 +217,11 @@ public class Trafikanten extends TabActivity {
 	{
 		activity.setProgressBarIndeterminateVisibility(value);
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		//Stop the tracker when it is no longer needed.
+		tracker.stop();
+	}
 }

@@ -273,6 +273,13 @@ public class OverviewRouteView extends ListActivity {
 		outState.putParcelable(RouteSearchData.PARCELABLE, routeSearch);
 		outState.putParcelableArrayList(OverviewRouteAdapter.KEY_ROUTELIST, routeList.getList());
 	}
+	 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		//Stop the tracker when it is no longer needed.
+		tracker.stop();
+	}
 }
 
 /*

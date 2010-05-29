@@ -622,6 +622,13 @@ public class RealtimeView extends ListActivity {
 
 		realtimeList.saveInstanceState(outState);
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		//Stop the tracker when it is no longer needed.
+		tracker.stop();
+	}
 }
 
 class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable {

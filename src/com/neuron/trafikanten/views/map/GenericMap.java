@@ -284,6 +284,13 @@ public class GenericMap extends MapActivity {
 		super.onSaveInstanceState(outState);
 	}
 	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		//Stop the tracker when it is no longer needed.
+		tracker.stop();
+	}
+	
 	static class ViewHolder {
 		ImageButton list;
 		

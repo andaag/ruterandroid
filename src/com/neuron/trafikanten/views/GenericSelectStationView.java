@@ -592,6 +592,13 @@ public abstract class GenericSelectStationView extends ListActivity {
 		super.onSaveInstanceState(outState);
 		outState.putParcelableArrayList(StationListAdapter.KEY_SEARCHSTATIONLIST, stationListAdapter.getList());
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		//Stop the tracker when it is no longer needed.
+		tracker.stop();
+	}
 }
 
 class StationListAdapter extends BaseAdapter {
