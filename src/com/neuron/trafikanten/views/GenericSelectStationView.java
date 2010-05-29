@@ -50,6 +50,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
@@ -112,12 +113,16 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Other
 	 */
 	private EditText searchEdit;
+	public GoogleAnalyticsTracker tracker;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.start("UA-16690738-1", this);
+		tracker.trackPageView("/search");
+		
         /*
          * Setup view
          */
@@ -153,7 +158,7 @@ public abstract class GenericSelectStationView extends ListActivity {
                 case KeyEvent.KEYCODE_ENTER:
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 	/*
-                	 * On Search show dialog, clear current list and initiate search thread.
+                	 * Perform search
                 	 */
                 	doSearch();
                 	return true;
@@ -242,6 +247,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     		if (searchProvider != null)
     			searchProvider.kill();
     		searchProvider = new TrafikantenSearch(this, searchEdit.getText().toString(), isRealtimeSelector, searchHandler);
+    		tracker.trackEvent("Data", "StationSearch", searchEdit.getText().toString(), 0);
     		infoText.setVisibility(View.GONE);
     		infoText.setText(getInfoHelpText());
     	}

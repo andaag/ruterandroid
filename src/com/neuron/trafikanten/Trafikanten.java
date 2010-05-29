@@ -35,6 +35,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
@@ -46,10 +47,13 @@ import com.neuron.trafikanten.views.route.SelectRouteView;
 public class Trafikanten extends TabActivity {
 	private static Activity activity;
 	public final static String KEY_MYLOCATION = "myLocation";
+	private GoogleAnalyticsTracker tracker;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.start("UA-16690738-1", this);
 		Trafikanten.activity = this;
 	 	setTitle("Trafikanten - " + getText(R.string.app_version));
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -57,6 +61,7 @@ public class Trafikanten extends TabActivity {
         if (isShortcut()) {
         	setVisible(false);
         }
+        tracker.trackPageView("/home");
         
         /*
          * Setup tab host
@@ -106,6 +111,7 @@ public class Trafikanten extends TabActivity {
         if (!Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
         	return false;        	
         }
+        tracker.trackPageView("/createShortcut");
         
         /*
          * Todo show list of shortcuts to create.

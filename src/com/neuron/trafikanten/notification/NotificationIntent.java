@@ -22,10 +22,10 @@ import com.neuron.trafikanten.views.route.DetailedRouteView;
  * This is what gets triggered by AlarmService, what it does is trigger the notification.
  */
 public class NotificationIntent extends BroadcastReceiver {
-	private static final String TAG = "Trafikanten-NotificationIntent";
+	//private static final String TAG = "Trafikanten-NotificationIntent";
 	@Override
 	public void onReceive(Context context, Intent recieveIntent) {
-		Log.i(TAG,"onRecieve");
+		//Log.i(TAG,"onRecieve");
 		
 		final NotificationData notificationData = recieveIntent.getParcelableExtra(NotificationData.PARCELABLE);
     	final long departureTime = notificationData.getDepartureTime();
