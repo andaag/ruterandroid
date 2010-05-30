@@ -120,7 +120,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-1", this);
+		tracker.start("UA-16690738-3", this);
 		tracker.trackPageView("/search");
 		
         /*

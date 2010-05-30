@@ -132,7 +132,7 @@ public class RealtimeView extends ListActivity {
          * Analytics
          */
 		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-1", this);
+		tracker.start("UA-16690738-3", this);
 		tracker.trackPageView("/realtime");
         
         /*

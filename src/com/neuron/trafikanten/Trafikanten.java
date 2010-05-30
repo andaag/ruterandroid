@@ -53,7 +53,7 @@ public class Trafikanten extends TabActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-1", this);
+		tracker.start("UA-16690738-3", this);
 		Trafikanten.activity = this;
 	 	setTitle("Trafikanten - " + getText(R.string.app_version));
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
