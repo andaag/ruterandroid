@@ -27,7 +27,9 @@ import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Window;
@@ -61,7 +63,16 @@ public class Trafikanten extends TabActivity {
         if (isShortcut()) {
         	setVisible(false);
         }
+        
+        
+        /*
+         * Google analytics
+         */
         tracker.trackPageView("/home");
+		final SharedPreferences preferences = activity.getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
+		// Tags device version, model, and amount of data downloaded.
+        tracker.trackEvent("Device", Build.VERSION.RELEASE, Build.MODEL, (int)preferences.getLong(HelperFunctions.KEY_DOWNLOADBYTE, 0) / 1024);
+
         
         /*
          * Setup tab host
