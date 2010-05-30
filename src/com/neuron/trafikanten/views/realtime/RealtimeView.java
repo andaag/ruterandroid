@@ -456,15 +456,15 @@ public class RealtimeView extends ListActivity {
 						realtimeList.notifyDataSetChanged();
 					}
 				}
-				
-				/*
-				 * Everything on screen loaded, dispatch google analytics data
-				 */
-				tracker.dispatch();
 			}
 
 			@Override
 			public void onPreExecute() {
+				/*
+				 * Send dispatch along with devi data request.
+				 */
+				tracker.dispatch();
+
 				setProgressBarIndeterminateVisibility(true);
 			}
     	});

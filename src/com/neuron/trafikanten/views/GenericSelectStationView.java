@@ -225,15 +225,15 @@ public abstract class GenericSelectStationView extends ListActivity {
 		    } else {
 		    	refresh();
 		    }
-			
-			/*
-			 * Everything on screen loaded, dispatch google analytics data
-			 */
-			tracker.dispatch();
 		}
 
 		@Override
 		public void onPreExecute() {
+			/*
+			 * Send dispatch along with search.
+			 */
+			tracker.dispatch();
+			
 	        Log.i(TAG,"searchProvider started");
 	        stationListAdapter.clear();
 	        stationListAdapter.notifyDataSetChanged();

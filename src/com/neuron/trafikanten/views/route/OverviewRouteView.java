@@ -169,15 +169,15 @@ public class OverviewRouteView extends ListActivity {
 				} else {
 					infoText.setText(R.string.noRoutesFound);
 				}
-				
-				/*
-				 * Everything on screen loaded, dispatch google analytics data
-				 */
-				tracker.dispatch();
 			}
 
 			@Override
 			public void onPreExecute() {
+				/*
+				 * Send dispatch along with soap request, as they take time anyway.
+				 */
+				tracker.dispatch();
+
 		    	setProgressBarIndeterminateVisibility(true);
 			}
     		
