@@ -252,7 +252,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     		if (searchProvider != null)
     			searchProvider.kill();
     		searchProvider = new TrafikantenSearch(this, searchEdit.getText().toString(), isRealtimeSelector, searchHandler);
-    		tracker.trackEvent("Data", "StationSearch", searchEdit.getText().toString(), 0);
+    		tracker.trackEvent("Data", "StationSearch", null, 0);
     		infoText.setVisibility(View.GONE);
     		infoText.setText(getInfoHelpText());
     	}

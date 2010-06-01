@@ -69,7 +69,7 @@ public class ShowDeviTask implements GenericTask {
 		}
 		final CharSequence strippedTitle = stripCode(data.title); 
 		title.setText(strippedTitle);
-		tracker.trackEvent("Task", "ShowDevi", strippedTitle.toString(), 0);
+		tracker.trackEvent("Task", "ShowDevi", null, 0);
 		description.setText(stripCode(data.description));
 		
 		final CharSequence bodyText = stripCode(data.body);

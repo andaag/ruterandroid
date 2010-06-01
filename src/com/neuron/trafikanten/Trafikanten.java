@@ -71,7 +71,7 @@ public class Trafikanten extends TabActivity {
         tracker.trackPageView("/home");
 		final SharedPreferences preferences = activity.getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
 		// Tags device version, model, and amount of data downloaded.
-        tracker.trackEvent("Device", Build.VERSION.RELEASE, Build.MODEL, (int)preferences.getLong(HelperFunctions.KEY_DOWNLOADBYTE, 0) / 1024);
+        tracker.trackEvent("Device", Build.VERSION.RELEASE, Build.MODEL.replace(" ", "_"), (int)preferences.getLong(HelperFunctions.KEY_DOWNLOADBYTE, 0) / 1024);
 
         
         /*

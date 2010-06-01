@@ -156,7 +156,7 @@ public class SearchAddressTask implements GenericTask {
 		final Geocoder geocoder = new Geocoder(activity);
 		try {
 			addresses = geocoder.getFromLocationName(searchAddress, 10, 57, 3, 71, 32);
-			tracker.trackEvent("Task", "SearchAddress", searchAddress, addresses.size());
+			tracker.trackEvent("Task", "SearchAddress", null, addresses.size());
 
 			switch(addresses.size()) {
 			case 0:

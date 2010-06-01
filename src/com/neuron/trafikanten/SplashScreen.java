@@ -2,9 +2,13 @@ package com.neuron.trafikanten;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Window;
+
+import com.neuron.trafikanten.hacks.GoogleAnalyticsCleanup;
 
 
 // http://www.anddev.org/simple_splash_screen_-_alternative-t815.html
@@ -41,6 +45,27 @@ public class SplashScreen extends Activity {
 	                   SplashScreen.this.finish(); 
 	              } 
 	         }, SPLASH_DISPLAY_LENGHT); 
+	         
+	         
+	         /*
+	          * Cleanup broken analytics database, this is a HACK
+	          */
+	        GoogleAnalyticsCleanup myDbHelper = new GoogleAnalyticsCleanup(this);
+            try {
+                myDbHelper.openDataBase();
+                int deleted = myDbHelper.deleteEvents();
+                if (deleted > 0) {
+                	Log.i("Trafikanten-SplashScreen","Deleted " + deleted + " invalid google analyics database entries");
+                }
+                myDbHelper.close();
+            }
+            catch (SQLException sqle) {
+                throw sqle;
+            }
+            finally{
+                myDbHelper.close();
+            }
+	         
          } else {
         	 // No splash screen needed.
              Intent mainIntent = new Intent(this, Trafikanten.class);
