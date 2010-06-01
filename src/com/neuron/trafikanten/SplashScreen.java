@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.neuron.trafikanten.hacks.GoogleAnalyticsCleanup;
 
