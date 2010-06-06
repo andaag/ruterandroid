@@ -18,6 +18,8 @@
 
 package com.neuron.trafikanten;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -71,7 +73,9 @@ public class Trafikanten extends TabActivity {
         tracker.trackPageView("/home");
 		final SharedPreferences preferences = activity.getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
 		// Tags device version, model, and amount of data downloaded.
-        tracker.trackEvent("Device", Build.VERSION.RELEASE, Build.MODEL.replace(" ", "_"), (int)preferences.getLong(HelperFunctions.KEY_DOWNLOADBYTE, 0) / 1024);
+        try {
+			tracker.trackEvent("Device", URLEncoder.encode(Build.VERSION.RELEASE,"UTF-8"), URLEncoder.encode(Build.MODEL,"UTF-8"), (int)preferences.getLong(HelperFunctions.KEY_DOWNLOADBYTE, 0) / 1024);
+		} catch (UnsupportedEncodingException e) {}
 
         
         /*

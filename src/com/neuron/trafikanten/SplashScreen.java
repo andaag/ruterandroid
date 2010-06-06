@@ -56,6 +56,7 @@ public class SplashScreen extends Activity {
                 myDbHelper.openDataBase();
                 int deleted = myDbHelper.deleteEvents();
                 if (deleted > 0) {
+                	Toast.makeText(this, "Deleted " + deleted + " invalid google analytics database entries, report this!", Toast.LENGTH_LONG);
                 	Log.i("Trafikanten-SplashScreen","Deleted " + deleted + " invalid google analyics database entries");
                 }
                 myDbHelper.close();
