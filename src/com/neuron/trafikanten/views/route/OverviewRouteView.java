@@ -138,6 +138,7 @@ public class OverviewRouteView extends ListActivity {
     	routeList.getList().clear();
     	routeList.notifyDataSetChanged();
     	
+		tracker.trackEvent("Data", "Route", "Data", 0);
     	routeProvider = new TrafikantenRoute(this, routeSearch, new IGenericProviderHandler<RouteProposal>() {
     		@Override
     		public void onExtra(int what, Object obj) {
