@@ -62,7 +62,7 @@ public class SplashScreen extends Activity {
                 myDbHelper.close();
             }
             catch (SQLException sqle) {
-                throw sqle;
+                //throw sqle;
             }
             finally{
                 myDbHelper.close();
