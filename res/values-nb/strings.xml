@@ -65,7 +65,6 @@ Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
         <string name="address">Søk etter adresse</string>
         <string name="showingRealtimeOnly">Viser kun stasjoner med sanntid.</string>
         <string name="map">Kart</string>
-        <string name="contact">Kontakt</string>
         <string name="addFavorite">Legg til i favoritter</string>
         <string name="removeFavorite">Fjern fra favoritter</string>
         <string name="removeHistory">Fjern fra history</string>
@@ -119,16 +118,12 @@ da er det tider fra rutetabellen som vises.</string>
         <string name="noLocationFoundError">Ingen posisjon funnet, vent eller trykk tilbake for å avbryte</string>
         <string name="locationContinue">Fortsett</string>
         
-        <!-- SelectContactTask -->
-        <string name="failedToFindAddress">Klarte ikke finne adressen på kartet</string>
-        <string name="multipleAddressesFound">Flere treff funnet, bruker første</string>
-        <string name="selectContact">Velg Kontakt</string>
-        
         <!-- ShowDeviTask -->
         <string name="validFrom">Gyldig fra</string>
         <string name="deviTitle">Trafikanten - Avvik</string>
         
         <!-- SearchAddressTask -->
+        <string name="failedToFindAddress">Klarte ikke finne adressen på kartet</string>
         <string name="searchAddressTask">Søk etter adresse:</string>
         <string name="addressHint">Adresse</string>
         

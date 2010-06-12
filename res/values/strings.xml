@@ -70,7 +70,6 @@ Try clicking menu and searching for an address instead!</string>
         <string name="showingRealtimeOnly">Showing only stations with realtime information.</string>
         <string name="address">Address Search</string>
         <string name="map">Map</string>
-        <string name="contact">Contact</string>
         <string name="addFavorite">Add to favorites</string>
         <string name="removeFavorite">Remove from favorites</string>
         <string name="removeHistory">Remove from history</string>
@@ -124,16 +123,12 @@ we fallback to route information.</string>
         <string name="noLocationFoundError">No location found, please wait or click back to cancel</string>
         <string name="locationContinue">Continue</string>
         
-        <!-- SelectContactTask -->
-        <string name="failedToFindAddress">Failed to locate address on map</string>
-        <string name="multipleAddressesFound">Multiple addresses found, using first</string>
-        <string name="selectContact">Select Contact</string>
-        
         <!-- ShowDeviTask -->
         <string name="validFrom">Valid from</string>
         <string name="deviTitle">Trafikanten - Deviations</string>
         
         <!-- SearchAddressTask -->
+        <string name="failedToFindAddress">Failed to locate address on map</string>
         <string name="searchAddressTask">Search for address:</string>
         <string name="addressHint">Address</string>
         

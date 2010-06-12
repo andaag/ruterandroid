@@ -167,7 +167,7 @@ public class Trafikanten extends TabActivity {
          * Setup select contact alert dialog
          */
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.selectContact);
+        builder.setTitle(R.string.selectStation);
         final String[] items = new String[selectList.size()];
         selectList.toArray(items);
         
