@@ -18,8 +18,6 @@
 
 package com.neuron.trafikanten;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -31,10 +29,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TabHost;
@@ -73,21 +69,15 @@ public class Trafikanten extends TabActivity {
          * Google analytics
          */
         tracker.trackPageView("/home");
-		final SharedPreferences preferences = getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
-		// Tags device version, model, and amount of data downloaded.
-        try {
-			tracker.trackEvent("Device", URLEncoder.encode(Build.VERSION.RELEASE,"UTF-8"), URLEncoder.encode(Build.MODEL,"UTF-8"), (int)preferences.getLong(HelperFunctions.KEY_DOWNLOADBYTE, 0) / 1024);
-        	//tracker.trackEvent("Device", "this is a test", Build.MODEL, (int)preferences.getLong(HelperFunctions.KEY_DOWNLOADBYTE, 0) / 1024);
-		} catch (UnsupportedEncodingException e) {}
         
-        	
+        /*
+         * Debug code
+         */
+		final SharedPreferences preferences = getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
         int analyticsErrors = preferences.getInt(SplashScreen.KEY_ANALYTICSERRORS, 0);
         if (analyticsErrors > 0) {
         	Toast.makeText(this, "Google analytics had " + analyticsErrors + " entries pending\nPlease report!", Toast.LENGTH_LONG).show();
         }
-
-        Log.i("DEBUG CODE", "Dispatching " + Build.VERSION.RELEASE + " " + Build.MODEL);
-        Log.i("DEBUG CODE","Tracker dispatch : " + tracker.dispatch());
         	
         /*
          * Setup tab host
