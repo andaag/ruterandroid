@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
 import sys, httplib
 import xml.dom.minidom as md
 import os
@@ -35,7 +38,7 @@ def testSearch():
     <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
         <soap12:Body>
          <GetMatches xmlns="http://www.trafikanten.no/">
-           <searchName>varingsko</searchName>
+           <searchName>håøya</searchName>
          </GetMatches>
        </soap12:Body>
      </soap12:Envelope>
