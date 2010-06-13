@@ -79,7 +79,7 @@ public class Trafikanten extends TabActivity {
             tabHost.setOnTabChangedListener(new OnTabChangeListener() {
 		        public void onTabChanged(String tabId) {
 		        	if (!firstTabChange) {
-		        		tracker.trackEvent("Navigation", "TabChange", tabId, 0);
+		        		tracker.trackEvent("Navigation", "Home", "TabChange:"+tabId, 0);
 		        	}
 		        	firstTabChange = false;
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

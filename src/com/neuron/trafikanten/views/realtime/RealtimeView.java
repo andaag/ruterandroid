@@ -495,7 +495,7 @@ public class RealtimeView extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         case REFRESH_ID:
-        	tracker.trackEvent("Realtime", "Refresh", null, 0);
+        	tracker.trackEvent("Navigation", "Realtime", "Refresh", 0);
         	load();
         	break;
         case HIDECA_ID:

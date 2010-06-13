@@ -362,6 +362,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         	searchAddressTask();
         	break;
         case FAVORITES_ID:
+        	tracker.trackEvent("Navigation", "Home", "Favorites", 0);
         	resetView();
         	break;
         case HELP_ID:
