@@ -1,7 +1,11 @@
 package com.neuron.trafikanten;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.SQLException;
@@ -52,6 +56,14 @@ public class SplashScreen extends Activity {
 	         }, SPLASH_DISPLAY_LENGHT); 
 	         
 	         
+         	GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
+    		tracker.start("UA-16690738-3", this);
+			try {
+	         	PackageInfo packageInfo = getPackageManager().getPackageInfo("com.neuron.trafikanten", PackageManager.GET_META_DATA);
+				tracker.trackEvent("Version", "Application", URLEncoder.encode(packageInfo.versionName,"UTF-8"), packageInfo.versionCode);
+			} catch (NameNotFoundException e) {
+         	} catch (UnsupportedEncodingException e) {}
+         	
 	         /*
 	          * Cleanup broken analytics database, this is a HACK
 	          */
@@ -62,8 +74,6 @@ public class SplashScreen extends Activity {
                 myDbHelper.close();
                 if (deleted > 0) {
                 	Log.e("Trafikanten-SplashScreen","Deleted " + deleted + " invalid google analyics database entries");
-                	GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
-            		tracker.start("UA-16690738-3", this);
 					try {
 						int packageVersion = getPackageManager().getPackageInfo("com.neuron.trafikanten", PackageManager.GET_META_DATA).versionCode;
 	            		tracker.trackEvent("Error", "GoogleAnalytics", "Version:" + packageVersion, deleted);
