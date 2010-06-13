@@ -42,7 +42,6 @@ import com.neuron.trafikanten.R;
 public class ShowHelpTask implements GenericTask {
 	public final static SimpleDateFormat dateFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private Activity activity;
-    private GoogleAnalyticsTracker tracker;
     private Dialog dialog;
     private ClickableSpan sendMailSpan = new ClickableSpan() {
 		@Override
@@ -59,7 +58,7 @@ public class ShowHelpTask implements GenericTask {
     public ShowHelpTask(Activity activity, GoogleAnalyticsTracker tracker) 
     {
         this.activity = activity;
-        this.tracker = tracker;
+        tracker.trackPageView("/task/showhelp");
         showDialog();
     }
     
@@ -71,7 +70,6 @@ public class ShowHelpTask implements GenericTask {
     }
     
     private void showDialog() {
-    	tracker.trackEvent("Task", "ShowHelp", null, 0);
 		dialog = new Dialog(activity);
 		dialog.setTitle("Hjelp");
 		dialog.setContentView(R.layout.dialog_progress);

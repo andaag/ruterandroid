@@ -66,6 +66,7 @@ public class LocationTask implements GenericTask {
     {
             this.activity = activity;
             this.tracker = tracker;
+            tracker.trackPageView("/task/location");
             this.handler = handler;
             showDialog();
     }
@@ -118,7 +119,7 @@ public class LocationTask implements GenericTask {
         			/*
         			 * Return instant location ok only if accuracy is enough, and it's not a cached gps location (accuracy 0.0 meters)
         			 */
-        			tracker.trackEvent("Task", "Location", null, (int)data.accuracy);
+        			tracker.trackEvent("Task", "FoundLocation", null, (int)data.accuracy);
         			returnLocation();
         			dialog.dismiss();
         		}
@@ -163,7 +164,7 @@ public class LocationTask implements GenericTask {
     
 	@Override
 	public void stop() {
-		tracker.trackEvent("Task", "Location", null, -1);
+		tracker.trackEvent("Task", "FoundLocation", null, -1);
 		locationProvider.kill();
 		handler.onCanceled();
 		dialog.dismiss();

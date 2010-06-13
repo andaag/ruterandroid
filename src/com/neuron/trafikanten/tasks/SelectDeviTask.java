@@ -43,6 +43,7 @@ public class SelectDeviTask implements GenericTask {
     {
         this.activity = activity;
         this.tracker = tracker;
+        tracker.trackPageView("/task/selectDevi");
         this.devi = devi;
         showDialog();
     }
@@ -58,7 +59,6 @@ public class SelectDeviTask implements GenericTask {
         for (DeviData deviData : devi) {
         	deviList.add(deviData.title);
         }
-        tracker.trackEvent("Task", "SelectDevi", null, deviList.size());
         
         /*
          * Setup select devi dialog

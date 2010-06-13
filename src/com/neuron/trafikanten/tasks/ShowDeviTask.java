@@ -32,14 +32,13 @@ import com.neuron.trafikanten.dataSets.DeviData;
 public class ShowDeviTask implements GenericTask {
 	public final static SimpleDateFormat dateFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private Activity activity;
-    private GoogleAnalyticsTracker tracker;
     private DeviData data;
     private Dialog dialog;
     
     public ShowDeviTask(Activity activity, GoogleAnalyticsTracker tracker, DeviData data) 
     {
         this.activity = activity;
-        this.tracker = tracker;
+        tracker.trackPageView("/task/showDevi");
         this.data = data;
         showDialog();
     }
@@ -69,7 +68,6 @@ public class ShowDeviTask implements GenericTask {
 		}
 		final CharSequence strippedTitle = stripCode(data.title); 
 		title.setText(strippedTitle);
-		tracker.trackEvent("Task", "ShowDevi", null, 0);
 		description.setText(stripCode(data.description));
 		
 		final CharSequence bodyText = stripCode(data.body);

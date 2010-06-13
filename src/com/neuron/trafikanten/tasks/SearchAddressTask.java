@@ -29,7 +29,6 @@ public class SearchAddressTask implements GenericTask {
 	private static final String TAG = "Trafikanten-SearchAddressTask";
 	
 	private Activity activity;
-	private GoogleAnalyticsTracker tracker;
 	private List<Address> addresses;
 	ReturnCoordinatesHandler handler;
 	private Dialog dialog; 
@@ -38,7 +37,7 @@ public class SearchAddressTask implements GenericTask {
 	public SearchAddressTask(Activity activity, GoogleAnalyticsTracker tracker, ReturnCoordinatesHandler handler) 
 	{
 		this.activity = activity;
-		this.tracker = tracker;
+		tracker.trackPageView("/task/searchAddress");
 		this.handler = handler;
 		showAddressField();
 	}
@@ -156,7 +155,6 @@ public class SearchAddressTask implements GenericTask {
 		final Geocoder geocoder = new Geocoder(activity);
 		try {
 			addresses = geocoder.getFromLocationName(searchAddress, 10, 57, 3, 71, 32);
-			tracker.trackEvent("Task", "SearchAddress", null, addresses.size());
 
 			switch(addresses.size()) {
 			case 0:

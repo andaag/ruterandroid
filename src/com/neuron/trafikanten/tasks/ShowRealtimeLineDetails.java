@@ -15,7 +15,6 @@ import com.neuron.trafikanten.dataSets.RealtimeDataNextDeparture;
 public class ShowRealtimeLineDetails implements GenericTask {
     //private static final String TAG = "Trafikanten-SelectDeviTask";
     private Activity activity;
-    private GoogleAnalyticsTracker tracker;
     private RealtimeData data;
     private Dialog dialog;
     private long currentTime;
@@ -23,7 +22,7 @@ public class ShowRealtimeLineDetails implements GenericTask {
     public ShowRealtimeLineDetails(Activity activity, GoogleAnalyticsTracker tracker, long currentTime, RealtimeData data) 
     {
         this.activity = activity;
-        this.tracker = tracker;
+        tracker.trackPageView("/task/showRealtimeLineDetails");
         this.data = data;
         this.currentTime = currentTime;
         showDialog();
@@ -64,7 +63,6 @@ public class ShowRealtimeLineDetails implements GenericTask {
 		for (RealtimeDataNextDeparture departure : data.nextDepartures) {
 			renderDeparture(body, departure.expectedDeparture, departure.realtime, departure.stopVisitNote);
 		}
-		tracker.trackEvent("Task", "ShowRealtimeLineDetails", null, data.nextDepartures.size());
 		
 		dialog.show();
     }
