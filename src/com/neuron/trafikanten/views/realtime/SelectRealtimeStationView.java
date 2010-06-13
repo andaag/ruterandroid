@@ -55,7 +55,6 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
 		setContentView(R.layout.selectstation_realtime);
 		isRealtimeSelector = true;
 		super.onCreate(savedInstanceState);
-		tracker.trackEvent("Search", "Realtime", null, 0);
 		
 		if (savedInstanceState == null && getIntent().hasExtra(Trafikanten.KEY_MYLOCATION)) {
 			/*

@@ -111,7 +111,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Other
 	 */
 	private EditText searchEdit;
-	public GoogleAnalyticsTracker tracker;
+	private GoogleAnalyticsTracker tracker;
 	
     /** Called when the activity is first created. */
     @Override
@@ -119,7 +119,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         super.onCreate(savedInstanceState);
 		tracker = GoogleAnalyticsTracker.getInstance();
 		tracker.start("UA-16690738-3", this);
-		tracker.trackPageView("/search");
+		//tracker.trackPageView("/search"); // this is pointless, as it's on the home screen.
 		
         /*
          * Setup view

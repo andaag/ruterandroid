@@ -48,7 +48,6 @@ public class SelectRouteStationView extends GenericSelectStationView {
         setContentView(R.layout.selectstation_route);
 		isRealtimeSelector = false;
         super.onCreate(savedInstanceState);
-        tracker.trackEvent("Search", "Route", null, 0);
 
 		if (savedInstanceState != null) {
 			/*

@@ -48,6 +48,7 @@ public class Trafikanten extends TabActivity {
 	private static Activity activity;
 	public final static String KEY_MYLOCATION = "myLocation";
 	private GoogleAnalyticsTracker tracker;
+	private boolean firstTabChange = true;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,19 +72,20 @@ public class Trafikanten extends TabActivity {
          * Setup tab host
          */
 	 	final TabHost tabHost = getTabHost();
-	 	
 	 	{
 	 		/*
 	 		 * Hack : Tweaks for devices with software keyboards, hide keyboard when switching tabs.
 	 		 */
-            tabHost.setOnTabChangedListener(new OnTabChangeListener()
-	        {
-	        public void onTabChanged(String tabId)
-	            {
-	            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-	            imm.hideSoftInputFromWindow(tabHost.getApplicationWindowToken(), 0);
-	            }
-	        });
+            tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+		        public void onTabChanged(String tabId) {
+		        	if (!firstTabChange) {
+		        		tracker.trackEvent("Navigation", "TabChange", tabId, 0);
+		        	}
+		        	firstTabChange = false;
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(tabHost.getApplicationWindowToken(), 0);
+				}
+		    });
 	 	}
 	 	
 	 	{
