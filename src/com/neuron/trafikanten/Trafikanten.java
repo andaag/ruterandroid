@@ -27,14 +27,12 @@ import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TabHost;
-import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
@@ -54,8 +52,13 @@ public class Trafikanten extends TabActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        /*
+         * Google analytics
+         */
 		tracker = GoogleAnalyticsTracker.getInstance();
 		tracker.start("UA-16690738-3", this);
+        tracker.trackPageView("/home");
+		
 		Trafikanten.activity = this;
 	 	setTitle("Trafikanten - " + getText(R.string.app_version));
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -64,21 +67,6 @@ public class Trafikanten extends TabActivity {
         	setVisible(false);
         }
         
-        
-        /*
-         * Google analytics
-         */
-        tracker.trackPageView("/home");
-        
-        /*
-         * Debug code
-         */
-		final SharedPreferences preferences = getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
-        int analyticsErrors = preferences.getInt(SplashScreen.KEY_ANALYTICSERRORS, 0);
-        if (analyticsErrors > 0) {
-        	Toast.makeText(this, "Google analytics had " + analyticsErrors + " entries pending\nPlease report!", Toast.LENGTH_LONG).show();
-        }
-        	
         /*
          * Setup tab host
          */

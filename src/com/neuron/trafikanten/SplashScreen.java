@@ -1,9 +1,7 @@
 package com.neuron.trafikanten;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.SQLException;
@@ -12,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.hacks.GoogleAnalyticsCleanup;
 
 
@@ -60,29 +59,18 @@ public class SplashScreen extends Activity {
             try {
                 myDbHelper.openDataBase();
                 int deleted = myDbHelper.deleteEvents();
-                if (deleted > 0) {
-                	final SharedPreferences preferences = getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
-                	int analyticsVersion = preferences.getInt(KEY_ANALYTICSERRORS_VER, 0);
-                	int packageVersion = 0;
-                	try {
-						packageVersion = getPackageManager().getPackageInfo("com.neuron.trafikanten", PackageManager.GET_META_DATA).versionCode;
-					} catch (NameNotFoundException e) {}
-					if (analyticsVersion < packageVersion) {
-						// Dont care about errors when we're upgrading version
-						final SharedPreferences.Editor editor = preferences.edit();
-						editor.putInt(KEY_ANALYTICSERRORS, 0);
-						editor.putInt(KEY_ANALYTICSERRORS_VER, packageVersion);
-						editor.commit();
-						return;						
-					}
-
-					final SharedPreferences.Editor editor = preferences.edit();
-					int analyticsErrors = preferences.getInt(KEY_ANALYTICSERRORS, 0);
-					editor.putInt(KEY_ANALYTICSERRORS, analyticsErrors + deleted);
-					editor.commit();
-                	Log.e("Trafikanten-SplashScreen","Deleted " + deleted + " invalid google analyics database entries");
-                }
                 myDbHelper.close();
+                if (deleted > 0) {
+                	Log.e("Trafikanten-SplashScreen","Deleted " + deleted + " invalid google analyics database entries");
+                	GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
+            		tracker.start("UA-16690738-3", this);
+					try {
+						int packageVersion = getPackageManager().getPackageInfo("com.neuron.trafikanten", PackageManager.GET_META_DATA).versionCode;
+	            		tracker.trackEvent("Error", "GoogleAnalytics", "Version:" + packageVersion, deleted);
+	            		tracker.dispatch();
+					} catch (NameNotFoundException e) {}
+                }
+
             }
             catch (SQLException sqle) {
                 //throw sqle;
