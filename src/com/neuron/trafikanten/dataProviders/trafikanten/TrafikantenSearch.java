@@ -62,11 +62,12 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 	private String query = null;
 	private boolean isRealtimeStopFiltered = false;
 	
-	public TrafikantenSearch(Context context, double latitude, double longitude, IGenericProviderHandler<StationData> handler) {
+	public TrafikantenSearch(Context context, double latitude, double longitude, boolean isRealtimeStopFiltered, IGenericProviderHandler<StationData> handler) {
 		super(handler);
 		this.context = context;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.isRealtimeStopFiltered = isRealtimeStopFiltered;
 		start();
 	}
 	
@@ -101,7 +102,10 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 				final LatLng latLong = new LatLng(latitude, longitude);
 				final UTMRef utmRef = latLong.toUTMRef();
 				                
-				final String urlString = "http://reis.trafikanten.no/topp2009/getcloseststops.aspx?x="+ (int)utmRef.getEasting() + "&y="+ (int) utmRef.getNorthing() + "&proposals=10";
+				String urlString = "http://reis.trafikanten.no/topp2009/getcloseststops.aspx?x="+ (int)utmRef.getEasting() + "&y="+ (int) utmRef.getNorthing() + "&proposals=10";
+				if (isRealtimeStopFiltered) {
+					urlString = urlString + "&onlyshowrealtimestops=true";
+				}
 				Log.i(TAG,"Searching with url " + urlString);
 				final HttpGet request = new HttpGet(urlString);
 				result = HelperFunctions.executeHttpRequest(context, request);

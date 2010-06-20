@@ -161,4 +161,9 @@ public class SelectRouteStationView extends GenericSelectStationView {
 	public int getInfoHelpText() {
 		return R.string.searchStationRouteNoStationsFound;
 	}
+	
+	@Override
+	public int getViewType() {
+		return TYPE_ROUTE;
+	}
 }

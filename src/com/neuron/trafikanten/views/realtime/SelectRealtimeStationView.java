@@ -77,4 +77,9 @@ public class SelectRealtimeStationView extends GenericSelectStationView {
 	public int getInfoHelpText() {
 		return R.string.searchStationRealtimeNoStationsFound;
 	}
+
+	@Override
+	public int getViewType() {
+		return TYPE_REALTIME;
+	}
 }

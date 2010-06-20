@@ -403,7 +403,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	                activeTask = null;
 	        		if (searchProvider != null)
 	        			searchProvider.kill();
-	        		searchProvider = new TrafikantenSearch(GenericSelectStationView.this, latitude, longitude, searchHandler);
+	        		final boolean filterRealtime = getViewType() == TYPE_REALTIME;
+	        		searchProvider = new TrafikantenSearch(GenericSelectStationView.this, latitude, longitude, filterRealtime, searchHandler);
 	        		tracker.trackEvent("Data", "StationSearch", "Location", 0);
 	        }
 	
@@ -478,6 +479,10 @@ public abstract class GenericSelectStationView extends ListActivity {
 	public abstract void stationSelected(StationData station);
 	public abstract int getInfoHelpText();
 	public abstract void setProgressBar(boolean value);
+	
+	public static final int TYPE_REALTIME = 1;
+	public static final int TYPE_ROUTE = 2;
+	public abstract int getViewType();
 	
 	public void updateHistory(StationData station) {
 		if (!station.isFavorite) {
