@@ -372,14 +372,17 @@ class OverviewRouteAdapter extends BaseAdapter {
 					final ImageView icon = (ImageView) layout.findViewById(R.id.icon);
 
 					icon.setImageResource(symbolImage);
-					if (routeData.line.length() > 1) {
+					if (routeData.line.length() > 0) {
 						line.setText(routeData.line);
 						line.setVisibility(View.VISIBLE);
 					} else {
 						line.setVisibility(View.GONE);
 					}
 					
-					holder.travelTypes.addView(layout);
+					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+					params.leftMargin = 1;
+					params.rightMargin = 1;
+					holder.travelTypes.addView(layout, params);
 				}
 			}
 		}
