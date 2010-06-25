@@ -353,21 +353,21 @@ class RouteHandler extends DefaultHandler {
 				    	final String transportationString = buffer.toString();
 				    	travelStage.transportType = R.drawable.icon_unknown;
 				    	if (transportationString.equals("Walking")) {
-				    		travelStage.transportType = R.drawable.icon32_walk;
+				    		travelStage.transportType = R.drawable.icon_line_walk;
 				    	} else if (transportationString.equals("Bus")) {
-				    		travelStage.transportType = R.drawable.icon32_line_bus;
+				    		travelStage.transportType = R.drawable.icon_line_bus;
 				    	} else if (transportationString.equals("Train")) {
-				    		travelStage.transportType = R.drawable.icon32_line_train;
+				    		travelStage.transportType = R.drawable.icon_line_train;
 				    	} else if (transportationString.equals("Tram")) {
-				    		travelStage.transportType = R.drawable.icon32_line_tram;
+				    		travelStage.transportType = R.drawable.icon_line_tram;
 				    	} else if (transportationString.equals("Metro")) {
-				    		travelStage.transportType = R.drawable.icon32_line_underground;
+				    		travelStage.transportType = R.drawable.icon_line_underground;
 				    	} else if (transportationString.equals("Boat")) {
-				    		travelStage.transportType = R.drawable.icon32_line_boat;
+				    		travelStage.transportType = R.drawable.icon_line_boat;
 				    	} else if (transportationString.equals("AirportTrain")) {
-				    		travelStage.transportType = R.drawable.icon32_line_train;
+				    		travelStage.transportType = R.drawable.icon_line_train;
 				    	} else if (transportationString.equals("AirportBus")) {
-				    		travelStage.transportType = R.drawable.icon32_line_bus;
+				    		travelStage.transportType = R.drawable.icon_line_bus;
 				    	}
 					} else if (inWaitingTime && localName.equals("WaitingTime")) {
 					    inWaitingTime = false;

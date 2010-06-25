@@ -32,7 +32,7 @@ public class NotificationIntent extends BroadcastReceiver {
     	final String with = notificationData.with;
     	
     	final String notificationString = with == null ? stopName : with + " " + context.getText(R.string.fromShort) + " " + stopName;
-    	Notification notification = new Notification(R.drawable.icon32_line_bus, notificationString, departureTime);
+    	Notification notification = new Notification(R.drawable.icon_line_bus, notificationString, departureTime);
     	//Notification.FLAG_INSISTENT
     	notification.flags |= Notification.FLAG_AUTO_CANCEL;
     	notification.defaults |= Notification.DEFAULT_ALL;

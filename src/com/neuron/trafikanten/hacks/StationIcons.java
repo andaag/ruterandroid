@@ -28,13 +28,13 @@ public class StationIcons {
 			 */
 			final Integer lineI = Integer.parseInt(line);
 			if (lineI >= 1 && lineI <= 9) {
-				return R.drawable.icon32_line_underground;				
+				return R.drawable.icon_line_underground;				
 			} else if (lineI >= 11 && lineI <= 19) {
-				return R.drawable.icon32_line_tram;
+				return R.drawable.icon_line_tram;
 			} else if (lineI == 300 || lineI == 400 || lineI == 440 || lineI == 450 || lineI == 460 || lineI == 500 || lineI == 550 || lineI == 560) {
-				return R.drawable.icon32_line_train;
+				return R.drawable.icon_line_train;
 			} else if ((lineI >= 91 && lineI <= 94) || lineI == 256 || lineI == 601 || lineI == 602 || lineI ==  716) {
-				return R.drawable.icon32_line_boat;
+				return R.drawable.icon_line_boat;
 			}
 		} catch (NumberFormatException e) {
 			// if we can't parse we default to bus
@@ -43,10 +43,10 @@ public class StationIcons {
 		 * Parse string lines
 		 */
 		if (line.equals("R01") || line.equals("R20") || line.equals("R21") || line.equals("R22") || line.equals("R25") || line.equals("R41") || line.equals("R50") || line.equals("R51") || line.equals("FT")) {
-			return R.drawable.icon32_line_train;
+			return R.drawable.icon_line_train;
 		}
 		
 		// Default to bus.
-		return R.drawable.icon32_line_bus;
+		return R.drawable.icon_line_bus;
 	}
 }
