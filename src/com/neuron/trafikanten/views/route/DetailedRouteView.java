@@ -297,23 +297,7 @@ public class DetailedRouteView extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         case MAP_ID:
-        	final ArrayList<RouteData> list = routeProposalList.get(proposalPosition).travelStageList;
-        	ArrayList<StationData> stationList = new ArrayList<StationData>();
-    		for(int i = 0; i < list.size(); i++) {
-    			final RouteData routeData = list.get(i);
-    			/*
-    			 * Add fromStation
-    			 */
-    			stationList.add(routeData.fromStation);
-    		}
-    		{
-    			/*
-    			 * Add last station destination
-    			 */
-    			final RouteData routeData = list.get(list.size() - 1);
-    			stationList.add(routeData.toStation);
-    		}
-        	GenericMap.Show(this, stationList, true, 0);
+        	GenericMap.Show(this, GenericMap.getStationList(routeProposalList.get(proposalPosition).travelStageList), true, 0);
         	break;
         }
 		return super.onOptionsItemSelected(item);

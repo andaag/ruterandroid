@@ -45,6 +45,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 
@@ -79,6 +80,26 @@ public class GenericMap extends MapActivity {
 		}
 		activity.startActivityForResult(intent, what);
 	}
+	
+	public static ArrayList<StationData> getStationList(ArrayList<RouteData> list) {
+    	ArrayList<StationData> stationList = new ArrayList<StationData>();
+		for(int i = 0; i < list.size(); i++) {
+			final RouteData routeData = list.get(i);
+			/*
+			 * Add fromStation
+			 */
+			stationList.add(routeData.fromStation);
+		}
+		{
+			/*
+			 * Add last station destination
+			 */
+			final RouteData routeData = list.get(list.size() - 1);
+			stationList.add(routeData.toStation);
+		}
+		return stationList;
+	}
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
