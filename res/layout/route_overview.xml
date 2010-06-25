@@ -6,6 +6,45 @@
     android:layout_height="fill_parent"
     >
     
+    <!-- Header: -->
+	  <TextView android:id="@+id/departureHeader"
+	  android:layout_height="wrap_content" 
+	  android:layout_width="wrap_content"
+	  android:textSize="20dip"
+	  android:layout_margin="7dip"
+	  android:text="Travel alternatives"/>
+    
+	  <TextView android:id="@+id/departureTime"
+	  android:layout_height="wrap_content" 
+	  android:layout_width="wrap_content"
+	  android:textSize="15dip"
+	  android:layout_margin="7dip"
+	  android:layout_below="@+id/departureHeader"
+	  android:text="Departure"/>
+	  
+	  <TextView android:id="@+id/arrivalTime"
+	  android:layout_height="wrap_content" 
+	  android:layout_width="wrap_content"
+	  android:textSize="15dip"
+	  android:layout_marginTop="7dip"
+	  android:layout_marginLeft="12dip"
+	  android:layout_toRightOf="@+id/departureTime"
+	  android:layout_below="@+id/departureHeader"
+	  android:text="Arrival"/>
+	  
+	  <TextView android:id="@+id/travelTypes"
+	  android:layout_height="wrap_content" 
+	  android:layout_width="wrap_content"
+	  android:textSize="15dip"
+	  android:layout_marginTop="7dip"
+	  android:layout_marginLeft="20dip"
+	  android:layout_toRightOf="@+id/arrivalTime"
+	  android:layout_below="@+id/departureHeader"
+	  android:text="Transporttypes"/>
+	  
+
+    
+    <!-- Content: -->
     <TextView
     	android:id="@+id/emptyText"
    		android:layout_marginTop="50dip"
@@ -20,6 +59,7 @@
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+	  	android:layout_below="@+id/departureTime"
         />
     
 </RelativeLayout>

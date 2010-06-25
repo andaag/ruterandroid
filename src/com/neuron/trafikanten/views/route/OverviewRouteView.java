@@ -283,50 +283,6 @@ public class OverviewRouteView extends ListActivity {
 	}
 }
 
-/*
- * this renders fancy looking text for our text overview
- */
-class RenderOverviewText {
-	/*
-	 * Contains text to add + the style
-	 */
-	private class SpannableSet {
-		public Object style;
-		public int start;
-		public int end;
-		public int flags;
-		public SpannableSet(int start, int end, Object style, int flags) {
-			this.style = style;
-			this.start = start;
-			this.end = end;
-			this.flags = flags;
-		}
-	}
-	private ArrayList<SpannableSet> spannableSet = new ArrayList<SpannableSet>();
-	private StringBuffer textBuffer = new StringBuffer();
-	
-	public int length() {
-		return textBuffer.length();
-	}
-	
-	public void addString(String text, Object style, int flags) {
-		if (style != null) {
-			final int start = textBuffer.length();
-			final int end = start + text.length();
-			spannableSet.add(new SpannableSet(start, end, style, flags));
-		}
-		textBuffer.append(text);
-	}
-	
-	public SpannableString toSpannableString() {
-		SpannableString s = new SpannableString(textBuffer.toString());
-		for (SpannableSet spanSet : spannableSet) {
-			s.setSpan(spanSet.style, spanSet.start, spanSet.end, spanSet.flags); 
-		}
-		return s;
-	}
-}
-
 class OverviewRouteAdapter extends BaseAdapter {
 	public static final String KEY_ROUTELIST = "routelist";
 	private LayoutInflater inflater;
@@ -373,9 +329,10 @@ class OverviewRouteAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.route_overview_list, null);
 			
 			holder = new ViewHolder();
-			holder.proposalIcons = (LinearLayout) convertView.findViewById(R.id.proposalIcons);
-			holder.routeInfo = (TextView) convertView.findViewById(R.id.routeInfo);
-			holder.footer = (TextView) convertView.findViewById(R.id.footer);
+			holder.travelTypes = (LinearLayout) convertView.findViewById(R.id.travelTypes);
+			holder.departureTime = (TextView) convertView.findViewById(R.id.departureTime);
+			holder.arrivalTime = (TextView) convertView.findViewById(R.id.arrivalTime);
+			holder.travelTime = (TextView) convertView.findViewById(R.id.travelTime);
 
 			convertView.setTag(holder);
 		} else {
@@ -392,8 +349,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 		long departure = 0;
 		long arrival = 0;
 		
-		holder.proposalIcons.removeAllViews();
-		RenderOverviewText routeInfoText = new RenderOverviewText();
+		holder.travelTypes.removeAllViews();
 		for(RouteData routeData : routeProposal.travelStageList) {
 			/*
 			 * Grab the first departure and last arrival to calculate total time
@@ -404,76 +360,33 @@ class OverviewRouteAdapter extends BaseAdapter {
 			arrival = routeData.arrival;
 			
 			/*
-			 * Add Icon to proposalIcons
+			 * Add Icon to travelTypes
 			 */
 			{
 				final int symbolImage = routeData.transportType;
 				if (symbolImage > 0) {
 					final ImageView imageView = new ImageView(context);
 					imageView.setImageResource(symbolImage);
-					holder.proposalIcons.addView(imageView);
-				}
-			}
-
-			
-			/*
-			 * Add text line
-			 */
-			{
-				long minDiff = (routeData.arrival - routeData.departure) / HelperFunctions.MINUTE;
-				//Hack:
-				if (minDiff > HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE)
-					minDiff = minDiff - (HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE);
-				
-				final String line = routeData.transportType == R.drawable.icon_walk ? context.getText(R.string.walk).toString() : routeData.line;
-				if (routeInfoText.length() == 0) {
-					/*routeInfoText.addString(line + " (", null, 0);
-					routeInfoText.addString(minDiff + "m", new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
-					routeInfoText.addString(")", null, 0);*/
-					routeInfoText.addString(line + " (" + minDiff + " min)", null, 0);
-				} else {
-					/*routeInfoText.addString(", " + line + " (", null, 0);
-					routeInfoText.addString(minDiff + "m", new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
-					routeInfoText.addString(")", null, 0);*/
-					routeInfoText.addString(", " + line + " (" + minDiff + " min)", null, 0);
+					holder.travelTypes.addView(imageView);
 				}
 			}
 		}
-		holder.routeInfo.setText(routeInfoText.toSpannableString());
-		holder.routeInfo.setSingleLine();
 		
 		{
 			/*
-			 * Footer text
+			 * Setup the basic data
 			 */
+			holder.departureTime.setText(HelperFunctions.hourFormater.format(departure));
+			holder.arrivalTime.setText(HelperFunctions.hourFormater.format(arrival));
+			
 			long minDiff = (arrival - departure) / HelperFunctions.MINUTE;
 			//Hack:
 			if (minDiff > HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE)
 				minDiff = minDiff - (HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE);
-			
-			RenderOverviewText footerText = new RenderOverviewText();
-			footerText.addString("Departure ", null, 0);
-			footerText.addString(HelperFunctions.hourFormater.format(departure),new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
-			footerText.addString(" arrival ", null, 0);
-			footerText.addString(HelperFunctions.hourFormater.format(arrival),new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
-			footerText.addString(" total ", null, 0);
-			footerText.addString(new Long(minDiff).toString() + " min",new ForegroundColorSpan(Color.YELLOW), Spanned.SPAN_COMPOSING);
-			holder.footer.setText(footerText.toSpannableString());
-			holder.footer.setSingleLine();
+
+			holder.travelTime.setText("Traveltime : " + HelperFunctions.hourFormater.format(minDiff));
+		
 		}
-		
-		
-		
-		/*
-		 * Setup waittime
-		 */
-		/*if (routeData.waitTime > 0) {
-			holder.waittime.setText("" + context.getText(R.string.waitTime) + " " +
-					HelperFunctions.renderAccurate(routeData.waitTime * (HelperFunctions.MINUTE)));
-			holder.waittime.setVisibility(View.VISIBLE);
-		} else {
-			holder.waittime.setVisibility(View.GONE);
-		}*/
 		
 		return convertView;
 	}
@@ -482,8 +395,10 @@ class OverviewRouteAdapter extends BaseAdapter {
 	 * Class for caching the view.
 	 */
 	static class ViewHolder {
-		LinearLayout proposalIcons;
-		TextView routeInfo;
-		TextView footer;
+		LinearLayout travelTypes;
+		TextView travelTime;
+		TextView departureTime;
+		TextView arrivalTime;
 	}
 }
+
