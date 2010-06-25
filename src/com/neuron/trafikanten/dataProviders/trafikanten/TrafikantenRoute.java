@@ -168,6 +168,8 @@ class RouteHandler extends DefaultHandler {
 	// Stop data:
 	private boolean inID = false;
 	private boolean inName = false;
+	private boolean inX = false;
+	private boolean inY = false;
 	
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
@@ -224,6 +226,10 @@ class RouteHandler extends DefaultHandler {
 		    			inID = true;
 		    		} else if (localName.equals("Name")) {
 		    			inName = true;
+		    		} else if (localName.equals("X")) {
+		    			inX = true;
+		    		} else if (localName.equals("Y")) {
+		    			inY = true;
 		    		}
 		    	} else if (localName.equals("DepartureStop")) {
 			        inDepartureStop = true;
@@ -296,6 +302,20 @@ class RouteHandler extends DefaultHandler {
 				    		travelStage.fromStation.stopName = buffer.toString();
 				    	} else {
 				    		travelStage.toStation.stopName = buffer.toString();
+				    	}
+		    		} else if (inX && localName.equals("X")) {
+		    			inX = false;
+				    	if (inDepartureStop) {
+				    		travelStage.fromStation.utmCoords[0] = Integer.parseInt(buffer.toString());
+				    	} else {
+				    		travelStage.toStation.utmCoords[0] = Integer.parseInt(buffer.toString());
+				    	}
+		    		} else if (inY && localName.equals("Y")) {
+		    			inY = false;
+				    	if (inDepartureStop) {
+				    		travelStage.fromStation.utmCoords[1] = Integer.parseInt(buffer.toString());
+				    	} else {
+				    		travelStage.toStation.utmCoords[1] = Integer.parseInt(buffer.toString());
 				    	}
 					} else if (inDepartureStop && localName.equals("DepartureStop")) {
 					    inDepartureStop = false;
@@ -371,7 +391,7 @@ class RouteHandler extends DefaultHandler {
 
 	@Override
 	public void characters(char ch[], int start, int length) {
-		if (inDepartureTime || inArrivalTime || inID || inName || inDepartureTime || inArrivalTime ||
+		if (inDepartureTime || inArrivalTime || inID || inName || inX || inY || inDepartureTime || inArrivalTime ||
 				inLineName || inDestination || inTransportation || inWaitingTime) {
 			buffer.append(ch,start,length);
 		}
