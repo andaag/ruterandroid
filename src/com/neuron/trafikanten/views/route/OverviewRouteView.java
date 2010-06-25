@@ -23,13 +23,8 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -287,9 +282,9 @@ class OverviewRouteAdapter extends BaseAdapter {
 	public static final String KEY_ROUTELIST = "routelist";
 	private LayoutInflater inflater;
 	private ArrayList<RouteProposal> items = new ArrayList<RouteProposal>();
-	private Context context;
+	final private Activity context;
 	
-	public OverviewRouteAdapter(Context context) {
+	public OverviewRouteAdapter(Activity context) {
 		inflater = LayoutInflater.from(context);
 		this.context = context;
 	}
@@ -365,9 +360,19 @@ class OverviewRouteAdapter extends BaseAdapter {
 			{
 				final int symbolImage = routeData.transportType;
 				if (symbolImage > 0) {
-					final ImageView imageView = new ImageView(context);
-					imageView.setImageResource(symbolImage);
-					holder.travelTypes.addView(imageView);
+					final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.route_overview_traveltype, null);
+					final TextView line = (TextView) layout.findViewById(R.id.line);
+					final ImageView icon = (ImageView) layout.findViewById(R.id.icon);
+
+					icon.setImageResource(symbolImage);
+					if (routeData.line.length() > 1) {
+						line.setText(routeData.line);
+						line.setVisibility(View.VISIBLE);
+					} else {
+						line.setVisibility(View.GONE);
+					}
+					
+					holder.travelTypes.addView(layout);
 				}
 			}
 		}
@@ -378,13 +383,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 */
 			holder.departureTime.setText(HelperFunctions.hourFormater.format(departure));
 			holder.arrivalTime.setText(HelperFunctions.hourFormater.format(arrival));
-			
-			long minDiff = (arrival - departure) / HelperFunctions.MINUTE;
-			//Hack:
-			if (minDiff > HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE)
-				minDiff = minDiff - (HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE);
-
-			holder.travelTime.setText("Traveltime : " + HelperFunctions.hourFormater.format(minDiff));
+			holder.travelTime.setText("Traveltime : " + HelperFunctions.hourFormater.format(arrival - departure));
 		
 		}
 		

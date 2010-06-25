@@ -10,7 +10,8 @@
 	  android:layout_width="wrap_content"
 	  android:textSize="15dip"
 	  android:textStyle="bold"
-	  android:layout_margin="7dip"
+	  android:layout_marginTop="5dip"
+	  android:layout_marginLeft="7dip"
 	  android:text="14:17"/>
 	  
 	  <TextView android:id="@+id/arrivalTime"
@@ -18,9 +19,8 @@
 	  android:layout_width="wrap_content"
 	  android:textSize="15dip"
 	  android:textStyle="bold"
-	  android:layout_marginTop="7dip"
-	  android:layout_marginLeft="20dip"
-	  android:layout_toRightOf="@+id/departureTime"
+	  android:layout_marginTop="5dip"
+	  android:layout_marginLeft="88dip"
 	  android:text="15:17"/>
 	  
 	  <TextView android:id="@+id/travelTime"
@@ -28,14 +28,16 @@
 	  android:layout_width="wrap_content"
 	  android:layout_below="@+id/departureTime"
 	  android:layout_marginLeft="7dip"
+	  android:layout_marginBottom="5dip"
 	  android:textSize="15dip"
 	  android:text="Reisetid : 1h 17m"/>
 
 	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	  android:id="@+id/travelTypes"
       android:orientation="horizontal"
-      android:layout_centerHorizontal="true"
-      android:layout_toRightOf="@+id/departureTime"
+      android:layout_marginTop="3dip"
+      android:layout_marginBottom="5dip"
+	  android:layout_marginLeft="150dip"
       android:layout_height="wrap_content" 
 	  android:layout_width="fill_parent"/>
 </RelativeLayout>

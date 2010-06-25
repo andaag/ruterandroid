@@ -7,40 +7,52 @@
     >
     
     <!-- Header: -->
+	  <ImageView
+	  android:id="@+id/departureHeaderIcon"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:layout_marginTop="3dip"
+	  android:layout_marginLeft="3dip"
+	  android:src="@drawable/icon_small"
+	  />
+    
 	  <TextView android:id="@+id/departureHeader"
 	  android:layout_height="wrap_content" 
 	  android:layout_width="wrap_content"
 	  android:textSize="20dip"
-	  android:layout_margin="7dip"
-	  android:text="Travel alternatives"/>
+	  android:layout_marginTop="11dip"
+	  android:layout_marginLeft="2dip"
+	  android:layout_toRightOf="@+id/departureHeaderIcon"
+	  android:text="Travel alternatives:"/>
+	  
+	  <!-- Info -->
     
 	  <TextView android:id="@+id/departureTime"
 	  android:layout_height="wrap_content" 
 	  android:layout_width="wrap_content"
 	  android:textSize="15dip"
-	  android:layout_margin="7dip"
-	  android:layout_below="@+id/departureHeader"
-	  android:text="Departure"/>
+	  android:layout_marginTop="2dip"
+	  android:layout_marginLeft="7dip"
+	  android:layout_below="@+id/departureHeaderIcon"
+	  android:text="Departure:"/>
 	  
 	  <TextView android:id="@+id/arrivalTime"
 	  android:layout_height="wrap_content" 
 	  android:layout_width="wrap_content"
 	  android:textSize="15dip"
-	  android:layout_marginTop="7dip"
-	  android:layout_marginLeft="12dip"
-	  android:layout_toRightOf="@+id/departureTime"
-	  android:layout_below="@+id/departureHeader"
-	  android:text="Arrival"/>
+	  android:layout_marginTop="2dip"
+	  android:layout_marginLeft="88dip"
+	  android:layout_below="@+id/departureHeaderIcon"
+	  android:text="Arrival:"/>
 	  
 	  <TextView android:id="@+id/travelTypes"
 	  android:layout_height="wrap_content" 
 	  android:layout_width="wrap_content"
 	  android:textSize="15dip"
-	  android:layout_marginTop="7dip"
-	  android:layout_marginLeft="20dip"
-	  android:layout_toRightOf="@+id/arrivalTime"
-	  android:layout_below="@+id/departureHeader"
-	  android:text="Transporttypes"/>
+	  android:layout_marginTop="2dip"
+	  android:layout_marginLeft="150dip"
+	  android:layout_below="@+id/departureHeaderIcon"
+	  android:text="Transporttypes:"/>
 	  
 
     
