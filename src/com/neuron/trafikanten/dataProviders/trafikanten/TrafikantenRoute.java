@@ -353,7 +353,7 @@ class RouteHandler extends DefaultHandler {
 				    	final String transportationString = buffer.toString();
 				    	travelStage.transportType = R.drawable.icon_unknown;
 				    	if (transportationString.equals("Walking")) {
-				    		travelStage.transportType = R.drawable.icon_walk;
+				    		travelStage.transportType = R.drawable.icon32_walk;
 				    	} else if (transportationString.equals("Bus")) {
 				    		travelStage.transportType = R.drawable.icon32_line_bus;
 				    	} else if (transportationString.equals("Train")) {

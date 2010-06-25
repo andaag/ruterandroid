@@ -350,7 +350,7 @@ public class DetailedRouteView extends ListActivity {
 			
 			for (RouteData data : list) {
 				waitTime = waitTime + data.waitTime;
-				if (data.transportType == R.drawable.icon_walk) {
+				if (data.transportType == R.drawable.icon32_walk) {
 					walkTime = walkTime + (int)((data.arrival - data.departure) / HelperFunctions.MINUTE);					
 				}
 			}
@@ -522,7 +522,7 @@ class RouteAdapter extends BaseAdapter {
 		 */
 		final RouteData routeData = items.get(pos);
 		
-		if (routeData.transportType == R.drawable.icon_walk) {
+		if (routeData.transportType == R.drawable.icon32_walk) {
 			holder.transportDestination.setText(R.string.walk);
 		} else {
 			holder.transportDestination.setText(routeData.destination);
