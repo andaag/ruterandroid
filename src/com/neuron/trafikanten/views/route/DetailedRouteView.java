@@ -26,14 +26,18 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -129,7 +133,35 @@ public class DetailedRouteView extends ListActivity {
 				load();
 			}
 		});
+		
+		/*
+		 * Setup the next/previous buttons (NEW CODE)
+		 */
+        mNextImageView = (ImageView) findViewById(R.id.next_entry);
+        mPrevImageView = (ImageView) findViewById(R.id.prev_entry);
+        OnClickListener switchEntryOnClickListener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				switch (v.getId()) {
+				case R.id.next_entry:
+					proposalPosition++;
+					break;
+				case R.id.prev_entry:
+					proposalPosition--;
+					break;
+				}
+				if (proposalPosition < 0)
+					proposalPosition = 0;
+				if (proposalPosition > routeProposalList.size() - 1)
+					proposalPosition = routeProposalList.size() - 1;
+				load();
+				
+			}
+        };
+        mNextImageView.setOnClickListener(switchEntryOnClickListener);
+        mPrevImageView.setOnClickListener(switchEntryOnClickListener);
 
+		
 		/*
 		 * Load instance state
 		 */
@@ -139,6 +171,102 @@ public class DetailedRouteView extends ListActivity {
 		load();
 		registerForContextMenu(getListView());
 	}
+	
+	/*
+	 * NEXT/PREVIOUS CODE STOLEN FROM ANDROID GALLERY APP STARTS HERE.
+	 */
+    private ImageView mNextImageView;
+    private ImageView mPrevImageView;
+    private boolean mPaused = false;
+    private Handler mHandler = new Handler();
+    private final Animation mHideNextImageViewAnimation = new AlphaAnimation(1F, 0F);
+    private final Animation mHidePrevImageViewAnimation = new AlphaAnimation(1F, 0F);
+    private final Animation mShowNextImageViewAnimation = new AlphaAnimation(0F, 1F);
+    private final Animation mShowPrevImageViewAnimation = new AlphaAnimation(0F, 1F);
+    
+    @Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+    	showOnScreenControls();
+    	scheduleDismissOnScreenControls();
+		return super.dispatchTouchEvent(ev);
+	}
+
+	private void scheduleDismissOnScreenControls() {
+        mHandler.removeCallbacks(mDismissOnScreenControlRunner);
+        mHandler.postDelayed(mDismissOnScreenControlRunner, 2000);
+    }
+    
+    private final Runnable mDismissOnScreenControlRunner = new Runnable() {
+        public void run() {
+            hideOnScreenControls();
+        }
+    };
+    
+    private void hideOnScreenControls() {
+        if (mNextImageView.getVisibility() == View.VISIBLE) {
+            Animation a = mHideNextImageViewAnimation;
+            a.setDuration(500);
+            mNextImageView.startAnimation(a);
+            mNextImageView.setVisibility(View.INVISIBLE);
+        }
+
+        if (mPrevImageView.getVisibility() == View.VISIBLE) {
+            Animation a = mHidePrevImageViewAnimation;
+            a.setDuration(500);
+            mPrevImageView.startAnimation(a);
+            mPrevImageView.setVisibility(View.INVISIBLE);
+        }
+    }
+    
+    private void showOnScreenControls() {
+        if (mPaused) return;
+        boolean showPrev = proposalPosition > 0;
+        boolean showNext = proposalPosition < routeProposalList.size() - 1;
+
+        boolean prevIsVisible = mPrevImageView.getVisibility() == View.VISIBLE;
+        boolean nextIsVisible = mNextImageView.getVisibility() == View.VISIBLE;
+
+        if (showPrev && !prevIsVisible) {
+            Animation a = mShowPrevImageViewAnimation;
+            a.setDuration(500);
+            mPrevImageView.startAnimation(a);
+            mPrevImageView.setVisibility(View.VISIBLE);
+        } else if (!showPrev && prevIsVisible) {
+            Animation a = mHidePrevImageViewAnimation;
+            a.setDuration(500);
+            mPrevImageView.startAnimation(a);
+            mPrevImageView.setVisibility(View.GONE);
+        }
+
+        if (showNext && !nextIsVisible) {
+            Animation a = mShowNextImageViewAnimation;
+            a.setDuration(500);
+            mNextImageView.startAnimation(a);
+            mNextImageView.setVisibility(View.VISIBLE);
+        } else if (!showNext && nextIsVisible) {
+            Animation a = mHideNextImageViewAnimation;
+            a.setDuration(500);
+            mNextImageView.startAnimation(a);
+            mNextImageView.setVisibility(View.GONE);
+        }
+
+    }
+    
+	@Override
+	protected void onStart() {
+		mPaused = false;
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		mPaused = true;
+		super.onStop();
+	}
+	/*
+	 * NEXT/PREVIOUS CODE STOLEN FROM ANDROID GALLERY APP END HERE.
+	 */
+
 	
 	/*
 	 * Refresh button.isEnabled
@@ -156,6 +284,7 @@ public class DetailedRouteView extends ListActivity {
 		routeList.setList(list);
 		setListAdapter(routeList);
 		refreshButtons();
+        showOnScreenControls();
 	}
 	
 	/*

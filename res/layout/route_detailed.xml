@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -40,5 +41,27 @@
         android:layout_height="fill_parent"
         android:layout_above="@+id/panel"
         />
+        
+    <ImageView android:id="@+id/prev_entry"
+            android:clickable="true"
+            android:focusable="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible"
+            android:src="@drawable/btn_camera_arrow_left"
+    />
+
+    <ImageView android:id="@+id/next_entry"
+            android:clickable="true"
+            android:focusable="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible"
+            android:src="@drawable/btn_camera_arrow_right"
+    />
     
 </RelativeLayout>
