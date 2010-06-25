@@ -33,7 +33,7 @@ import com.google.android.maps.ItemizedOverlay;
 
 // TODO : Rename to StationOverlay
 public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
-	private ArrayList<StationOverlayItem> items = new ArrayList<StationOverlayItem>();
+	public ArrayList<StationOverlayItem> items = new ArrayList<StationOverlayItem>();
 	private boolean warnAboutMissingCoordinates = true;
 
 	public GenericStationOverlay(Drawable defaultMarker) {

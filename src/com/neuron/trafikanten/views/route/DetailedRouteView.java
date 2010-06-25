@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,7 +51,10 @@ import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.notification.NotificationDialog;
+import com.neuron.trafikanten.tasks.ShowHelpTask;
+import com.neuron.trafikanten.views.map.GenericMap;
 
 public class DetailedRouteView extends ListActivity {
 	//private final static String TAG = "Trafikanten-DetailedRouteView";
@@ -62,6 +66,11 @@ public class DetailedRouteView extends ListActivity {
 	 * Context menu:
 	 */
 	private static final int NOTIFY_ID = Menu.FIRST;
+	
+	/*
+	 * Option menu
+	 */
+	private final static int MAP_ID = Menu.FIRST + 1;
 	
 	/*
 	 * Dialogs
@@ -267,6 +276,48 @@ public class DetailedRouteView extends ListActivity {
 	 * NEXT/PREVIOUS CODE STOLEN FROM ANDROID GALLERY APP END HERE.
 	 */
 
+	
+	/*
+	 * Options menu, visible on menu button.
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		final MenuItem map = menu.add(0, MAP_ID, 0, R.string.map);
+		map.setIcon(android.R.drawable.ic_menu_mapmode);
+		
+		return true;
+	}
+	
+	/*
+	 * Options menu item selected, options menu visible on menu button.
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case MAP_ID:
+        	final ArrayList<RouteData> list = routeProposalList.get(proposalPosition).travelStageList;
+        	ArrayList<StationData> stationList = new ArrayList<StationData>();
+    		for(int i = 0; i < list.size(); i++) {
+    			final RouteData routeData = list.get(i);
+    			/*
+    			 * Add fromStation
+    			 */
+    			stationList.add(routeData.fromStation);
+    		}
+    		{
+    			/*
+    			 * Add last station destination
+    			 */
+    			final RouteData routeData = list.get(list.size() - 1);
+    			stationList.add(routeData.toStation);
+    		}
+        	GenericMap.Show(this, stationList, true, 0);
+        	break;
+        }
+		return super.onOptionsItemSelected(item);
+	}
 	
 	/*
 	 * Refresh button.isEnabled

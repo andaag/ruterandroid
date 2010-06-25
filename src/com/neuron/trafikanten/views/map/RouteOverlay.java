@@ -34,19 +34,16 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Projection;
 
-
-/*
- * CURRENTLY NOT IN USE, Trafikanten.no does not give out coordinates on routes.
- */
-
 /*
  * Even the route is using StationData, it's a direct list, route goes from .get(0) to .get(.size())
  */
 public class RouteOverlay extends ItemizedOverlay<StationOverlayItem> {
-	private ArrayList<StationOverlayItem> items = new ArrayList<StationOverlayItem>();
+	private ArrayList<StationOverlayItem> items;
 
-	public RouteOverlay(Drawable defaultMarker) {
+	public RouteOverlay(Drawable defaultMarker, ArrayList<StationOverlayItem> items) {
 		super(boundCenterBottom(defaultMarker));
+		this.items = items;
+		populate();
 	}
 
 	/*
@@ -65,33 +62,6 @@ public class RouteOverlay extends ItemizedOverlay<StationOverlayItem> {
 		//GenericMap.onStationTap(items.get(index).station);
 		// TODO : Implement onTap system for route data, currently it'll fail as stationList.size == 0.
 		return false;
-	}
-	
-	private void addStation(StationData station) {
-		final double[] location = station.getLongLat();
-		final GeoPoint point = new GeoPoint((int)(location[0] * 1E6), (int)(location[1] * 1E6));
-		final StationOverlayItem item = new StationOverlayItem(point, station);
-		items.add(item);
-	}
-	
-	public void add(ArrayList<RouteData> routeDataList) {
-		final int size = routeDataList.size();
-		
-		for(int i = 0; i < size; i++) {
-			final RouteData routeData = routeDataList.get(i);
-			/*
-			 * Add fromStation
-			 */
-			addStation(routeData.fromStation);
-		}
-		{
-			/*
-			 * Add last station destination
-			 */
-			final RouteData routeData = routeDataList.get(size - 1);
-			addStation(routeData.toStation);
-		}
-		populate();
 	}
 	
 	private void drawRoute(Canvas canvas, Projection projection, StationData fromStation, StationData toStation) {

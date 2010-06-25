@@ -356,7 +356,7 @@ public abstract class GenericSelectStationView extends ListActivity {
         	findMyLocationTask();
         	break;
         case MAP_ID:
-        	GenericMap.Show(this, stationListAdapter.getList(), 0);
+        	GenericMap.Show(this, stationListAdapter.getList(), false, 0);
         	break;
         case ADDRESS_ID:
         	searchAddressTask();

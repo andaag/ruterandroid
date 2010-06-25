@@ -49,6 +49,7 @@ import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 
 public class GenericMap extends MapActivity {
+	private static final String KEY_ROUTEDATA = "routedata";
 	private static final int DIALOG_LIST = Menu.FIRST;
 	private MyLocationOverlay locationOverlay;
 	private static GenericStationOverlay stationOverlay;
@@ -69,15 +70,13 @@ public class GenericMap extends MapActivity {
 	 * Variables cached locally for performance
 	 */
 	private MapView mapView;
-		
-	public static void Show(Activity activity, int what) {
-		Intent intent = new Intent(activity, GenericMap.class);
-		activity.startActivityForResult(intent, what);
-	}
 	
-	public static void Show(Activity activity, ArrayList<StationData> stationList, int what) {
+	public static void Show(Activity activity, ArrayList<StationData> stationList, boolean isRoute, int what) {
 		Intent intent = new Intent(activity, GenericMap.class);
 		intent.putExtra(StationData.PARCELABLE, stationList);
+		if (isRoute) {
+			intent.putExtra(KEY_ROUTEDATA, true);
+		}
 		activity.startActivityForResult(intent, what);
 	}
 	
@@ -131,6 +130,7 @@ public class GenericMap extends MapActivity {
 		 */
 		//final Drawable drawable = getResources().getDrawable(R.drawable.icon_unknown);
 		final Drawable drawable = getResources().getDrawable(R.drawable.icon_mapmarker);
+        final List<Overlay> overlays = mapView.getOverlays();
 		stationOverlay = new GenericStationOverlay(drawable);
 		
 		/*
@@ -146,7 +146,12 @@ public class GenericMap extends MapActivity {
 				final FavoriteDbAdapter favoriteDbAdapter = new FavoriteDbAdapter(this);
 				favoriteDbAdapter.refreshFavorites(stationList);
 				favoriteDbAdapter.close();
+				
 				stationOverlay.add(this, stationList);
+				if (bundle.containsKey(KEY_ROUTEDATA)) {
+					RouteOverlay routeOverlay = new RouteOverlay(drawable, stationOverlay.items);
+					overlays.add(routeOverlay);
+				}
 			}
 		} else {
 			// TODO : saveInstanceState in mapview.
@@ -170,9 +175,8 @@ public class GenericMap extends MapActivity {
         /*
          * Add all overlays to the overlay list
          */
-        List<Overlay> overlays = mapView.getOverlays();
-        overlays.add(stationOverlay);
         overlays.add(locationOverlay);
+		overlays.add(stationOverlay);
         //mapView.invalidate();
 		
 	}
