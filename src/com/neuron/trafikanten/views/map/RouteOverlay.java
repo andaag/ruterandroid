@@ -20,9 +20,6 @@ package com.neuron.trafikanten.views.map;
 
 import java.util.ArrayList;
 
-import com.neuron.trafikanten.dataSets.RouteData;
-import com.neuron.trafikanten.dataSets.StationData;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -33,6 +30,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Projection;
+import com.neuron.trafikanten.dataSets.StationData;
 
 /*
  * Even the route is using StationData, it's a direct list, route goes from .get(0) to .get(.size())

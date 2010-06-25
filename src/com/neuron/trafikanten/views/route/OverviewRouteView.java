@@ -50,6 +50,7 @@ import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.notification.NotificationDialog;
+import com.neuron.trafikanten.views.map.GenericMap;
 
 /*
  * This class shows a route selector list, when multiple travelproposals are sent.
@@ -63,6 +64,7 @@ public class OverviewRouteView extends ListActivity {
 	 * Context menu:
 	 */
 	private static final int NOTIFY_ID = Menu.FIRST;
+	private static final int MAP_ID = Menu.FIRST + 1;
 	
 	/*
 	 * Dialogs
@@ -232,6 +234,8 @@ public class OverviewRouteView extends ListActivity {
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
+		
+		menu.add(0, MAP_ID, 0, R.string.map);
 	}
     
 	/*
@@ -246,6 +250,9 @@ public class OverviewRouteView extends ListActivity {
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
 			showDialog(DIALOG_NOTIFICATION);
+			return true;
+		case MAP_ID:
+			GenericMap.Show(this, GenericMap.getStationList(routeList.getList().get(selectedId).travelStageList), true, 0);
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -282,11 +289,11 @@ class OverviewRouteAdapter extends BaseAdapter {
 	public static final String KEY_ROUTELIST = "routelist";
 	private LayoutInflater inflater;
 	private ArrayList<RouteProposal> items = new ArrayList<RouteProposal>();
-	final private Activity context;
+	//final private Activity context;
 	
 	public OverviewRouteAdapter(Activity context) {
 		inflater = LayoutInflater.from(context);
-		this.context = context;
+		//this.context = context;
 	}
 	
 	/*
