@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,10 +36,12 @@ public class ShowDeviTask implements GenericTask {
     private Activity activity;
     private DeviData data;
     private Dialog dialog;
+    private GoogleAnalyticsTracker tracker;
     
     public ShowDeviTask(Activity activity, GoogleAnalyticsTracker tracker, DeviData data) 
     {
         this.activity = activity;
+        this.tracker = tracker;
         tracker.trackPageView("/task/showDevi");
         this.data = data;
         showDialog();
@@ -78,6 +82,13 @@ public class ShowDeviTask implements GenericTask {
 			body.setText(stripCode(data.body));
 		}
 		
+		
+        dialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				tracker.stop();				
+			}	
+        });
 		dialog.show();
     }
     

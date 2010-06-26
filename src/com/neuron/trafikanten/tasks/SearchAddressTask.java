@@ -32,11 +32,13 @@ public class SearchAddressTask implements GenericTask {
 	private List<Address> addresses;
 	ReturnCoordinatesHandler handler;
 	private Dialog dialog; 
+	private GoogleAnalyticsTracker tracker;
 	    
 	
 	public SearchAddressTask(Activity activity, GoogleAnalyticsTracker tracker, ReturnCoordinatesHandler handler) 
 	{
 		this.activity = activity;
+		this.tracker = tracker;
 		tracker.trackPageView("/task/searchAddress");
 		this.handler = handler;
 		showAddressField();
@@ -142,7 +144,8 @@ public class SearchAddressTask implements GenericTask {
 		dialog.setOnCancelListener(new OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
-				handler.onCanceled();				
+				handler.onCanceled();
+				tracker.stop();
 			}
 		});
 		dialog.show();
@@ -178,6 +181,8 @@ public class SearchAddressTask implements GenericTask {
 	
 	private void foundLocation(Address location) {
 		handler.onFinished(location.getLatitude(), location.getLongitude());
+		tracker.stop();				
+
 	}
 
 	@Override

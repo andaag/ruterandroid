@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.dataSets.DeviData;
@@ -76,6 +77,13 @@ public class SelectDeviTask implements GenericTask {
         });
         
         dialog = builder.create();
+        
+        dialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				tracker.stop();				
+			}	
+        });
         
         /*
          * Show dialog

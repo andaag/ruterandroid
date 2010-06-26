@@ -24,8 +24,10 @@ import java.text.SimpleDateFormat;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnDismissListener;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -43,6 +45,8 @@ public class ShowHelpTask implements GenericTask {
 	public final static SimpleDateFormat dateFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private Activity activity;
     private Dialog dialog;
+    private GoogleAnalyticsTracker tracker;
+    
     private ClickableSpan sendMailSpan = new ClickableSpan() {
 		@Override
 		public void onClick(View widget) {
@@ -58,6 +62,7 @@ public class ShowHelpTask implements GenericTask {
     public ShowHelpTask(Activity activity, GoogleAnalyticsTracker tracker) 
     {
         this.activity = activity;
+        this.tracker = tracker;
         tracker.trackPageView("/task/showhelp");
         showDialog();
     }
@@ -118,6 +123,12 @@ public class ShowHelpTask implements GenericTask {
         message.setText(builder);
         message.setMovementMethod(LinkMovementMethod.getInstance());
 
+        dialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				tracker.stop();				
+			}	
+        });
 		dialog.show();
     }
     

@@ -145,7 +145,8 @@ public class LocationTask implements GenericTask {
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				locationProvider.kill();
-				handler.onCanceled();				
+				handler.onCanceled();	
+				tracker.stop();
 			}
 		});
 		
@@ -155,6 +156,7 @@ public class LocationTask implements GenericTask {
     private void returnLocation() 
     {
     	locationProvider.kill();
+    	tracker.stop();
 		if (latitude == 0) {
 			Toast.makeText(activity, R.string.noLocationFoundError, Toast.LENGTH_SHORT).show();
 			return;
