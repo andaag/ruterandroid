@@ -108,7 +108,7 @@ def testGetTripId():
     
     
 
-#testGetTripId()
-testRoute()
+testGetTripId()
+#testRoute()
 #sendAdvancedRoute()
 #testSearch()
