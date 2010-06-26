@@ -422,8 +422,10 @@ class RouteAdapter extends BaseAdapter {
 		
 		if (routeData.transportType == R.drawable.icon_line_walk) {
 			holder.transportDestination.setText(R.string.walk);
+			holder.line.setVisibility(View.GONE);
 		} else {
 			holder.transportDestination.setText(routeData.destination);
+			holder.line.setVisibility(View.VISIBLE);
 		}
 		holder.line.setText(routeData.line);
 				

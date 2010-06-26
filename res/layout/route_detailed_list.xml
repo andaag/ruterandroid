@@ -18,19 +18,33 @@
 	
 	<TextView
 		android:id="@+id/line"
-		android:layout_width="wrap_content"
+		android:layout_width="22dip"
 		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:layout_marginTop="3dip"
+		android:layout_below="@+id/waittime"
+		
+		android:textColor="#ffffff"
+		android:background="#3c65bf"
+		android:paddingTop="1dip"
+		android:paddingBottom="1dip"
+		android:typeface="sans"
+		android:textSize="12dip"
+		android:gravity="center"
+		android:singleLine="true"
 		android:layout_marginLeft="3dip"
-		android:layout_below="@+id/waittime"/>
+		android:layout_marginTop="3dip"
+		android:layout_marginBottom="3dip"
+		
+		android:layout_alignTop="@+id/transportDestination"
+		android:layout_alignBottom="@+id/transportDestination"
+		/>
 		
 	<ImageView
 		android:id="@+id/symbol"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="20dip"
-		android:layout_below="@+id/waittime"/>
+		android:layout_marginTop="3dip"
+		android:layout_marginLeft="3dip"
+		android:layout_below="@+id/line"/>
 	
 	<TextView
 		android:id="@+id/transportDestination"
@@ -38,7 +52,7 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceMedium"
 		android:layout_below="@+id/waittime"
-		android:layout_marginLeft="40dip"/>
+		android:layout_marginLeft="35dip"/>
 	        
 	<TextView
 		android:id="@+id/from"
