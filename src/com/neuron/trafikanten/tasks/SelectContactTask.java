@@ -27,6 +27,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
@@ -71,6 +72,21 @@ public class SelectContactTask implements GenericTask {
                 nameList.add(cursor.getString(0));
         }
         cursor.close();
+        
+        /*
+         * Check if we found anything at all
+         */
+        if (nameList.size() == 0) {
+        	final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        	builder.setPositiveButton("Back",null);
+	        builder.setMessage("No contacts with\n addresses found!");
+	        dialog = builder.create();
+        	dialog.show();
+        	
+	        tracker.stop();
+	        handler.onCanceled();
+	        return;
+        }
         
         /*
          * Setup select contact alert dialog
