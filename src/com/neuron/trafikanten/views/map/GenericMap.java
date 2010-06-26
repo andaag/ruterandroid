@@ -195,7 +195,6 @@ public class GenericMap extends MapActivity {
          * Add all overlays to the overlay list
          */
         overlays.add(locationOverlay);
-        //mapView.invalidate();
 	}
 	
 	private void loadRouteData() {
