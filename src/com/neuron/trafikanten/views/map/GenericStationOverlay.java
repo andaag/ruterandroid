@@ -20,16 +20,14 @@ package com.neuron.trafikanten.views.map;
 
 import java.util.ArrayList;
 
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataSets.StationData;
-
 import android.app.Activity;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
+import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataSets.StationData;
 
 // TODO : Rename to StationOverlay
 public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
@@ -58,28 +56,40 @@ public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
 	}
 	
 	/*
+	 * Add single item, this does not populate!
+	 */
+	public void add(Activity activity, StationData station) {
+		if (items.size() > 0 && items.get(items.size() - 1).station.stationId == station.stationId)
+			return;
+		
+		final double[] location = station.getLongLat();
+		if (location[0] == 0) {
+			if (warnAboutMissingCoordinates) {
+				Toast.makeText(activity, R.string.stationsMissingCoordsWillBeHidden, Toast.LENGTH_SHORT).show();
+				warnAboutMissingCoordinates = false;
+			}
+			return;
+		}
+		final GeoPoint point = new GeoPoint((int)(location[0] * 1E6), (int)(location[1] * 1E6));
+		final StationOverlayItem item = new StationOverlayItem(point, station);
+		if (station.isFavorite) {
+			item.setMarker(boundCenterBottom(activity.getResources().getDrawable(R.drawable.icon_mapmarker_favorite)));
+		} else {
+			item.setMarker(null);
+		}
+		items.add(item);
+	}
+	
+	public void doPopulate() {
+		populate();
+	}
+	
+	/*
 	 * Add list of items
 	 */
 	public void add(Activity activity, ArrayList<StationData> stationList) {
-		final Resources resources = activity.getResources();
-		
 		for(StationData station : stationList) {
-			final double[] location = station.getLongLat();
-			if (location[0] == 0) {
-				if (warnAboutMissingCoordinates) {
-					Toast.makeText(activity, R.string.stationsMissingCoordsWillBeHidden, Toast.LENGTH_SHORT).show();
-					warnAboutMissingCoordinates = false;
-				}
-				continue;
-			}
-			final GeoPoint point = new GeoPoint((int)(location[0] * 1E6), (int)(location[1] * 1E6));
-			final StationOverlayItem item = new StationOverlayItem(point, station);
-			if (station.isFavorite) {
-				item.setMarker(boundCenterBottom(resources.getDrawable(R.drawable.icon_mapmarker_favorite)));
-			} else {
-				item.setMarker(null);
-			}
-			items.add(item);
+			add(activity, station);
 		}
 		populate();
 	}

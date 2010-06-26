@@ -252,7 +252,7 @@ public class OverviewRouteView extends ListActivity {
 			showDialog(DIALOG_NOTIFICATION);
 			return true;
 		case MAP_ID:
-			GenericMap.Show(this, GenericMap.getStationList(routeList.getList().get(selectedId).travelStageList), true, 0);
+			GenericMap.Show(this, routeList.getList().get(selectedId).travelStageList, true, 0);
 			return true;
 		}
 		return super.onContextItemSelected(item);

@@ -260,7 +260,7 @@ public class DetailedRouteView extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         case MAP_ID:
-        	GenericMap.Show(this, GenericMap.getStationList(routeProposalList.get(proposalPosition).travelStageList), true, 0);
+        	GenericMap.Show(this, routeProposalList.get(proposalPosition).travelStageList, true, 0);
         	break;
         }
 		return super.onOptionsItemSelected(item);

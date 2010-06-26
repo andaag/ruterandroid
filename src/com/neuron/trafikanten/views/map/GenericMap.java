@@ -28,9 +28,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -45,17 +47,28 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
+import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenTrip;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 
 public class GenericMap extends MapActivity {
-	private static final String KEY_ROUTEDATA = "routedata";
+	private final static String TAG = "Trafikanten-Map";
 	private static final int DIALOG_LIST = Menu.FIRST;
 	private MyLocationOverlay locationOverlay;
 	private static GenericStationOverlay stationOverlay;
 	private static ViewHolder viewHolder = new ViewHolder();
 	private GoogleAnalyticsTracker tracker;
+	private FavoriteDbAdapter favoriteDbAdapter = null;
+	private Drawable iconMapMarker = null;
+	
+	/*
+	 * For route loading:
+	 */
+	private ArrayList<RouteData> routeList;
+	private int routeLength = 0;
+	private TrafikantenTrip tripProvider = null;
 	
 	/*
 	 * Holder for currently selected station in panel
@@ -72,39 +85,24 @@ public class GenericMap extends MapActivity {
 	 */
 	private MapView mapView;
 	
-	public static void Show(Activity activity, ArrayList<StationData> stationList, boolean isRoute, int what) {
+	@SuppressWarnings("unchecked") // we ignore ArrayList<RouteData/StationData>
+	public static void Show(Activity activity, ArrayList stationList, boolean isRoute, int what) {
 		Intent intent = new Intent(activity, GenericMap.class);
-		intent.putExtra(StationData.PARCELABLE, stationList);
 		if (isRoute) {
-			intent.putExtra(KEY_ROUTEDATA, true);
+			intent.putExtra(RouteData.PARCELABLE, stationList);
+		} else {
+			intent.putExtra(StationData.PARCELABLE, stationList);
 		}
 		activity.startActivityForResult(intent, what);
 	}
 	
-	public static ArrayList<StationData> getStationList(ArrayList<RouteData> list) {
-    	ArrayList<StationData> stationList = new ArrayList<StationData>();
-		for(int i = 0; i < list.size(); i++) {
-			final RouteData routeData = list.get(i);
-			/*
-			 * Add fromStation
-			 */
-			stationList.add(routeData.fromStation);
-		}
-		{
-			/*
-			 * Add last station destination
-			 */
-			final RouteData routeData = list.get(list.size() - 1);
-			stationList.add(routeData.toStation);
-		}
-		return stationList;
-	}
-
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_PROGRESS);
 		setContentView(R.layout.map);
+		favoriteDbAdapter = new FavoriteDbAdapter(this);
+		iconMapMarker = getResources().getDrawable(R.drawable.icon_mapmarker);
 		
 		tracker = GoogleAnalyticsTracker.getInstance();
 		tracker.start("UA-16690738-3", this);
@@ -149,10 +147,8 @@ public class GenericMap extends MapActivity {
 		/*
 		 * Setup overlays
 		 */
-		//final Drawable drawable = getResources().getDrawable(R.drawable.icon_unknown);
-		final Drawable drawable = getResources().getDrawable(R.drawable.icon_mapmarker);
         final List<Overlay> overlays = mapView.getOverlays();
-		stationOverlay = new GenericStationOverlay(drawable);
+		stationOverlay = new GenericStationOverlay(iconMapMarker);
 		
 		/*
 		 * Load stations
@@ -164,15 +160,17 @@ public class GenericMap extends MapActivity {
 				 * Load stations passed to us
 				 */
 				final ArrayList<StationData> stationList = bundle.getParcelableArrayList(StationData.PARCELABLE);
-				final FavoriteDbAdapter favoriteDbAdapter = new FavoriteDbAdapter(this);
 				favoriteDbAdapter.refreshFavorites(stationList);
-				favoriteDbAdapter.close();
-				
 				stationOverlay.add(this, stationList);
-				if (bundle.containsKey(KEY_ROUTEDATA)) {
-					RouteOverlay routeOverlay = new RouteOverlay(drawable, stationOverlay.items);
-					overlays.add(routeOverlay);
-				}
+				overlays.add(stationOverlay);
+			} else if (bundle.containsKey(RouteData.PARCELABLE)) {
+				/*
+				 * Load stations passed to us
+				 */
+				routeList = bundle.getParcelableArrayList(RouteData.PARCELABLE);
+				routeLength = routeList.size() + 1;
+				setProgress(0);
+				loadRouteData();
 			}
 		} else {
 			// TODO : saveInstanceState in mapview.
@@ -197,9 +195,64 @@ public class GenericMap extends MapActivity {
          * Add all overlays to the overlay list
          */
         overlays.add(locationOverlay);
-		overlays.add(stationOverlay);
         //mapView.invalidate();
+	}
+	
+	private void loadRouteData() {
+		if (routeList.size() == 0) {
+			RouteOverlay routeOverlay = new RouteOverlay(iconMapMarker, stationOverlay.items);
+			final List<Overlay> overlays = mapView.getOverlays();
+			stationOverlay.doPopulate();
+			overlays.add(routeOverlay);
+			overlays.add(stationOverlay);
+			setProgress(10000);
+			mapView.invalidate();
+			return;
+		}
+
+		final RouteData routeData = routeList.get(0);
+		routeList.remove(0);
+		setProgress((routeLength - routeList.size() + 1) * 10000 / routeLength);
 		
+		if (routeData.tourID == 0) {
+			/*
+			 * We got no tour id, just add the stations directly.
+			 */
+			stationOverlay.add(GenericMap.this, routeData.fromStation);
+			stationOverlay.add(GenericMap.this, routeData.toStation);
+			loadRouteData();
+			return;
+		}
+		
+		/*
+		 * We have a tour id, lets get our list.
+		 */
+		
+		tripProvider = new TrafikantenTrip(this, routeData.tourID, routeData.fromStation.stationId, routeData.toStation.stationId, new IGenericProviderHandler<StationData>() {
+			@Override
+			public void onData(StationData data) {
+				stationOverlay.add(GenericMap.this, data);
+			}
+
+			@Override
+			public void onExtra(int i, Object data) {}
+
+			@Override
+			public void onPostExecute(Exception exception) {
+				tripProvider = null; 
+				if (exception != null) {
+					Log.w(TAG,"onException " + exception);
+		        	Toast.makeText(GenericMap.this, getText(R.string.trafikantenErrorOther), Toast.LENGTH_SHORT).show();
+		        	setProgress(10000);
+				} else {
+					loadRouteData();
+				}
+			}
+
+			@Override
+			public void onPreExecute() {}
+			
+		});
 	}
 	
 	static public void onStationTap(StationData station) {
@@ -308,6 +361,17 @@ public class GenericMap extends MapActivity {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
 	}
+	
+	
+	@Override
+	protected void onStop() {
+		favoriteDbAdapter.close();
+		if (tripProvider != null) {
+			tripProvider.kill();
+		}
+		super.onStop();
+	}
+
 	
 	@Override
 	protected void onDestroy() {
