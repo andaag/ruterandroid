@@ -162,6 +162,7 @@ class RouteHandler extends DefaultHandler {
 	private boolean inArrivalTime = false;
 	private boolean inLineName = false;
 	private boolean inDestination = false;
+	private boolean inTourID = false;
 	private boolean inTransportation = false;
 	private boolean inWaitingTime = false;
 	
@@ -243,6 +244,8 @@ class RouteHandler extends DefaultHandler {
 			        inLineName = true;
 			    } else if (localName.equals("Destination")) {
 			        inDestination = true;
+			    } else if (localName.equals("TourID")) {
+			        inTourID = true;
 			    } else if (localName.equals("Transportation")) {
 			        inTransportation = true;
 			    } else if (localName.equals("WaitingTime")) {
@@ -348,6 +351,9 @@ class RouteHandler extends DefaultHandler {
 					} else if (inDestination && localName.equals("Destination")) {
 					    inDestination = false;
 				    	travelStage.destination = buffer.toString();
+					} else if (inTourID && localName.equals("TourID")) {
+					    inTourID = false;
+				    	travelStage.tourID = Integer.parseInt(buffer.toString());
 					} else if (inTransportation && localName.equals("Transportation")) {
 					    inTransportation = false;
 				    	final String transportationString = buffer.toString();
@@ -392,7 +398,7 @@ class RouteHandler extends DefaultHandler {
 	@Override
 	public void characters(char ch[], int start, int length) {
 		if (inDepartureTime || inArrivalTime || inID || inName || inX || inY || inDepartureTime || inArrivalTime ||
-				inLineName || inDestination || inTransportation || inWaitingTime) {
+				inLineName || inDestination || inTourID || inTransportation || inWaitingTime) {
 			buffer.append(ch,start,length);
 		}
 	}

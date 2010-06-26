@@ -37,6 +37,7 @@ public class RouteData implements Parcelable {
 	
 	public String line;
 	public String destination; // line destination = end station
+	public int tourID;
 	public String extra;
 	public int waitTime; // in minutes, waittime for THIS transport, not next transport.
 	/*
@@ -64,6 +65,7 @@ public class RouteData implements Parcelable {
 		
 		line = in.readString();
 		destination = in.readString();
+		tourID = in.readInt();
 		extra = in.readString();
 		waitTime = in.readInt();
 		
@@ -84,6 +86,7 @@ public class RouteData implements Parcelable {
 		
 		out.writeString(line);
 		out.writeString(destination);
+		out.writeInt(tourID);
 		out.writeString(extra);
 		out.writeInt(waitTime);
 		
