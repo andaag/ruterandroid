@@ -19,11 +19,19 @@
 	  <TextView android:id="@+id/departureHeader"
 	  android:layout_height="wrap_content" 
 	  android:layout_width="wrap_content"
-	  android:textSize="20dip"
-	  android:layout_marginTop="11dip"
+	  android:textSize="23dip"
+	  android:layout_marginTop="9dip"
 	  android:layout_marginLeft="2dip"
 	  android:layout_toRightOf="@+id/departureHeaderIcon"
+	  android:textAppearance="?android:attr/textAppearanceMedium"
 	  android:text="Travel alternatives:"/>
+	  
+	  <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="1dip"
+	  android:layout_below="@+id/departureHeaderIcon"
+	  android:background="#313431" />
+	  
 	  
 	  <!-- Info -->
     

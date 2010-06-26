@@ -7,10 +7,38 @@
     android:layout_height="fill_parent"
     >
     
+    <!-- Header: -->
+	  <ImageView
+	  android:id="@+id/departureHeaderIcon"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:layout_marginTop="3dip"
+	  android:layout_marginLeft="3dip"
+	  android:src="@drawable/icon_small"
+	  />
+    
+	  <TextView android:id="@+id/departureHeader"
+	  android:layout_height="wrap_content" 
+	  android:layout_width="wrap_content"
+	  android:textSize="23dip"
+	  android:layout_marginTop="9dip"
+	  android:layout_marginLeft="2dip"
+	  android:textAppearance="?android:attr/textAppearanceMedium"
+	  android:layout_toRightOf="@+id/departureHeaderIcon"
+	  android:text="Route"/>
+	  
+	  <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="1dip"
+	  android:layout_below="@+id/departureHeaderIcon"
+	  android:background="#313431" />
+    
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_marginTop="4dip"
+        android:layout_below="@+id/departureHeaderIcon"
         />
         
     <ImageView android:id="@+id/prev_entry"
