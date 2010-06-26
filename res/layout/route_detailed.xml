@@ -6,34 +6,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-
-    <LinearLayout
-        android:id="@+id/panel"
-	    android:orientation="horizontal"
-	    android:layout_alignParentBottom="true"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content">
-
-	   	<ImageButton
-	   		android:id="@+id/prevButton"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:layout_weight="0"
-	    	android:src="@drawable/ic_menu_back" />
-
-	    <TextView
-	    	android:id="@+id/infoText"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"/>
-	        
-	   	<ImageButton
-	   		android:id="@+id/nextButton"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:layout_weight="0"
-	    	android:src="@drawable/ic_menu_forward" />	
-    </LinearLayout>
     
     <ListView
         android:id="@android:id/list"

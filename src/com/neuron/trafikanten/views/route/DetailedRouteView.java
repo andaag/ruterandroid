@@ -56,7 +56,6 @@ import com.neuron.trafikanten.views.map.GenericMap;
 public class DetailedRouteView extends ListActivity {
 	//private final static String TAG = "Trafikanten-DetailedRouteView";
 	private RouteAdapter routeList;
-	private ViewHolder viewHolder = new ViewHolder();
 	private GoogleAnalyticsTracker tracker;
 	
 	/*
@@ -108,40 +107,9 @@ public class DetailedRouteView extends ListActivity {
 		 */
 		setContentView(R.layout.route_detailed);
 		routeList = new RouteAdapter(this);
-		viewHolder.previousButton = (ImageButton) findViewById(R.id.prevButton);
-		viewHolder.infoText = (TextView) findViewById(R.id.infoText);
-		viewHolder.nextButton = (ImageButton) findViewById(R.id.nextButton);
-
-		/*
-		 * Setup onClick handler on previous button
-		 */
-		viewHolder.previousButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				/*
-				 * Search for previous departure date.
-				 */
-				proposalPosition--;
-				load();
-			}
-		});
 		
 		/*
-		 * Setup onClick handler on next button
-		 */
-		viewHolder.nextButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				/*
-				 * Simply set departureDate to our first arrival time + 1 minute, that way the search will skip that route and take the next one.
-				 */
-				proposalPosition++;
-				load();
-			}
-		});
-		
-		/*
-		 * Setup the next/previous buttons (NEW CODE)
+		 * Setup the next/previous buttons
 		 */
         mNextImageView = (ImageView) findViewById(R.id.next_entry);
         mPrevImageView = (ImageView) findViewById(R.id.prev_entry);
@@ -301,75 +269,13 @@ public class DetailedRouteView extends ListActivity {
 	}
 	
 	/*
-	 * Refresh button.isEnabled
-	 */
-	private void refreshButtons() {
-		viewHolder.previousButton.setEnabled(proposalPosition != 0 && routeProposalList.size() > 1);
-		viewHolder.nextButton.setEnabled(proposalPosition < routeProposalList.size() - 1);
-	}
-	
-	/*
 	 * Load station data
 	 */
 	private void load() {
 		final ArrayList<RouteData> list = routeProposalList.get(proposalPosition).travelStageList;
 		routeList.setList(list);
 		setListAdapter(routeList);
-		refreshButtons();
         showOnScreenControls();
-	}
-	
-	/*
-	 * We need to override setListAdapter to trigger refreshing info overlay.
-	 * @see android.app.ListActivity#setListAdapter(android.widget.ListAdapter)
-	 */
-	@Override
-	public void setListAdapter(ListAdapter adapter) {
-		super.setListAdapter(adapter);
-		final ArrayList<RouteData> list = routeList.getList();
-		/*
-		 * Render info box on the bottom
-		 */
-		if (list.size() > 0) {
-			viewHolder.infoText.setVisibility(View.VISIBLE);
-			
-			/*
-			 * Calculate total travel time, waittime and walktime. 
-			 */
-			final long departure = list.get(0).departure;
-			long arrival = list.get(list.size() - 1).arrival;
-			int waitTime = 0;
-			int walkTime = 0;
-			
-			if (arrival < departure) {
-				/*
-				 * We're arriving before we're leaving, must be a days difference.
-				 */
-				arrival = arrival + (HelperFunctions.HOUR * 24);
-			}
-			
-			for (RouteData data : list) {
-				waitTime = waitTime + data.waitTime;
-				if (data.transportType == R.drawable.icon_line_walk) {
-					walkTime = walkTime + (int)((data.arrival - data.departure) / HelperFunctions.MINUTE);					
-				}
-			}
-			
-			/*
-			 * Setup actual text
-			 */
-			//Hack:
-			long travelTime = (arrival - departure) / HelperFunctions.MINUTE;
-			if (travelTime > HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE)
-				travelTime = travelTime - (HelperFunctions.HOUR * 24 / HelperFunctions.MINUTE);
-
-			
-			viewHolder.infoText.setText("" + getText(R.string.travelTime) + " " + travelTime + " min\n" +
-					getText(R.string.waitTime) + " " + waitTime + " min\n" +
-					getText(R.string.walkTime) + " " + walkTime + " min");
-		} else {
-			viewHolder.infoText.setVisibility(View.INVISIBLE);
-		}
 	}
 
 	/*
@@ -445,15 +351,6 @@ public class DetailedRouteView extends ListActivity {
 		//Stop the tracker when it is no longer needed.
 		tracker.stop();
 	}
-	
-	/*
-	 * Class for holding the view.
-	 */
-	static class ViewHolder {
-		ImageButton previousButton;
-		TextView infoText;
-		ImageButton nextButton;
-	}
 }
 
 
@@ -501,14 +398,13 @@ class RouteAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.route_detailed_list, null);
 			
 			holder = new ViewHolder();
-			holder.symbol = (ImageView) convertView.findViewById(R.id.symbol);
-			holder.line = (TextView) convertView.findViewById(R.id.line);
-			holder.transportDestination = (TextView) convertView.findViewById(R.id.transportDestination);
-			holder.from = (TextView) convertView.findViewById(R.id.from);
-			holder.fromTime = (TextView) convertView.findViewById(R.id.fromTime);
-			holder.to = (TextView) convertView.findViewById(R.id.to);
-			holder.toTime = (TextView) convertView.findViewById(R.id.toTime);
-			holder.waittime = (TextView) convertView.findViewById(R.id.waittime);
+			holder.departureTime = (TextView) convertView.findViewById(R.id.departureTime);
+			holder.arrivalTime = (TextView) convertView.findViewById(R.id.arrivalTime);
+			holder.departurePoint = (TextView) convertView.findViewById(R.id.departurePoint);
+			holder.transportTypeIcon = (ImageView) convertView.findViewById(R.id.transportTypeIcon);
+			holder.transportTypeLine = (TextView) convertView.findViewById(R.id.transportTypeLine);
+			holder.transportType = (TextView) convertView.findViewById(R.id.transportType);
+			holder.arrivalPoint = (TextView) convertView.findViewById(R.id.arrivalPoint);
 			convertView.setTag(holder);
 		} else {
 			/*
@@ -522,41 +418,37 @@ class RouteAdapter extends BaseAdapter {
 		 */
 		final RouteData routeData = items.get(pos);
 		
+		holder.departureTime.setText(HelperFunctions.hourFormater.format(routeData.departure));
+		holder.arrivalTime.setText(HelperFunctions.hourFormater.format(routeData.arrival));
+		
+		holder.departurePoint.setText(routeData.fromStation.stopName);
+		holder.arrivalPoint.setText(routeData.toStation.stopName);
+		
+		holder.transportType.setText(routeData.line);
 		if (routeData.transportType == R.drawable.icon_line_walk) {
-			holder.transportDestination.setText(R.string.walk);
+			holder.transportType.setText(R.string.walk);
 		} else {
-			holder.transportDestination.setText(routeData.destination);
+			holder.transportType.setText(routeData.destination);
 		}
-		holder.line.setText(routeData.line);
-				
-		holder.from.setText(routeData.fromStation.stopName);
-		holder.fromTime.setText(HelperFunctions.hourFormater.format(routeData.departure));
-		
-		holder.to.setText(routeData.toStation.stopName);
-		holder.toTime.setText(HelperFunctions.hourFormater.format(routeData.arrival));
-		
-		
-		/*
-		 * Setup symbol.
-		 */
 		final int symbolImage = routeData.transportType;
 		if (symbolImage > 0) {
-			holder.symbol.setVisibility(View.VISIBLE);
-			holder.symbol.setImageResource(symbolImage);
+			holder.transportTypeIcon.setVisibility(View.VISIBLE);
+			holder.transportTypeIcon.setImageResource(symbolImage);
 		} else {
-			holder.symbol.setVisibility(View.GONE);
+			holder.transportTypeIcon.setVisibility(View.GONE);
 		}
 		
 		/*
 		 * Setup waittime
 		 */
+		/*
 		if (routeData.waitTime > 0) {
 			holder.waittime.setText("" + context.getText(R.string.waitTime) + " " +
 					HelperFunctions.renderAccurate(routeData.waitTime * (HelperFunctions.MINUTE)));
 			holder.waittime.setVisibility(View.VISIBLE);
 		} else {
 			holder.waittime.setVisibility(View.GONE);
-		}
+		}*/
 		
 		return convertView;
 	}
@@ -565,13 +457,12 @@ class RouteAdapter extends BaseAdapter {
 	 * Class for caching the view.
 	 */
 	static class ViewHolder {
-		ImageView symbol;
-		TextView line;
-		TextView transportDestination;
-		TextView from;
-		TextView fromTime;
-		TextView to;
-		TextView toTime;
-		TextView waittime;
+		TextView departureTime;
+		TextView arrivalTime;
+		TextView departurePoint;
+		ImageView transportTypeIcon;
+		TextView transportTypeLine;
+		TextView transportType;
+		TextView arrivalPoint;
 	}
 }
