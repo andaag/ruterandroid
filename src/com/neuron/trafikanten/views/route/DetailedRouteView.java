@@ -107,7 +107,7 @@ public class DetailedRouteView extends ListActivity {
 		 */
 		setContentView(R.layout.route_detailed);
 		routeList = new RouteAdapter(this);
-		
+
 		/*
 		 * Setup the next/previous buttons
 		 */
@@ -275,9 +275,10 @@ public class DetailedRouteView extends ListActivity {
 		final ArrayList<RouteData> list = routeProposalList.get(proposalPosition).travelStageList;
 		routeList.setList(list);
 		setListAdapter(routeList);
+		// this forces a redraw of onscreen controls
         showOnScreenControls();
 	}
-
+	
 	/*
 	 * Dialog creation
 	 * @see android.app.Activity#onCreateDialog(int)
@@ -398,13 +399,14 @@ class RouteAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.route_detailed_list, null);
 			
 			holder = new ViewHolder();
-			holder.departureTime = (TextView) convertView.findViewById(R.id.departureTime);
-			holder.arrivalTime = (TextView) convertView.findViewById(R.id.arrivalTime);
-			holder.departurePoint = (TextView) convertView.findViewById(R.id.departurePoint);
-			holder.transportTypeIcon = (ImageView) convertView.findViewById(R.id.transportTypeIcon);
-			holder.transportTypeLine = (TextView) convertView.findViewById(R.id.transportTypeLine);
-			holder.transportType = (TextView) convertView.findViewById(R.id.transportType);
-			holder.arrivalPoint = (TextView) convertView.findViewById(R.id.arrivalPoint);
+			holder.symbol = (ImageView) convertView.findViewById(R.id.symbol);
+			holder.line = (TextView) convertView.findViewById(R.id.line);
+			holder.transportDestination = (TextView) convertView.findViewById(R.id.transportDestination);
+			holder.from = (TextView) convertView.findViewById(R.id.from);
+			holder.fromTime = (TextView) convertView.findViewById(R.id.fromTime);
+			holder.to = (TextView) convertView.findViewById(R.id.to);
+			holder.toTime = (TextView) convertView.findViewById(R.id.toTime);
+			holder.waittime = (TextView) convertView.findViewById(R.id.waittime);
 			convertView.setTag(holder);
 		} else {
 			/*
@@ -418,37 +420,41 @@ class RouteAdapter extends BaseAdapter {
 		 */
 		final RouteData routeData = items.get(pos);
 		
-		holder.departureTime.setText(HelperFunctions.hourFormater.format(routeData.departure));
-		holder.arrivalTime.setText(HelperFunctions.hourFormater.format(routeData.arrival));
-		
-		holder.departurePoint.setText(routeData.fromStation.stopName);
-		holder.arrivalPoint.setText(routeData.toStation.stopName);
-		
-		holder.transportType.setText(routeData.line);
 		if (routeData.transportType == R.drawable.icon_line_walk) {
-			holder.transportType.setText(R.string.walk);
+			holder.transportDestination.setText(R.string.walk);
 		} else {
-			holder.transportType.setText(routeData.destination);
+			holder.transportDestination.setText(routeData.destination);
 		}
+		holder.line.setText(routeData.line);
+				
+		holder.from.setText(routeData.fromStation.stopName);
+		holder.fromTime.setText(HelperFunctions.hourFormater.format(routeData.departure));
+		
+		holder.to.setText(routeData.toStation.stopName);
+		holder.toTime.setText(HelperFunctions.hourFormater.format(routeData.arrival));
+		
+		
+		/*
+		 * Setup symbol.
+		 */
 		final int symbolImage = routeData.transportType;
 		if (symbolImage > 0) {
-			holder.transportTypeIcon.setVisibility(View.VISIBLE);
-			holder.transportTypeIcon.setImageResource(symbolImage);
+			holder.symbol.setVisibility(View.VISIBLE);
+			holder.symbol.setImageResource(symbolImage);
 		} else {
-			holder.transportTypeIcon.setVisibility(View.GONE);
+			holder.symbol.setVisibility(View.GONE);
 		}
 		
 		/*
 		 * Setup waittime
 		 */
-		/*
 		if (routeData.waitTime > 0) {
 			holder.waittime.setText("" + context.getText(R.string.waitTime) + " " +
 					HelperFunctions.renderAccurate(routeData.waitTime * (HelperFunctions.MINUTE)));
 			holder.waittime.setVisibility(View.VISIBLE);
 		} else {
 			holder.waittime.setVisibility(View.GONE);
-		}*/
+		}
 		
 		return convertView;
 	}
@@ -457,12 +463,13 @@ class RouteAdapter extends BaseAdapter {
 	 * Class for caching the view.
 	 */
 	static class ViewHolder {
-		TextView departureTime;
-		TextView arrivalTime;
-		TextView departurePoint;
-		ImageView transportTypeIcon;
-		TextView transportTypeLine;
-		TextView transportType;
-		TextView arrivalPoint;
+		ImageView symbol;
+		TextView line;
+		TextView transportDestination;
+		TextView from;
+		TextView fromTime;
+		TextView to;
+		TextView toTime;
+		TextView waittime;
 	}
 }
