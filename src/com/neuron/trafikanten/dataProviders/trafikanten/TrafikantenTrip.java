@@ -22,11 +22,19 @@ import com.neuron.trafikanten.dataSets.StationData;
 public class TrafikantenTrip extends GenericDataProviderThread<StationData> {
 	private final Context context;
 	private final int tourID;
+	private int startStation;
+	private int stopStation;
 	
-	public TrafikantenTrip(Context context, int tourID, IGenericProviderHandler<StationData> handler) {
+	/*
+	 * can filter on startStation/stopStation and only return data in between
+	 * to ignore filtering set startStation = stopStation = 0
+	 */
+	public TrafikantenTrip(Context context, int tourID, int startStation, int stopStation, IGenericProviderHandler<StationData> handler) {
 		super(handler);
 		this.context = context;
 		this.tourID = tourID;
+		this.startStation = startStation;
+		this.stopStation = stopStation;
 		start();
 	}
 	
@@ -46,7 +54,7 @@ public class TrafikantenTrip extends GenericDataProviderThread<StationData> {
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new TripHandler(this));
+			reader.setContentHandler(new TripHandler(this, startStation, stopStation));
 			
 			reader.parse(new InputSource(result));
 		} catch(Exception e) {
@@ -68,6 +76,14 @@ class TripHandler extends DefaultHandler {
 	 */
 	private StationData station;
 	private final TrafikantenTrip parent;
+	
+	/*
+	 * Code for filtering, we ignore every trip before startStation and after stopStation to get only the data relevant to us
+	 */
+	private int startStation;
+	private int stopStation;
+	
+	
 
 	/*
 	 * Temporary variables for parsing. 
@@ -79,16 +95,14 @@ class TripHandler extends DefaultHandler {
 	private boolean inName = false;
 	private boolean inDistrict = false;
 	private boolean inRealTimeStop = false;
-	
-	// Ignore is used to ignore anything except type Stop.
-	private boolean ignore = false;
-	
+
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public TripHandler(TrafikantenTrip parent)
+	public TripHandler(TrafikantenTrip parent, int startStation, int stopStation)
 	{
-
+		this.startStation = startStation;
+		this.stopStation = stopStation;
 		this.parent = parent;
 	}
 	
@@ -114,7 +128,6 @@ class TripHandler extends DefaultHandler {
     @Override 
     public void startElement(String namespaceURI, String localName, 
               String qName, Attributes atts) throws SAXException {
-    	if (ignore) return;
         if (!inStop) {
             if (localName.equals("Stop")) {
             	inStop = true;
@@ -145,12 +158,25 @@ class TripHandler extends DefaultHandler {
              * on StopMatch we're at the end, and we need to add the station to the station list.
              */
         	inStop = false;
-            if (!ignore) {
-    	        parent.ThreadHandlePostData(station);
-            }
-            ignore = false;
+        	
+        	/*
+        	 * If we have a value in startStation, we should wait with sending data until startStation is found.
+        	 */
+        	if (startStation > 0) {
+        		if (station.stationId == startStation) {
+        			startStation = 0;
+        		}
+        	}
+        	if (startStation == 0) {
+        		parent.ThreadHandlePostData(station);
+        	}
+        	/*
+        	 * If the station data we just sent is the stopStation, set startStation to a value we'll never find
+        	 */
+        	if (station.stationId == stopStation) {
+        		startStation = Integer.MAX_VALUE;
+        	}
         } else {
-        	if (ignore) return;
         	if (inX && localName.equals("X")) {
 	            inX = false;
 	            station.utmCoords[0] = Integer.parseInt(buffer.toString());
@@ -182,7 +208,6 @@ class TripHandler extends DefaultHandler {
     
     @Override
     public void characters(char ch[], int start, int length) {
-    	if (ignore) return;
     	if (inX || inY || inID || inName || inDistrict || inRealTimeStop) {
     		buffer.append(ch, start, length);
     	}
