@@ -60,6 +60,7 @@ import com.neuron.trafikanten.db.HistoryDbAdapter;
 import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.LocationTask;
 import com.neuron.trafikanten.tasks.SearchAddressTask;
+import com.neuron.trafikanten.tasks.SelectContactTask;
 import com.neuron.trafikanten.tasks.ShowHelpTask;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 import com.neuron.trafikanten.views.map.GenericMap;
@@ -76,9 +77,10 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	private final static int MYLOCATION_ID = Menu.FIRST;
 	private final static int MAP_ID = Menu.FIRST + 1;
-	private final static int ADDRESS_ID = Menu.FIRST + 2;
-	private final static int FAVORITES_ID = Menu.FIRST + 3;
-	private final static int HELP_ID = Menu.FIRST + 4;
+	private final static int CONTACT_ID = Menu.FIRST + 2;
+	private final static int ADDRESS_ID = Menu.FIRST + 3;
+	private final static int FAVORITES_ID = Menu.FIRST + 4;
+	private final static int HELP_ID = Menu.FIRST + 5;
 	
 	/*
 	 * Database adapter
@@ -332,6 +334,9 @@ public abstract class GenericSelectStationView extends ListActivity {
 		
 		final MenuItem favorites = menu.add(0, FAVORITES_ID, 0, R.string.favorites);
 		favorites.setIcon(android.R.drawable.ic_menu_myplaces);
+		
+		final MenuItem contact = menu.add(0, CONTACT_ID, 0, R.string.contact);
+		contact.setIcon(R.drawable.ic_menu_cc);
 	
 		final MenuItem address = menu.add(0, ADDRESS_ID, 0, R.string.address);
 		address.setIcon(R.drawable.ic_menu_directions);
@@ -358,6 +363,9 @@ public abstract class GenericSelectStationView extends ListActivity {
         case MAP_ID:
         	GenericMap.Show(this, stationListAdapter.getList(), false, 0);
         	break;
+        case CONTACT_ID:
+        	selectContact();
+        	break;
         case ADDRESS_ID:
         	searchAddressTask();
         	break;
@@ -372,6 +380,16 @@ public abstract class GenericSelectStationView extends ListActivity {
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());
         }
 		return super.onOptionsItemSelected(item);
+	}
+	
+
+	/*
+	 * Deal with contact selection
+	*/
+	private void selectContact() {
+		if (searchProvider != null)
+			searchProvider.kill();
+		activeTask = new SelectContactTask(this, tracker, getReturnCoordinatesHandler());
 	}
 	
 	

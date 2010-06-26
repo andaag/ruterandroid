@@ -70,6 +70,7 @@ Try clicking menu and searching for an address instead!</string>
         <string name="showingRealtimeOnly">Showing only stations with realtime information.</string>
         <string name="address">Address Search</string>
         <string name="map">Map</string>
+		<string name="contact">Contact</string>
         <string name="addFavorite">Add to favorites</string>
         <string name="removeFavorite">Remove from favorites</string>
         <string name="removeHistory">Remove from history</string>
@@ -131,6 +132,10 @@ we fallback to route information.</string>
         <string name="failedToFindAddress">Failed to locate address on map</string>
         <string name="searchAddressTask">Search for address:</string>
         <string name="addressHint">Address</string>
+        
+		<!-- SelectContactTask -->
+		<string name="multipleAddressesFound">Multiple addresses found, using first</string>
+		<string name="selectContact">Select Contact</string>
         
         <!-- Notifications -->
         <string name="alarm">Alarm</string> <!-- This is shared by everything that can call notifications -->
