@@ -19,6 +19,7 @@
 package com.neuron.trafikanten.views.route;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -47,6 +48,7 @@ import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
+import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
@@ -78,6 +80,8 @@ public class OverviewRouteView extends ListActivity {
 	 */
 	private RouteSearchData routeSearch;
 	private TrafikantenRoute routeProvider;
+	private RouteDeviLoader routeDeviLoader;
+	private HashMap<String, ArrayList<DeviData> > deviList = new HashMap<String, ArrayList<DeviData> >();
 	
 	/*
 	 * UI
@@ -168,6 +172,7 @@ public class OverviewRouteView extends ListActivity {
 				} else {
 					infoText.setText(R.string.noRoutesFound);
 				}
+				loadDevi();
 			}
 
 			@Override
@@ -181,6 +186,37 @@ public class OverviewRouteView extends ListActivity {
 			}
     		
     	});
+	}
+	
+	/*
+	 * Load devi
+	 */
+	private void loadDevi() {
+		routeDeviLoader = new RouteDeviLoader(this, routeList.getList(), deviList, new IGenericProviderHandler<Void>() {
+
+			@Override
+			public void onData(Void data) {}
+
+			@Override
+			public void onExtra(int i, Object data) {}
+
+			@Override
+			public void onPostExecute(Exception e) {
+	        	infoText.setText(R.string.trafikantenErrorOther);
+	        	routeDeviLoader = null;
+	        	loadDevi();
+			}
+
+			@Override
+			public void onPreExecute() {}
+			
+		});
+		if (routeDeviLoader.load()) {
+			setProgressBarIndeterminateVisibility(true);
+		} else {
+			setProgressBarIndeterminateVisibility(false);
+		}
+						
 	}
 	
 	/*
@@ -263,6 +299,9 @@ public class OverviewRouteView extends ListActivity {
 	protected void onStop() {
 		if (routeProvider != null) {
 			routeProvider.kill();
+		}
+		if (routeDeviLoader != null) {
+			routeDeviLoader.kill();
 		}
 		super.onStop();
 	}
