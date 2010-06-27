@@ -376,7 +376,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 *  - this is also in routeDeviLoader
 			 */
 			final String deviKey = "" + routeData.fromStation.stationId + "-" + routeData.line;
-			ArrayList<DeviData> deviList = parent.deviList.get(deviKey);
+			ArrayList<DeviData> deviList = parent.deviList.items.get(deviKey);
 			if (deviList != null) {
 				for(DeviData devi : deviList) {
 					retList.add(devi);

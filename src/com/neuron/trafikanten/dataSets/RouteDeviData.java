@@ -6,17 +6,16 @@ import java.util.Set;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /*
  * Parcelable arraylist for storing devi data.
  */
-public class RouteDeviData extends HashMap<String, ArrayList<DeviData> > implements Parcelable  {
+public class RouteDeviData implements Parcelable  {
+	public HashMap<String, ArrayList<DeviData> > items = new HashMap<String, ArrayList<DeviData> >();
 	public final static String PARCELABLE = "RouteDeviData";
 	private static final long serialVersionUID = 275828144368446465L;
 
 	public RouteDeviData() {
-		super();
 	}
 	
 	/*
@@ -29,27 +28,24 @@ public class RouteDeviData extends HashMap<String, ArrayList<DeviData> > impleme
 	 * Function for reading the parcel
 	 */
 	public RouteDeviData(Parcel in) {
-		super();
 		while (in.dataAvail() > 0) {
 			RouteDeviDataItem item = in.readParcelable(RouteDeviDataItem.class.getClassLoader());
-			put(item.deviKey, item.items);
-			Log.i("DEBUG CODE","Loading item");
+			items.put(item.deviKey, item.items);
 		}
 	}
-	
+
 	/*
 	 * Writing current data to parcel.
 	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		Set<String> keys = keySet();
+		Set<String> keys = items.keySet();
 		for (String key : keys) {
-			Log.i("DEBUG CODE","Saving item");
-			RouteDeviDataItem item = new RouteDeviDataItem(key, get(key));
+			RouteDeviDataItem item = new RouteDeviDataItem(key, items.get(key));
 			out.writeParcelable(item, 0);
 		}
-		clear();
+		items.clear();
 	}
 	
 	/*

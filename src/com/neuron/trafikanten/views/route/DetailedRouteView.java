@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -96,7 +95,6 @@ public class DetailedRouteView extends ListActivity {
 		
 		bundle.putParcelableArrayList(RouteProposal.PARCELABLE, routeProposalList);
 		bundle.putInt(KEY_PROPOSALPOSITION, proposalPosition);
-		Log.i("DEBUG CODE","Saving : " + deviList.size() + " items");
 		bundle.putParcelable(RouteDeviData.PARCELABLE, deviList);
 		
 		
@@ -154,8 +152,6 @@ public class DetailedRouteView extends ListActivity {
 		routeProposalList = bundle.getParcelableArrayList(RouteProposal.PARCELABLE);
 		proposalPosition = bundle.getInt(KEY_PROPOSALPOSITION);
 		deviList = bundle.getParcelable(RouteDeviData.PARCELABLE);
-		Log.i("DEBUG CODE","routeProposalList loaded ok : " + (routeProposalList != null));
-		Log.i("DEBUG CODE","Loaded item : " + deviList);
 		load();
 		registerForContextMenu(getListView());
 		loadDevi();

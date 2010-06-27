@@ -57,7 +57,7 @@ public class RouteDeviLoader {
 				/*
 				 * if the deviList contains the key we've already asked.
 				 */
-				if (!deviList.containsKey(deviKey)) {
+				if (!deviList.items.containsKey(deviKey)) {
 					Log.i(TAG,"Loading route devi " + deviKey);
 					loadDevi(routeData, routeData.fromStation.stationId, routeData.line);
 					return true;
@@ -87,7 +87,7 @@ public class RouteDeviLoader {
 			@Override
 			public void onPostExecute(Exception exception) {
 				if (exception == null) {
-					deviList.put(deviKey, list);
+					deviList.items.put(deviKey, list);
 				}
 				deviProvider = null;
 				handler.onPostExecute(exception);
