@@ -6,6 +6,7 @@ import java.util.Set;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /*
  * Parcelable arraylist for storing devi data.
@@ -52,7 +53,6 @@ public class RouteDeviData implements Parcelable  {
 			RouteDeviDataItem item = new RouteDeviDataItem(key, items.get(key));
 			out.writeParcelable(item, 0);
 		}
-		items.clear();
 	}
 	
 	/*

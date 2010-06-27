@@ -276,10 +276,7 @@ public class OverviewRouteView extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, MAP_ID, 0, R.string.map);
 		
-		
-		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-
-		if (routeList.getDevi(info.position, true).size() > 0) {
+		if (routeList.getDevi(((AdapterView.AdapterContextMenuInfo) menuInfo).position, true).size() > 0) {
 			menu.add(0, DEVI_ID, 0, R.string.warnings);
 		}
 		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
