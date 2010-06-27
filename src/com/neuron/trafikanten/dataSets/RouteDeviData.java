@@ -6,7 +6,6 @@ import java.util.Set;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /*
  * Parcelable arraylist for storing devi data.
