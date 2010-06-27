@@ -4,3 +4,4 @@ bin/*
 .classpath
 gen/*
 build.sh
+testing/*
