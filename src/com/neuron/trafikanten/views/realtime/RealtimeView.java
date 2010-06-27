@@ -578,7 +578,7 @@ public class RealtimeView extends ListActivity {
 			final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId);
 			final ArrayList<DeviData> deviPopup = realtimeList.getDevi(realtimeData);
 			new SelectDeviTask(this, tracker, deviPopup);
-
+			return true;
 		}
 		return super.onContextItemSelected(item);
 	}

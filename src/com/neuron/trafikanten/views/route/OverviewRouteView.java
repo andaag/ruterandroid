@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,6 +53,7 @@ import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.notification.NotificationDialog;
+import com.neuron.trafikanten.tasks.SelectDeviTask;
 import com.neuron.trafikanten.views.map.GenericMap;
 
 /*
@@ -67,6 +69,7 @@ public class OverviewRouteView extends ListActivity {
 	 */
 	private static final int NOTIFY_ID = Menu.FIRST;
 	private static final int MAP_ID = Menu.FIRST + 1;
+	private static final int DEVI_ID = Menu.FIRST + 2;
 	
 	/*
 	 * Dialogs
@@ -270,9 +273,16 @@ public class OverviewRouteView extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.add(0, MAP_ID, 0, R.string.map);
 		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
 		
-		menu.add(0, MAP_ID, 0, R.string.map);
+		
+		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
+		if (routeList.getDevi(info.position, true).size() > 0) {
+			menu.add(0, DEVI_ID, 0, R.string.warnings);
+			
+		}
 	}
     
 	/*
@@ -287,6 +297,9 @@ public class OverviewRouteView extends ListActivity {
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
 			showDialog(DIALOG_NOTIFICATION);
+			return true;
+		case DEVI_ID:
+			new SelectDeviTask(this, tracker, routeList.getDevi(info.position, false));
 			return true;
 		case MAP_ID:
 			GenericMap.Show(this, routeList.getList().get(selectedId).travelStageList, true, 0);
@@ -354,7 +367,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 	public long getItemId(int pos) { return pos; }
 	public void addItem(RouteProposal item) { items.add(item); }
 	
-	private ArrayList<DeviData> getDevi(int pos, boolean checkOnly) {
+	public ArrayList<DeviData> getDevi(int pos, boolean checkOnly) {
 		final ArrayList<DeviData> retList = new ArrayList<DeviData>();
 		for(RouteData routeData : items.get(pos).travelStageList) {
 			/*
