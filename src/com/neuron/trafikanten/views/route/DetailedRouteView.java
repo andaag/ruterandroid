@@ -176,6 +176,7 @@ public class DetailedRouteView extends ListActivity {
 			public void onPostExecute(Exception e) {
 	        	Toast.makeText(DetailedRouteView.this, R.string.trafikantenErrorOther, Toast.LENGTH_SHORT).show();
 	        	routeDeviLoader = null;
+	        	routeList.notifyDataSetChanged();
 	        	loadDevi();
 			}
 
@@ -187,7 +188,6 @@ public class DetailedRouteView extends ListActivity {
 			setProgressBarIndeterminateVisibility(true);
 		} else {
 			setProgressBarIndeterminateVisibility(false);
-			routeList.notifyDataSetChanged();
 		}				
 	}
 	

@@ -208,6 +208,7 @@ public class OverviewRouteView extends ListActivity {
 			public void onPostExecute(Exception e) {
 	        	infoText.setText(R.string.trafikantenErrorOther);
 	        	routeDeviLoader = null;
+	        	routeList.notifyDataSetChanged();
 	        	loadDevi();
 			}
 
@@ -219,7 +220,6 @@ public class OverviewRouteView extends ListActivity {
 			setProgressBarIndeterminateVisibility(true);
 		} else {
 			setProgressBarIndeterminateVisibility(false);
-			routeList.notifyDataSetChanged();
 		}				
 	}
 	
