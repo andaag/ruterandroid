@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -289,11 +290,11 @@ class OverviewRouteAdapter extends BaseAdapter {
 	public static final String KEY_ROUTELIST = "routelist";
 	private LayoutInflater inflater;
 	private ArrayList<RouteProposal> items = new ArrayList<RouteProposal>();
-	//final private Activity context;
+	final private Context context;
 	
-	public OverviewRouteAdapter(Activity context) {
+	public OverviewRouteAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
-		//this.context = context;
+		this.context = context;
 	}
 	
 	/*
@@ -393,7 +394,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 */
 			holder.departureTime.setText(HelperFunctions.hourFormater.format(departure));
 			holder.arrivalTime.setText(HelperFunctions.hourFormater.format(arrival));
-			holder.travelTime.setText("Traveltime : " + HelperFunctions.hourFormater.format(arrival - departure));
+			holder.travelTime.setText(context.getText(R.string.travelTime) + " : " + HelperFunctions.hourFormater.format(arrival - departure));
 		
 		}
 		
