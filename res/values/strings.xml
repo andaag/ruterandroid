@@ -148,4 +148,8 @@ we fallback to route information.</string>
         <string name="settings">Settings</string>
         <string name="reset">Reset</string>
         <string name="help">Help</string>
+        
+        <!-- Tips -->
+        <string name="tipFrontscreen">Tips will only be shown once per screen.\n\nNew in this version:\n* Tips!\n* Route screen changes!\n* Show routes on map!\n* Contact search back by popular demand!</string>
+        <string name="tipSelectRoute">* Click menu for more features.\n\n* Use select multiple stations to for example travel from (Oslo S or Oslo S [Tog]) to (Storo or Grefsen [Tog])!</string>
 </resources>

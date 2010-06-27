@@ -39,6 +39,7 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
+import com.neuron.trafikanten.tasks.ShowTipsTask;
 import com.neuron.trafikanten.views.realtime.RealtimeView;
 import com.neuron.trafikanten.views.realtime.SelectRealtimeStationView;
 import com.neuron.trafikanten.views.route.SelectRouteView;
@@ -109,6 +110,8 @@ public class Trafikanten extends TabActivity {
 		 			.setIndicator(getText(R.string.route), getResources().getDrawable(R.drawable.ic_menu_directions))
 		 			.setContent(new Intent(this, SelectRouteView.class)));
 	 	}
+	 	
+	 	new ShowTipsTask(this, tracker, Trafikanten.class.getName(), R.string.tipFrontscreen, 35);
 	}
 	
 	private boolean isShortcut() {

@@ -28,7 +28,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.Trafikanten;
 import com.neuron.trafikanten.dataSets.StationData;
+import com.neuron.trafikanten.tasks.ShowTipsTask;
 import com.neuron.trafikanten.views.GenericSelectStationView;
 
 public class SelectRouteStationView extends GenericSelectStationView {
@@ -102,6 +104,8 @@ public class SelectRouteStationView extends GenericSelectStationView {
 			}
 		});
 		multiSelectButton.setVisibility(View.VISIBLE);
+		
+		new ShowTipsTask(this, tracker, Trafikanten.class.getName(), R.string.tipSelectRoute, 35);
 	}
 	
 	private void refreshMultiSelect() {

@@ -113,7 +113,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Other
 	 */
 	private EditText searchEdit;
-	private GoogleAnalyticsTracker tracker;
+	public GoogleAnalyticsTracker tracker;
 	
     /** Called when the activity is first created. */
     @Override
