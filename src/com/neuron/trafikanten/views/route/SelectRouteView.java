@@ -30,11 +30,11 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,6 +45,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -138,7 +139,7 @@ public class SelectRouteView extends ListActivity {
 				}
 			}
 		}
-		items.add(new SimpleTextRouteEntry(this, R.string.travelFrom,travelFromString, 0, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, R.string.travelFrom, travelFromString, 0, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
@@ -162,7 +163,7 @@ public class SelectRouteView extends ListActivity {
 				}
 			}
 		}
-		items.add(new SimpleTextRouteEntry(this, R.string.travelTo,travelToString, 0, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, R.string.travelTo, travelToString, 0, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(SelectRouteView.this, SelectRouteStationView.class);
@@ -188,7 +189,7 @@ public class SelectRouteView extends ListActivity {
 			 */
 			travelTime = routeSearch.arrival == 0 ? getText(R.string.arriveBefore) + " : " + getText(R.string.now) : getText(R.string.arriveBefore) + " : " + DATEFORMAT.format(routeSearch.arrival);
 		}
-		items.add(new SimpleTextRouteEntry(this, R.string.when, travelTime, 5, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, R.string.when, travelTime, 5, 0, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				SelectRouteView.this.showDialog(DIALOG_SELECTTIME);
@@ -212,7 +213,7 @@ public class SelectRouteView extends ListActivity {
 			};
 			
 			if (routeSearch.advancedOptionsEnabled) {
-				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions,getText(R.string.disable) + " " + getText(R.string.advancedOptions), 0, advancedOnClickListener));
+				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions,getText(R.string.disable) + " " + getText(R.string.advancedOptions), 0, 0, advancedOnClickListener));
 				
 				/*
 				 * Add advanced options
@@ -232,7 +233,7 @@ public class SelectRouteView extends ListActivity {
 					}
 				}));*/
 				
-				items.add(new SimpleTextRouteEntry(this, getText(R.string.changeMargin) + " : " + routeSearch.changeMargin + "m", getText(R.string.safeMargin), 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.changeMargin) + " : " + routeSearch.changeMargin + "m", getText(R.string.safeMargin), 10, 0, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						SelectRouteView.this.showDialog(DIALOG_CHANGEMARGIN);
@@ -240,7 +241,7 @@ public class SelectRouteView extends ListActivity {
 					}
 				}));
 				
-				items.add(new SimpleTextRouteEntry(this, getText(R.string.proposals) + " : " + routeSearch.proposals, getText(R.string.maxProposals), 10, new OnClickListener() {
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.proposals) + " : " + routeSearch.proposals, getText(R.string.maxProposals), 10, 0, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						SelectRouteView.this.showDialog(DIALOG_PROPOSALS);
@@ -249,12 +250,12 @@ public class SelectRouteView extends ListActivity {
 				}));
 				
 			} else {
-				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions, getText(R.string.enable) + " " + getText(R.string.advancedOptions), 0, advancedOnClickListener));
+				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions, getText(R.string.enable) + " " + getText(R.string.advancedOptions), 0, 0, advancedOnClickListener));
 			}
 		}
 		
 		items.add(new SeperatorRouteEntry(this, R.string.searchForRoutes));
-		items.add(new SimpleTextRouteEntry(this, R.string.search, getText(R.string.calculateRouteResults), 0, new OnClickListener() {
+		items.add(new SimpleTextRouteEntry(this, R.string.search, getText(R.string.calculateRouteResults), 0, R.drawable.ic_btn_search, new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -580,42 +581,35 @@ class SelectRouteAdapter extends BaseAdapter
 	public static class SimpleTextRouteEntry extends GenericRouteEntry {
         private TextView mTitle;
         private TextView mSubText;
+        private ImageView mSymbol;
         
-        
-        private void setupView(Context context, int paddingLeft, OnClickListener onClickListener) {
-        	LinearLayout linearLayout = new LinearLayout(context);
-        	linearLayout.setPadding(paddingLeft + 6, 2, 2, 2);
-        	linearLayout.setOrientation(LinearLayout.VERTICAL);
-        	linearLayout.setBackgroundResource(R.drawable.skin_stoppested);
-        	
-        	final Resources resources = context.getResources();
-        	
-            mTitle = new TextView(context);
-            mTitle.setTextAppearance(context, android.R.style.TextAppearance_Medium);
-            linearLayout.addView(mTitle, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-            mTitle.setTextColor(resources.getColorStateList(R.color.skin_stoppested));
-
-            mSubText = new TextView(context);
-            mSubText.setTextAppearance(context, android.R.style.TextAppearance_Small);
-            linearLayout.addView(mSubText, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-            mSubText.setTextColor(resources.getColorStateList(R.color.skin_stoppested_subtext));
-            
-            mView = linearLayout;
+        private void setup(Context context, int indent, int logoResource) {
+			mView = LayoutInflater.from(context).inflate(R.layout.selectroute_textrouteentry, null);
+			if (indent > 0) {
+				mView.setPadding(mView.getPaddingLeft() + indent, mView.getPaddingTop(), mView.getPaddingRight(), mView.getPaddingBottom());
+			}
+			mTitle = (TextView) mView.findViewById(R.id.title);
+			mSubText = (TextView) mView.findViewById(R.id.subText);
+			
+			if (logoResource > 0) {
+				mSymbol = (ImageView) mView.findViewById(R.id.symbol);
+				mSymbol.setVisibility(View.VISIBLE);
+				mSymbol.setImageResource(logoResource);
+			}
         }
         
-        /*
-         * This is a simple layout, a text with a smaller subtext.
-         */
-		public SimpleTextRouteEntry(Context context, int title, CharSequence extra, int paddingLeft, OnClickListener onClickListener) {
+		public SimpleTextRouteEntry(Context context, int title, CharSequence extra, int indent, int logoResource, OnClickListener onClickListener) {
 			super(onClickListener);
-			setupView(context, paddingLeft, onClickListener);
+			setup(context, indent, logoResource);
+			
             mTitle.setText(title);
             mSubText.setText(extra);
         }
-		
-		public SimpleTextRouteEntry(Context context, CharSequence title, CharSequence extra, int paddingLeft, OnClickListener onClickListener) {
+        
+		public SimpleTextRouteEntry(Context context, CharSequence title, CharSequence extra, int indent, int logoResource, OnClickListener onClickListener) {
 			super(onClickListener);
-			setupView(context, paddingLeft, onClickListener);
+			setup(context, indent, logoResource);
+			
             mTitle.setText(title);
             mSubText.setText(extra);
         }
