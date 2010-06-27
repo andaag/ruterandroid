@@ -621,7 +621,7 @@ public class RealtimeView extends ListActivity {
 		outState.putParcelableArrayList(KEY_DEVILIST, deviItems);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
 		outState.putLong(KEY_TIMEDIFFERENCE, timeDifference);
-
+		
 		realtimeList.saveInstanceState(outState);
 	}
 	

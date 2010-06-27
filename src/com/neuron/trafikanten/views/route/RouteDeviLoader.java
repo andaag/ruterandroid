@@ -14,17 +14,14 @@ import com.neuron.trafikanten.dataSets.RouteProposal;
 
 public class RouteDeviLoader {
 	private final static String TAG = "Trafikanten-RouteDeviLoader";
-	private ArrayList<RouteProposal> routeProposalList;
 	private TrafikantenDevi deviProvider = null;
 	private Context context;
 	IGenericProviderHandler<Void> handler;
 	private RouteDeviData deviList;
-	
 	private String deviKey;
 
 	
-	public RouteDeviLoader(Context context, ArrayList<RouteProposal> routeProposalList, RouteDeviData deviList, IGenericProviderHandler<Void> handler) {
-		this.routeProposalList = routeProposalList;
+	public RouteDeviLoader(Context context, RouteDeviData deviList, IGenericProviderHandler<Void> handler) {
 		this.context = context;
 		this.handler = handler;
 		this.deviList = deviList;
@@ -33,32 +30,43 @@ public class RouteDeviLoader {
 	/*
 	 * Load devi, returns false if all devi is loaded
 	 */
-	public boolean load() {
+	public boolean load(ArrayList<RouteProposal> routeProposalList) {
 		for (RouteProposal routeProposal : routeProposalList) {
-			for (RouteData routeData : routeProposal.travelStageList) {
-				/*
-				 * if tourId = 0 we're walking, no devi for that ;)
-				 */
-				if (routeData.tourID > 0) {
-					/*
-					 * TODO, come up with a better way of id'ing the different values, using a string for this is dumb.
-					 *  - this is also in overviewrouteview
-					 */
-					deviKey = "" + routeData.fromStation.stationId + "-" + routeData.line;
-					/*
-					 * if the deviList contains the key we've already asked.
-					 */
-					if (deviList.containsKey(deviKey)) {
-						Log.i(TAG,"Found " + deviKey + " in cache");
-					} else {
-						Log.i(TAG,"Loading route devi " + deviKey);
-						loadDevi(routeData, routeData.fromStation.stationId, routeData.line);
-						return true;
-					}
-				}
+			if (load(routeProposal)) {
+				return true;
 			}
 		}
 		Log.i(TAG,"Done loading route devi");
+		return false;
+	}
+	
+	/*
+	 * Load devi for single proposal
+	 */
+	public boolean load(RouteProposal routeProposal) {
+		for (RouteData routeData : routeProposal.travelStageList) {
+			/*
+			 * if tourId = 0 we're walking, no devi for that ;)
+			 */
+			if (routeData.tourID > 0) {
+				/*
+				 * TODO, come up with a better way of id'ing the different values, using a string for this is dumb.
+				 *  - this is also in overviewrouteview
+				 */
+				deviKey = "" + routeData.fromStation.stationId + "-" + routeData.line;
+				/*
+				 * if the deviList contains the key we've already asked.
+				 */
+				if (!deviList.containsKey(deviKey)) {
+					Log.i(TAG,"Loading route devi " + deviKey);
+					loadDevi(routeData, routeData.fromStation.stationId, routeData.line);
+					return true;
+				} /* else {
+					Log.i(TAG,"Found " + deviKey + " in cache");
+				} */
+				
+			}
+		}
 		return false;
 	}
 	

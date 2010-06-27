@@ -128,6 +128,7 @@ public class OverviewRouteView extends ListActivity {
 			deviList = savedInstanceState.getParcelable(RouteDeviData.PARCELABLE);
 			routeList.setList(list);
 			infoText.setVisibility(routeList.getCount() > 0 ? View.GONE : View.VISIBLE);
+			loadDevi(); // continue loading devi incase we stopped in the middle of a load.
 		}
 		registerForContextMenu(getListView());
 		setListAdapter(routeList);
@@ -195,7 +196,7 @@ public class OverviewRouteView extends ListActivity {
 	 * Load devi
 	 */
 	private void loadDevi() {
-		routeDeviLoader = new RouteDeviLoader(this, routeList.getList(), deviList, new IGenericProviderHandler<Void>() {
+		routeDeviLoader = new RouteDeviLoader(this, deviList, new IGenericProviderHandler<Void>() {
 
 			@Override
 			public void onData(Void data) {}
@@ -214,13 +215,12 @@ public class OverviewRouteView extends ListActivity {
 			public void onPreExecute() {}
 			
 		});
-		if (routeDeviLoader.load()) {
+		if (routeDeviLoader.load(routeList.getList())) {
 			setProgressBarIndeterminateVisibility(true);
 		} else {
 			setProgressBarIndeterminateVisibility(false);
 			routeList.notifyDataSetChanged();
-		}
-						
+		}				
 	}
 	
 	/*
@@ -229,7 +229,7 @@ public class OverviewRouteView extends ListActivity {
 	 */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		DetailedRouteView.ShowRoute(this, routeList.getList(), position);
+		DetailedRouteView.ShowRoute(this, routeList.getList(), deviList, position);
 	}
 	
 	/*

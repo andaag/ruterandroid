@@ -6,6 +6,7 @@ import java.util.Set;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /*
  * Parcelable arraylist for storing devi data.
@@ -32,6 +33,7 @@ public class RouteDeviData extends HashMap<String, ArrayList<DeviData> > impleme
 		while (in.dataAvail() > 0) {
 			RouteDeviDataItem item = in.readParcelable(RouteDeviDataItem.class.getClassLoader());
 			put(item.deviKey, item.items);
+			Log.i("DEBUG CODE","Loading item");
 		}
 	}
 	
@@ -43,6 +45,7 @@ public class RouteDeviData extends HashMap<String, ArrayList<DeviData> > impleme
 	public void writeToParcel(Parcel out, int flags) {
 		Set<String> keys = keySet();
 		for (String key : keys) {
+			Log.i("DEBUG CODE","Saving item");
 			RouteDeviDataItem item = new RouteDeviDataItem(key, get(key));
 			out.writeParcelable(item, 0);
 		}
@@ -52,13 +55,13 @@ public class RouteDeviData extends HashMap<String, ArrayList<DeviData> > impleme
 	/*
 	 * Used for bundle.getParcel 
 	 */
-	public static final Parcelable.Creator<RouteDeviDataItem> CREATOR = new Parcelable.Creator<RouteDeviDataItem>() {
-		public RouteDeviDataItem createFromParcel(Parcel in) {
-		    return new RouteDeviDataItem(in);
+	public static final Parcelable.Creator<RouteDeviData> CREATOR = new Parcelable.Creator<RouteDeviData>() {
+		public RouteDeviData createFromParcel(Parcel in) {
+		    return new RouteDeviData(in);
 		}
 		
-		public RouteDeviDataItem[] newArray(int size) {
-		    return new RouteDeviDataItem[size];
+		public RouteDeviData[] newArray(int size) {
+		    return new RouteDeviData[size];
 		}
 	};
 	

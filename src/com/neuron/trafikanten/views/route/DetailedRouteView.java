@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,12 +42,15 @@ import android.view.animation.Animation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.RouteDeviData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.notification.NotificationDialog;
 import com.neuron.trafikanten.views.map.GenericMap;
@@ -55,6 +59,7 @@ public class DetailedRouteView extends ListActivity {
 	//private final static String TAG = "Trafikanten-DetailedRouteView";
 	private RouteAdapter routeList;
 	private GoogleAnalyticsTracker tracker;
+	private RouteDeviLoader routeDeviLoader;
 	
 	/*
 	 * Context menu:
@@ -75,6 +80,7 @@ public class DetailedRouteView extends ListActivity {
 	/*
 	 * Saved instance data
 	 */
+	private RouteDeviData deviList;
 	private ArrayList<RouteProposal> routeProposalList;
 	private int proposalPosition;
 
@@ -84,10 +90,17 @@ public class DetailedRouteView extends ListActivity {
 	 */
 	public final static String KEY_PROPOSALPOSITION = "proposalPosition";
 
-	public static void ShowRoute(Activity activity, ArrayList<RouteProposal> routeProposalList, int proposalPosition) {
-		Intent intent = new Intent(activity, DetailedRouteView.class);
-		intent.putExtra(RouteProposal.PARCELABLE, routeProposalList);
-		intent.putExtra(KEY_PROPOSALPOSITION, proposalPosition);
+	public static void ShowRoute(Activity activity, ArrayList<RouteProposal> routeProposalList, RouteDeviData deviList, int proposalPosition) {
+		final Intent intent = new Intent(activity, DetailedRouteView.class);
+		final Bundle bundle = new Bundle();
+		
+		bundle.putParcelableArrayList(RouteProposal.PARCELABLE, routeProposalList);
+		bundle.putInt(KEY_PROPOSALPOSITION, proposalPosition);
+		Log.i("DEBUG CODE","Saving : " + deviList.size() + " items");
+		bundle.putParcelable(RouteDeviData.PARCELABLE, deviList);
+		
+		
+		intent.putExtras(bundle);
 		activity.startActivity(intent);
 	}
 	
@@ -140,8 +153,43 @@ public class DetailedRouteView extends ListActivity {
 		final Bundle bundle = (savedInstanceState != null) ? savedInstanceState : getIntent().getExtras();
 		routeProposalList = bundle.getParcelableArrayList(RouteProposal.PARCELABLE);
 		proposalPosition = bundle.getInt(KEY_PROPOSALPOSITION);
+		deviList = bundle.getParcelable(RouteDeviData.PARCELABLE);
+		Log.i("DEBUG CODE","routeProposalList loaded ok : " + (routeProposalList != null));
+		Log.i("DEBUG CODE","Loaded item : " + deviList);
 		load();
 		registerForContextMenu(getListView());
+		loadDevi();
+	}
+	
+	/*
+	 * Load devi, this shouldn't be needed, but might be if a station got loaded too fast.
+	 */
+	private void loadDevi() {
+		routeDeviLoader = new RouteDeviLoader(this, deviList, new IGenericProviderHandler<Void>() {
+
+			@Override
+			public void onData(Void data) {}
+
+			@Override
+			public void onExtra(int i, Object data) {}
+
+			@Override
+			public void onPostExecute(Exception e) {
+	        	Toast.makeText(DetailedRouteView.this, R.string.trafikantenErrorOther, Toast.LENGTH_SHORT).show();
+	        	routeDeviLoader = null;
+	        	loadDevi();
+			}
+
+			@Override
+			public void onPreExecute() {}
+			
+		});
+		if (routeDeviLoader.load(routeProposalList.get(proposalPosition))) {
+			setProgressBarIndeterminateVisibility(true);
+		} else {
+			setProgressBarIndeterminateVisibility(false);
+			routeList.notifyDataSetChanged();
+		}				
 	}
 	
 	/*
@@ -342,10 +390,15 @@ public class DetailedRouteView extends ListActivity {
 		super.onSaveInstanceState(outState);
 		outState.putParcelableArrayList(RouteProposal.PARCELABLE, routeProposalList);
 		outState.putInt(KEY_PROPOSALPOSITION, proposalPosition);
+		outState.putParcelable(RouteDeviData.PARCELABLE, deviList);
 	}
 	
 	@Override
 	protected void onDestroy() {
+		if (routeDeviLoader != null) {
+			routeDeviLoader.kill();
+			routeDeviLoader = null;
+		}
 		super.onDestroy();
 		//Stop the tracker when it is no longer needed.
 		tracker.stop();
