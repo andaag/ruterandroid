@@ -24,7 +24,6 @@ import java.util.HashMap;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -81,7 +80,7 @@ public class OverviewRouteView extends ListActivity {
 	private RouteSearchData routeSearch;
 	private TrafikantenRoute routeProvider;
 	private RouteDeviLoader routeDeviLoader;
-	private HashMap<String, ArrayList<DeviData> > deviList = new HashMap<String, ArrayList<DeviData> >();
+	public HashMap<String, ArrayList<DeviData> > deviList = new HashMap<String, ArrayList<DeviData> >();
 	
 	/*
 	 * UI
@@ -215,6 +214,7 @@ public class OverviewRouteView extends ListActivity {
 			setProgressBarIndeterminateVisibility(true);
 		} else {
 			setProgressBarIndeterminateVisibility(false);
+			routeList.notifyDataSetChanged();
 		}
 						
 	}
@@ -329,11 +329,11 @@ class OverviewRouteAdapter extends BaseAdapter {
 	public static final String KEY_ROUTELIST = "routelist";
 	private LayoutInflater inflater;
 	private ArrayList<RouteProposal> items = new ArrayList<RouteProposal>();
-	final private Context context;
+	final private OverviewRouteView parent;
 	
-	public OverviewRouteAdapter(Context context) {
-		inflater = LayoutInflater.from(context);
-		this.context = context;
+	public OverviewRouteAdapter(OverviewRouteView parent) {
+		inflater = LayoutInflater.from(parent);
+		this.parent = parent;
 	}
 	
 	/*
@@ -353,6 +353,26 @@ class OverviewRouteAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(int pos) { return pos; }
 	public void addItem(RouteProposal item) { items.add(item); }
+	
+	private ArrayList<DeviData> getDevi(int pos, boolean checkOnly) {
+		final ArrayList<DeviData> retList = new ArrayList<DeviData>();
+		for(RouteData routeData : items.get(pos).travelStageList) {
+			/*
+			 * TODO, come up with a better way of id'ing the different values, using a string for this is dumb.
+			 *  - this is also in routeDeviLoader
+			 */
+			final String deviKey = "" + routeData.fromStation.stationId + "-" + routeData.line;
+			ArrayList<DeviData> deviList = parent.deviList.get(deviKey);
+			if (deviList != null) {
+				for(DeviData devi : deviList) {
+					retList.add(devi);
+					if (checkOnly)
+						return retList;
+				}
+			}
+		}
+		return retList;
+	}
 	
 	/*
 	 * Setup the view
@@ -375,6 +395,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			holder.departureTime = (TextView) convertView.findViewById(R.id.departureTime);
 			holder.arrivalTime = (TextView) convertView.findViewById(R.id.arrivalTime);
 			holder.travelTime = (TextView) convertView.findViewById(R.id.travelTime);
+			holder.deviSymbol = (TextView) convertView.findViewById(R.id.deviSymbol);
 
 			convertView.setTag(holder);
 		} else {
@@ -427,13 +448,19 @@ class OverviewRouteAdapter extends BaseAdapter {
 			}
 		}
 		
+		if (getDevi(pos, true).size() > 0) {
+			holder.deviSymbol.setVisibility(View.VISIBLE);						
+		} else {
+			holder.deviSymbol.setVisibility(View.GONE);
+		}
+		
 		{
 			/*
 			 * Setup the basic data
 			 */
 			holder.departureTime.setText(HelperFunctions.hourFormater.format(departure));
 			holder.arrivalTime.setText(HelperFunctions.hourFormater.format(arrival));
-			holder.travelTime.setText(context.getText(R.string.travelTime) + " : " + HelperFunctions.hourFormater.format(arrival - departure));
+			holder.travelTime.setText(parent.getText(R.string.travelTime) + " : " + HelperFunctions.hourFormater.format(arrival - departure));
 		
 		}
 		
@@ -448,6 +475,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 		TextView travelTime;
 		TextView departureTime;
 		TextView arrivalTime;
+		TextView deviSymbol;
 	}
 }
 

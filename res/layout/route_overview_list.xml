@@ -31,13 +31,41 @@
 	  android:layout_marginBottom="5dip"
 	  android:textSize="15dip"
 	  android:text="Reisetid : 1h 17m"/>
+	  
+	  <LinearLayout
+	  android:layout_height="wrap_content" 
+	  android:layout_width="wrap_content"
+	  android:orientation="horizontal"
+	  android:layout_marginLeft="150dip">
+	  
+	  
+		  <TextView android:id="@+id/deviSymbol"
+		  android:layout_height="wrap_content" 
+		  android:layout_width="wrap_content"
+		  android:background="#FED100"
+		  android:textColor="#000"
+		  android:text="!"
 
-	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	  android:id="@+id/travelTypes"
-      android:orientation="horizontal"
-      android:layout_marginTop="3dip"
-      android:layout_marginBottom="5dip"
-	  android:layout_marginLeft="150dip"
-      android:layout_height="wrap_content" 
-	  android:layout_width="fill_parent"/>
+   		  android:textSize="16dip"
+		  android:paddingLeft="7dip"
+		  android:paddingRight="7dip"
+		  android:paddingTop="1dip"
+		  android:paddingBottom="1dip"
+		  android:layout_marginTop="8dip"
+		  android:layout_marginRight="5dip"
+		  android:visibility="gone"
+
+		  android:textStyle="bold"
+		  />
+	
+		  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		  android:id="@+id/travelTypes"
+	      android:orientation="horizontal"
+	      android:layout_marginTop="3dip"
+	      android:layout_marginBottom="5dip"
+	      android:layout_height="wrap_content" 
+		  android:layout_width="fill_parent"/>
+	  
+	  </LinearLayout>
+
 </RelativeLayout>

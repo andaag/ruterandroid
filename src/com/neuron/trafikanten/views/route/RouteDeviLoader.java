@@ -42,6 +42,7 @@ public class RouteDeviLoader {
 				if (!routeData.deviLoaded && routeData.tourID > 0) {
 					/*
 					 * TODO, come up with a better way of id'ing the different values, using a string for this is dumb.
+					 *  - this is also in overviewrouteview
 					 */
 					deviKey = "" + routeData.fromStation.stationId + "-" + routeData.line;
 					/*
