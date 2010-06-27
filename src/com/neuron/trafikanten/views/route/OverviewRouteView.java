@@ -19,7 +19,6 @@
 package com.neuron.trafikanten.views.route;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -50,6 +49,7 @@ import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRoute;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RouteData;
+import com.neuron.trafikanten.dataSets.RouteDeviData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.RouteSearchData;
 import com.neuron.trafikanten.notification.NotificationDialog;
@@ -83,7 +83,7 @@ public class OverviewRouteView extends ListActivity {
 	private RouteSearchData routeSearch;
 	private TrafikantenRoute routeProvider;
 	private RouteDeviLoader routeDeviLoader;
-	public HashMap<String, ArrayList<DeviData> > deviList = new HashMap<String, ArrayList<DeviData> >();
+	public RouteDeviData deviList = new RouteDeviData();
 	
 	/*
 	 * UI
@@ -125,6 +125,7 @@ public class OverviewRouteView extends ListActivity {
 		} else {
 			routeSearch = savedInstanceState.getParcelable(RouteSearchData.PARCELABLE);
 			final ArrayList<RouteProposal> list = savedInstanceState.getParcelableArrayList(OverviewRouteAdapter.KEY_ROUTELIST);
+			deviList = savedInstanceState.getParcelable(RouteDeviData.PARCELABLE);
 			routeList.setList(list);
 			infoText.setVisibility(routeList.getCount() > 0 ? View.GONE : View.VISIBLE);
 		}
@@ -327,6 +328,7 @@ public class OverviewRouteView extends ListActivity {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(RouteSearchData.PARCELABLE, routeSearch);
 		outState.putParcelableArrayList(OverviewRouteAdapter.KEY_ROUTELIST, routeList.getList());
+		outState.putParcelable(RouteDeviData.PARCELABLE, deviList);
 	}
 	 
 	@Override

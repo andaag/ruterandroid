@@ -42,11 +42,6 @@ public class RouteData implements Parcelable {
 	public int waitTime; // in minutes, waittime for THIS transport, not next transport.
 	
 	/*
-	 * For devi:
-	 */
-	public boolean deviLoaded = false;
-	
-	/*
 	 * transportType can be train/tram/etc, it's up to the seperate providers to decide what goes in here.
 	 */
 	public int transportType;
