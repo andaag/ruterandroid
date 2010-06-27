@@ -556,9 +556,9 @@ public class RealtimeView extends ListActivity {
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 		final RealtimeData realtimeData = realtimeList.getItem(info.position);
 		
-		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
 		if (realtimeData.devi.size() > 0)
 			menu.add(0, DEVI_ID, 0, R.string.warnings);
+		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
 	}
 	
 	/*
