@@ -79,9 +79,7 @@ Try clicking menu and searching for an address instead!</string>
         <string name="proposal">Travel Proposal :</string>
 
         <!-- DetailedRouteView -->
-        <string name="travelTime">Travel time : </string>
-        <string name="waitTime">Wait time : </string>
-        <string name="walkTime">Walk time : </string>
+        <string name="travelTime">Travel time</string>
         <string name="walk">Walk</string>
         <string name="noRoutesFound">No routes found!</string>  
         <string name="routeLoading">Route loading...\n\n
