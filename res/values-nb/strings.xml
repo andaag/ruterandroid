@@ -75,6 +75,7 @@ Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
 
         <!-- DetailedRouteView -->
         <string name="travelTime">Reisetid</string>
+        <string name="waitTime">Ventetid</string>
         <string name="walk">Gå</string>
         <string name="noRoutesFound">Ingen rute funnet!</string>  
         <string name="routeLoading">Laster reiseinformasjon ...\n\n

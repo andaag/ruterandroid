@@ -449,7 +449,7 @@ class RouteAdapter extends BaseAdapter {
 		 * Setup waittime
 		 */
 		if (routeData.waitTime > 0) {
-			holder.waittime.setText("" + context.getText(R.string.waitTime) + " " +
+			holder.waittime.setText("" + context.getText(R.string.waitTime) + " : " +
 					HelperFunctions.renderAccurate(routeData.waitTime * (HelperFunctions.MINUTE)));
 			holder.waittime.setVisibility(View.VISIBLE);
 		} else {
