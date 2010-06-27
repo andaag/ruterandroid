@@ -18,6 +18,13 @@ public class RouteDeviData implements Parcelable  {
 	public RouteDeviData() {
 	}
 	
+	public String getDeviKey(int stationId, String line) {
+		/*
+		 * TODO, come up with a better way of id'ing the different values, using a string for this is dumb.
+		 */
+		return line + "-" + stationId;
+	}
+	
 	/*
 	 * @see android.os.Parcelable
 	 */

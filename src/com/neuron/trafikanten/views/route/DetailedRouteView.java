@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +39,8 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -48,16 +49,18 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
+import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteDeviData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.notification.NotificationDialog;
+import com.neuron.trafikanten.views.GenericDeviCreator;
 import com.neuron.trafikanten.views.map.GenericMap;
 
 public class DetailedRouteView extends ListActivity {
 	//private final static String TAG = "Trafikanten-DetailedRouteView";
 	private RouteAdapter routeList;
-	private GoogleAnalyticsTracker tracker;
+	public GoogleAnalyticsTracker tracker;
 	private RouteDeviLoader routeDeviLoader;
 	
 	/*
@@ -79,7 +82,7 @@ public class DetailedRouteView extends ListActivity {
 	/*
 	 * Saved instance data
 	 */
-	private RouteDeviData deviList;
+	public RouteDeviData deviList;
 	private ArrayList<RouteProposal> routeProposalList;
 	private int proposalPosition;
 
@@ -405,11 +408,11 @@ public class DetailedRouteView extends ListActivity {
 class RouteAdapter extends BaseAdapter {
 	private LayoutInflater inflater;
 	private ArrayList<RouteData> items = new ArrayList<RouteData>();
-	private Context context;
+	private DetailedRouteView parent;
 	
-	public RouteAdapter(Context context) {
-		inflater = LayoutInflater.from(context);
-		this.context = context;
+	public RouteAdapter(DetailedRouteView parent) {
+		inflater = LayoutInflater.from(parent);
+		this.parent = parent;
 	}
 	
 	/*
@@ -454,6 +457,7 @@ class RouteAdapter extends BaseAdapter {
 			holder.to = (TextView) convertView.findViewById(R.id.to);
 			holder.toTime = (TextView) convertView.findViewById(R.id.toTime);
 			holder.waittime = (TextView) convertView.findViewById(R.id.waittime);
+			holder.devi = (LinearLayout) convertView.findViewById(R.id.devi);
 			convertView.setTag(holder);
 		} else {
 			/*
@@ -498,11 +502,26 @@ class RouteAdapter extends BaseAdapter {
 		 * Setup waittime
 		 */
 		if (routeData.waitTime > 0) {
-			holder.waittime.setText("" + context.getText(R.string.waitTime) + " : " +
+			holder.waittime.setText("" + parent.getText(R.string.waitTime) + " : " +
 					HelperFunctions.renderAccurate(routeData.waitTime * (HelperFunctions.MINUTE)));
 			holder.waittime.setVisibility(View.VISIBLE);
 		} else {
 			holder.waittime.setVisibility(View.GONE);
+		}
+		
+		/*
+		 * Setup devi
+		 */
+		final String deviKey = parent.deviList.getDeviKey(routeData.fromStation.stationId, routeData.line);
+		final ArrayList<DeviData> deviList = parent.deviList.items.get(deviKey);
+		holder.devi.removeAllViews();
+		if (deviList != null) {
+			/*
+			 * We have devi, add them all to the devi list.
+			 */
+			for (DeviData deviData : deviList) {
+				holder.devi.addView(GenericDeviCreator.createDefaultDeviText(parent, parent.tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));				
+			}
 		}
 		
 		return convertView;
@@ -520,5 +539,6 @@ class RouteAdapter extends BaseAdapter {
 		TextView to;
 		TextView toTime;
 		TextView waittime;
+		LinearLayout devi;
 	}
 }

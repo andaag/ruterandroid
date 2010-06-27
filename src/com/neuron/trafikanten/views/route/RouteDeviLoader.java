@@ -20,7 +20,6 @@ public class RouteDeviLoader {
 	private RouteDeviData deviList;
 	private String deviKey;
 
-	
 	public RouteDeviLoader(Context context, RouteDeviData deviList, IGenericProviderHandler<Void> handler) {
 		this.context = context;
 		this.handler = handler;
@@ -49,11 +48,7 @@ public class RouteDeviLoader {
 			 * if tourId = 0 we're walking, no devi for that ;)
 			 */
 			if (routeData.tourID > 0) {
-				/*
-				 * TODO, come up with a better way of id'ing the different values, using a string for this is dumb.
-				 *  - this is also in overviewrouteview
-				 */
-				deviKey = "" + routeData.fromStation.stationId + "-" + routeData.line;
+				deviKey = deviList.getDeviKey(routeData.fromStation.stationId, routeData.line);
 				/*
 				 * if the deviList contains the key we've already asked.
 				 */

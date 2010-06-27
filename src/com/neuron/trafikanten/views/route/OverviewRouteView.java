@@ -375,7 +375,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 * TODO, come up with a better way of id'ing the different values, using a string for this is dumb.
 			 *  - this is also in routeDeviLoader
 			 */
-			final String deviKey = "" + routeData.fromStation.stationId + "-" + routeData.line;
+			final String deviKey = parent.deviList.getDeviKey(routeData.fromStation.stationId, routeData.line);
 			ArrayList<DeviData> deviList = parent.deviList.items.get(deviKey);
 			if (deviList != null) {
 				for(DeviData devi : deviList) {

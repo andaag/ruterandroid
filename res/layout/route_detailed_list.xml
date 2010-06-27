@@ -16,6 +16,7 @@
 		android:paddingLeft="40dip"
 		style="?android:attr/listSeparatorTextViewStyle"/>
 	
+
 	<TextView
 		android:id="@+id/line"
 		android:layout_width="22dip"
@@ -89,4 +90,12 @@
 		android:layout_alignTop="@id/to"
 		android:gravity="right"
 		android:layout_marginRight="6dip" />
+		
+    <LinearLayout
+    	android:id="@+id/devi"
+    	android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_below="@+id/to"
+		android:layout_height="wrap_content">
+		</LinearLayout>
 </RelativeLayout>

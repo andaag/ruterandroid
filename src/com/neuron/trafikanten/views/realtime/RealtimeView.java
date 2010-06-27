@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -63,8 +61,8 @@ import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.notification.NotificationDialog;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
-import com.neuron.trafikanten.tasks.ShowDeviTask;
 import com.neuron.trafikanten.tasks.ShowRealtimeLineDetails;
+import com.neuron.trafikanten.views.GenericDeviCreator;
 
 public class RealtimeView extends ListActivity {
 	private static final String TAG = "Trafikanten-RealtimeView";
@@ -119,8 +117,7 @@ public class RealtimeView extends ListActivity {
 	 * Other
 	 */
     public SharedPreferences settings;
-    public Typeface departuresTypeface;
-    public static GoogleAnalyticsTracker tracker;
+    public GoogleAnalyticsTracker tracker;
     
 	/** Called when the activity is first created. */
     @Override
@@ -144,7 +141,6 @@ public class RealtimeView extends ListActivity {
 		infoText = (TextView) findViewById(R.id.emptyText);
 		caText = (TextView) findViewById(R.id.caInfoText);
 		settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
-		departuresTypeface = Typeface.createFromAsset(getAssets(), "fonts/DejaVuSans.ttf");
         		
         /*
          * Load instance state
@@ -213,35 +209,6 @@ public class RealtimeView extends ListActivity {
     	}
     }
     
-
-    /*
-     * Function for creating the default devi text, used both for line data and station data
-     */
-    public static TextView createDefaultDeviText(final RealtimeView context, final String title, final DeviData deviData, boolean station) {
-    	TextView deviText = new TextView(context);
-		deviText.setText(title);
-		
-		deviText.setSingleLine();
-		deviText.setPadding(4, 4, 26, 2);
-		if (station) {
-			deviText.setTextColor(Color.BLACK);
-			deviText.setBackgroundResource(R.drawable.skin_stasjonsdevi);
-		} else {
-			deviText.setTextColor(Color.rgb(250, 244, 0));
-			deviText.setBackgroundResource(R.drawable.skin_sanntiddevi);
-		}
-		deviText.setTypeface(context.departuresTypeface);
-		
-		deviText.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-		    	new ShowDeviTask(context, tracker, deviData);
-								
-			}
-        });
-		return deviText;
-    }
-    
     /*
      * Refreshes station specific devi data.
      */
@@ -282,11 +249,11 @@ public class RealtimeView extends ListActivity {
     			deviData.validFrom = 0;
     			deviData.validTo = 0;
     			
-    			devi.addView(createDefaultDeviText(this, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+    			devi.addView(GenericDeviCreator.createDefaultDeviText(this, tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
     		}
     		
     		for (final DeviData deviData : deviItems) {
-				devi.addView(createDefaultDeviText(this, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+				devi.addView(GenericDeviCreator.createDefaultDeviText(this, tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
     		}
   		
     	}
@@ -886,7 +853,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.icon = (ImageView) convertView.findViewById(R.id.icon);
 			holder.destination = (TextView) convertView.findViewById(R.id.destination);
 			holder.departures = (TextView) convertView.findViewById(R.id.departures);
-			holder.departures.setTypeface(parent.departuresTypeface);
+			holder.departures.setTypeface(GenericDeviCreator.getDeviTypeface(parent));
 			holder.departures.setMovementMethod(ScrollingMovementMethod.getInstance());
 			holder.departures.setHorizontallyScrolling(true);
 			holder.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
@@ -907,7 +874,7 @@ class RealtimeAdapter extends BaseAdapter {
 			tableLayout.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					new ShowRealtimeLineDetails(parent, RealtimeView.tracker, System.currentTimeMillis() - parent.timeDifference, data);
+					new ShowRealtimeLineDetails(parent, parent.tracker, System.currentTimeMillis() - parent.timeDifference, data);
 				}
 			});
 			tableLayout.setLongClickable(true);
@@ -945,7 +912,7 @@ class RealtimeAdapter extends BaseAdapter {
 				 * Add all devi items.
 				 */
 				final DeviData devi = deviItems.get(i);
-				holder.departureInfo.addView(RealtimeView.createDefaultDeviText(parent, devi.title, devi, false), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+				holder.departureInfo.addView(GenericDeviCreator.createDefaultDeviText(parent, parent.tracker, devi.title, devi, false), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 			}
 		} else {
 			holder.departureInfo.setVisibility(View.GONE);
