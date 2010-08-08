@@ -226,7 +226,7 @@ public class GenericMap extends MapActivity {
 		/*
 		 * We have a tour id, lets get our list.
 		 */
-		
+		tracker.trackPageView("/map/showTrip");
 		tripProvider = new TrafikantenTrip(this, routeData.tourID, routeData.fromStation.stationId, routeData.toStation.stationId, new IGenericProviderHandler<StationData>() {
 			@Override
 			public void onData(StationData data) {
