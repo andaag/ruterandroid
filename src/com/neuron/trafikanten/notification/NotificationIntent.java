@@ -23,6 +23,15 @@ public class NotificationIntent extends BroadcastReceiver {
 	//private static final String TAG = "Trafikanten-NotificationIntent";
 	@Override
 	public void onReceive(Context context, Intent recieveIntent) {
+		/*
+		 * This produces Class not found when unmarshalling, it seems.. unfixable.
+		 * See http://osdir.com/ml/Android-Developers/2010-06/msg02498.html
+				I've seen mention of this before on this list. IIRC, Android attempts
+				to de-serialize the Parcelable inside the AlarmManagerService, and it
+				does not have your class in the OS, just in your process. Hence, the
+				operation fails.
+		 */
+		
 		//Log.i(TAG,"onRecieve");
 		
 		final NotificationData notificationData = recieveIntent.getParcelableExtra(NotificationData.PARCELABLE);
