@@ -38,6 +38,7 @@ public class NotificationData  implements Parcelable {
 	public ArrayList<RouteProposal> routeProposalList;
 	public int proposalPosition;
 	public long routeDeparture;
+	public RouteDeviData deviList;
 	
 	/*
 	 * Shared:
@@ -53,9 +54,10 @@ public class NotificationData  implements Parcelable {
 		this.with = with;
 	}
 	
-	public NotificationData(ArrayList<RouteProposal> routeProposalList, int proposalPosition, long departure, long notifyTime, String with) {
+	public NotificationData(ArrayList<RouteProposal> routeProposalList, int proposalPosition, RouteDeviData deviList, long departure, long notifyTime, String with) {
 		this.routeProposalList = routeProposalList;
 		this.proposalPosition = proposalPosition;
+		this.deviList = deviList;
 		routeDeparture = departure;
 		this.notifyTime = notifyTime;
 		this.with = with;
@@ -88,6 +90,7 @@ public class NotificationData  implements Parcelable {
 		routeProposalList = new ArrayList<RouteProposal>();
 		in.readTypedList(routeProposalList, RouteProposal.CREATOR);
 		proposalPosition = in.readInt();
+		deviList = in.readParcelable(RouteDeviData.class.getClassLoader());
 		
 		station = in.readParcelable(StationData.class.getClassLoader());
 		departureInfo = in.readParcelable(RealtimeData.class.getClassLoader());
@@ -105,6 +108,7 @@ public class NotificationData  implements Parcelable {
 		out.writeLong(routeDeparture);
 		out.writeTypedList(routeProposalList);
 		out.writeInt(proposalPosition);
+		out.writeParcelable(deviList, 0);
 		
 		out.writeParcelable(station, 0);
 		out.writeParcelable(departureInfo, 0);

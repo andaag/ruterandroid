@@ -35,6 +35,7 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataSets.NotificationData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
+import com.neuron.trafikanten.dataSets.RouteDeviData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.StationData;
 
@@ -55,6 +56,7 @@ public class NotificationDialog {
 	 */
 	private static ArrayList<RouteProposal> sRouteProposalList;
 	private static int sProposalPosition;
+	private static RouteDeviData sDeviList;
 	private static long sRouteDeparture;
 	
 	/*
@@ -70,10 +72,11 @@ public class NotificationDialog {
 		sRouteProposalList = null;
 	}
 	
-	public static void setRouteData(ArrayList<RouteProposal> routeProposalList, int proposalPosition, long departure, String with) {
+	public static void setRouteData(ArrayList<RouteProposal> routeProposalList, int proposalPosition, RouteDeviData deviList, long departure, String with) {
 		sRouteProposalList = routeProposalList;
 		sProposalPosition = proposalPosition;
 		sRouteDeparture = departure;
+		sDeviList = deviList;
 		sWith = with;
 		
 		sRealtimeData = null;
@@ -109,7 +112,7 @@ public class NotificationDialog {
 					/*
 					 * Route data
 					 */
-					notificationData = new NotificationData(sRouteProposalList, sProposalPosition, sRouteDeparture, calendar.getTimeInMillis(), sWith);
+					notificationData = new NotificationData(sRouteProposalList, sProposalPosition, sDeviList, sRouteDeparture, calendar.getTimeInMillis(), sWith);
 					tracker.trackEvent("Notification", "Route", null, 0);
 				}
 				bundle.putParcelable(NotificationData.PARCELABLE, notificationData);

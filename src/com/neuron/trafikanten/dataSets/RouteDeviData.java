@@ -35,9 +35,11 @@ public class RouteDeviData implements Parcelable  {
 	 * Function for reading the parcel
 	 */
 	public RouteDeviData(Parcel in) {
-		while (in.dataAvail() > 0) {
+		int size = in.readInt();
+		while (size > 0) {
 			RouteDeviDataItem item = in.readParcelable(RouteDeviDataItem.class.getClassLoader());
 			items.put(item.deviKey, item.items);
+			size--;
 		}
 	}
 
@@ -48,6 +50,7 @@ public class RouteDeviData implements Parcelable  {
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
 		Set<String> keys = items.keySet();
+		out.writeInt(keys.size());
 		for (String key : keys) {
 			RouteDeviDataItem item = new RouteDeviDataItem(key, items.get(key));
 			out.writeParcelable(item, 0);

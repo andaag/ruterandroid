@@ -352,7 +352,7 @@ public class DetailedRouteView extends ListActivity {
 		 */
 		final long notifyDeparture = notifyRouteData.departure;
 		final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
-		NotificationDialog.setRouteData(routeProposalList, proposalPosition, notifyDeparture, notifyWith);
+		NotificationDialog.setRouteData(routeProposalList, proposalPosition, deviList, notifyDeparture, notifyWith);
 		super.onPrepareDialog(id, dialog);
 	}
     

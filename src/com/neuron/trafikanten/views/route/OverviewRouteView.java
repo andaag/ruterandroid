@@ -262,7 +262,7 @@ public class OverviewRouteView extends ListActivity {
 		
 		final long notifyDeparture = notifyRouteData.departure;
 		final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
-		NotificationDialog.setRouteData(routeList.getList(), selectedId, notifyDeparture, notifyWith);
+		NotificationDialog.setRouteData(routeList.getList(), selectedId, deviList, notifyDeparture, notifyWith);
 		super.onPrepareDialog(id, dialog);
 	}
     
