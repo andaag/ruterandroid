@@ -6,15 +6,15 @@
 	   >
 	   
  
- 	<!--  <com.google.android.maps.MapView
+ 	<!-- <com.google.android.maps.MapView
 	   android:id="@+id/mapview"
 	   android:layout_width="fill_parent"
 	   android:layout_height="fill_parent"
 	   android:clickable="true"
 	   android:apiKey="0C4n0QlD7VKWny63h-bygLe8DF4bhWdnxCYYhNA"
-	   />
-	    -->
+	   /> 
+	    
      
 
-	<include android:id="@+id/mapoverlay" layout="@layout/map_overlay" />
+	<include android:id="@+id/mapoverlay" layout="@layout/map_overlay" /> -->
 </RelativeLayout>

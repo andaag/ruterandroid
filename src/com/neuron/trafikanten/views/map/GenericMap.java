@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -113,7 +114,6 @@ public class GenericMap extends MapActivity {
 		/*
 		 * Setup map view
 		 */
-		final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.view);
 		String apiKey = "0C4n0QlD7VKWny63h-bygLe8DF4bhWdnxCYYhNA";
 		try {
 			if (new File("/sdcard/trafikanten.debug").exists()) {
@@ -126,7 +126,11 @@ public class GenericMap extends MapActivity {
 		mapView = new MapView(this, apiKey);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setClickable(true);
+		
+		final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.view);
+		final View panel = LayoutInflater.from(this).inflate(R.layout.map_overlay, null);
 		relativeLayout.addView(mapView);
+		relativeLayout.addView(panel);
 
 		viewHolder.list = (ImageButton) findViewById(R.id.list);
 		viewHolder.infoPanel = (TransparentPanel) findViewById(R.id.infoPanel);
