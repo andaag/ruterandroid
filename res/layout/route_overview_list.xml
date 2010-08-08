@@ -51,7 +51,7 @@
 		  android:paddingRight="7dip"
 		  android:paddingTop="1dip"
 		  android:paddingBottom="1dip"
-		  android:layout_marginTop="8dip"
+		  android:layout_marginTop="10dip"
 		  android:layout_marginRight="5dip"
 		  android:visibility="gone"
 
