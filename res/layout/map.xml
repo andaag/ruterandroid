@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+       android:id="@+id/view"
 	   android:layout_width="fill_parent"
 	   android:layout_height="fill_parent"
 	   >
 	   
-	<com.google.android.maps.MapView
+ 
+ 	<!--  <com.google.android.maps.MapView
 	   android:id="@+id/mapview"
 	   android:layout_width="fill_parent"
 	   android:layout_height="fill_parent"
 	   android:clickable="true"
 	   android:apiKey="0C4n0QlD7VKWny63h-bygLe8DF4bhWdnxCYYhNA"
 	   />
-	   
-	   <!--  DEBUG KEY : 0C4n0QlD7VKWDhy4m7uWO5K-1k6rjEw0CJXlYgQ" -->
-	   
-	   
+	    -->
+     
+
 	<include android:id="@+id/mapoverlay" layout="@layout/map_overlay" />
 </RelativeLayout>

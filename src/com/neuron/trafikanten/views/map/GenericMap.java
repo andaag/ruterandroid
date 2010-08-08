@@ -18,6 +18,7 @@
 
 package com.neuron.trafikanten.views.map;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -111,8 +113,21 @@ public class GenericMap extends MapActivity {
 		/*
 		 * Setup map view
 		 */
-		mapView = (MapView) findViewById(R.id.mapview);
+		final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.view);
+		String apiKey = "0C4n0QlD7VKWny63h-bygLe8DF4bhWdnxCYYhNA";
+		try {
+			if (new File("/sdcard/trafikanten.debug").exists()) {
+				apiKey = "0C4n0QlD7VKUWJrlHJZKGAHob_NbD9w0gNNB2xg";
+			}
+		} catch (Exception e) {
+			// We don't care if this fails.
+		}
+			
+		mapView = new MapView(this, apiKey);
 		mapView.setBuiltInZoomControls(true);
+		mapView.setClickable(true);
+		relativeLayout.addView(mapView);
+
 		viewHolder.list = (ImageButton) findViewById(R.id.list);
 		viewHolder.infoPanel = (TransparentPanel) findViewById(R.id.infoPanel);
 		viewHolder.infoPanel.setVisibility(View.GONE);
