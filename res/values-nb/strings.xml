@@ -101,11 +101,11 @@ da er det tider fra rutetabellen som vises.</string>
 
 		<!--  Realtime Clock incorrect -->
 		<string name="clockDiffTitle">Klokken din er feil!</string>
-		<string name="clockDiffDescription">Din lokale klokke er forskjellig fra Trafikanten's klokke!</string>
-		<string name="clockDiffBodyHead">Sanntid visning vil vise data basert på Trafikanten's klokke, men påminnelser/rute data kan vise feil!</string>
+		<string name="clockDiffDescription">Din lokale klokke er forskjellig fra Trafikanten\'s klokke!</string>
+		<string name="clockDiffBodyHead">Sanntid visning vil vise data basert på Trafikanten\'s klokke, men påminnelser/rute data kan vise feil!</string>
 		<string name="clockDiffBodyYourClock">Klokken din er</string>
-		<string name="clockDiffBodyBehind">bak Trafikanten's tid.</string>
-		<string name="clockDiffBodyAhead">forran Trafikanten's tid.</string>
+		<string name="clockDiffBodyBehind">bak Trafikanten\'s tid.</string>
+		<string name="clockDiffBodyAhead">forran Trafikanten\'s tid.</string>
         
         <!-- Tasks -->
         <string name="searchRouteTask">Kalkulerer rute...</string>
