@@ -190,6 +190,12 @@ public class GenericMap extends MapActivity {
 				routeLength = routeList.size() + 1;
 				setProgress(0);
 				loadRouteData();
+				
+				/*
+				 * Hide select station button, it does nothing in this view
+				 */
+				final View panelSelectStationButton = panel.findViewById(R.id.select);
+				panelSelectStationButton.setVisibility(View.GONE);
 			}
 		} else {
 			// TODO : saveInstanceState in mapview.
