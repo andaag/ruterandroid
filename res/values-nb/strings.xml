@@ -74,6 +74,7 @@ Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
         <string name="proposal">Reiseforslag:</string>
 
         <!-- DetailedRouteView -->
+        <string name="detailedRouteHeader">Detaljert reise:</string>        
         <string name="travelTime">Reisetid</string>
         <string name="waitTime">Ventetid</string>
         <string name="walk">Gå</string>

@@ -25,7 +25,7 @@
 	  android:layout_marginLeft="2dip"
 	  android:textAppearance="?android:attr/textAppearanceMedium"
 	  android:layout_toRightOf="@+id/departureHeaderIcon"
-	  android:text="Route"/>
+	  android:text="@string/detailedRouteHeader"/>
 	  
 	  <View
 	  android:layout_width="fill_parent"
