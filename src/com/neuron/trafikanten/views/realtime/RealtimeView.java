@@ -62,6 +62,7 @@ import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.notification.NotificationDialog;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
 import com.neuron.trafikanten.tasks.ShowRealtimeLineDetails;
+import com.neuron.trafikanten.tasks.ShowTipsTask;
 import com.neuron.trafikanten.views.GenericDeviCreator;
 
 public class RealtimeView extends ListActivity {
@@ -176,6 +177,8 @@ public class RealtimeView extends ListActivity {
         setListAdapter(realtimeList);
         refreshTitle();
         refreshDevi();
+        
+        new ShowTipsTask(this, tracker, RealtimeView.class.getName(), R.string.tipRealtime, 38);
     }
     
     private void stopProviders() {
