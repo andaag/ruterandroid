@@ -471,7 +471,8 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 */
 			holder.departureTime.setText(HelperFunctions.hourFormater.format(departure));
 			holder.arrivalTime.setText(HelperFunctions.hourFormater.format(arrival));
-			holder.travelTime.setText(parent.getText(R.string.travelTime) + " : " + HelperFunctions.hourFormater.format(arrival - departure));
+
+			holder.travelTime.setText(parent.getText(R.string.travelTime) + " : " + HelperFunctions.renderAccurate(arrival - departure));
 		
 		}
 		
