@@ -70,7 +70,8 @@ public class SelectRouteView extends ListActivity {
 	
 	private static final int DIALOG_SELECTTIME = 1;
 	private static final int DIALOG_CHANGEMARGIN = 2;
-	private static final int DIALOG_PROPOSALS = 3;
+	private static final int DIALOG_CHANGEPRIORITY = 3;
+	private static final int DIALOG_PROPOSALS = 4;
 	
 	private SelectRouteAdapter listMenu;
 
@@ -218,14 +219,15 @@ public class SelectRouteView extends ListActivity {
 				/*
 				 * Add advanced options
 				 */
-				/*items.add(new CheckboxRouteEntry(this, R.string.preferDirect, routeSearch.preferDirect, 10, new OnClickListener() {
+				CharSequence prioritize = routeSearch.changePunish > 2 ? getText(R.string.directRoute) : getText(R.string.shortTravel);
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.prioritize) + " : " + prioritize, getText(R.string.prioritizeHint), 10, 0, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						routeSearch.preferDirect = !routeSearch.preferDirect;
-						refreshMenu();
+						SelectRouteView.this.showDialog(DIALOG_CHANGEPRIORITY);
+						refreshMenu();						
 					}
 				}));
-				items.add(new CheckboxRouteEntry(this, R.string.avoidWalking, routeSearch.avoidWalking, 10, new OnClickListener() {
+				/*items.add(new CheckboxRouteEntry(this, R.string.avoidWalking, routeSearch.avoidWalking, 10, new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						routeSearch.avoidWalking = !routeSearch.avoidWalking;
@@ -448,6 +450,22 @@ public class SelectRouteView extends ListActivity {
 			    }
 			});
 			return changeBuilder.create();
+		case DIALOG_CHANGEPRIORITY:
+			final CharSequence[] priorityItems = {getText(R.string.shortTravel), getText(R.string.directRoute)};
+			
+			AlertDialog.Builder priorityBuilder = new AlertDialog.Builder(this);
+			priorityBuilder.setTitle(R.string.prioritize);
+			priorityBuilder.setItems(priorityItems, new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int item) {
+			    	if (item == 0) {
+			    		routeSearch.changePunish = 2;			    		
+			    	} else {
+			    		routeSearch.changePunish = 10;
+			    	}
+			        refreshMenu();
+			    }
+			});
+			return priorityBuilder.create();
 		case DIALOG_PROPOSALS:
 			final CharSequence[] proposalItems = {"1", "2", "3", "4", "5", "10"};
 			

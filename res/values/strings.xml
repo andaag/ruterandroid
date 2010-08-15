@@ -22,7 +22,11 @@
     <string name="disable">Disable</string>
     <string name="proposals">Proposals</string>
     <string name="when">When</string>
-    
+
+    <string name="prioritize">Prioritize</string>
+    <string name="prioritizeHint">Prefer shortest traveltime/direct route</string>
+    <string name="directRoute">Direct route</string>
+    <string name="shortTravel">Shortest traveltime</string>
     
     <string name="selectWhereToTravelTo">Select where to travel to</string>
     <string name="selectWhereToTravelFrom">Select where to travel from</string>
@@ -37,8 +41,8 @@
     <string name="travelAt">Travel at</string>
     <string name="arriveBefore">Arrive before</string>
     
-    <string name="preferDirect">Prefer direct</string>
-    <string name="avoidWalking">Avoid walking</string>
+    
+    <!-- <string name="avoidWalking">Avoid walking</string> -->
     <string name="changeMargin">Change margin</string>
     
     <string name="departingAt">Departing at : </string>

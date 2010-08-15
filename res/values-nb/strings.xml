@@ -18,6 +18,10 @@
     <string name="proposals">Forslag</string>
     <string name="when">Når</string>
     
+    <string name="prioritize">Prioriter</string>
+    <string name="prioritizeHint">Prioriter kortest reisetid/direkte rute</string>
+    <string name="directRoute">Direkte rute</string>
+    <string name="shortTravel">Kortest reisetid</string>
     
     <string name="selectWhereToTravelTo">Velg sted å dra til</string>
     <string name="selectWhereToTravelFrom">Velg sted å dra fra</string>
@@ -32,8 +36,8 @@
     <string name="travelAt">Avgang etter</string>
     <string name="arriveBefore">Ankomst før</string>
     
-    <string name="preferDirect">Foretrekk direkte</string>
-    <string name="avoidWalking">Ungå å gå</string>
+    
+    <!-- <string name="avoidWalking">Ungå å gå</string>  -->
     <string name="changeMargin">Minste byttetid</string>
     
     <string name="departingAt">Reiser: </string>

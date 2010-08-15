@@ -105,11 +105,11 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			/*
 			 * Change margin/change punish/proposals
 			 */
+			String changePunish = new Integer(routeSearch.changePunish).toString();
 			String changeMargin = new Integer(routeSearch.changeMargin).toString();
 			String proposals = new Integer(routeSearch.proposals).toString();
 			
 			//For now using default values
-			String changePunish = "2";
 			String walkingFactor = "100";
 			
 			/*
