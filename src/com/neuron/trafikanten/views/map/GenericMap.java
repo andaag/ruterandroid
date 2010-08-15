@@ -222,8 +222,14 @@ public class GenericMap extends MapActivity {
         overlays.add(locationOverlay);
 	}
 	
+	/*
+	 * This takes routeList[0] and deals with it until routeList.size == 0, then it add the overlay and stops.
+	 */
 	private void loadRouteData() {
 		if (routeList.size() == 0) {
+			/*
+			 * Activate routeOverlay and add it to the map.
+			 */
 			RouteOverlay routeOverlay = new RouteOverlay(iconMapMarker, stationOverlay.items);
 			final List<Overlay> overlays = mapView.getOverlays();
 			stationOverlay.doPopulate();
@@ -275,7 +281,6 @@ public class GenericMap extends MapActivity {
 
 			@Override
 			public void onPreExecute() {}
-			
 		});
 	}
 	
