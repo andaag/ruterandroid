@@ -19,8 +19,8 @@
     <string name="when">Når</string>
     
     <string name="prioritize">Prioriter</string>
-    <string name="prioritizeHint">Prioriter kortest reisetid/direkte rute</string>
-    <string name="directRoute">Direkte rute</string>
+    <string name="prioritizeHint">Prioriter kortest reisetid/direkterute</string>
+    <string name="directRoute">Direkterute</string>
     <string name="shortTravel">Kortest reisetid</string>
     
     <string name="selectWhereToTravelTo">Velg sted å dra til</string>
