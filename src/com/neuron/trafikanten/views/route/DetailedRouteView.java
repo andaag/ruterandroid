@@ -21,7 +21,6 @@ package com.neuron.trafikanten.views.route;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,7 +52,7 @@ import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteDeviData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
-import com.neuron.trafikanten.notification.NotificationDialog;
+import com.neuron.trafikanten.tasks.NotificationTask;
 import com.neuron.trafikanten.views.GenericDeviCreator;
 import com.neuron.trafikanten.views.map.GenericMap;
 
@@ -76,7 +75,6 @@ public class DetailedRouteView extends ListActivity {
 	/*
 	 * Dialogs
 	 */
-	private static final int DIALOG_NOTIFICATION = 1;
 	private int selectedId = 0;
 	
 	/*
@@ -325,38 +323,6 @@ public class DetailedRouteView extends ListActivity {
 	}
 	
 	/*
-	 * Dialog creation
-	 * @see android.app.Activity#onCreateDialog(int)
-	 */
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch(id) {
-		case DIALOG_NOTIFICATION:
-			/*
-			 * notify dialog
-			 */
-			return NotificationDialog.getDialog(this, tracker, 0);
-		}
-		return super.onCreateDialog(id);
-	}
-
-	/*
-	 * Load data into dialog
-	 * @see android.app.Activity#onPrepareDialog(int, android.app.Dialog)
-	 */
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		final RouteData notifyRouteData = (RouteData) routeList.getItem(selectedId);
-		/*
-		 * Departure is what we base our notification on, 10 minuts before departure
-		 */
-		final long notifyDeparture = notifyRouteData.departure;
-		final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
-		NotificationDialog.setRouteData(routeProposalList, proposalPosition, deviList, notifyDeparture, notifyWith);
-		super.onPrepareDialog(id, dialog);
-	}
-    
-	/*
 	 * onCreate - Context menu is a popup from a longpress on a list item.
 	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
 	 */
@@ -378,7 +344,9 @@ public class DetailedRouteView extends ListActivity {
 		
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
-			showDialog(DIALOG_NOTIFICATION);
+			final RouteData notifyRouteData = (RouteData) routeList.getItem(selectedId);
+			final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
+			new NotificationTask(this, tracker, routeProposalList, proposalPosition, deviList, notifyRouteData.departure, notifyWith);
 			return true;
 		}
 		return super.onContextItemSelected(item);

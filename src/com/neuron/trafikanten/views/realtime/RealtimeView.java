@@ -20,7 +20,6 @@ package com.neuron.trafikanten.views.realtime;
 
 import java.util.ArrayList;
 
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -59,7 +58,7 @@ import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.hacks.StationIcons;
-import com.neuron.trafikanten.notification.NotificationDialog;
+import com.neuron.trafikanten.tasks.NotificationTask;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
 import com.neuron.trafikanten.tasks.ShowRealtimeLineDetails;
 import com.neuron.trafikanten.tasks.ShowTipsTask;
@@ -87,7 +86,6 @@ public class RealtimeView extends ListActivity {
 	/*
 	 * Dialogs
 	 */
-	private static final int DIALOG_NOTIFICATION = 1;
 	private int selectedId = 0;
 	
 	/*
@@ -485,36 +483,6 @@ public class RealtimeView extends ListActivity {
 	}
 
 	/*
-	 * Dialog creation
-	 * @see android.app.Activity#onCreateDialog(int)
-	 */
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch(id) {
-		case DIALOG_NOTIFICATION:
-			/*
-			 * notify dialog
-			 */
-			return NotificationDialog.getDialog(this, tracker, timeDifference);
-		}
-		return super.onCreateDialog(id);
-	}
-
-	/*
-	 * Load data into dialog
-	 * @see android.app.Activity#onPrepareDialog(int, android.app.Dialog)
-	 */
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId);
-		final String notifyWith = realtimeData.line.equals(realtimeData.destination) 
-			? realtimeData.line 
-			: realtimeData.line + " " + realtimeData.destination;
-		NotificationDialog.setRealtimeData(realtimeData, station, notifyWith);
-		super.onPrepareDialog(id, dialog);
-	}
-
-	/*
 	 * onCreate - Context menu is a popup from a longpress on a list item.
 	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
 	 */
@@ -539,13 +507,16 @@ public class RealtimeView extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         selectedId = info.position;
+		final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId);
 		
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
-			showDialog(DIALOG_NOTIFICATION);
+			final String notifyWith = realtimeData.line.equals(realtimeData.destination) 
+				? realtimeData.line 
+				: realtimeData.line + " " + realtimeData.destination;
+			new NotificationTask(this, tracker, realtimeData, station, notifyWith, timeDifference);
 			return true;
 		case DEVI_ID:
-			final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId);
 			final ArrayList<DeviData> deviPopup = realtimeList.getDevi(realtimeData);
 			new SelectDeviTask(this, tracker, deviPopup);
 			return true;
