@@ -44,6 +44,7 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	 * Scan list and set .isFavorite where neccesary.
 	 */
 	public void refreshFavorites(ArrayList<StationData> list) {
+		open();
 		for (StationData station : list)
 			station.isFavorite = false;
 		
@@ -63,6 +64,7 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	 * Toggles whether a station is favorite or not.
 	 */
 	public boolean toggleFavorite(StationData station) {
+		open();
 		if (delete(station.stationId))
 			return false;
 		/*
@@ -77,6 +79,7 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	 * Updates KEY_USED
 	 */
 	public void updateUsed(StationData station) {
+		open();
 		final int realtimeStop = station.realtimeStop ? 1 : 0; 
 		final String sql = String.format("UPDATE %s SET %s = %s + 1, %s = %d WHERE %s = %d", table, KEY_USED, KEY_USED, KEY_REALTIMESTOP, realtimeStop, KEY_STATIONID, station.stationId);
 		final Cursor c = db.rawQuery(sql, null);
@@ -88,7 +91,8 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
 	 * Add favorites to a station list.
 	 */
     public void addFavoritesToList(boolean isRealtimeSelector, List<StationData> items) {
-    	Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
+    	open();
+    	final Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
     	while (cursor.moveToNext()) {
     		StationData station = new StationData(cursor.getString(0), 
     				cursor.getString(1), 

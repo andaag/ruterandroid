@@ -40,10 +40,11 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 	}
 	
 	public void addHistoryToList(boolean isRealtimeSelector, ArrayList<StationData> items) {
+		open();
 		/*
 		 * Get all items from the list
 		 */
-    	Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
+    	final Cursor cursor = db.query(table, COLUMNS, null, null, null, null, KEY_USED + " DESC");
     	while (cursor.moveToNext()) {
     		StationData station = new StationData(cursor.getString(0), 
     				cursor.getString(1), 
@@ -75,13 +76,15 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 	}
 	
 	public boolean hasStation(int stationId) {
-		Cursor c = db.query(table, new String[] { KEY_STATIONID }, KEY_STATIONID + " = " + stationId, null, null, null, null);
+		open();
+		final Cursor c = db.query(table, new String[] { KEY_STATIONID }, KEY_STATIONID + " = " + stationId, null, null, null, null);
 		boolean r = c.moveToNext();
 		c.close();
 		return r;
 	}
 	
 	public void updateHistory(StationData station) {
+		open();
 		if (hasStation(station.stationId)) {
 			/*
 			 * Update ROWID to max(_id) + 1 (for auto cleaning old entries)
