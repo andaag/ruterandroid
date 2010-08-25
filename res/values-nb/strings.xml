@@ -7,7 +7,7 @@
     
     <!-- SelectRoute -->
     <string name="searchForRoutes">Søk etter ruteforslag</string>
-    <string name="calculateRouteResults">Kalkuler mulige ruter</string>
+    <string name="calculateRouteResults">Finn reiseforslag</string>
     <string name="selectStations">Velg stasjoner</string>
     <string name="safeMargin">Minste byttetid mellom stoppesteder</string>
     <string name="advancedOptions">Avanserte instillinger</string>
@@ -78,7 +78,7 @@ Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
         <string name="proposal">Reiseforslag:</string>
 
         <!-- DetailedRouteView -->
-        <string name="detailedRouteHeader">Detaljert reise:</string>        
+        <string name="detailedRouteHeader">Detaljert reiseforslag:</string>        
         <string name="travelTime">Reisetid</string>
         <string name="waitTime">Ventetid</string>
         <string name="walk">Gå</string>

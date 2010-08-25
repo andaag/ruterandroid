@@ -12,7 +12,7 @@
     
     <!-- SelectRoute -->
     <string name="searchForRoutes">Search for routes</string>
-    <string name="calculateRouteResults">Calculate possible routes</string>
+    <string name="calculateRouteResults">Find travelproposals</string>
     <string name="selectStations">Select Stations</string>
     <string name="safeMargin">Safe margin between each stop</string>
     <string name="advancedOptions">Advanced options</string>
@@ -83,7 +83,7 @@ Try clicking menu and searching for an address instead!</string>
         <string name="proposal">Travel Proposal :</string>
 
         <!-- DetailedRouteView -->
-        <string name="detailedRouteHeader">Detailed route:</string>
+        <string name="detailedRouteHeader">Detailed routeproposal:</string>
         <string name="travelTime">Travel time</string>
         <string name="waitTime">Wait time</string>
         <string name="walk">Walk</string>
