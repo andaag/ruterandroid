@@ -24,7 +24,7 @@
 	  android:layout_marginLeft="2dip"
 	  android:layout_toRightOf="@+id/departureHeaderIcon"
 	  android:textAppearance="?android:attr/textAppearanceMedium"
-	  android:text="Travel alternatives:"/>
+	  android:text="@string/travelAlternatives"/>
 	  
 	  <View
 	  android:layout_width="fill_parent"
@@ -42,7 +42,7 @@
 	  android:layout_marginTop="2dip"
 	  android:layout_marginLeft="7dip"
 	  android:layout_below="@+id/departureHeaderIcon"
-	  android:text="Departure:"/>
+	  android:text="@string/departure"/>
 	  
 	  <TextView android:id="@+id/arrivalTime"
 	  android:layout_height="wrap_content" 
@@ -51,7 +51,7 @@
 	  android:layout_marginTop="2dip"
 	  android:layout_marginLeft="88dip"
 	  android:layout_below="@+id/departureHeaderIcon"
-	  android:text="Arrival:"/>
+	  android:text="@string/arrival"/>
 	  
 	  <TextView android:id="@+id/travelTypes"
 	  android:layout_height="wrap_content" 
@@ -60,7 +60,7 @@
 	  android:layout_marginTop="2dip"
 	  android:layout_marginLeft="150dip"
 	  android:layout_below="@+id/departureHeaderIcon"
-	  android:text="Transporttypes:"/>
+	  android:text="@string/transportTypes"/>
 	  
 
     

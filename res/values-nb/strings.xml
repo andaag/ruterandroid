@@ -76,6 +76,10 @@ Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
 
         <!-- OverviewRouteView -->
         <string name="proposal">Reiseforslag:</string>
+        <string name="travelAlternatives">Reise alternativer:</string>
+        <string name="departure">Avgang:</string>
+        <string name="arrival">Ankomst:</string>
+        <string name="transportTypes">Transportmidler:</string>
 
         <!-- DetailedRouteView -->
         <string name="detailedRouteHeader">Detaljert reiseforslag:</string>        
