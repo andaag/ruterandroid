@@ -13,7 +13,7 @@
 		android:id="@+id/symbol"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
+		android:paddingTop="7dip"
 		android:paddingRight="6dip"
 		android:visibility="gone"/>
      
