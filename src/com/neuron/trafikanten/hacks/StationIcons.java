@@ -1,7 +1,6 @@
 package com.neuron.trafikanten.hacks;
 
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.dataSets.StationData;
 
 /*
  * Station icons are currently not sent by the realtime api.
@@ -11,16 +10,7 @@ import com.neuron.trafikanten.dataSets.StationData;
  */
 
 public class StationIcons {
-	public static int hackGetLineIcon(StationData station, String line) {
-		/*final String stopName = station.stopName.toLowerCase();
-		if (stopName.contains("tog")) {
-			return R.drawable.icon32_line_train;
-		} else if (stopName.contains("t-bane")) {
-			return R.drawable.icon32_line_tram;
-		} else if (stopName.contains("buss")) {
-			return R.drawable.icon32_line_bus;
-		}*/
-		
+	public static int hackGetLineIcon(String line) {
 		//http://labs.trafikanten.no/ofte-stilte-sporsmal/#124
 		try {
 			/*
@@ -48,5 +38,40 @@ public class StationIcons {
 		
 		// Default to bus.
 		return R.drawable.icon_line_bus;
+	}
+	
+	/*
+	 * This is for the map, and is guestimated.
+	 */
+	public static int hackGetStationIcon(String stopNameX) {
+		final String stopName = stopNameX.toLowerCase();
+		if (stopName.contains("tog")) {
+			return R.drawable.icon_line_train;
+		} else if (stopName.contains("t-bane")) {
+			return R.drawable.icon_line_underground;
+		}  else if (stopName.contains("båt")) {
+			return R.drawable.icon_line_boat;
+		}
+		return R.drawable.icon_line_bus;
+	}
+	
+	/*
+	 * converts to black station icons
+	 */
+	public static int getBlackStationIcons(int icon) {
+		if (icon == R.drawable.icon_line_boat) {
+			return R.drawable.icon_line_boat_black;
+		} else if (icon == R.drawable.icon_line_bus) {
+			return R.drawable.icon_line_bus_black;
+		} else if (icon == R.drawable.icon_line_train) {
+			return R.drawable.icon_line_train_black;
+		} else if (icon == R.drawable.icon_line_tram) {
+			return R.drawable.icon_line_tram_black;
+		} else if (icon == R.drawable.icon_line_underground) {
+			return R.drawable.icon_line_underground_black;
+		} else if (icon == R.drawable.icon_line_walk) {
+			return R.drawable.icon_line_walk_black;
+		}
+		return 0;
 	}
 }

@@ -247,8 +247,8 @@ public class GenericMap extends MapActivity {
 			/*
 			 * We got no tour id, just add the stations directly.
 			 */
-			stationOverlay.add(GenericMap.this, routeData.fromStation, false);
-			stationOverlay.add(GenericMap.this, routeData.toStation, true);
+			stationOverlay.add(GenericMap.this, routeData.fromStation, false, routeData.transportType);
+			stationOverlay.add(GenericMap.this, routeData.toStation, true, routeData.transportType);
 			loadRouteData();
 			return;
 		}
@@ -260,7 +260,7 @@ public class GenericMap extends MapActivity {
 		tripProvider = new TrafikantenTrip(this, routeData.tourID, routeData.fromStation.stationId, routeData.toStation.stationId, new IGenericProviderHandler<StationData>() {
 			@Override
 			public void onData(StationData data) {
-				stationOverlay.add(GenericMap.this, data, true);
+				stationOverlay.add(GenericMap.this, data, true, routeData.transportType);
 			}
 
 			@Override

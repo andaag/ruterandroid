@@ -872,7 +872,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.platform.setVisibility(View.GONE);
 		}
 		
-		holder.icon.setImageResource(StationIcons.hackGetLineIcon(RealtimeView.station, data.line));
+		holder.icon.setImageResource(StationIcons.hackGetLineIcon(data.line));
 		
 		/*
 		 * Setup devi

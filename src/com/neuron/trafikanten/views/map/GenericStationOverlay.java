@@ -28,6 +28,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.StationData;
+import com.neuron.trafikanten.hacks.StationIcons;
 
 // TODO : Rename to StationOverlay
 public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
@@ -54,11 +55,11 @@ public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
 		GenericMap.onStationTap(items.get(index).station);
 		return super.onTap(index);
 	}
-	
+
 	/*
 	 * Add single item, this does not populate!
 	 */
-	public void add(Activity activity, StationData station, boolean populate) {
+	public void add(Activity activity, StationData station, boolean populate, int transportType) {
 		if (items.size() > 0 && items.get(items.size() - 1).station.stationId == station.stationId)
 			return;
 		
@@ -72,11 +73,15 @@ public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
 		}
 		final GeoPoint point = new GeoPoint((int)(location[0] * 1E6), (int)(location[1] * 1E6));
 		final StationOverlayItem item = new StationOverlayItem(point, station);
-		if (station.isFavorite) {
+		
+		/*if (station.isFavorite) {
 			item.setMarker(boundCenterBottom(activity.getResources().getDrawable(R.drawable.icon_mapmarker_favorite)));
 		} else {
 			item.setMarker(null);
-		}
+		}*/
+		final int marker = StationIcons.getBlackStationIcons(transportType > 0 ? transportType : StationIcons.hackGetStationIcon(station.stopName));
+		item.setMarker(boundCenterBottom(activity.getResources().getDrawable(marker)));
+		
 		items.add(item);
 		if (populate) {
 			populate();
@@ -88,7 +93,7 @@ public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
 	 */
 	public void add(Activity activity, ArrayList<StationData> stationList) {
 		for(StationData station : stationList) {
-			add(activity, station, false);
+			add(activity, station, false, 0);
 		}
 		populate();
 	}
