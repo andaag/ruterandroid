@@ -437,9 +437,16 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 */
 			holder.departureTime.setText(HelperFunctions.hourFormater.format(departure));
 			holder.arrivalTime.setText(HelperFunctions.hourFormater.format(arrival));
+			
 
-			holder.travelTime.setText(parent.getText(R.string.travelTime) + " : " + HelperFunctions.renderAccurate(arrival - departure));
-		
+			long diff = arrival - departure;
+
+			if (diff < HelperFunctions.HOUR) {
+				holder.travelTime.setText(parent.getText(R.string.travelTime) + " : " + (diff / HelperFunctions.MINUTE) + " min");
+			} else {
+				diff = diff - HelperFunctions.HOUR; // no idea why this is needed, possibly timezone related when diff'ing two long's.
+				holder.travelTime.setText(parent.getText(R.string.travelTime) + " : " + HelperFunctions.hourFormater.format(diff));
+			}
 		}
 		
 		return convertView;
