@@ -232,7 +232,6 @@ public class GenericMap extends MapActivity {
 			 */
 			RouteOverlay routeOverlay = new RouteOverlay(iconMapMarker, stationOverlay.items);
 			final List<Overlay> overlays = mapView.getOverlays();
-			stationOverlay.doPopulate();
 			overlays.add(routeOverlay);
 			overlays.add(stationOverlay);
 			setProgress(10000);
@@ -248,8 +247,8 @@ public class GenericMap extends MapActivity {
 			/*
 			 * We got no tour id, just add the stations directly.
 			 */
-			stationOverlay.add(GenericMap.this, routeData.fromStation);
-			stationOverlay.add(GenericMap.this, routeData.toStation);
+			stationOverlay.add(GenericMap.this, routeData.fromStation, false);
+			stationOverlay.add(GenericMap.this, routeData.toStation, true);
 			loadRouteData();
 			return;
 		}
@@ -261,7 +260,7 @@ public class GenericMap extends MapActivity {
 		tripProvider = new TrafikantenTrip(this, routeData.tourID, routeData.fromStation.stationId, routeData.toStation.stationId, new IGenericProviderHandler<StationData>() {
 			@Override
 			public void onData(StationData data) {
-				stationOverlay.add(GenericMap.this, data);
+				stationOverlay.add(GenericMap.this, data, true);
 			}
 
 			@Override

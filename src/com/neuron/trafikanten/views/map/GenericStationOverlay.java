@@ -58,7 +58,7 @@ public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
 	/*
 	 * Add single item, this does not populate!
 	 */
-	public void add(Activity activity, StationData station) {
+	public void add(Activity activity, StationData station, boolean populate) {
 		if (items.size() > 0 && items.get(items.size() - 1).station.stationId == station.stationId)
 			return;
 		
@@ -78,18 +78,17 @@ public class GenericStationOverlay extends ItemizedOverlay<StationOverlayItem> {
 			item.setMarker(null);
 		}
 		items.add(item);
+		if (populate) {
+			populate();
+		}
 	}
-	
-	public void doPopulate() {
-		populate();
-	}
-	
+
 	/*
 	 * Add list of items
 	 */
 	public void add(Activity activity, ArrayList<StationData> stationList) {
 		for(StationData station : stationList) {
-			add(activity, station);
+			add(activity, station, false);
 		}
 		populate();
 	}
