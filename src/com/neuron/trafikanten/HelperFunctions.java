@@ -68,18 +68,6 @@ public class HelperFunctions {
     }
     
     /*
-     * Render the time at HH:MM if possible, if not use 34m
-     */
-    public static String renderAccurate(long time) {
-		if (time < MINUTE)
-			return null;
-		if (time < HOUR) {
-			return "" + time / MINUTE + " min";
-		}
-		return hourFormater.format(time).toString();    	
-    }
-    
-    /*
      * Replace % with arguments, performance version of http://www.mail-archive.com/android-developers@googlegroups.com/msg02846.html
      */
 	public static String mergeXmlArgument(Resources resources, int rId, String []args) throws IOException {

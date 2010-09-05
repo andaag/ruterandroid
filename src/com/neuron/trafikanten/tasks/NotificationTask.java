@@ -14,11 +14,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TimePicker;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
-import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.dataSets.NotificationData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.RouteDeviData;
@@ -27,7 +25,7 @@ import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.notification.NotificationIntent;
 
 public class NotificationTask implements GenericTask {
-	private static final String TAG = "Trafikanten-NotificationTask";
+	//private static final String TAG = "Trafikanten-NotificationTask";
 	private static int notificationCode = 0;
     private Activity activity;
     private Dialog dialog;
@@ -75,7 +73,7 @@ public class NotificationTask implements GenericTask {
 				final Intent intent = new Intent(activity, NotificationIntent.class);
 				intent.putExtras(bundle);
 				
-				Log.i(TAG,"Creating notification at " + HelperFunctions.renderAccurate(notificationData.notifyTime));
+				//Log.i(TAG,"Creating notification at " + HelperFunctions.renderAccurate(notificationData.notifyTime));
 				final PendingIntent notificationIntent = PendingIntent.getBroadcast(activity, notificationCode++, intent, PendingIntent.FLAG_ONE_SHOT);
 	            AlarmManager alarm = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
 	            alarm.set(AlarmManager.RTC_WAKEUP, notificationData.notifyTime, notificationIntent);
