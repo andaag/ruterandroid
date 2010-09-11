@@ -161,7 +161,7 @@ public class HelperFunctions {
 	public static InputStream soapRequest(Context context, String soap, final String url) throws IOException {
         HttpPost httppost = new HttpPost(url);
         httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
-        httppost.setEntity(new StringEntity(soap));
+        httppost.setEntity(new StringEntity(soap, "UTF-8"));
     	//Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
     	
     	return executeHttpRequest(context, httppost);
