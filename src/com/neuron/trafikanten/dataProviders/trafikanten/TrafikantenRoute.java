@@ -169,6 +169,7 @@ class RouteHandler extends DefaultHandler {
 	// Stop data:
 	private boolean inID = false;
 	private boolean inName = false;
+	private boolean inRealTimeStop = false;
 	private boolean inX = false;
 	private boolean inY = false;
 	
@@ -227,6 +228,8 @@ class RouteHandler extends DefaultHandler {
 		    			inID = true;
 		    		} else if (localName.equals("Name")) {
 		    			inName = true;
+		    		} else if (localName.equals("RealTimeStop")) {
+		    			inRealTimeStop = true;
 		    		} else if (localName.equals("X")) {
 		    			inX = true;
 		    		} else if (localName.equals("Y")) {
@@ -306,6 +309,14 @@ class RouteHandler extends DefaultHandler {
 				    	} else {
 				    		travelStage.toStation.stopName = buffer.toString();
 				    	}
+		    		} else if (inRealTimeStop && localName.equals("RealTimeStop")) {
+		    			inRealTimeStop = false;
+		    			final String realtime = buffer.toString();
+		    			if (inDepartureStop) {
+		    				travelStage.fromStation.realtimeStop = realtime.equalsIgnoreCase("true");
+		    			} else {
+		    				travelStage.toStation.realtimeStop = realtime.equalsIgnoreCase("true");
+		    			}
 		    		} else if (inX && localName.equals("X")) {
 		    			inX = false;
 				    	if (inDepartureStop) {
@@ -397,7 +408,7 @@ class RouteHandler extends DefaultHandler {
 
 	@Override
 	public void characters(char ch[], int start, int length) {
-		if (inDepartureTime || inArrivalTime || inID || inName || inX || inY || inDepartureTime || inArrivalTime ||
+		if (inDepartureTime || inArrivalTime || inID || inName || inRealTimeStop || inX || inY || inDepartureTime || inArrivalTime ||
 				inLineName || inDestination || inTourID || inTransportation || inWaitingTime) {
 			buffer.append(ch,start,length);
 		}

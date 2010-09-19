@@ -91,6 +91,14 @@
 		android:gravity="right"
 		android:layout_marginRight="6dip" />
 		
+	<ImageButton
+		android:id="@+id/realtimeButton"
+		android:src="@drawable/ic_menu_goto"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginRight="3dip"
+		android:layout_toLeftOf="@id/fromTime"/>
+		
     <LinearLayout
     	android:id="@+id/devi"
     	android:orientation="vertical"

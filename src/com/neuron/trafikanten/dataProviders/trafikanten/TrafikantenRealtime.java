@@ -209,11 +209,7 @@ class RealtimeHandler extends DefaultHandler {
 		    } else if (inMonitored) {
 		        inMonitored = false;
 		    	final String monitored = buffer.toString();
-		        if (monitored.equalsIgnoreCase("true")) {
-		        	data.realtime = true;
-		        } else {
-		        	data.realtime = false;
-		        }
+		    	data.realtime = monitored.equalsIgnoreCase("true");
 		    } else if (inExpectedDepartureTime) {
 		        inExpectedDepartureTime = false;
 		        data.expectedDeparture = parseDateTime(buffer.toString());
