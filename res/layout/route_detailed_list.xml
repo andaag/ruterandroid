@@ -93,14 +93,15 @@
 		android:gravity="right"
 		android:layout_marginRight="6dip" />
 		
-	<ImageButton
+	<ImageView
 		android:id="@+id/realtimeButton"
 		android:src="@drawable/ic_menu_goto"
-		android:layout_width="38dip"
-		android:layout_height="38dip"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
 		android:layout_alignTop="@id/fromTime"
-		android:layout_marginRight="40dip"/>
+		android:layout_marginTop="5dip"
+		android:layout_marginRight="45dip"/>
 		
     <LinearLayout
     	android:id="@+id/devi"

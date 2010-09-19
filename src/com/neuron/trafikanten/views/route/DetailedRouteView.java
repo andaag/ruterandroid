@@ -37,7 +37,6 @@ import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -427,7 +426,7 @@ class RouteAdapter extends BaseAdapter {
 			holder.toTime = (TextView) convertView.findViewById(R.id.toTime);
 			holder.waittime = (TextView) convertView.findViewById(R.id.waittime);
 			holder.devi = (LinearLayout) convertView.findViewById(R.id.devi);
-			holder.realtimeButton = (ImageButton) convertView.findViewById(R.id.realtimeButton); 
+			holder.realtimeButton = (ImageView) convertView.findViewById(R.id.realtimeButton); 
 			convertView.setTag(holder);
 		} else {
 			/*
@@ -517,7 +516,7 @@ class RouteAdapter extends BaseAdapter {
 		TextView to;
 		TextView toTime;
 		TextView waittime;
-		ImageButton realtimeButton;
+		ImageView realtimeButton;
 		LinearLayout devi;
 	}
 }
