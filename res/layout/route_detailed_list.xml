@@ -69,6 +69,7 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		 
+		android:text="13:53"
 		android:layout_alignTop="@id/from"
 		android:gravity="right"
 		android:layout_marginRight="6dip" />
@@ -87,6 +88,7 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		 
+		android:text="15:55"
 		android:layout_alignTop="@id/to"
 		android:gravity="right"
 		android:layout_marginRight="6dip" />
@@ -94,10 +96,11 @@
 	<ImageButton
 		android:id="@+id/realtimeButton"
 		android:src="@drawable/ic_menu_goto"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginRight="3dip"
-		android:layout_toLeftOf="@id/fromTime"/>
+		android:layout_width="38dip"
+		android:layout_height="38dip"
+		android:layout_alignParentRight="true"
+		android:layout_alignTop="@id/fromTime"
+		android:layout_marginRight="40dip"/>
 		
     <LinearLayout
     	android:id="@+id/devi"
