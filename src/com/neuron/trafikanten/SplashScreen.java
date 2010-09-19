@@ -60,7 +60,9 @@ public class SplashScreen extends Activity {
     		tracker.start("UA-16690738-3", this);
 			try {
 	         	PackageInfo packageInfo = getPackageManager().getPackageInfo("com.neuron.trafikanten", PackageManager.GET_META_DATA);
-				tracker.trackEvent("Version", "Application", URLEncoder.encode(packageInfo.versionName,"UTF-8"), packageInfo.versionCode);
+				//tracker.trackEvent("Version", "Application", URLEncoder.encode(packageInfo.versionName,"UTF-8"), packageInfo.versionCode);
+	         	final CharSequence appVersion = getText(R.string.app_version);
+	         	tracker.trackEvent("Version", "Application", URLEncoder.encode(appVersion,"UTF-8"), packageInfo.versionCode);
 			} catch (NameNotFoundException e) {
          	} catch (UnsupportedEncodingException e) {}
          	
