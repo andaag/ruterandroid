@@ -156,4 +156,5 @@ da er det tider fra rutetabellen som vises.</string>
         <string name="tipFrontscreen">Tips vises kun 1 gang per skjerm.\n\n* Trykk menu for flere valg.\n\nNytt i denne versjonen:\n* Tips!\n* Rute planlegger oppdatert!\n* Vis ruter på kart!\n* Kontakt søk er tilbake!</string>
         <string name="tipRealtime">* Trykk menu for flere valg.\n\n* Hold nede på en avgang for å sette alarmer!</string>
         <string name="tipSelectRoute">* Trykk menu for flere valg.\n\n* Trykk velg flere stasjoner for å f.eks. dra fra (Oslo S eller Oslo S [Tog]) til (Storo eller Grefsen [Tog])!</string>
+        <string name="tipDetailedRoute">* Trykk en avgang for å se sanntid data.\n* Hold nede på en avgang for å sette alarmer!\n* Trykk menu for flere valg.</string>
 </resources>

@@ -59,6 +59,7 @@ import com.neuron.trafikanten.dataSets.RouteDeviData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.tasks.NotificationTask;
+import com.neuron.trafikanten.tasks.ShowTipsTask;
 import com.neuron.trafikanten.views.GenericDeviCreator;
 import com.neuron.trafikanten.views.map.GenericMap;
 
@@ -157,7 +158,6 @@ public class DetailedRouteView extends ListActivity {
         };
         mNextImageView.setOnClickListener(switchEntryOnClickListener);
         mPrevImageView.setOnClickListener(switchEntryOnClickListener);
-
 		
 		/*
 		 * Load instance state
@@ -169,6 +169,8 @@ public class DetailedRouteView extends ListActivity {
 		load();
 		registerForContextMenu(getListView());
 		loadDevi();
+		
+		new ShowTipsTask(this, tracker, DetailedRouteView.class.getName(), R.string.tipDetailedRoute, 44);
 	}
 	
 	/*
