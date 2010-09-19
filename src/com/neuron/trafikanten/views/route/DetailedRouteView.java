@@ -347,7 +347,11 @@ public class DetailedRouteView extends ListActivity {
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
-		menu.add(0, REALTIME_ID, 0, R.string.realtime);
+		
+		final RouteData routeData = (RouteData) routeList.getItem(selectedId);
+		if (routeData.fromStation.realtimeStop) {
+			menu.add(0, REALTIME_ID, 0, R.string.realtime);
+		}
 	}
     
 	/*
