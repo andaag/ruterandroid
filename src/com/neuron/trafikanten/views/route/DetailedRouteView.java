@@ -41,6 +41,7 @@ import android.view.animation.Animation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -292,15 +293,12 @@ public class DetailedRouteView extends ListActivity {
 		mPaused = true;
 		if (routeRealtimeLoader != null) {
 			routeRealtimeLoader.kill();
-			routeRealtimeLoader = null;
 		}
 		super.onStop();
 	}
 	/*
 	 * NEXT/PREVIOUS CODE STOLEN FROM ANDROID GALLERY APP END HERE.
 	 */
-
-	
 	/*
 	 * Options menu, visible on menu button.
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
@@ -353,7 +351,29 @@ public class DetailedRouteView extends ListActivity {
 			menu.add(0, REALTIME_ID, 0, R.string.realtime);
 		}
 	}
+	
+	private void loadRealtimeData(RouteData routeData) {
+		if (routeData.fromStation.realtimeStop) {
+			if (routeRealtimeLoader == null) {
+				routeRealtimeLoader = new RouteRealtimeLoader(tracker, this, routeList);
+			}
+
+			routeRealtimeLoader.load(routeData.fromStation, routeData);
+		}
+	}
     
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		final RouteData routeData = (RouteData) routeList.getItem(selectedId);
+		if (routeData.realtimeData == null) {
+			loadRealtimeData(routeData);			
+		} else {
+			routeData.realtimeData = null;
+			routeList.notifyDataSetChanged();
+		}
+	}
+
 	/*
 	 * onSelected - Context menu is a popup from a longpress on a list item.
 	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
@@ -362,19 +382,15 @@ public class DetailedRouteView extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         selectedId = info.position;
+        final RouteData routeData = (RouteData) routeList.getItem(selectedId);
 		
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
-			final RouteData notifyRouteData = (RouteData) routeList.getItem(selectedId);
-			final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
-			new NotificationTask(this, tracker, routeProposalList, proposalPosition, deviList, notifyRouteData.departure, notifyWith);
+			final String notifyWith = routeData.line.equals(routeData.destination) ? routeData.line : routeData.line + " " + routeData.destination;
+			new NotificationTask(this, tracker, routeProposalList, proposalPosition, deviList, routeData.departure, notifyWith);
 			return true;
 		case REALTIME_ID:
-			if (routeRealtimeLoader == null) {
-				routeRealtimeLoader = new RouteRealtimeLoader(tracker, this, routeList);
-			}
-			final RouteData routeData = (RouteData) routeList.getItem(selectedId);
-			routeRealtimeLoader.load(routeData.fromStation, routeData);
+			loadRealtimeData(routeData);
 		}
 		return super.onContextItemSelected(item);
 	}
