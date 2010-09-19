@@ -352,12 +352,14 @@ public class DetailedRouteView extends ListActivity {
 		}
 	}
 	
+	/*
+	 * Load realtime data for a shown route
+	 */
 	private void loadRealtimeData(RouteData routeData) {
-		if (routeData.fromStation.realtimeStop) {
+		if (routeData.transportType != R.drawable.icon_line_walk && routeData.fromStation.realtimeStop) {
 			if (routeRealtimeLoader == null) {
 				routeRealtimeLoader = new RouteRealtimeLoader(tracker, this, routeList);
 			}
-
 			routeRealtimeLoader.load(routeData.fromStation, routeData);
 		}
 	}
@@ -365,6 +367,7 @@ public class DetailedRouteView extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
+		selectedId = position;
 		final RouteData routeData = (RouteData) routeList.getItem(selectedId);
 		if (routeData.realtimeData == null) {
 			loadRealtimeData(routeData);			
@@ -595,7 +598,7 @@ class RouteAdapter extends BaseAdapter {
 		/*
 		 * Setup realtime button
 		 */
-		if (routeData.fromStation.realtimeStop) {
+		if (routeData.transportType != R.drawable.icon_line_walk && routeData.fromStation.realtimeStop) {
 			holder.realtimeSymbol.setVisibility(View.VISIBLE);
 		} else {
 			holder.realtimeSymbol.setVisibility(View.GONE);
