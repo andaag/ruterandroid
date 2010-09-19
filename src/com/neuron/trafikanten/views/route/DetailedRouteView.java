@@ -536,6 +536,7 @@ class RouteAdapter extends BaseAdapter {
 			holder.devi = (LinearLayout) convertView.findViewById(R.id.devi);
 			holder.realtimeSymbol = (ImageView) convertView.findViewById(R.id.realtimeSymbol);
 			holder.departures = (TextView) convertView.findViewById(R.id.departures);
+			holder.departurePlatform = (TextView) convertView.findViewById(R.id.departurePlatform);
 			convertView.setTag(holder);
 		} else {
 			/*
@@ -589,9 +590,16 @@ class RouteAdapter extends BaseAdapter {
 		 */
 		if (routeData.realtimeData != null) {
 			holder.departures.setText(routeData.realtimeData.renderDepartures(System.currentTimeMillis() - routeData.timeDifference, parent));
+			if (routeData.realtimeData.departurePlatform > 0) {
+				holder.departurePlatform.setText("Plattform:" + routeData.realtimeData.departurePlatform);
+				holder.departurePlatform.setVisibility(View.VISIBLE);
+			} else {
+				holder.departurePlatform.setVisibility(View.GONE);
+			}
 			holder.departures.setVisibility(View.VISIBLE);
 		} else {
 			holder.departures.setVisibility(View.GONE);
+			holder.departurePlatform.setVisibility(View.GONE);
 		}
 		
 		/*
@@ -637,6 +645,7 @@ class RouteAdapter extends BaseAdapter {
 		
 		ImageView realtimeSymbol;
 		TextView departures;
+		TextView departurePlatform;
 		
 		LinearLayout devi;
 	}

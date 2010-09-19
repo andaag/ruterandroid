@@ -120,10 +120,33 @@
 		android:textSize="14dip"
 		android:gravity="center_vertical"
 		android:ellipsize="none"
+		android:visibility="gone"
 				
 		android:singleLine="true"
-		android:visibility="gone"
 		
+		android:text=""
+		
+    	/>
+    	
+    <TextView android:id="@+id/departurePlatform"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/departures"
+        android:layout_alignParentRight="true"
+        
+		android:textColor="#faf400"
+		android:background="@drawable/skin_sanntid_avganger"
+		android:paddingLeft="3dip"
+		android:paddingTop="1dip"
+		android:paddingRight="8dip"
+		android:paddingBottom="1dip"
+		android:textSize="14dip"
+		android:gravity="center_vertical"
+		android:ellipsize="none"
+		android:visibility="gone"
+				
+		android:singleLine="true"
+			
 		android:text=""
 		
     	/>
