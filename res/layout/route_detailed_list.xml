@@ -93,21 +93,48 @@
 		android:gravity="right"
 		android:layout_marginRight="6dip" />
 		
+	<!-- Realtime info under -->
+		
 	<ImageView
-		android:id="@+id/realtimeButton"
+		android:id="@+id/realtimeSymbol"
 		android:src="@drawable/ic_menu_goto"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
-		android:layout_alignTop="@id/fromTime"
+		android:layout_alignTop="@+id/fromTime"
 		android:layout_marginTop="5dip"
 		android:layout_marginRight="45dip"/>
 		
+	<!-- This shares layout with realtime_list.xml -->
+    <TextView android:id="@+id/departures"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/to"
+				
+		android:textColor="#faf400"
+		android:background="@drawable/skin_sanntid_avganger"
+		android:paddingLeft="3dip"
+		android:paddingTop="1dip"
+		android:paddingRight="8dip"
+		android:paddingBottom="1dip"
+		android:textSize="14dip"
+		android:gravity="center_vertical"
+		android:ellipsize="none"
+				
+		android:singleLine="true"
+		android:visibility="gone"
+		
+		android:text=""
+		
+    	/>
+		
+		
+	<!-- Devi info under -->
     <LinearLayout
     	android:id="@+id/devi"
     	android:orientation="vertical"
 		android:layout_width="fill_parent"
-		android:layout_below="@+id/to"
+		android:layout_below="@+id/departures"
 		android:layout_height="wrap_content">
 		</LinearLayout>
 </RelativeLayout>

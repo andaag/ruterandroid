@@ -77,8 +77,10 @@
 			/>
 	</TableRow>
 			
+	<!-- This shares layout with route_detailed_list.xml -->
     <TextView android:id="@+id/departures"
         android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
 				
 		android:textColor="#faf400"
 		android:background="@drawable/skin_sanntid_avganger"
