@@ -41,6 +41,10 @@ public class RouteData implements Parcelable {
 	public String extra;
 	public int waitTime; // in minutes, waittime for THIS transport, not next transport.
 	
+	//This is used for showing realtime data connected to a route
+	public RealtimeData realtimeData = null;
+	public long timeDifference = 0;
+	
 	/*
 	 * transportType can be train/tram/etc, it's up to the seperate providers to decide what goes in here.
 	 */
@@ -71,6 +75,9 @@ public class RouteData implements Parcelable {
 		waitTime = in.readInt();
 		
 		transportType = in.readInt();
+		
+		realtimeData = in.readParcelable(RealtimeData.class.getClassLoader());
+		timeDifference = in.readLong();
 	}
 	
 	/*
@@ -92,6 +99,9 @@ public class RouteData implements Parcelable {
 		out.writeInt(waitTime);
 		
 		out.writeInt(transportType);
+		
+		out.writeParcelable(realtimeData, 0);
+		out.writeLong(timeDifference);
 	}
 	
 	/*

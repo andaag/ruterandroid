@@ -25,6 +25,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
@@ -48,10 +50,13 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
+import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
+import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteDeviData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.tasks.NotificationTask;
 import com.neuron.trafikanten.views.GenericDeviCreator;
 import com.neuron.trafikanten.views.map.GenericMap;
@@ -63,9 +68,15 @@ public class DetailedRouteView extends ListActivity {
 	private RouteDeviLoader routeDeviLoader;
 	
 	/*
+	 * Realtime loaders:
+	 */
+	private RouteRealtimeLoader routeRealtimeLoader = null;
+	
+	/*
 	 * Context menu:
 	 */
 	private static final int NOTIFY_ID = Menu.FIRST;
+	private static final int REALTIME_ID = Menu.FIRST + 1;
 	
 	/*
 	 * Option menu
@@ -106,6 +117,7 @@ public class DetailedRouteView extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         /*
          * Analytics
          */
@@ -278,6 +290,10 @@ public class DetailedRouteView extends ListActivity {
 	@Override
 	protected void onStop() {
 		mPaused = true;
+		if (routeRealtimeLoader != null) {
+			routeRealtimeLoader.kill();
+			routeRealtimeLoader = null;
+		}
 		super.onStop();
 	}
 	/*
@@ -331,6 +347,7 @@ public class DetailedRouteView extends ListActivity {
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
+		menu.add(0, REALTIME_ID, 0, R.string.realtime);
 	}
     
 	/*
@@ -348,6 +365,12 @@ public class DetailedRouteView extends ListActivity {
 			final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
 			new NotificationTask(this, tracker, routeProposalList, proposalPosition, deviList, notifyRouteData.departure, notifyWith);
 			return true;
+		case REALTIME_ID:
+			if (routeRealtimeLoader == null) {
+				routeRealtimeLoader = new RouteRealtimeLoader(tracker, this, routeList);
+			}
+			final RouteData routeData = (RouteData) routeList.getItem(selectedId);
+			routeRealtimeLoader.load(routeData.fromStation, routeData);
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -370,6 +393,87 @@ public class DetailedRouteView extends ListActivity {
 		//Stop the tracker when it is no longer needed.
 		tracker.stop();
 	}
+}
+
+class RouteRealtimeLoader {
+	private static final String TAG = "Trafikanten-RouteRealtimeLoader";
+	private TrafikantenRealtime realtimeProvider = null;
+	public GoogleAnalyticsTracker tracker;
+	private Activity activity;
+	private RouteAdapter routeList;
+	
+	public RouteRealtimeLoader(GoogleAnalyticsTracker tracker, Activity activity, RouteAdapter routeList) {
+		this.tracker = tracker;
+		this.activity = activity;
+		this.routeList = routeList;
+		
+	}
+	
+	public void load(StationData station, final RouteData routeData) {
+		kill();
+		
+		tracker.trackEvent("Data", "Realtime", "Data", 0);
+		realtimeProvider = new TrafikantenRealtime(activity, station.stationId, new IGenericProviderHandler<RealtimeData>() {
+			@Override
+			public void onExtra(int what, Object obj) {
+				switch (what) {
+				case TrafikantenRealtime.MSG_TIMEDATA:
+					routeData.timeDifference = (Long) obj;
+					break;
+				}
+			}
+			
+			@Override
+			public void onData(RealtimeData item) {
+				if (item.line.equals(routeData.line) && item.destination.equals(routeData.destination)) {
+					if (routeData.realtimeData == null) {
+						routeData.realtimeData = item;
+						routeList.notifyDataSetChanged();
+					} else {
+						routeData.realtimeData.addDeparture(item.expectedDeparture, item.realtime, item.stopVisitNote);
+						routeList.notifyDataSetChanged();
+					}
+				}
+			}
+
+			@Override
+			public void onPostExecute(Exception exception) {
+				activity.setProgressBarIndeterminateVisibility(false);
+				realtimeProvider = null;
+				if (exception != null) {
+					Log.w(TAG,"onException " + exception);
+			        if (exception.getClass().getSimpleName().equals("ParseException")) {
+			        	Toast.makeText(activity,R.string.trafikantenErrorParse, Toast.LENGTH_LONG).show();
+			        } else {
+			        	Toast.makeText(activity,R.string.trafikantenErrorOther, Toast.LENGTH_LONG).show();
+			        }
+				} else {
+					/*
+					 * No exceptions
+					 */
+					if (routeData.realtimeData == null) {
+						/*
+						 * Show info text if view is empty
+						 */
+						Toast.makeText(activity,R.string.realtimeEmpty, Toast.LENGTH_LONG).show();
+					}
+				}
+				routeList.notifyDataSetChanged();
+			}
+
+			@Override
+			public void onPreExecute() {
+				activity.setProgressBarIndeterminateVisibility(true);
+			}
+		});
+	}
+	
+	public void kill() {
+		if (realtimeProvider != null) {
+			realtimeProvider.kill();
+		}
+	}
+	
 }
 
 
@@ -456,7 +560,6 @@ class RouteAdapter extends BaseAdapter {
 		holder.to.setText(routeData.toStation.stopName);
 		holder.toTime.setText(HelperFunctions.hourFormater.format(routeData.arrival));
 		
-		
 		/*
 		 * Setup symbol.
 		 */
@@ -475,6 +578,16 @@ class RouteAdapter extends BaseAdapter {
 			holder.realtimeSymbol.setVisibility(View.VISIBLE);
 		} else {
 			holder.realtimeSymbol.setVisibility(View.GONE);
+		}
+		
+		/*
+		 * Setup realtime view
+		 */
+		if (routeData.realtimeData != null) {
+			holder.departures.setText(routeData.realtimeData.renderDepartures(System.currentTimeMillis() - routeData.timeDifference, parent));
+			holder.departures.setVisibility(View.VISIBLE);
+		} else {
+			holder.departures.setVisibility(View.GONE);
 		}
 		
 		/*
