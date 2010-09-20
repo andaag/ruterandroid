@@ -69,7 +69,6 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		 
-		android:text="13:53"
 		android:layout_alignTop="@id/from"
 		android:gravity="right"
 		android:layout_marginRight="6dip" />
@@ -88,7 +87,6 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		 
-		android:text="15:55"
 		android:layout_alignTop="@id/to"
 		android:gravity="right"
 		android:layout_marginRight="6dip" />
@@ -113,7 +111,7 @@
 				
 		android:textColor="#faf400"
 		android:background="@drawable/skin_sanntid_avganger"
-		android:paddingLeft="3dip"
+		android:paddingLeft="50dip"
 		android:paddingTop="1dip"
 		android:paddingRight="8dip"
 		android:paddingBottom="1dip"
@@ -123,32 +121,23 @@
 		android:visibility="gone"
 				
 		android:singleLine="true"
-		
-		android:text=""
-		
     	/>
     	
     <TextView android:id="@+id/departurePlatform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/departures"
+        android:layout_alignTop="@+id/line"
         android:layout_alignParentRight="true"
         
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		 
+		android:gravity="right"
+		android:layout_marginRight="5dip"
+        
 		android:textColor="#faf400"
-		android:background="@drawable/skin_sanntid_avganger"
-		android:paddingLeft="3dip"
-		android:paddingTop="1dip"
-		android:paddingRight="8dip"
-		android:paddingBottom="1dip"
-		android:textSize="14dip"
-		android:gravity="center_vertical"
-		android:ellipsize="none"
 		android:visibility="gone"
 				
 		android:singleLine="true"
-			
-		android:text=""
-		
     	/>
 		
 		

@@ -18,6 +18,9 @@
 
 package com.neuron.trafikanten.dataSets;
 
+import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.R;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -102,6 +105,17 @@ public class RouteData implements Parcelable {
 		
 		out.writeParcelable(realtimeData, 0);
 		out.writeLong(timeDifference);
+	}
+	
+	/*
+	 * Returns true if route realtime capability should be enabled.
+	 */
+	public boolean canRealtime() {
+		if (transportType != R.drawable.icon_line_walk && fromStation.realtimeStop && 
+				System.currentTimeMillis() > departure - HelperFunctions.HOUR) {
+			return true;
+		}
+		return false;
 	}
 	
 	/*

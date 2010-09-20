@@ -283,7 +283,13 @@ public class DetailedRouteView extends ListActivity {
         }
 
     }
-    
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		routeList.notifyDataSetChanged(); // force a refresh of the view, to repaint realtime.
+	}
+
 	@Override
 	protected void onStart() {
 		mPaused = false;
@@ -358,7 +364,7 @@ public class DetailedRouteView extends ListActivity {
 	 * Load realtime data for a shown route
 	 */
 	private void loadRealtimeData(RouteData routeData) {
-		if (routeData.transportType != R.drawable.icon_line_walk && routeData.fromStation.realtimeStop) {
+		if (routeData.canRealtime()) {
 			if (routeRealtimeLoader == null) {
 				routeRealtimeLoader = new RouteRealtimeLoader(tracker, this, routeList);
 			}
@@ -600,7 +606,7 @@ class RouteAdapter extends BaseAdapter {
 		/*
 		 * Setup realtime button
 		 */
-		if (routeData.transportType != R.drawable.icon_line_walk && routeData.fromStation.realtimeStop) {
+		if (routeData.canRealtime()) {
 			holder.realtimeSymbol.setVisibility(View.VISIBLE);
 		} else {
 			holder.realtimeSymbol.setVisibility(View.GONE);
