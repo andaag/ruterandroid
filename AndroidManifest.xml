@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.neuron.trafikanten"
-      android:versionName="2.1.4 [New Features] Detailed route view now shows realtime data in view.    * All bugreports/feature requests per mail/in issue tracker please!*" android:versionCode="46">
+      android:versionName="2.1.5 [New Features] Detailed route view now shows realtime data in view.    * All bugreports/feature requests per mail/in issue tracker please!*" android:versionCode="46">
       <!--  REMEMBER TO UPDATE STRINGS -->
     <application android:icon="@drawable/icon" android:label="@string/app_name">
     
