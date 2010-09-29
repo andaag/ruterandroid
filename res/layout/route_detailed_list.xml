@@ -126,16 +126,19 @@
     <TextView android:id="@+id/departurePlatform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/line"
-        android:layout_alignParentRight="true"
+        android:layout_below="@+id/to"
+        android:background="@drawable/skin_sanntid_avganger"
         
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		 
-		android:gravity="right"
-		android:layout_marginRight="5dip"
+		android:layout_marginRight="4dip"
+		android:layout_marginLeft="13dip"
         
 		android:textColor="#faf400"
 		android:visibility="gone"
+		android:textSize="14dip"
+		android:gravity="center_vertical"
+		android:ellipsize="none"
 				
 		android:singleLine="true"
     	/>

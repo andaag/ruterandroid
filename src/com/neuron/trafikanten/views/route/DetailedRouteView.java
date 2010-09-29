@@ -618,7 +618,7 @@ class RouteAdapter extends BaseAdapter {
 		if (routeData.realtimeData != null) {
 			holder.departures.setText(routeData.realtimeData.renderDepartures(System.currentTimeMillis() - routeData.timeDifference, parent));
 			if (routeData.realtimeData.departurePlatform > 0) {
-				holder.departurePlatform.setText("Plattform:" + routeData.realtimeData.departurePlatform);
+				holder.departurePlatform.setText("[" + routeData.realtimeData.departurePlatform + "]");
 				holder.departurePlatform.setVisibility(View.VISIBLE);
 			} else {
 				holder.departurePlatform.setVisibility(View.GONE);
