@@ -162,4 +162,5 @@ we fallback to route information.</string>
         <string name="tipRealtime">* Click menu for more features.\n\n* Longpress a departure to set alarms or show devi!</string>
         <string name="tipSelectRoute">* Click menu for more features.\n\n* Use select multiple stations to for example travel from (Oslo S or Oslo S [Tog]) to (Storo or Grefsen [Tog])!</string>
         <string name="tipDetailedRoute">* Press a departure to show realtime data.\n* Longpress a departure to set alarms!\n* Click menu for more features.</string>
+        <string name="tipDetailedRouteRealtime">The information in brackets is departure platform.</string>
 </resources>

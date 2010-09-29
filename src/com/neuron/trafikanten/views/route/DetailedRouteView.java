@@ -620,6 +620,7 @@ class RouteAdapter extends BaseAdapter {
 			if (routeData.realtimeData.departurePlatform > 0) {
 				holder.departurePlatform.setText("[" + routeData.realtimeData.departurePlatform + "]");
 				holder.departurePlatform.setVisibility(View.VISIBLE);
+				new ShowTipsTask(parent, parent.tracker, DetailedRouteView.class.getName(), R.string.tipDetailedRouteRealtime, 46);
 			} else {
 				holder.departurePlatform.setVisibility(View.GONE);
 			}
