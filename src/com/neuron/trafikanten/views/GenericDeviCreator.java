@@ -35,13 +35,14 @@ public class GenericDeviCreator {
 		deviText.setText(title);
 		
 		deviText.setSingleLine();
-		deviText.setPadding(4, 4, 26, 2);
 		if (station) {
 			deviText.setTextColor(Color.BLACK);
 			deviText.setBackgroundResource(R.drawable.skin_stasjonsdevi);
+			deviText.setPadding(8, 8, 30, 2);
 		} else {
 			deviText.setTextColor(Color.rgb(250, 244, 0));
 			deviText.setBackgroundResource(R.drawable.skin_sanntiddevi);
+			deviText.setPadding(4, 4, 30, 2);
 		}
 		deviText.setTypeface(departuresTypeface);
 		
