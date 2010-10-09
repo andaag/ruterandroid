@@ -95,7 +95,7 @@
 		
 	<ImageView
 		android:id="@+id/realtimeSymbol"
-		android:src="@drawable/ic_menu_goto"
+		android:src="@drawable/ic_menu_recent_history"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
