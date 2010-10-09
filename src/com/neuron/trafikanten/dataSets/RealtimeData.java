@@ -65,6 +65,9 @@ public class RealtimeData implements Parcelable {
 		if (!realtime) {
 			departures.append(context.getText(R.string.ca));
 			departures.append(" ");
+		} else if (inCongestion) {
+			departures.append(context.getText(R.string.congestion));
+			departures.append(" ");
 		}
 		departures.append(HelperFunctions.renderTime(currentTime, context, expectedDeparture));
 		
@@ -72,6 +75,9 @@ public class RealtimeData implements Parcelable {
 			departures.append("  ");
 			if (!nextDeparture.realtime) {
 				departures.append(context.getText(R.string.ca));
+				departures.append(" ");
+			} else if (inCongestion) {
+				departures.append(context.getText(R.string.congestion));
 				departures.append(" ");
 			}
 			departures.append(HelperFunctions.renderTime(currentTime, context, nextDeparture.expectedDeparture));

@@ -103,6 +103,7 @@ Click a travel proposal for a detailed view!</string>
         
         <!-- RealtimeView -->
         <string name="ca">ca </string>
+        <string name="congestion">kø </string>
         <string name="old">old</string>
         <string name="refresh">Refresh</string>
         <string name="realtimeEmpty">No information found!</string>
