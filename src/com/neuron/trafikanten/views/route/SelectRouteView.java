@@ -214,7 +214,7 @@ public class SelectRouteView extends ListActivity {
 			};
 			
 			if (routeSearch.advancedOptionsEnabled) {
-				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions,getText(R.string.disable) + " " + getText(R.string.advancedOptions), 0, 0, advancedOnClickListener));
+				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions,getText(R.string.disable) + " " + getText(R.string.advancedOptions).toString().toLowerCase(), 0, 0, advancedOnClickListener));
 				
 				/*
 				 * Add advanced options
@@ -252,7 +252,7 @@ public class SelectRouteView extends ListActivity {
 				}));
 				
 			} else {
-				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions, getText(R.string.enable) + " " + getText(R.string.advancedOptions), 0, 0, advancedOnClickListener));
+				items.add(new SimpleTextRouteEntry(this, R.string.advancedOptions, getText(R.string.enable) + " " + getText(R.string.advancedOptions).toString().toLowerCase(), 0, 0, advancedOnClickListener));
 			}
 		}
 		
