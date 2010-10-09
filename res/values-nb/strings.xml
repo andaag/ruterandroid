@@ -66,7 +66,7 @@ Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
   <string name="favorites">Favoritter</string>
 
         <!-- SelectStationView -->
-        <string name="address">Søk etter adresse</string>
+        <string name="address">Søk etter adresser</string>
         <string name="showingRealtimeOnly">Viser kun stasjoner med sanntid.</string>
         <string name="map">Kart</string>
 		<string name="contact">Kontakt</string>
@@ -133,7 +133,7 @@ da er det tider fra rutetabellen som vises.</string>
         
         <!-- SearchAddressTask -->
         <string name="failedToFindAddress">Klarte ikke finne adressen på kartet</string>
-        <string name="searchAddressTask">Søk etter adresse:</string>
+        <string name="searchAddressTask">Søk etter adresser:</string>
         <string name="addressHint">Adresse</string>
 		     
 		<!-- SelectContactTask -->
