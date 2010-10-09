@@ -119,6 +119,7 @@ class RealtimeHandler extends DefaultHandler {
 	
 	private boolean inPublishedLineName = false;
 	private boolean inDestinationName = false;
+	private boolean inInCongestion = false;
 	private boolean inMonitored = false;
 
 	private boolean inAimedDepartureTime = false;
@@ -166,6 +167,8 @@ class RealtimeHandler extends DefaultHandler {
 		        inPublishedLineName = true;
 		    } else if (localName.equals("DestinationName")) {
 		        inDestinationName = true;
+		    } else if (localName.equals("InCongestion")) {
+		    	inInCongestion = true;
 		    } else if (localName.equals("Monitored")) {
 		        inMonitored = true;
 		    } else if (localName.equals("AimedDepartureTime")) {
@@ -206,10 +209,12 @@ class RealtimeHandler extends DefaultHandler {
 		    } else if (inDestinationName) {
 		        inDestinationName = false;
 		        data.destination = buffer.toString();
+		    } else if (inInCongestion) {
+		    	inInCongestion = false;
+		        data.inCongestion = buffer.toString().equalsIgnoreCase("true");
 		    } else if (inMonitored) {
 		        inMonitored = false;
-		    	final String monitored = buffer.toString();
-		    	data.realtime = monitored.equalsIgnoreCase("true");
+		    	data.realtime = buffer.toString().equalsIgnoreCase("true");
 		    } else if (inExpectedDepartureTime) {
 		        inExpectedDepartureTime = false;
 		        data.expectedDeparture = parseDateTime(buffer.toString());
@@ -241,7 +246,7 @@ class RealtimeHandler extends DefaultHandler {
 	
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
-	    if (inResponseTimestamp || inPublishedLineName || inDestinationName ||
+	    if (inResponseTimestamp || inPublishedLineName || inDestinationName || inInCongestion ||
 	    		inMonitored || inAimedDepartureTime || inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
 	    	buffer.append(ch,start,length);
 	    }

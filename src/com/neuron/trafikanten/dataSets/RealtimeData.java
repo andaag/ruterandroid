@@ -31,6 +31,7 @@ public class RealtimeData implements Parcelable {
 	public final static String PARCELABLE = "RealtimeData";
 	public String line;
 	public String destination;
+	public boolean inCongestion;
 	public boolean realtime;
 	public int departurePlatform = 0;
 	public String stopVisitNote;
@@ -90,6 +91,7 @@ public class RealtimeData implements Parcelable {
 	public RealtimeData(Parcel in) {
 		line = in.readString();
 		destination = in.readString();
+		inCongestion = in.readInt() != 0;
 		realtime = in.readInt() != 0;
 		departurePlatform = in.readInt();
 		stopVisitNote = in.readString();
@@ -111,6 +113,7 @@ public class RealtimeData implements Parcelable {
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeString(line);
 		out.writeString(destination);
+		out.writeInt(inCongestion ? 1 : 0);
 		out.writeInt(realtime ? 1 : 0);
 		out.writeInt(departurePlatform);
 		out.writeString(stopVisitNote);
