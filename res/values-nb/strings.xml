@@ -79,7 +79,7 @@ Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
         <string name="travelAlternatives">Reisealternativer:</string>
         <string name="departure">Avgang:</string>
         <string name="arrival">Ankomst:</string>
-        <string name="transportTypes">Transportmidler:</string>
+        <string name="transport">Transport:</string>
 
         <!-- DetailedRouteView -->
         <string name="detailedRouteHeader">Detaljert reiseforslag:</string>        

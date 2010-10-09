@@ -84,7 +84,7 @@ Try clicking menu and searching for an address instead!</string>
         <string name="travelAlternatives">Travel alternatives:</string>
         <string name="departure">Departure:</string>
         <string name="arrival">Arrival:</string>
-        <string name="transportTypes">Transporttypes:</string>
+        <string name="transport">Transport:</string>
 
         <!-- DetailedRouteView -->
         <string name="detailedRouteHeader">Detailed routeproposal:</string>

@@ -60,7 +60,7 @@
 	  android:layout_marginTop="2dip"
 	  android:layout_marginLeft="150dip"
 	  android:layout_below="@+id/departureHeaderIcon"
-	  android:text="@string/transportTypes"/>
+	  android:text="@string/transport"/>
 	  
 
     
