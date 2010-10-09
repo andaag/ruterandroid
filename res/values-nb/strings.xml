@@ -10,8 +10,8 @@
     <string name="calculateRouteResults">Finn reiseforslag</string>
     <string name="selectStations">Velg stasjoner</string>
     <string name="safeMargin">Minste byttetid mellom stoppesteder</string>
-    <string name="advancedOptions">Avanserte instillinger</string>
-    <string name="changeSettings">Endre instillinger</string>
+    <string name="advancedOptions">Avanserte innstillinger</string>
+    <string name="changeSettings">Endre innstillinger</string>
     <string name="maxProposals">Maks antall forslag</string>
     <string name="enable">Skru på</string>
     <string name="disable">Skru av</string>
