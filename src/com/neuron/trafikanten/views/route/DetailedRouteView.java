@@ -433,6 +433,10 @@ class RouteRealtimeLoader {
 	private Activity activity;
 	private RouteAdapter routeList;
 	
+	private String searchLine;
+	private String destination;
+	
+	
 	public RouteRealtimeLoader(GoogleAnalyticsTracker tracker, Activity activity, RouteAdapter routeList) {
 		this.tracker = tracker;
 		this.activity = activity;
@@ -442,6 +446,17 @@ class RouteRealtimeLoader {
 	
 	public void load(StationData station, final RouteData routeData) {
 		kill();
+		
+		/*
+		 * Filter out [T-bane] and such
+		 */
+		searchLine = routeData.line;
+		int bracket = routeData.destination.indexOf('[');
+		if (bracket > 0) {
+			destination = routeData.destination.subSequence(0, bracket - 1).toString();
+		} else {
+			destination = routeData.line;
+		}
 		
 		tracker.trackEvent("Data", "Realtime", "Data", 0);
 		realtimeProvider = new TrafikantenRealtime(activity, station.stationId, new IGenericProviderHandler<RealtimeData>() {
@@ -456,7 +471,7 @@ class RouteRealtimeLoader {
 			
 			@Override
 			public void onData(RealtimeData item) {
-				if (item.line.equals(routeData.line) && item.destination.equals(routeData.destination)) {
+				if (item.line.equals(searchLine) && item.destination.equals(destination)) {
 					if (routeData.realtimeData == null) {
 						routeData.realtimeData = item;
 						routeList.notifyDataSetChanged();
