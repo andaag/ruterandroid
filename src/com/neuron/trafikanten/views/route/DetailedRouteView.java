@@ -64,7 +64,7 @@ import com.neuron.trafikanten.views.GenericDeviCreator;
 import com.neuron.trafikanten.views.map.GenericMap;
 
 public class DetailedRouteView extends ListActivity {
-	//private final static String TAG = "Trafikanten-DetailedRouteView";
+	private final static String TAG = "Trafikanten-DetailedRouteView";
 	private RouteAdapter routeList;
 	public GoogleAnalyticsTracker tracker;
 	private RouteDeviLoader routeDeviLoader;
@@ -187,6 +187,7 @@ public class DetailedRouteView extends ListActivity {
 
 			@Override
 			public void onPostExecute(Exception e) {
+				Log.e(TAG,"onPostExecute routeDeviLoader " + e);
 	        	Toast.makeText(DetailedRouteView.this, R.string.trafikantenErrorOther, Toast.LENGTH_SHORT).show();
 	        	routeDeviLoader = null;
 	        	routeList.notifyDataSetChanged();
@@ -434,7 +435,7 @@ class RouteRealtimeLoader {
 	private RouteAdapter routeList;
 	
 	private String searchLine;
-	private String destination;
+	private String searchDestination;
 	
 	
 	public RouteRealtimeLoader(GoogleAnalyticsTracker tracker, Activity activity, RouteAdapter routeList) {
@@ -453,9 +454,9 @@ class RouteRealtimeLoader {
 		searchLine = routeData.line;
 		int bracket = routeData.destination.indexOf('[');
 		if (bracket > 0) {
-			destination = routeData.destination.subSequence(0, bracket - 1).toString();
+			searchDestination = routeData.destination.subSequence(0, bracket - 1).toString();
 		} else {
-			destination = routeData.line;
+			searchDestination = routeData.destination;
 		}
 		
 		tracker.trackEvent("Data", "Realtime", "Data", 0);
@@ -471,7 +472,8 @@ class RouteRealtimeLoader {
 			
 			@Override
 			public void onData(RealtimeData item) {
-				if (item.line.equals(searchLine) && item.destination.equals(destination)) {
+				//Log.i("DEBUG CODE","Comparing '" + item.line + "' == '" + searchLine + "' and '" + item.destination + "' == '" + searchDestination + "'");
+				if (item.line.equals(searchLine) && item.destination.equals(searchDestination)) {
 					if (routeData.realtimeData == null) {
 						routeData.realtimeData = item;
 						routeList.notifyDataSetChanged();
