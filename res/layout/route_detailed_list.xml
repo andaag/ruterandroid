@@ -123,7 +123,7 @@
 		android:singleLine="true"
     	/>
     	
-    <TextView android:id="@+id/departurePlatform"
+    <!-- <TextView android:id="@+id/departurePlatform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/to"
@@ -141,7 +141,7 @@
 		android:ellipsize="none"
 				
 		android:singleLine="true"
-    	/>
+    	/> -->
 		
 		
 	<!-- Devi info under -->
