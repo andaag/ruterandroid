@@ -182,7 +182,9 @@ public class OverviewRouteView extends ListActivity {
 				/*
 				 * Send dispatch along with soap request, as they take time anyway.
 				 */
-				tracker.dispatch();
+				try {
+					tracker.dispatch();
+				} catch (Exception e) {}
 
 		    	setProgressBarIndeterminateVisibility(true);
 			}

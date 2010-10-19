@@ -78,7 +78,9 @@ public class SplashScreen extends Activity {
 					try {
 						int packageVersion = getPackageManager().getPackageInfo("com.neuron.trafikanten", PackageManager.GET_META_DATA).versionCode;
 	            		tracker.trackEvent("Error", "GoogleAnalytics", "Version:" + packageVersion, deleted);
-	            		tracker.dispatch();
+	            		try {
+	            			tracker.dispatch();
+	            		} catch (Exception e) {}
 					} catch (NameNotFoundException e) {}
                 }
 

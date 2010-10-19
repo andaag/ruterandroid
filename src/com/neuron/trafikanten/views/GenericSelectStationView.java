@@ -232,7 +232,9 @@ public abstract class GenericSelectStationView extends ListActivity {
 			/*
 			 * Send dispatch along with search.
 			 */
-			tracker.dispatch();
+			/*try {
+				tracker.dispatch();
+			} catch (Exception e) {}*/
 			
 	        Log.i(TAG,"searchProvider started");
 	        stationListAdapter.clear();

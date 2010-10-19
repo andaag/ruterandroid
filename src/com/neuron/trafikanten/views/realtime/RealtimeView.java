@@ -433,7 +433,9 @@ public class RealtimeView extends ListActivity {
 				/*
 				 * Send dispatch along with devi data request.
 				 */
-				tracker.dispatch();
+				try {
+					tracker.dispatch();
+				} catch (Exception e) {}
 
 				setProgressBarIndeterminateVisibility(true);
 			}
