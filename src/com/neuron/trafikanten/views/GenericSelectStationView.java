@@ -229,13 +229,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 
 		@Override
 		public void onPreExecute() {
-			/*
-			 * Send dispatch along with search.
-			 */
-			/*try {
-				tracker.dispatch();
-			} catch (Exception e) {}*/
-			
 	        Log.i(TAG,"searchProvider started");
 	        stationListAdapter.clear();
 	        stationListAdapter.notifyDataSetChanged();

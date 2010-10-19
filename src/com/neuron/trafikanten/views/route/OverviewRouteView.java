@@ -143,6 +143,14 @@ public class OverviewRouteView extends ListActivity {
     	routeList.notifyDataSetChanged();
     	
 		tracker.trackEvent("Data", "Route", "Data", 0);
+		
+		/*
+		 * Send dispatch along with soap request, as they take time anyway.
+		 */
+		try {
+			tracker.dispatch();
+		} catch (Exception e) {}
+		
     	routeProvider = new TrafikantenRoute(this, routeSearch, new IGenericProviderHandler<RouteProposal>() {
     		@Override
     		public void onExtra(int what, Object obj) {
@@ -179,13 +187,6 @@ public class OverviewRouteView extends ListActivity {
 
 			@Override
 			public void onPreExecute() {
-				/*
-				 * Send dispatch along with soap request, as they take time anyway.
-				 */
-				try {
-					tracker.dispatch();
-				} catch (Exception e) {}
-
 		    	setProgressBarIndeterminateVisibility(true);
 			}
     		

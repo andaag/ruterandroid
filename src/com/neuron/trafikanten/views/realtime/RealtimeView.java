@@ -375,6 +375,13 @@ public class RealtimeView extends ListActivity {
     	}
     	
     	tracker.trackEvent("Data", "Realtime", "Devi", 0);
+		/*
+		 * Send dispatch along with devi data request.
+		 */
+		try {
+			tracker.dispatch();
+		} catch (Exception e) {}
+		
     	deviProvider = new TrafikantenDevi(this, station.stationId, deviLines.toString(), new IGenericProviderHandler<DeviData>() {
     		@Override
     		public void onExtra(int what, Object obj) {
@@ -430,13 +437,6 @@ public class RealtimeView extends ListActivity {
 
 			@Override
 			public void onPreExecute() {
-				/*
-				 * Send dispatch along with devi data request.
-				 */
-				try {
-					tracker.dispatch();
-				} catch (Exception e) {}
-
 				setProgressBarIndeterminateVisibility(true);
 			}
     	});
