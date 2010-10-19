@@ -93,14 +93,16 @@
 		
 	<!-- Realtime info under -->
 		
-	<ImageView
-		android:id="@+id/realtimeSymbol"
-		android:src="@drawable/ic_menu_recent_history"
+	<TextView
+		android:id="@+id/realtimeText"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
 		android:layout_alignTop="@+id/fromTime"
-		android:layout_marginTop="5dip"
+		android:layout_marginTop="11dip"
+		android:textSize="12dip"
+		android:textColor="#faf400"
+		android:text="@string/realtime"
 		android:layout_marginRight="45dip"/>
 		
 	<!-- This shares layout with realtime_list.xml -->

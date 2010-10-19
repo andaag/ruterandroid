@@ -578,7 +578,7 @@ class RouteAdapter extends BaseAdapter {
 			holder.toTime = (TextView) convertView.findViewById(R.id.toTime);
 			holder.waittime = (TextView) convertView.findViewById(R.id.waittime);
 			holder.devi = (LinearLayout) convertView.findViewById(R.id.devi);
-			holder.realtimeSymbol = (ImageView) convertView.findViewById(R.id.realtimeSymbol);
+			holder.realtimeText = (TextView) convertView.findViewById(R.id.realtimeText);
 			holder.departures = (TextView) convertView.findViewById(R.id.departures);
 			//holder.departurePlatform = (TextView) convertView.findViewById(R.id.departurePlatform);
 			convertView.setTag(holder);
@@ -624,9 +624,9 @@ class RouteAdapter extends BaseAdapter {
 		 * Setup realtime button
 		 */
 		if (routeData.canRealtime()) {
-			holder.realtimeSymbol.setVisibility(View.VISIBLE);
+			holder.realtimeText.setVisibility(View.VISIBLE);
 		} else {
-			holder.realtimeSymbol.setVisibility(View.GONE);
+			holder.realtimeText.setVisibility(View.GONE);
 		}
 		
 		/*
@@ -688,7 +688,7 @@ class RouteAdapter extends BaseAdapter {
 		TextView toTime;
 		TextView waittime;
 		
-		ImageView realtimeSymbol;
+		TextView realtimeText;
 		TextView departures;
 		//TextView departurePlatform;
 		
