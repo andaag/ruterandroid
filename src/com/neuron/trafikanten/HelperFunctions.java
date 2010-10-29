@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
@@ -110,9 +111,20 @@ public class HelperFunctions {
 	}
 	
 	
+	/*
+	 * Do proper encoding that doesn't add + to the string (with JSON doesn't want)
+	 */
 	public static String properEncode(String query) throws UnsupportedEncodingException {
 		return URLEncoder.encode(query.trim().replaceAll(" ", "%20"), "UTF-8");
 	}
+	
+	/*
+	 * Convert trafikanten's json date to an actual date
+	 */
+	public static Long jsonToDate(String jsonString) {
+		return new Date(Long.parseLong(jsonString.substring(6, jsonString.indexOf("+")))).getTime();
+	}
+
 	
 	/*
 	 * Converts inputstream to string

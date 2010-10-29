@@ -27,7 +27,6 @@
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.InputStream;
-import java.net.URLEncoder;
 
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;

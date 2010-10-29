@@ -25,23 +25,17 @@
 
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.text.FieldPosition;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
@@ -54,6 +48,7 @@ import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.hacks.WaittimeBug;
 
 public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
+	private static final String TAG = "Trafikanten-TrafikantenRoute";
 	private final Context context;
 	private final RouteSearchData routeSearch;
 	
@@ -70,30 +65,50 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			/*
 			 * Setup time
 			 */
-			final boolean travelAt = routeSearch.arrival == 0;
-			long travelTime = travelAt ? routeSearch.departure : routeSearch.arrival;
+			final Boolean isAfter = routeSearch.arrival == 0;
+			long travelTime = isAfter ? routeSearch.departure : routeSearch.arrival;
 			if (travelTime == 0) {
 				travelTime = Calendar.getInstance().getTimeInMillis();
 			}
-			final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-			final StringBuffer travelTimeString = dateFormater.format(new Date(travelTime), new StringBuffer(), new FieldPosition(0));
+
+			/*
+			 * Begin building url
+			 */
+			StringBuffer urlString = new StringBuffer("http://services.epi.trafikanten.no/Travel/GetTravelsAdvanced/?time=" + travelTime);
+			boolean firstInList = true;
 			
 			/*
 			 * Setup from stations
 			 */
-			final StringBuffer soapFromStation = new StringBuffer();
+			// FIRSTINLIST IS TRUE HERE
 			for (StationData station : routeSearch.fromStation) {
-				soapFromStation.append(HelperFunctions.mergeXmlArgument(context.getResources(), R.raw.gettravelsadvancedstation, 
-						new String[] {new Integer(station.walkingDistance).toString(), new Integer(station.stationId).toString() } ));
+				if (firstInList) {
+					urlString.append("&fromStops=");
+					firstInList = false;
+				} else {
+					urlString.append(",");
+				}
+				urlString.append(station.stationId);
 			}
+			
 			/*
 			 * Setup to stations
 			 */
-			final StringBuffer soapToStation = new StringBuffer();
+			firstInList = true;
 			for (StationData station : routeSearch.toStation) {
-				soapToStation.append(HelperFunctions.mergeXmlArgument(context.getResources(), R.raw.gettravelsadvancedstation, 
-						new String[] {new Integer(station.walkingDistance).toString(), new Integer(station.stationId).toString() } ));
+				if (firstInList) {
+					urlString.append("&toStops=");
+					firstInList = false;
+				} else {
+					urlString.append(",");
+				}
+				urlString.append(station.stationId);
 			}
+			
+			/*
+			 * Setup whether or not we're arriving before or departing after
+			 */
+			urlString.append("&isAfter=" + isAfter.toString());
 			
 			/*
 			 * Disable advanced options  if they are not visible
@@ -108,313 +123,118 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			String changePunish = new Integer(routeSearch.changePunish).toString();
 			String changeMargin = new Integer(routeSearch.changeMargin).toString();
 			String proposals = new Integer(routeSearch.proposals).toString();
+
+			urlString.append("&changeMargin=" + changeMargin + "&changePunish=" + changePunish + "&proposals=" + proposals);
 			
-			//For now using default values
-			String walkingFactor = "100";
-			
-			/*
-			 * Setup args to gettravelsadvanced and send soap request
-			 */
-			final String[] args = new String[]{Boolean.toString(travelAt), travelTimeString.toString(), 
-					soapFromStation.toString(), soapToStation.toString(),
-					changeMargin, changePunish, proposals, walkingFactor};
-			final InputStream result = HelperFunctions.soapRequest(context, R.raw.gettravelsadvanced, args, Trafikanten.API_URL);
+			Log.i(TAG,"Searching with url " + urlString);
+			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString.toString()));
 
 			/*
-			 * Setup SAXParser and XMLReader
+			 * Parse json
 			 */
-			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-			final SAXParser parser = parserFactory.newSAXParser();
-			
-			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new RouteHandler(this));
-			
-			reader.parse(new InputSource(result));
+			jsonParseRouteProposal(stream);
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {
 				ThreadHandlePostExecute(null);
 				return;
 			}
+			e.printStackTrace();
 			ThreadHandlePostExecute(e);
 			return;
 		}
 		ThreadHandlePostExecute(null);
     }
-}
-
-class RouteHandler extends DefaultHandler {
-	private final TrafikantenRoute parent;
-	// For parsing:
-	private static RouteProposal travelProposal;
-	private RouteData travelStage; // temporary only, these are moved to travelStageList
-
-	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-
-	/*
-	 * Temporary variables for parsing. 
-	 */
-	private boolean inTravelProposal = false;
-	private boolean inTravelStage = false;
-	private boolean inDepartureStop = false;
-	private boolean inArrivalStop = false;
-	private boolean inActualStop = false;
-	private boolean inDepartureTime = false;
-	private boolean inArrivalTime = false;
-	private boolean inLineName = false;
-	private boolean inDestination = false;
-	private boolean inTourID = false;
-	private boolean inTransportation = false;
-	private boolean inWaitingTime = false;
-
-	// Stop data:
-	private boolean inID = false;
-	private boolean inName = false;
-	private boolean inRealTimeStop = false;
-	private boolean inX = false;
-	private boolean inY = false;
-	
-	private int level = 0;
-	
-	//Temporary variable for character data:
-	private StringBuffer buffer = new StringBuffer();
-
-	public RouteHandler(TrafikantenRoute parent) {
-		this.parent = parent;
-	}
-	
-	/*
-	 * Parse DateTime and convert ParseException to SAXException
-	 */
-	private long parseDateTime(String dateTime) throws SAXException {
-		try {
-			return dateFormater.parse(dateTime).getTime();
-		} catch (ParseException e) {
-			throw new SAXException(e);
-		}
-	}
-
-	
-	@Override
-	public void startElement(String namespaceURI, String localName, 
-	              String qName, Attributes atts) throws SAXException {
-		level++;
-		if (!inTravelProposal) {
-			if (localName.equals("TravelProposal")) {
-				inTravelProposal = true;
-				travelProposal = new RouteProposal();
-			}
-		} else {	    
-			if (!inTravelStage) {
-				/*
-				 * We're not in a travel proposal
-				 */
-		        if (localName.equals("TravelStage")) {
-		            inTravelStage = true;
-		            travelStage = new RouteData();
-		            travelStage.fromStation = new StationData();
-		            travelStage.toStation = new StationData();
-		        } else if (localName.equals("DepartureTime")) {
-		    		inDepartureTime = true;
-			    } else if (localName.equals("ArrivalTime")) {
-			        inArrivalTime = true;
-			    }
-		    } else {
-		    	/*
-		    	 * We're in a travel stage
-		    	 */
-		    	if (inActualStop) return;
-		    	if (level == 9 && (inDepartureStop || inArrivalStop)) {
-		    		/*
-		    		 * We're parsing stop data.
-		    		 */
-		    		if (localName.equals("ID")) {
-		    			inID = true;
-		    		} else if (localName.equals("Name")) {
-		    			inName = true;
-		    		} else if (localName.equals("RealTimeStop")) {
-		    			inRealTimeStop = true;
-		    		} else if (localName.equals("X")) {
-		    			inX = true;
-		    		} else if (localName.equals("Y")) {
-		    			inY = true;
-		    		}
-		    	} else if (localName.equals("DepartureStop")) {
-			        inDepartureStop = true;
-			    } else if (localName.equals("ArrivalStop")) {
-			        inArrivalStop = true;
-			    } else if (localName.equals("DepartureTime")) {
-			        inDepartureTime = true;
-			    } else if (localName.equals("ArrivalTime")) {
-			        inArrivalTime = true;
-			    } else if (localName.equals("LineName")) {
-			        inLineName = true;
-			    } else if (localName.equals("Destination")) {
-			        inDestination = true;
-			    } else if (localName.equals("TourID")) {
-			        inTourID = true;
-			    } else if (localName.equals("Transportation")) {
-			        inTransportation = true;
-			    } else if (localName.equals("WaitingTime")) {
-			        inWaitingTime = true;
-			    } else if (localName.equals("inActualStop")) {
-			    	inActualStop = false;
-			    }
-		    }
-		}
-	}
-
-
-	@Override
-	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-		level--;
-		if (!inTravelProposal) return;
-		
-		if (localName.equals("TravelProposal")) {
-			/*
-			 * add the travel proposal to our master list
-			 */
-			inTravelProposal = false;
+    
+    /*
+     * This parses the top level "route" proposals
+     */
+    public void jsonParseRouteProposal(InputStream stream) throws JSONException, IOException {
+		final JSONArray jsonArray = new JSONArray(HelperFunctions.InputStreamToString(stream));
+		final int arraySize = jsonArray.length();
+		for (int i = 0; i < arraySize; i++) {
+			RouteProposal travelProposal = new RouteProposal();
+			jsonParseTravelStage(travelProposal, jsonArray.getJSONObject(i));
 			
 	        //hack:
 	        WaittimeBug.onSendData(travelProposal);
-	        parent.ThreadHandlePostData(travelProposal);
-		} else {
-			if (!inTravelStage) {
-		        if (inDepartureTime && localName.equals("DepartureTime")) {
-		    		inDepartureTime = false;
-		    		// TODO : Parse this
-			    } else if (inArrivalTime && localName.equals("ArrivalTime")) {
-			        inArrivalTime = false;
-			        // TODO : Parse this
-			    }
-			} else {
-				/*
-				 * Check if we're parsing stop data
-				 */
-				if (inActualStop) {
-					if (localName.equals("ActualStop")) {
-						inActualStop = false;
-					}
-				} else if (inDepartureStop || inArrivalStop) {
-		    		/*
-		    		 * We're parsing stop data.
-		    		 */
-		    		if (inID && localName.equals("ID")) {
-		    			inID = false;
-				    	if (inDepartureStop) {
-				    		travelStage.fromStation.stationId = Integer.parseInt(buffer.toString());
-				    	} else {
-				    		travelStage.toStation.stationId = Integer.parseInt(buffer.toString());
-				    	}
-		    		} else if (inName && localName.equals("Name")) {
-		    			inName = false;
-				    	if (inDepartureStop) {
-				    		travelStage.fromStation.stopName = buffer.toString();
-				    	} else {
-				    		travelStage.toStation.stopName = buffer.toString();
-				    	}
-		    		} else if (inRealTimeStop && localName.equals("RealTimeStop")) {
-		    			inRealTimeStop = false;
-		    			final String realtime = buffer.toString();
-		    			if (inDepartureStop) {
-		    				travelStage.fromStation.realtimeStop = realtime.equalsIgnoreCase("true");
-		    			} else {
-		    				travelStage.toStation.realtimeStop = realtime.equalsIgnoreCase("true");
-		    			}
-		    		} else if (inX && localName.equals("X")) {
-		    			inX = false;
-				    	if (inDepartureStop) {
-				    		travelStage.fromStation.utmCoords[0] = Integer.parseInt(buffer.toString());
-				    	} else {
-				    		travelStage.toStation.utmCoords[0] = Integer.parseInt(buffer.toString());
-				    	}
-		    		} else if (inY && localName.equals("Y")) {
-		    			inY = false;
-				    	if (inDepartureStop) {
-				    		travelStage.fromStation.utmCoords[1] = Integer.parseInt(buffer.toString());
-				    	} else {
-				    		travelStage.toStation.utmCoords[1] = Integer.parseInt(buffer.toString());
-				    	}
-					} else if (inDepartureStop && localName.equals("DepartureStop")) {
-					    inDepartureStop = false;
-					} else if (inArrivalStop && localName.equals("ArrivalStop")) {
-					    inArrivalStop = false;
-		    		}
-		    	} else {
-		    		/*
-		    		 * We're parsing a standard TravelStage
-		    		 */
-					if (localName.equals("TravelStage")) {
-						/*
-						 * +1 travel stage, add it to the travelStageList list
-						 */
-						inTravelStage = false;
-						/*Log.d("DEBUG CODE", "Adding travelstage : " + travelStage.line + " " + travelStage.destination + "\n" + 
-								travelStage.departure + " " + travelStage.arrival + " " + travelStage.waitTime);*/
-						travelProposal.travelStageList.add(travelStage);
-					} else if (inDepartureTime && localName.equals("DepartureTime")) {
-					    inDepartureTime = false;
-					    if (buffer.length() > 0)
-					    	travelStage.departure = parseDateTime(buffer.toString());
-					} else if (inArrivalTime && localName.equals("ArrivalTime")) {
-					    inArrivalTime = false;
-					    if (buffer.length() > 0)
-					    	travelStage.arrival = parseDateTime(buffer.toString());
-					} else if (inLineName && localName.equals("LineName")) {
-					    inLineName = false;
-				    	travelStage.line = buffer.toString();
-					} else if (inDestination && localName.equals("Destination")) {
-					    inDestination = false;
-				    	travelStage.destination = buffer.toString();
-					} else if (inTourID && localName.equals("TourID")) {
-					    inTourID = false;
-				    	travelStage.tourID = Integer.parseInt(buffer.toString());
-					} else if (inTransportation && localName.equals("Transportation")) {
-					    inTransportation = false;
-				    	final String transportationString = buffer.toString();
-				    	travelStage.transportType = R.drawable.icon_unknown;
-				    	if (transportationString.equals("Walking")) {
-				    		travelStage.transportType = R.drawable.icon_line_walk;
-				    	} else if (transportationString.equals("Bus")) {
-				    		travelStage.transportType = R.drawable.icon_line_bus;
-				    	} else if (transportationString.equals("Train")) {
-				    		travelStage.transportType = R.drawable.icon_line_train;
-				    	} else if (transportationString.equals("Tram")) {
-				    		travelStage.transportType = R.drawable.icon_line_tram;
-				    	} else if (transportationString.equals("Metro")) {
-				    		travelStage.transportType = R.drawable.icon_line_underground;
-				    	} else if (transportationString.equals("Boat")) {
-				    		travelStage.transportType = R.drawable.icon_line_boat;
-				    	} else if (transportationString.equals("AirportTrain")) {
-				    		travelStage.transportType = R.drawable.icon_line_train;
-				    	} else if (transportationString.equals("AirportBus")) {
-				    		travelStage.transportType = R.drawable.icon_line_bus;
-				    	}
-					} else if (inWaitingTime && localName.equals("WaitingTime")) {
-					    inWaitingTime = false;
-				    	/*
-				    	 * Parse time and add wait time in minutes to route data
-				    	 */
-					    if (buffer.length() > 0) {
-							try {
-								Date parsedDate = dateFormater.parse(buffer.toString());
-								travelStage.waitTime = parsedDate.getMinutes() + (parsedDate.getHours() * 60);
-							} catch (ParseException e) {
-								throw new SAXException(e);
-							}
-					}
-					}
-		    	}
-			}
+	        ThreadHandlePostData(travelProposal);
 		}
-		buffer.setLength(0);
-	}
-
-	@Override
-	public void characters(char ch[], int start, int length) {
-		if (inDepartureTime || inArrivalTime || inID || inName || inRealTimeStop || inX || inY || inDepartureTime || inArrivalTime ||
-				inLineName || inDestination || inTourID || inTransportation || inWaitingTime) {
-			buffer.append(ch,start,length);
+    }
+    
+    /*
+     * This parses the individual travel stages of a route.
+     */
+    public void jsonParseTravelStage(RouteProposal travelProposal, JSONObject travelstages) throws JSONException {
+    	final JSONArray jsonArray = travelstages.getJSONArray("TravelStages");
+		final int arraySize = jsonArray.length();
+		for (int i = 0; i < arraySize; i++) {
+			final JSONObject json = jsonArray.getJSONObject(i);
+			
+			/*
+			 * Temporary values for parsing:
+			 */
+            RouteData travelStage = new RouteData();
+            /*
+             * Parse station data:
+             */
+            travelStage.fromStation = jsonParseStop(json.getJSONObject("DepartureStop"));
+            travelStage.toStation = jsonParseStop(json.getJSONObject("ArrivalStop"));
+            
+            /*
+             * Start parsing local data
+             */
+            travelStage.departure = HelperFunctions.jsonToDate(json.getString("DepartureTime"));
+            travelStage.arrival = HelperFunctions.jsonToDate(json.getString("ArrivalTime"));
+            travelStage.line = json.getString("LineName");
+            travelStage.destination = json.getString("Destination");
+            travelStage.tourID = json.getInt("TourID");
+            
+            switch(json.getInt("Transportation")) {
+            //Order : Walking|AirportBus|Bus|Dummy|AirportTrain|Boat|Train|Tram|Metro
+            case 0: // 0 = walking
+            	travelStage.transportType = R.drawable.icon_line_walk;
+            	break;
+            case 1: // 1 = airportbus
+            case 2: // 2 = bus
+            	travelStage.transportType = R.drawable.icon_line_bus;
+            	break;
+            case 3: // 3 = Dummy
+            	travelStage.transportType = R.drawable.icon_line_bus;
+            	break;
+            case 4: // 4 = AirportTrain
+            case 6: // 6 = Train
+            	travelStage.transportType = R.drawable.icon_line_train;
+            	break;
+            case 5: // 5 = Boat
+            	travelStage.transportType = R.drawable.icon_line_boat;
+            	break;
+            case 7: // 7 = Tram
+            	travelStage.transportType = R.drawable.icon_line_tram;
+            	break;
+            case 8: // 8 = Metro
+            	travelStage.transportType = R.drawable.icon_line_underground;
+            	break;
+            }
+            
+            /*
+             * Alright, done parsing, give it to the parent
+             */
+            travelProposal.travelStageList.add(travelStage);
 		}
-	}
+    }
+    
+    /*
+     * This parses departureStop/arrivalStop under the travel stages
+     */
+    public StationData jsonParseStop(JSONObject json) throws JSONException {
+    	StationData station = new StationData();
+    	
+    	station.stationId = json.getInt("ID");
+    	station.stopName = json.getString("Name");
+		station.utmCoords[0] = json.getInt("X");
+		station.utmCoords[1] = json.getInt("Y");
+		station.realtimeStop = json.getBoolean("RealTimeStop");
+    	
+    	return station;
+    }
 }
