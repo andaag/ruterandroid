@@ -96,7 +96,6 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 			String urlString;
 			
 			if (query != null) {
-				query = query.trim();
 				/*
 				 * Setup URL for a normal station search query.
 				 */

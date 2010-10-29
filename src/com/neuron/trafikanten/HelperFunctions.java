@@ -21,6 +21,7 @@ package com.neuron.trafikanten;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -109,8 +110,8 @@ public class HelperFunctions {
 	}
 	
 	
-	public static String properEncode(String query) {
-		return URLEncoder.encode(query.replaceAll(" ", "%20"), "UTF-8");
+	public static String properEncode(String query) throws UnsupportedEncodingException {
+		return URLEncoder.encode(query.trim().replaceAll(" ", "%20"), "UTF-8");
 	}
 	
 	/*
