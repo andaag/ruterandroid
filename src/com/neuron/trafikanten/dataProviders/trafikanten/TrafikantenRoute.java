@@ -165,13 +165,15 @@ class RouteHandler extends DefaultHandler {
 	private boolean inTourID = false;
 	private boolean inTransportation = false;
 	private boolean inWaitingTime = false;
-	
+
 	// Stop data:
 	private boolean inID = false;
 	private boolean inName = false;
 	private boolean inRealTimeStop = false;
 	private boolean inX = false;
 	private boolean inY = false;
+	
+	private int level = 0;
 	
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
@@ -195,6 +197,7 @@ class RouteHandler extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName, 
 	              String qName, Attributes atts) throws SAXException {
+		level++;
 		if (!inTravelProposal) {
 			if (localName.equals("TravelProposal")) {
 				inTravelProposal = true;
@@ -220,7 +223,7 @@ class RouteHandler extends DefaultHandler {
 		    	 * We're in a travel stage
 		    	 */
 		    	if (inActualStop) return;
-		    	if (inDepartureStop || inArrivalStop) {
+		    	if (level == 9 && (inDepartureStop || inArrivalStop)) {
 		    		/*
 		    		 * We're parsing stop data.
 		    		 */
@@ -263,6 +266,7 @@ class RouteHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
+		level--;
 		if (!inTravelProposal) return;
 		
 		if (localName.equals("TravelProposal")) {
