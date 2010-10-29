@@ -211,7 +211,7 @@ class RealtimeHandler extends DefaultHandler {
 		        data.destination = buffer.toString();
 		    } else if (inInCongestion) {
 		    	inInCongestion = false;
-		        data.inCongestion = buffer.toString().equalsIgnoreCase("true");
+		        data.inCongestion = !buffer.toString().equalsIgnoreCase("false");
 		    } else if (inMonitored) {
 		        inMonitored = false;
 		    	data.realtime = buffer.toString().equalsIgnoreCase("true");
