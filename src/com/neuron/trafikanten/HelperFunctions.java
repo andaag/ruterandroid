@@ -21,6 +21,7 @@ package com.neuron.trafikanten;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.zip.GZIPInputStream;
@@ -107,6 +108,10 @@ public class HelperFunctions {
 		return userAgentString;
 	}
 	
+	
+	public static String properEncode(String query) {
+		return URLEncoder.encode(query.replaceAll(" ", "%20"), "UTF-8");
+	}
 	
 	/*
 	 * Converts inputstream to string

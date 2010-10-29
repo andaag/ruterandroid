@@ -101,9 +101,9 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 				 * Setup URL for a normal station search query.
 				 */
 				if (isRealtimeStopFiltered) {
-					urlString = "http://services.epi.trafikanten.no/RealTime/FindMatches/" + URLEncoder.encode(query, "UTF-8");
+					urlString = "http://services.epi.trafikanten.no/RealTime/FindMatches/" + HelperFunctions.properEncode(query);
 				} else {
-					urlString = "http://services.epi.trafikanten.no/Place/FindMatches/" + URLEncoder.encode(query, "UTF-8");
+					urlString = "http://services.epi.trafikanten.no/Place/FindMatches/" + HelperFunctions.properEncode(query);
 				}
 			} else {
 				/*
