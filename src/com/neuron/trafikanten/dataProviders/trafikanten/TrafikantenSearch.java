@@ -27,18 +27,11 @@
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.net.URLEncoder;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.apache.http.client.methods.HttpGet;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.UTMRef;
@@ -46,7 +39,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.StationData;
@@ -79,98 +71,11 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 		start();
 	}
 	
-    @Override
-	public void run() {
-		try {
-			InputStream result;
-			if (query != null) {
-				/*
-				 * Setup URL for a normal station search query.
-				 */
-				if (isRealtimeStopFiltered) {
-					final String urlString = "http://reis.trafikanten.no/siri/checkrealtimestop.aspx?name=" + URLEncoder.encode(query, "UTF-8");
-					Log.i(TAG,"Searching with url " + urlString);
-	                final URL url = new URL(urlString);
-	                result = url.openStream();
-				} else {
-					result = HelperFunctions.soapRequest(context, R.raw.getmatches, new String[]{query}, Trafikanten.API_URL);
-				}
-			} else {
-				/*
-				 * Setup URL for coordinate search.
-				 */
-				final LatLng latLong = new LatLng(latitude, longitude);
-				final UTMRef utmRef = latLong.toUTMRef();
-				                
-				String urlString = "http://reis.trafikanten.no/topp2009/getcloseststops.aspx?x="+ (int)utmRef.getEasting() + "&y="+ (int) utmRef.getNorthing() + "&proposals=10";
-				if (isRealtimeStopFiltered) {
-					urlString = urlString + "&onlyshowrealtimestops=true";
-				}
-				Log.i(TAG,"Searching with url " + urlString);
-				final HttpGet request = new HttpGet(urlString);
-				result = HelperFunctions.executeHttpRequest(context, request);
-			}
-			
-			/*
-			 * Setup SAXParser and XMLReader
-			 */
-			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-			final SAXParser parser = parserFactory.newSAXParser();
-			
-			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new SearchHandler(this, isRealtimeStopFiltered));
-			reader.parse(new InputSource(result));
-		} catch(Exception e) {
-			if (e.getClass() == InterruptedException.class) {
-				ThreadHandlePostExecute(null);
-				return;
-			}
-			ThreadHandlePostExecute(e);
-			return;
-		}
-		ThreadHandlePostExecute(null);
-    }
-}
-
-/*
- * Search XML Parser
- */
-class SearchHandler extends DefaultHandler {
-	private StationData station;
-	private final TrafikantenSearch parent;
-	private final boolean isRealtimeStopFiltered; // if isRealtimeStopFiltered station.realtime = true always.
-	
-	/*
-	 * Temporary variables for parsing. 
-	 */
-	private boolean inPlace = false;
-	private boolean inX = false;
-	private boolean inY = false;
-	private boolean inID = false;
-	private boolean inName = false;
-	private boolean inDistrict = false;
-	private boolean inType = false;
-	private boolean inStops = false;
-	private boolean inRealTimeStop = false;
-	private boolean inWalkingDistance = false;
-	
-	// Ignore is used to ignore anything except type Stop.
-	private boolean ignore = false;
-	
-	//Temporary variable for character data:
-	private StringBuffer buffer = new StringBuffer();
-	
-	public SearchHandler(TrafikantenSearch parent, boolean isRealtimeStopFiltered)
-	{
-		this.isRealtimeStopFiltered = isRealtimeStopFiltered;
-		this.parent = parent;
-	}
-	
 	/*
 	 * This searches stopName for address, and puts address in extra (the next line).
 	 * As station names are sometimes StationName (address)
 	 */
-	private void searchForAddress() {
+	private void searchForAddress(StationData station) {
 		final String stopName = station.stopName;
 	
 		int startAddress = stopName.indexOf('(');
@@ -184,102 +89,97 @@ class SearchHandler extends DefaultHandler {
 			station.extra = address;
 		}
 	}
-
-    @Override 
-    public void startElement(String namespaceURI, String localName, 
-              String qName, Attributes atts) throws SAXException {
-    	if (ignore) return;
-        if (inStops) return;
-        if (!inPlace) {
-            if (localName.equals("Place")) {
-                inPlace = true;
-    			station = new StationData();
-    		}
-		} else {
-			if (localName.equals("X")) {
-			    inX = true;
-			} else if (localName.equals("Y")) {
-			    inY = true;
-			} else if (localName.equals("ID")) {
-			    inID = true;
-			} else if (localName.equals("Name")) {
-			    inName = true;
-			} else if (localName.equals("District")) {
-			    inDistrict = true;
-			} else if (localName.equals("Type")) {
-			    inType = true;
-			} else if (localName.equals("Stops")) {
-			    inStops = true;
-			} else if (localName.equals("RealTimeStop")) {
-				inRealTimeStop = true;
-			} else if (localName.equals("WalkingDistance")) {
-				inWalkingDistance = true;
+	
+    @Override
+	public void run() {
+		try {
+			String urlString;
+			
+			if (query != null) {
+				/*
+				 * Setup URL for a normal station search query.
+				 */
+				if (isRealtimeStopFiltered) {
+					urlString = "http://services.epi.trafikanten.no/RealTime/FindMatches/" + URLEncoder.encode(query, "UTF-8");
+				} else {
+					urlString = "http://services.epi.trafikanten.no/Place/FindMatches/" + URLEncoder.encode(query, "UTF-8");
+				}
+			} else {
+				/*
+				 * Setup URL for coordinate search.
+				 */
+				final LatLng latLong = new LatLng(latitude, longitude);
+				final UTMRef utmRef = latLong.toUTMRef();
+				urlString = "http://services.epi.trafikanten.no/Place/GetClosestStopsByCoordinates/?coordinates=(X=" +  (int) utmRef.getEasting() + ",Y=" + (int) utmRef.getNorthing() + ")&proposals=10";
 			}
+			Log.i(TAG,"Searching with url " + urlString);
+			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString));
+			
+			/*
+			 * Parse json
+			 */
+			final JSONArray jsonArray = new JSONArray(HelperFunctions.InputStreamToString(stream));
+			final int arraySize = jsonArray.length();
+			for (int i = 0; i < arraySize; i++) {
+				final JSONObject json = jsonArray.getJSONObject(i);
+				/*
+				 * We only care about normal stops for now, type 0.
+				 */
+				if (json.getInt("Type") == 0) {
+					StationData station = new StationData();
+					
+					if (query != null) {
+						/*
+						 * Not a coordinate search, so we already know the realtime value.
+						 */
+						station.realtimeStop = isRealtimeStopFiltered;
+					} else {
+						station.realtimeStop = json.getBoolean("RealTimeStop");
+						if (isRealtimeStopFiltered && !station.realtimeStop) {
+							/*
+							 * Coordinate search, and we only want realtime data.
+							 */
+							continue;
+						}
+					}
+					
+					
+					
+					
+					
+					station.stationId = json.getInt("ID");
+					station.stopName = json.getString("Name");
+					searchForAddress(station);
+					
+					final String district = json.getString("District");
+					if (district.length() > 0) {
+				    	if (station.extra == null) {
+			    			station.extra = district;
+			    		} else {
+			    			station.extra = station.extra + ", " + district;
+			    		}
+					}
+					
+					if (json.has("WalkingDistance")) {
+						station.walkingDistance = json.getInt("WalkingDistance");
+					}
+					station.utmCoords[0] = json.getInt("X");
+					station.utmCoords[1] = json.getInt("Y");
+					
+					ThreadHandlePostData(station);
+				}
+				
+
+			}
+
+		} catch(Exception e) {
+			if (e.getClass() == InterruptedException.class) {
+				ThreadHandlePostExecute(null);
+				return;
+			}
+			ThreadHandlePostExecute(e);
+			return;
 		}
-    } 
-    
-    @Override
-    public void endElement(String namespaceURI, String localName, String qName) {
-        if (!inPlace) return;
-        if (localName.equals("Place")) {
-            /*
-             * on StopMatch we're at the end, and we need to add the station to the station list.
-             */
-            inPlace = false;
-            if (!ignore) {
-    	        if (isRealtimeStopFiltered)
-    	        	station.realtimeStop = true;
-    	        parent.ThreadHandlePostData(station);
-            }
-            ignore = false;
-        } else {
-        	if (ignore) return;
-        	if (inX && localName.equals("X")) {
-	            inX = false;
-	            station.utmCoords[0] = Integer.parseInt(buffer.toString());
-	        } else if (inY && localName.equals("Y")) {
-	            inY = false;
-	            station.utmCoords[1] = Integer.parseInt(buffer.toString());
-	        } else if (inID && localName.equals("ID")) {
-	            inID = false;
-	            station.stationId = Integer.parseInt(buffer.toString());
-	        } else if (inName && localName.equals("Name")) {
-	            inName = false;
-		    	station.stopName = buffer.toString();
-	    		searchForAddress();
-	        } else if (inDistrict && localName.equals("District")) {
-	            inDistrict = false;
-		    	if (station.extra == null) {
-	    			station.extra = buffer.toString();
-	    		} else {
-	    			station.extra = station.extra + ", " + buffer.toString();
-	    		}
-	        } else if (inType && localName.equals("Type")) {
-	            inType = false;
-		    	//Log.d("DEBUG CODE","Type : " + new String(ch, start, length) + " " + ch[0] + " " + length);
-	            if (buffer.length() != 4 && !buffer.toString().equals("Stop")) {
-		    		//Log.d("DEBUG CODE","  - Ignoring");
-		    		ignore = true;
-		    	}
-	        } else if (inStops && localName.equals("Stops")) {
-	        	inStops = false;
-	        } else if (inRealTimeStop && localName.equals("RealTimeStop")) {
-	        	inRealTimeStop = false;
-	        	// TODO : Should get api clearification here, this should not be neccesary...
-	        	station.realtimeStop = buffer.toString().toLowerCase().equals("true");
-	        } else if (inWalkingDistance && localName.equals("WalkingDistance")) {
-	        	inWalkingDistance = false;
-	        	station.walkingDistance = Integer.parseInt(buffer.toString());
-	        }
-        }
-        buffer.setLength(0);
-    }
-    
-    @Override
-    public void characters(char ch[], int start, int length) {
-    	if (ignore) return;
-    	if (inX || inY || inID || inName || inDistrict || inType || inRealTimeStop || inWalkingDistance) {
-    		buffer.append(ch, start, length);
-    	}
+		ThreadHandlePostExecute(null);
     }
 }

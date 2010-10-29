@@ -20,6 +20,7 @@ package com.neuron.trafikanten;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.zip.GZIPInputStream;
@@ -106,6 +107,21 @@ public class HelperFunctions {
 		return userAgentString;
 	}
 	
+	
+	/*
+	 * Converts inputstream to string
+	 */
+    public static String InputStreamToString(InputStream stream) throws IOException {
+	    final InputStreamReader input = new InputStreamReader(stream, "UTF-8");
+	    final char[] buffer = new char[8192];
+	    final StringBuilder output = new StringBuilder(8192);
+	    try {
+	        for(int read = input.read(buffer, 0, buffer.length); read != -1; read = input.read(buffer, 0, buffer.length)) {
+	            output.append(buffer, 0, read);
+	        }
+	    } catch (IOException e) { }
+	    return output.toString();
+    }
 	
 	/*
 	 * Updates statistics for byte downloaded.
