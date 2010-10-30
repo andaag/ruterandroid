@@ -30,14 +30,11 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Build;
 import android.util.Log;
 
@@ -71,32 +68,6 @@ public class HelperFunctions {
 		return hourFormater.format(time).toString();
     }
     
-    /*
-     * Replace % with arguments, performance version of http://www.mail-archive.com/android-developers@googlegroups.com/msg02846.html
-     */
-	public static String mergeXmlArgument(Resources resources, int rId, String []args) throws IOException {
-		int currentArgIndex = 0;
-        InputStream xmlStream = resources.openRawResource( rId );
-        StringBuffer xml = new StringBuffer(xmlStream.available() + 100);
-        
-		while (true) {
-			final int b = xmlStream.read();
-			if (b < 1) break; // EOF
-			
-			if ((char)b == '%') {
-				/*
-				 * Replace next % with args[i]
-				 */
-				xml.append(args[currentArgIndex]);
-				currentArgIndex++; // No checking, will cause exception if % and files and args # dont match up.
-			}
-			else xml.append((char)b);
-		} 
-		xmlStream.close();
-
-		return(xml.toString());
-	}
-	
 	private static String userAgentString = null;
 	private static String getUserAgent(Context context) {
 		if (userAgentString == null) {
@@ -186,25 +157,5 @@ public class HelperFunctions {
 		}
 		
 		return content;
-	}
-	
-	
-	/*
-	 * Send a soap request to the server
-	 */
-	public static InputStream soapRequest(Context context, String soap, final String url) throws IOException {
-        HttpPost httppost = new HttpPost(url);
-        httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
-        httppost.setEntity(new StringEntity(soap, "UTF-8"));
-    	//Log.d("Trafikanten - DEBUG CODE", "Soap request : " + soap);
-    	
-    	return executeHttpRequest(context, httppost);
-	}
-	/*
-	 * Send a soap request, takes resource id, arguments and the soap url, returns inputStream.
-	 */
-	public static InputStream soapRequest(Context context, final int rid, final String[] args, final String url) throws IOException {
-        final String soap = mergeXmlArgument(context.getResources(), rid, args);
-        return soapRequest(context, soap, url);
 	}
 }
