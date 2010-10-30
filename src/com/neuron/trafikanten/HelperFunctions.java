@@ -178,7 +178,7 @@ public class HelperFunctions {
 		
 		if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
 			content = new GZIPInputStream(content);
-			Log.i(TAG,"Recieved compressed data - OK");
+			//Log.i(TAG,"Recieved compressed data - OK");
 		} else {
 			Log.i(TAG,"Recieved UNCOMPRESSED data - Problem server side");
 		}
