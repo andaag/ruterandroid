@@ -69,7 +69,7 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 			final String urlString = "http://devi.trafikanten.no/rss.aspx?show=filter&stop=" + stationId + "&linename=" + URLEncoder.encode(lines,"UTF-8");
 			Log.i(TAG,"Loading devi data : " + urlString);
 			HttpGet request = new HttpGet(urlString);
-			InputStream result = HelperFunctions.executeHttpRequest(context, request).stream;
+			InputStream result = HelperFunctions.executeHttpRequest(context, request, false).stream;
 
 			/*
 			 * Setup SAXParser and XMLReader

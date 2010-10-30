@@ -25,19 +25,9 @@
 
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
-import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.apache.http.client.methods.HttpGet;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.Message;
@@ -66,23 +56,31 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
     @Override
 	public void run() {
 		try {
-			final String urlString = "http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId;
+			final String urlString = Trafikanten.API_URL + "/RealTime/GetRealTimeData/" + stationId;
 			Log.i(TAG,"Loading realtime data : " + urlString);
-			HttpGet request = new HttpGet(urlString);
 			
-			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, request);
-			final InputStream result = streamWithTime.stream;
+			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString), true);
 			ThreadHandleTimeData(streamWithTime.timeDifference);
 
 			/*
-			 * Setup SAXParser and XMLReader
+			 * Parse json
 			 */
-			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-			final SAXParser parser = parserFactory.newSAXParser();
-			
-			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new RealtimeHandler(this));
-			reader.parse(new InputSource(result));
+			final JSONArray jsonArray = new JSONArray(HelperFunctions.InputStreamToString(streamWithTime.stream));
+			final int arraySize = jsonArray.length();
+			for (int i = 0; i < arraySize; i++) {
+				final JSONObject json = jsonArray.getJSONObject(i);
+				
+				RealtimeData realtimeData = new RealtimeData();
+				realtimeData.line = json.getString("PublishedLineName");
+				realtimeData.destination = json.getString("DestinationName");
+				realtimeData.realtime = json.getBoolean("Monitored");
+				realtimeData.expectedDeparture = HelperFunctions.jsonToDate(json.getString("ExpectedDepartureTime"));
+				realtimeData.departurePlatform = Integer.parseInt(json.getString("DeparturePlatformName"));
+				realtimeData.stopVisitNote = json.getString("StopVisitNote");
+				
+				ThreadHandlePostData(realtimeData);
+			}
+
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {
 				ThreadHandlePostExecute(null);
@@ -104,138 +102,4 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
     	msg.obj = data;
     	threadHandler.sendMessage(msg);
     }
-}
-
-/*
- * Realtime XML Parser
- */
-class RealtimeHandler extends DefaultHandler {
-	//private static final String TAG = "Trafikanten-T-RealtimeThread-Handler";
-	private RealtimeData data;
-	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
-	private final TrafikantenRealtime parent;
-	
-	/*
-	 * Temporary variables for parsing. 
-	 */
-	private boolean inMonitoredStopVisit = false; // Top block
-	
-	private boolean inPublishedLineName = false;
-	private boolean inDestinationName = false;
-	private boolean inInCongestion = false;
-	private boolean inMonitored = false;
-
-	private boolean inAimedDepartureTime = false;
-	private boolean inExpectedDepartureTime = false;
-	private boolean inDeparturePlatformName = false;
-
-	private boolean inStopVisitNote = false;
-	
-	//Temporary variable for character data:
-	private StringBuffer buffer = new StringBuffer();
-	
-	public RealtimeHandler(TrafikantenRealtime parent)
-	{
-		this.parent = parent;
-	}
-	
-	/*
-	 * Parse DateTime and convert ParseException to SAXException
-	 */
-	private long parseDateTime(String dateTime) throws SAXException {
-		try {
-			return dateFormater.parse(dateTime).getTime();
-		} catch (ParseException e) {
-			throw new SAXException(e);
-		}
-	}
-	
-	@Override
-	public void startElement(String namespaceURI, String localName, 
-	              String qName, Attributes atts) throws SAXException {
-	    if (!inMonitoredStopVisit) {
-	        if (localName.equals("MonitoredStopVisit")) {
-	            inMonitoredStopVisit = true;
-	            data = new RealtimeData();
-	        }
-	    } else {
-	    	if (localName.equals("PublishedLineName")) {
-		        inPublishedLineName = true;
-		    } else if (localName.equals("DestinationName")) {
-		        inDestinationName = true;
-		    } else if (localName.equals("InCongestion")) {
-		    	inInCongestion = true;
-		    } else if (localName.equals("Monitored")) {
-		        inMonitored = true;
-		    } else if (localName.equals("AimedDepartureTime")) {
-		        inAimedDepartureTime = true;
-		    } else if (localName.equals("ExpectedDepartureTime")) {
-		        inExpectedDepartureTime = true;
-		    } else if (localName.equals("DeparturePlatformName")) {
-		        inDeparturePlatformName = true;
-		    } else if (localName.equals("StopVisitNote")) {
-		        inStopVisitNote = true;
-		    }
-	    }
-	}
-
-
-	@Override
-	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-	    if (!inMonitoredStopVisit) return;
-	    if (inMonitoredStopVisit && localName.equals("MonitoredStopVisit")) {
-	        /*
-	         * on StopMatch we're at the end, and we need to add the station to the station list.
-	         */
-	        inMonitoredStopVisit = false;
-	        parent.ThreadHandlePostData(data);
-	    } else { 
-	    	if (inPublishedLineName) {
-		        inPublishedLineName = false;
-		        data.line = buffer.toString();
-		    } else if (inDestinationName) {
-		        inDestinationName = false;
-		        data.destination = buffer.toString();
-		    } else if (inInCongestion) {
-		    	inInCongestion = false;
-		        data.inCongestion = !buffer.toString().equalsIgnoreCase("false");
-		    } else if (inMonitored) {
-		        inMonitored = false;
-		    	data.realtime = buffer.toString().equalsIgnoreCase("true");
-		    } else if (inExpectedDepartureTime) {
-		        inExpectedDepartureTime = false;
-		        data.expectedDeparture = parseDateTime(buffer.toString());
-		    } else if (inDeparturePlatformName) {
-		        inDeparturePlatformName = false;
-		        /*
-		         * platform should be parsed as int, they recomend parsing them as int.
-		         * 
-					from	Torbjørn Barslett <tb@trafikanten.no>
-					sender-time	Sent at 4:02 PM (GMT+01:00). Current time there: 5:09 PM. ✆
-					to	Anders Aagaard <aagaande@gmail.com>,
-					Bent Flyen <bent.flyen@trafikanten.no>
-					cc	QA <qa@trafikanten.no>
-					date	Tue, Jan 26, 2010 at 4:02 PM
-					subject	SV: Trafikanten oppdatering
-		         */
-		        try {
-		        	data.departurePlatform = Integer.parseInt(buffer.toString());
-		        } catch (NumberFormatException e) {
-		        	data.departurePlatform = 0;
-		        }
-		    } else if (inStopVisitNote) {
-		        inStopVisitNote = false;
-		        data.stopVisitNote = buffer.toString();
-		    }
-	    }
-		buffer.setLength(0);
-	}
-	
-	@Override
-	public void characters(char ch[], int start, int length) throws SAXException {
-	    if (inPublishedLineName || inDestinationName || inInCongestion ||
-	    		inMonitored || inAimedDepartureTime || inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
-	    	buffer.append(ch,start,length);
-	    }
-	}
 }

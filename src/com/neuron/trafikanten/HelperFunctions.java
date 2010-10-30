@@ -136,7 +136,7 @@ public class HelperFunctions {
 			this.timeDifference = timeDifference;
 		}
 	}
-	public static StreamWithTime executeHttpRequest(Context context, HttpUriRequest request) throws IOException {
+	public static StreamWithTime executeHttpRequest(Context context, HttpUriRequest request, boolean parseTime) throws IOException {
 		/*
 		 * Add gzip header
 		 */
@@ -155,15 +155,17 @@ public class HelperFunctions {
 		 * Get trafikanten time to calculate time difference
 		 */
 		long timeDifference = 0;
-		try {
-			final String header = response.getHeaders("Date")[0].getValue();
-			final long trafikantenTime = new Date(header).getTime();
-			//timeDifference = System.currentTimeMillis() - (System.currentTimeMillis() - timeDifference) - trafikantenTime;
-			timeDifference = System.currentTimeMillis() - responseTime - trafikantenTime;
-			Log.i(TAG,"Timedifference between local clock and trafikanten server : " + timeDifference + "ms (" + (timeDifference / 1000) + "s)");
-
-		} catch (Exception e) {
-			e.printStackTrace(); // ignore this error, it's not critical.
+		if (parseTime) {
+			try {
+				final String header = response.getHeaders("Date")[0].getValue();
+				final long trafikantenTime = new Date(header).getTime();
+				//timeDifference = System.currentTimeMillis() - (System.currentTimeMillis() - timeDifference) - trafikantenTime;
+				timeDifference = System.currentTimeMillis() - responseTime - trafikantenTime;
+				Log.i(TAG,"Timedifference between local clock and trafikanten server : " + timeDifference + "ms (" + (timeDifference / 1000) + "s)");
+	
+			} catch (Exception e) {
+				e.printStackTrace(); // ignore this error, it's not critical.
+			}
 		}
 		
 		Header contentEncoding = response.getFirstHeader("Content-Encoding");

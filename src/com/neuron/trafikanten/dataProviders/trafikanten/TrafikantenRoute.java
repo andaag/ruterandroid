@@ -128,7 +128,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			
 			Log.i(TAG,"Searching with url " + urlString);
 			
-			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString.toString())); 
+			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString.toString()), true); 
 
 			/*
 			 * Parse json
