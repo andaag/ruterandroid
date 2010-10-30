@@ -27,7 +27,6 @@ package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
@@ -39,6 +38,7 @@ import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.HelperFunctions.StreamWithTime;
 import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.RouteData;
@@ -67,14 +67,11 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			 */
 			final Boolean isAfter = routeSearch.arrival == 0;
 			long travelTime = isAfter ? routeSearch.departure : routeSearch.arrival;
-			if (travelTime == 0) {
-				travelTime = Calendar.getInstance().getTimeInMillis();
-			}
 
 			/*
 			 * Begin building url
 			 */
-			StringBuffer urlString = new StringBuffer(Trafikanten.API_URL + "/Travel/GetTravelsAdvanced/?time=" + travelTime);
+			StringBuffer urlString = new StringBuffer(Trafikanten.API_URL + "/Travel/GetTravelsAdvanced/?");
 			boolean firstInList = true;
 			
 			/*
@@ -83,7 +80,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			// FIRSTINLIST IS TRUE HERE
 			for (StationData station : routeSearch.fromStation) {
 				if (firstInList) {
-					urlString.append("&fromStops=");
+					urlString.append("fromStops=");
 					firstInList = false;
 				} else {
 					urlString.append(",");
@@ -108,7 +105,10 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			/*
 			 * Setup whether or not we're arriving before or departing after
 			 */
-			urlString.append("&isAfter=" + isAfter.toString());
+			if (travelTime != 0) {
+				urlString.append("&time=" + travelTime);
+				urlString.append("&isAfter=" + isAfter.toString());
+			}
 			
 			/*
 			 * Disable advanced options  if they are not visible
@@ -127,12 +127,13 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			urlString.append("&changeMargin=" + changeMargin + "&changePunish=" + changePunish + "&proposals=" + proposals);
 			
 			Log.i(TAG,"Searching with url " + urlString);
-			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString.toString()));
+			
+			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString.toString())); 
 
 			/*
 			 * Parse json
 			 */
-			jsonParseRouteProposal(stream);
+			jsonParseRouteProposal(streamWithTime.stream);
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {
 				ThreadHandlePostExecute(null);

@@ -44,6 +44,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.HelperFunctions.StreamWithTime;
 import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
@@ -68,7 +69,10 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 			final String urlString = "http://reis.trafikanten.no/siri/sm.aspx?id=" + stationId;
 			Log.i(TAG,"Loading realtime data : " + urlString);
 			HttpGet request = new HttpGet(urlString);
-			InputStream result = HelperFunctions.executeHttpRequest(context, request);
+			
+			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, request);
+			final InputStream result = streamWithTime.stream;
+			ThreadHandleTimeData(streamWithTime.timeDifference);
 
 			/*
 			 * Setup SAXParser and XMLReader
@@ -77,7 +81,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 			final SAXParser parser = parserFactory.newSAXParser();
 			
 			final XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new RealtimeHandler(this, System.currentTimeMillis()));
+			reader.setContentHandler(new RealtimeHandler(this));
 			reader.parse(new InputSource(result));
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {
@@ -106,7 +110,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
  * Realtime XML Parser
  */
 class RealtimeHandler extends DefaultHandler {
-	private static final String TAG = "Trafikanten-T-RealtimeThread-Handler";
+	//private static final String TAG = "Trafikanten-T-RealtimeThread-Handler";
 	private RealtimeData data;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss");
 	private final TrafikantenRealtime parent;
@@ -115,7 +119,6 @@ class RealtimeHandler extends DefaultHandler {
 	 * Temporary variables for parsing. 
 	 */
 	private boolean inMonitoredStopVisit = false; // Top block
-	private boolean inResponseTimestamp = false; // Top block
 	
 	private boolean inPublishedLineName = false;
 	private boolean inDestinationName = false;
@@ -128,15 +131,11 @@ class RealtimeHandler extends DefaultHandler {
 
 	private boolean inStopVisitNote = false;
 	
-	private long timeDifference = 0; // calculated from ResponseTimestamp
-	private boolean timeDifferenceSet = false;
-	
 	//Temporary variable for character data:
 	private StringBuffer buffer = new StringBuffer();
 	
-	public RealtimeHandler(TrafikantenRealtime parent, long timeDifferenceBase)
+	public RealtimeHandler(TrafikantenRealtime parent)
 	{
-		this.timeDifference = timeDifferenceBase;
 		this.parent = parent;
 	}
 	
@@ -158,9 +157,6 @@ class RealtimeHandler extends DefaultHandler {
 	        if (localName.equals("MonitoredStopVisit")) {
 	            inMonitoredStopVisit = true;
 	            data = new RealtimeData();
-	        }
-	        if (!timeDifferenceSet && localName.equals("ResponseTimestamp")) {
-	            inResponseTimestamp = true;
 	        }
 	    } else {
 	    	if (localName.equals("PublishedLineName")) {
@@ -186,15 +182,6 @@ class RealtimeHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-		if (inResponseTimestamp) {
-			final long trafikantenTime = parseDateTime(buffer.toString());
-			// Current time - sendtime for query - trafikanten time = desync.
-			timeDifference = System.currentTimeMillis() - (System.currentTimeMillis() - timeDifference) - trafikantenTime;
-			Log.i(TAG,"Timedifference between local clock and trafikanten server : " + timeDifference + "ms (" + (timeDifference / 1000) + "s)");
-			timeDifferenceSet = true;
-			inResponseTimestamp = false;
-			parent.ThreadHandleTimeData(timeDifference);
-		}
 	    if (!inMonitoredStopVisit) return;
 	    if (inMonitoredStopVisit && localName.equals("MonitoredStopVisit")) {
 	        /*
@@ -246,7 +233,7 @@ class RealtimeHandler extends DefaultHandler {
 	
 	@Override
 	public void characters(char ch[], int start, int length) throws SAXException {
-	    if (inResponseTimestamp || inPublishedLineName || inDestinationName || inInCongestion ||
+	    if (inPublishedLineName || inDestinationName || inInCongestion ||
 	    		inMonitored || inAimedDepartureTime || inExpectedDepartureTime || inDeparturePlatformName || inStopVisitNote) {
 	    	buffer.append(ch,start,length);
 	    }

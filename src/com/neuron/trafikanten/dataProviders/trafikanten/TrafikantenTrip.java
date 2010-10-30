@@ -42,7 +42,7 @@ public class TrafikantenTrip extends GenericDataProviderThread<StationData> {
 			 */
 			final String urlString = Trafikanten.API_URL + "/Trip/GetTrip/" + tourID + "/";
 			Log.i(TAG,"Searching with url " + urlString);
-			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString));
+			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString)).stream;
 
 			/*
 			 * Parse json

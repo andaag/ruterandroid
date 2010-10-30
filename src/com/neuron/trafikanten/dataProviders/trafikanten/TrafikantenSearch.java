@@ -112,7 +112,7 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 				urlString = Trafikanten.API_URL + "/Place/GetClosestStopsByCoordinates/?coordinates=(X=" +  (int) utmRef.getEasting() + ",Y=" + (int) utmRef.getNorthing() + ")&proposals=10";
 			}
 			Log.i(TAG,"Searching with url " + urlString);
-			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString));
+			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString)).stream;
 			
 			/*
 			 * Parse json

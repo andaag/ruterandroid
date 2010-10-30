@@ -128,7 +128,15 @@ public class HelperFunctions {
 	/*
 	 * Decides on whether or not we should use gzip compression or not.
 	 */
-	public static InputStream executeHttpRequest(Context context, HttpUriRequest request) throws IOException {
+	public static class StreamWithTime {
+		public InputStream stream;
+		public long timeDifference;
+		public StreamWithTime(InputStream stream, long timeDifference) {
+			this.stream = stream;
+			this.timeDifference = timeDifference;
+		}
+	}
+	public static StreamWithTime executeHttpRequest(Context context, HttpUriRequest request) throws IOException {
 		/*
 		 * Add gzip header
 		 */
@@ -138,8 +146,25 @@ public class HelperFunctions {
 		/*
 		 * Get the response, if we use gzip use the GZIPInputStream
 		 */
+		long responseTime = System.currentTimeMillis();
 		HttpResponse response = new DefaultHttpClient().execute(request);
+		responseTime = (System.currentTimeMillis() - responseTime) / 2;
 		InputStream content = response.getEntity().getContent();
+		
+		/*
+		 * Get trafikanten time to calculate time difference
+		 */
+		long timeDifference = 0;
+		try {
+			final String header = response.getHeaders("Date")[0].getValue();
+			final long trafikantenTime = new Date(header).getTime();
+			//timeDifference = System.currentTimeMillis() - (System.currentTimeMillis() - timeDifference) - trafikantenTime;
+			timeDifference = System.currentTimeMillis() - responseTime - trafikantenTime;
+			Log.i(TAG,"Timedifference between local clock and trafikanten server : " + timeDifference + "ms (" + (timeDifference / 1000) + "s)");
+
+		} catch (Exception e) {
+			e.printStackTrace(); // ignore this error, it's not critical.
+		}
 		
 		Header contentEncoding = response.getFirstHeader("Content-Encoding");
 		Header contentLength = response.getFirstHeader("Content-Length");
@@ -156,6 +181,7 @@ public class HelperFunctions {
 			Log.i(TAG,"Recieved UNCOMPRESSED data - Problem server side");
 		}
 		
-		return content;
+		//return content;
+		return new StreamWithTime(content, timeDifference);
 	}
 }
