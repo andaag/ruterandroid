@@ -27,6 +27,8 @@ package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
@@ -50,6 +52,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 	private static final String TAG = "Trafikanten-TrafikantenRoute";
 	private final Context context;
 	private final RouteSearchData routeSearch;
+	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("ddMMyyyyHHmm");
 	
 	public TrafikantenRoute(Context context, RouteSearchData routeSearch, IGenericProviderHandler<RouteProposal> handler) {
 		super(handler);
@@ -66,11 +69,14 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			 */
 			final Boolean isAfter = routeSearch.arrival == 0;
 			long travelTime = isAfter ? routeSearch.departure : routeSearch.arrival;
+			if (travelTime == 0) {
+				travelTime = Calendar.getInstance().getTimeInMillis();
+			}
 
 			/*
 			 * Begin building url
 			 */
-			StringBuffer urlString = new StringBuffer(Trafikanten.API_URL + "/Travel/GetTravelsAdvanced/?");
+			StringBuffer urlString = new StringBuffer(Trafikanten.API_URL + "/Travel/GetTravelsAdvanced/?time=" + dateFormater.format(travelTime));
 			boolean firstInList = true;
 			
 			/*
@@ -79,7 +85,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			// FIRSTINLIST IS TRUE HERE
 			for (StationData station : routeSearch.fromStation) {
 				if (firstInList) {
-					urlString.append("fromStops=");
+					urlString.append("&fromStops=");
 					firstInList = false;
 				} else {
 					urlString.append(",");
@@ -104,10 +110,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			/*
 			 * Setup whether or not we're arriving before or departing after
 			 */
-			if (travelTime != 0) {
-				urlString.append("&time=" + travelTime);
-				urlString.append("&isAfter=" + isAfter.toString());
-			}
+			urlString.append("&isAfter=" + isAfter.toString());
 			
 			/*
 			 * Disable advanced options  if they are not visible
