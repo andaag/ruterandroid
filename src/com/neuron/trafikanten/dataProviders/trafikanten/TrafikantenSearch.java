@@ -74,7 +74,7 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 	 * This searches stopName for address, and puts address in extra (the next line).
 	 * As station names are sometimes StationName (address)
 	 */
-	private void searchForAddress(StationData station) {
+	public static void searchForAddress(StationData station) {
 		final String stopName = station.stopName;
 	
 		int startAddress = stopName.indexOf('(');
@@ -163,10 +163,7 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 					
 					ThreadHandlePostData(station);
 				}
-				
-
 			}
-
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {
 				ThreadHandlePostExecute(null);
