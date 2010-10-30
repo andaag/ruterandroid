@@ -38,7 +38,6 @@ import android.util.Log;
 
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.HelperFunctions.StreamWithTime;
 import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.RouteData;
@@ -128,12 +127,12 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			
 			Log.i(TAG,"Searching with url " + urlString);
 			
-			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString.toString()), true); 
+			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString.toString()), false).stream;
 
 			/*
 			 * Parse json
 			 */
-			jsonParseRouteProposal(streamWithTime.stream);
+			jsonParseRouteProposal(stream);
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {
 				ThreadHandlePostExecute(null);
