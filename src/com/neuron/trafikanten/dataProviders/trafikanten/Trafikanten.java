@@ -20,7 +20,6 @@ package com.neuron.trafikanten.dataProviders.trafikanten;
 
 
 public class Trafikanten {
-	public static final String API_URL = "http://reis.trafikanten.no/topp2009/topp2009ws.asmx";
-	//public static final String API_URL = "http://staging.reis.trafikanten.no/topp2009/topp2009ws.asmx";
+	public static final String API_URL = "http://services.epi.trafikanten.no";
 	public static final int PROVIDER_TRAFIKANTEN = 1;
 }

@@ -145,7 +145,7 @@ public class OverviewRouteView extends ListActivity {
 		tracker.trackEvent("Data", "Route", "Data", 0);
 		
 		/*
-		 * Send dispatch along with soap request, as they take time anyway.
+		 * Send dispatch along with request, as they take time anyway.
 		 */
 		try {
 			tracker.dispatch();
