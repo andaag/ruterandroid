@@ -65,6 +65,8 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 			/*
 			 * Parse json
 			 */
+			long perfSTART = System.currentTimeMillis();
+			Log.i(TAG,"PERF : Getting realtime data");
 			final JSONArray jsonArray = new JSONArray(HelperFunctions.InputStreamToString(streamWithTime.stream));
 			final int arraySize = jsonArray.length();
 			for (int i = 0; i < arraySize; i++) {
@@ -80,6 +82,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				
 				ThreadHandlePostData(realtimeData);
 			}
+			Log.i(TAG,"PERF : Parsing web request took " + ((System.currentTimeMillis() - perfSTART)) + "ms");
 
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {

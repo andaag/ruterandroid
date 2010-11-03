@@ -135,7 +135,10 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			/*
 			 * Parse json
 			 */
+	    	long perfSTART = System.currentTimeMillis();
+	    	Log.i(TAG,"PERF : Getting route data");
 			jsonParseRouteProposal(stream);
+			Log.i(TAG,"PERF : Parsing web request took " + ((System.currentTimeMillis() - perfSTART)) + "ms");
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {
 				ThreadHandlePostExecute(null);
