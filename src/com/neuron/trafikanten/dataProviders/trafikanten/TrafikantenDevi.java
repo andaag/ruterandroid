@@ -82,7 +82,7 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 					/*
 					 * Grab validFrom and check if we should show it or not.
 					 */
-					deviData.validFrom = HelperFunctions.jsonToDate(json.getString("ValidFrom"));
+					deviData.validFrom = HelperFunctions.jsonToDate(json.getString("validFrom"));
 			        final long dateDiffHours = (deviData.validFrom - Calendar.getInstance().getTimeInMillis()) / HelperFunctions.HOUR;
 			        if (dateDiffHours > 3) {
 			        	/*
@@ -95,8 +95,8 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 					/*
 					 * Grab published, and see if this should be visible yet.
 					 */
-					final long publishDate = HelperFunctions.jsonToDate(json.getString("Published"));
-			        if (System.currentTimeMillis() > publishDate) {
+					final long publishDate = HelperFunctions.jsonToDate(json.getString("published"));
+			        if (System.currentTimeMillis() < publishDate) {
 			        	continue;
 			        }
 				}
@@ -105,11 +105,11 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 				/*
 				 * Grab the easy data
 				 */
-				deviData.title = json.getString("title");
-				deviData.description = json.getString("description");
+				deviData.title = json.getString("header");
+				deviData.description = json.getString("lead");
 				deviData.body = json.getString("body");
-				deviData.validTo = HelperFunctions.jsonToDate(json.getString("ValidTo"));
-				deviData.important = json.getBoolean("Important");
+				deviData.validTo = HelperFunctions.jsonToDate(json.getString("validTo"));
+				deviData.important = json.getBoolean("important");
 				
 				{
 					/*
@@ -118,22 +118,25 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 					final JSONArray jsonLines = json.getJSONArray("lines");
 					final int jsonLinesSize = jsonLines.length();
 					for (int j = 0; j < jsonLinesSize; j++) {
-						deviData.lines.add(jsonArray.getJSONObject(0).getString("line"));
+						deviData.lines.add(jsonLines.getJSONObject(j).getString("lineName"));
 					}
 				}
 				{
 			    	/*
 			    	 * We filter (region) from data so we're forced to do it here as well. It should not be an issue as devi is filtered on line + station already.
 			    	 */
-			    	String stopName = json.getJSONArray("stops").getJSONObject(0).getString("name");
-					int startAddress = stopName.indexOf('(');
-					if (startAddress > 0) {
-						stopName = stopName.substring(0, startAddress - 1);
+					final JSONArray jsonStops = json.getJSONArray("stops");
+					final int jsonLinesSize = jsonStops.length();
+					for (int j = 0; j < jsonLinesSize; j++) {
+						String stopName = jsonStops.getJSONObject(j).getString("stopName");
+						int startAddress = stopName.indexOf('(');
+						if (startAddress > 0) {
+							stopName = stopName.substring(0, startAddress - 1);
+						}
+							
+						deviData.stops.add(stopName);					
 					}
-						
-					deviData.stops.add(stopName);					
 				}
-
 				
 				ThreadHandlePostData(deviData);
 			}
