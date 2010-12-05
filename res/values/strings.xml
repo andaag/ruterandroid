@@ -3,7 +3,7 @@
         <!-- Static strings -->
     <string name="app_name">Trafikanten</string>
     <!--  REMEMBER TO UPDATE ANDROIDMANIFEST -->
-    <string name="app_version">2.1.9</string>
+    <string name="app_version">2.2-RC1</string>
     
     <!-- Front page -->
     <string name="realtime">Realtime</string>
