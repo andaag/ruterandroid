@@ -9,6 +9,7 @@
     <string name="searchForRoutes">Søk etter reiseforslag</string>
     <string name="calculateRouteResults">Finn reiseforslag</string>
     <string name="selectStations">Velg stasjoner</string>
+	<string name="transportTypes">Transportmiddler</string>
     <string name="safeMargin">Minste byttetid mellom stoppesteder</string>
     <string name="advancedOptions">Avanserte innstillinger</string>
     <string name="changeSettings">Endre innstillinger</string>
@@ -22,6 +23,7 @@
     <string name="prioritizeHint">Prioriter kortest reisetid/direktereise</string>
     <string name="directRoute">Direktereise</string>
     <string name="shortTravel">Kortest reisetid</string>
+    <string name="allTransportsEnabled">Reiser med alle transportmidler</string>
     
     <string name="selectWhereToTravelTo">Velg sted å dra til</string>
     <string name="selectWhereToTravelFrom">Velg sted å dra fra</string>
@@ -36,6 +38,14 @@
     <string name="travelAt">Avgang etter</string>
     <string name="arriveBefore">Ankomst før</string>
     
+    <!-- Transporttypes: -->
+    <string name="transportBus">Buss</string>
+    <string name="transportAirportBus">Flybuss</string>
+    <string name="transportAirportTrain">Flytog</string>
+    <string name="transportBoat">Båt</string>
+    <string name="transportTrain">Tog</string>
+    <string name="transportTram">Trikk</string>
+    <string name="transportMetro">T-bane</string>
     
     <!-- <string name="avoidWalking">Ungå å gå</string>  -->
     <string name="changeMargin">Minste byttetid</string>

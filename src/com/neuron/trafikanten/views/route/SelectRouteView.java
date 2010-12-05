@@ -30,6 +30,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -69,9 +70,10 @@ public class SelectRouteView extends ListActivity {
 	private static final int ACTIVITY_SELECT_TO = 2;
 	
 	private static final int DIALOG_SELECTTIME = 1;
-	private static final int DIALOG_CHANGEMARGIN = 2;
-	private static final int DIALOG_CHANGEPRIORITY = 3;
-	private static final int DIALOG_PROPOSALS = 4;
+	private static final int DIALOG_TRANSPORTTYPES = 2;
+	private static final int DIALOG_CHANGEMARGIN = 3;
+	private static final int DIALOG_CHANGEPRIORITY = 4;
+	private static final int DIALOG_PROPOSALS = 5;
 	
 	private SelectRouteAdapter listMenu;
 
@@ -234,6 +236,14 @@ public class SelectRouteView extends ListActivity {
 						refreshMenu();
 					}
 				}));*/
+				
+				items.add(new SimpleTextRouteEntry(this, getText(R.string.transportTypes), routeSearch.renderTransportTypes(this, routeSearch.getTransportArray(this)), 10, 0, new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						SelectRouteView.this.showDialog(DIALOG_TRANSPORTTYPES);
+						refreshMenu();						
+					}
+				}));
 				
 				items.add(new SimpleTextRouteEntry(this, getText(R.string.changeMargin) + " : " + routeSearch.changeMargin + "m", getText(R.string.safeMargin), 10, 0, new OnClickListener() {
 					@Override
@@ -438,6 +448,46 @@ public class SelectRouteView extends ListActivity {
 			});
 			
 			return dialog;
+		case DIALOG_TRANSPORTTYPES:
+			// ORDER : transportBus, transportTrain, transportTram, transportMetro, transportAirportBus, transportAirportTrain, transportBoat
+			final CharSequence[] transportItems = routeSearch.getTransportArray(this);
+			final boolean[] checkedTransportItems = {true, true, true, true, true, true, true};
+			
+			AlertDialog.Builder transportBuilder = new AlertDialog.Builder(this);
+			transportBuilder.setTitle(R.string.transportTypes);
+			transportBuilder.setMultiChoiceItems(transportItems, checkedTransportItems, new DialogInterface.OnMultiChoiceClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which,
+						boolean isChecked) {
+					routeSearch.transportTypes[which] = isChecked;
+					refreshMenu();					
+				}
+			});
+			final AlertDialog transportDialog = transportBuilder.create();
+			transportDialog.setOnDismissListener(new OnDismissListener() {
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					/*
+					 * Check if any transport types are enabled
+					 */
+					int enabled = 0;
+					for (int i = 0; i < 7; i++) {
+						if (routeSearch.transportTypes[i]) {
+							enabled++;
+						}
+					}
+					/*
+					 * Nothing enabled = reset all to enabled.
+					 */
+					if (enabled == 0) {
+						for (int i = 0; i < 7; i++) {
+							routeSearch.transportTypes[i] = true;
+						}
+					}
+										
+				}
+			});
+			return transportDialog;
 		case DIALOG_CHANGEMARGIN:
 			final CharSequence[] changeMarginItems = {"1m", "2m", "3m", "4m", "5m"};
 			
@@ -467,15 +517,18 @@ public class SelectRouteView extends ListActivity {
 			});
 			return priorityBuilder.create();
 		case DIALOG_PROPOSALS:
-			final CharSequence[] proposalItems = {"1", "2", "3", "4", "5", "10"};
+			final CharSequence[] proposalItems = {"1", "2", "3", "4", "5", "10", "15"};
 			
 			AlertDialog.Builder changeProposals = new AlertDialog.Builder(this);
 			changeProposals.setTitle(R.string.setProposals);
 			changeProposals.setItems(proposalItems, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int item) {
-			    	if (item == 5) {
-			    		routeSearch.proposals = 10; 
-			    	} else {
+			    	switch(item) {
+			    	case 6:
+			    		routeSearch.proposals = 15;
+			    	case 5:
+			    		routeSearch.proposals = 10;
+			    	default:
 			    		routeSearch.proposals = item + 1;
 			    	}
 			        refreshMenu();

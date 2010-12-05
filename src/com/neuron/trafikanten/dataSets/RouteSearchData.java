@@ -20,8 +20,11 @@ package com.neuron.trafikanten.dataSets;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.neuron.trafikanten.R;
 
 /*
  * This is route search data, used for searching for routes.
@@ -40,7 +43,10 @@ public class RouteSearchData implements Parcelable {
 	 */
 	public int changePunish = 2; // in minutes
 	public int changeMargin = 2; // in minutes
-	public int proposals = 6; // asking for 6 results, as it perfectly fills the screen.
+	public int proposals = 8; // asking for 8 results, as it perfectly fills the screen.
+	
+	// ORDER : transportBus, transportTrain, transportTram, transportMetro, transportAirportBus, transportAirportTrain, transportBoat
+	public Boolean[] transportTypes = {true, true, true, true, true, true, true};
 	
 	public RouteSearchData() {}
 	
@@ -50,7 +56,11 @@ public class RouteSearchData implements Parcelable {
 	public void resetAdvancedOptions() {
 		changePunish = 2;
 		changeMargin = 2;
-		proposals = 6;
+		proposals = 8;
+		
+		for (int i = 0; i < 7; i++) {
+			transportTypes[i] = true;
+		}
 	}
 	
 	/*
@@ -73,6 +83,11 @@ public class RouteSearchData implements Parcelable {
 		changePunish = in.readInt();
 		changeMargin = in.readInt();
 		proposals = in.readInt();
+		
+		final Object[] entries = in.readArray(Boolean.class.getClassLoader());
+		for (int i = 0; i < 7; i++) {
+			transportTypes[i] = (Boolean) entries[i];
+		}
 	}
 
 	
@@ -92,6 +107,7 @@ public class RouteSearchData implements Parcelable {
 		out.writeInt(changePunish);
 		out.writeInt(changeMargin);
 		out.writeInt(proposals);
+		out.writeArray(transportTypes);
 	}
 	
 	/*
@@ -106,4 +122,62 @@ public class RouteSearchData implements Parcelable {
 		    return new RouteSearchData[size];
 		}
 	};
+	
+	public CharSequence[] getAPITransportArray(Context context) {
+		final CharSequence[] transportItems ={"Bus", "Train", "Tram", "Metro", "AirportBus" ,"AirportTrain", "Boat"};
+		return transportItems;
+	}
+	
+	public CharSequence[] getTransportArray(Context context) {
+		final CharSequence[] transportItems = {context.getText(R.string.transportBus), context.getText(R.string.transportTrain), 
+				context.getText(R.string.transportTram), context.getText(R.string.transportMetro),  
+				context.getText(R.string.transportAirportBus), context.getText(R.string.transportAirportTrain),
+				context.getText(R.string.transportBoat)};
+		return transportItems;
+	}
+	
+	public CharSequence renderTransportTypesApi(CharSequence[] array) {
+		StringBuilder ret = new StringBuilder();
+		boolean first = true;
+		
+		for (int i = 0; i < 7; i++) {
+			if (transportTypes[i]) {
+				if (!first) {
+					ret.append(",");
+				} 
+				ret.append(array[i]);
+				first = false;
+			}
+		}
+		
+		return ret.toString();
+	}
+
+	public CharSequence renderTransportTypes(Context context, CharSequence[] array) {
+		StringBuilder enabledTransports = new StringBuilder();
+		StringBuilder disabledTransports = new StringBuilder();
+		
+		
+		for (int i = 0; i < 7; i++) {
+			if (transportTypes[i]) {
+				if (enabledTransports.length() != 0) {
+					enabledTransports.append(", ");
+				}
+				enabledTransports.append(array[i]);
+			} else {
+				if (disabledTransports.length() != 0) {
+					disabledTransports.append(", ");
+				}
+				disabledTransports.append(array[i]);
+			}
+		}
+		
+		if (disabledTransports.length() == 0) {
+			return context.getText(R.string.allTransportsEnabled);
+		}
+		if (enabledTransports.length() < disabledTransports.length()) {
+			return "+ " + enabledTransports.toString();
+		}
+		return "- " + disabledTransports.toString();
+	}
 }

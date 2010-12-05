@@ -125,8 +125,9 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			String changePunish = new Integer(routeSearch.changePunish).toString();
 			String changeMargin = new Integer(routeSearch.changeMargin).toString();
 			String proposals = new Integer(routeSearch.proposals).toString();
+			CharSequence transportTypes = routeSearch.renderTransportTypesApi(routeSearch.getAPITransportArray(context));
 
-			urlString.append("&changeMargin=" + changeMargin + "&changePunish=" + changePunish + "&proposals=" + proposals);
+			urlString.append("&changeMargin=" + changeMargin + "&changePunish=" + changePunish + "&proposals=" + proposals + "&transporttypes=" + transportTypes);
 			
 			Log.i(TAG,"Searching with url " + urlString);
 			

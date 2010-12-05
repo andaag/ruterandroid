@@ -14,6 +14,7 @@
     <string name="searchForRoutes">Search for travel proposals</string>
     <string name="calculateRouteResults">Find travel proposals</string>
     <string name="selectStations">Select Stations</string>
+    <string name="transportTypes">Transporttypes</string>
     <string name="safeMargin">Safe margin between each stop</string>
     <string name="advancedOptions">Advanced options</string>
     <string name="changeSettings">Change Settings</string>
@@ -27,6 +28,7 @@
     <string name="prioritizeHint">Prefer shortest traveltime/direct travel</string>
     <string name="directRoute">Direct travel</string>
     <string name="shortTravel">Shortest traveltime</string>
+    <string name="allTransportsEnabled">Travel with any transporttype</string>
     
     <string name="selectWhereToTravelTo">Select where to travel to</string>
     <string name="selectWhereToTravelFrom">Select where to travel from</string>
@@ -41,6 +43,14 @@
     <string name="travelAt">Travel at</string>
     <string name="arriveBefore">Arrive before</string>
     
+    <!-- Transporttypes: -->
+    <string name="transportBus">Bus</string>
+    <string name="transportAirportBus">AirportBus</string>
+    <string name="transportAirportTrain">AirportTrain</string>
+    <string name="transportBoat">Boat</string>
+    <string name="transportTrain">Train</string>
+    <string name="transportTram">Tram</string>
+    <string name="transportMetro">Metro</string>
     
     <!-- <string name="avoidWalking">Avoid walking</string> -->
     <string name="changeMargin">Change margin</string>
