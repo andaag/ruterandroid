@@ -99,9 +99,9 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 				 * Setup URL for a normal station search query.
 				 */
 				if (isRealtimeStopFiltered) {
-					urlString = Trafikanten.API_URL + "/RealTime/FindMatches/" + HelperFunctions.properEncode(query);
+					urlString = Trafikanten.getApiUrl() + "/RealTime/FindMatches/" + HelperFunctions.properEncode(query);
 				} else {
-					urlString = Trafikanten.API_URL + "/Place/FindMatches/" + HelperFunctions.properEncode(query);
+					urlString = Trafikanten.getApiUrl() + "/Place/FindMatches/" + HelperFunctions.properEncode(query);
 				}
 			} else {
 				/*
@@ -109,7 +109,7 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 				 */
 				final LatLng latLong = new LatLng(latitude, longitude);
 				final UTMRef utmRef = latLong.toUTMRef();
-				urlString = Trafikanten.API_URL + "/Place/GetClosestStopsByCoordinates/?coordinates=(X=" +  (int) utmRef.getEasting() + ",Y=" + (int) utmRef.getNorthing() + ")&proposals=10";
+				urlString = Trafikanten.getApiUrl() + "/Place/GetClosestStopsByCoordinates/?coordinates=(X=" +  (int) utmRef.getEasting() + ",Y=" + (int) utmRef.getNorthing() + ")&proposals=10";
 			}
 			Log.i(TAG,"Searching with url " + urlString);
 			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString), false).stream;

@@ -56,7 +56,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
     @Override
 	public void run() {
 		try {
-			final String urlString = Trafikanten.API_URL + "/RealTime/GetRealTimeData/" + stationId;
+			final String urlString = Trafikanten.getApiUrl() + "/RealTime/GetRealTimeData/" + stationId;
 			Log.i(TAG,"Loading realtime data : " + urlString);
 			
 			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString), true);
@@ -77,7 +77,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				realtimeData.destination = json.getString("DestinationName");
 				realtimeData.realtime = json.getBoolean("Monitored");
 				realtimeData.expectedDeparture = HelperFunctions.jsonToDate(json.getString("ExpectedDepartureTime"));
-				realtimeData.departurePlatform = Integer.parseInt(json.getString("DeparturePlatformName"));
+				realtimeData.departurePlatform = json.getInt("DeparturePlatformName");
 				realtimeData.stopVisitNote = json.getString("StopVisitNote");
 				
 				ThreadHandlePostData(realtimeData);

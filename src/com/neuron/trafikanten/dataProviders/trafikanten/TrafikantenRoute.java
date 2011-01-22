@@ -76,7 +76,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			/*
 			 * Begin building url
 			 */
-			StringBuffer urlString = new StringBuffer(Trafikanten.API_URL + "/Travel/GetTravelsAdvanced/?time=" + dateFormater.format(travelTime));
+			StringBuffer urlString = new StringBuffer(Trafikanten.getApiUrl() + "/Travel/GetTravelsAdvanced/?time=" + dateFormater.format(travelTime));
 			boolean firstInList = true;
 			
 			/*

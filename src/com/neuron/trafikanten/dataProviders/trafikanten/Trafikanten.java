@@ -18,8 +18,21 @@
 
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
+import java.io.File;
+
 
 public class Trafikanten {
-	public static final String API_URL = "http://services.epi.trafikanten.no";
+	public static final String getApiUrl() {
+		try {
+			if (new File("/sdcard/trafikanten.debug").exists()) {
+				return "http://staging.services.trafikanten.no";
+			}
+		} catch (Exception e) {
+			// We don't care if this fails.
+		}
+		return "http://services.epi.trafikanten.no";
+	}
+	
+	
 	public static final int PROVIDER_TRAFIKANTEN = 1;
 }
