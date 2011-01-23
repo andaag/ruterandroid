@@ -57,6 +57,7 @@ import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.dataSets.listadapters.RealtimePlatformList;
 import com.neuron.trafikanten.dataSets.listadapters.RealtimePlatformList.RealtimeDataRendererData;
+import com.neuron.trafikanten.db.FavoriteLineDbAdapter;
 import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.tasks.NotificationTask;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
@@ -81,6 +82,7 @@ public class RealtimeView extends ListActivity {
 	 */
 	private static final int NOTIFY_ID = Menu.FIRST;
 	private static final int DEVI_ID = Menu.FIRST + 1;
+	private static final int FAVORITE_ID = Menu.FIRST + 2;
 	
 	/*
 	 * Dialogs
@@ -109,6 +111,7 @@ public class RealtimeView extends ListActivity {
 	 */
 	private TrafikantenRealtime realtimeProvider = null;
 	private TrafikantenDevi deviProvider = null;
+	private FavoriteLineDbAdapter favoriteLineDbAdapter = null;
 	
 	/*
 	 * Other
@@ -138,6 +141,7 @@ public class RealtimeView extends ListActivity {
 		infoText = (TextView) findViewById(R.id.emptyText);
 		caText = (TextView) findViewById(R.id.caInfoText);
 		settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
+		favoriteLineDbAdapter = new FavoriteLineDbAdapter(this);
         		
         /*
          * Load instance state
@@ -492,6 +496,11 @@ public class RealtimeView extends ListActivity {
 		if (realtimeData.devi.size() > 0)
 			menu.add(0, DEVI_ID, 0, R.string.warnings);
 		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
+		if (favoriteLineDbAdapter.isFavorite(station, realtimeData.line, realtimeData.destination)) {
+			menu.add(0, FAVORITE_ID, 0, R.string.removeFavorite);
+		} else {
+			menu.add(0, FAVORITE_ID, 0, R.string.addFavorite);
+		}
 	}
 	
 	/*
@@ -515,6 +524,9 @@ public class RealtimeView extends ListActivity {
 			final ArrayList<DeviData> deviPopup = realtimeData.devi;
 			new SelectDeviTask(this, tracker, deviPopup);
 			return true;
+		case FAVORITE_ID:
+			favoriteLineDbAdapter.toggleFavorite(station, realtimeData.line, realtimeData.destination);
+			return true;
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -530,12 +542,14 @@ public class RealtimeView extends ListActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		favoriteLineDbAdapter.close();
 		autoRefreshHandler.removeMessages(0);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		favoriteLineDbAdapter.open();
 		refresh();
 		autoRefreshHandler.sendEmptyMessageDelayed(0, 10000);
 	}

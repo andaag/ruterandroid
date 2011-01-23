@@ -43,7 +43,7 @@ public class RealtimePlatformList implements Parcelable {
 	/*
 	 * Simple function that gets (or creates a new) platform in items
 	 */
-	public RealtimePlatformListContent getOrCreatePlatform(int platform) {
+	private RealtimePlatformListContent getOrCreatePlatform(int platform) {
 		/*
 		 * If the platform already exists in the database just return it
 		 */

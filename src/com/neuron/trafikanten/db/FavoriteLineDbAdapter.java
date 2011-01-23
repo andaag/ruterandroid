@@ -131,8 +131,8 @@ public class FavoriteLineDbAdapter {
      */
 	public boolean isFavorite(StationData station, String line, String destination) {
 		String query = KEY_STATIONID + " = ? " +
-				" AND " + KEY_LINE + " = '?' " +
-				" AND " + KEY_DESTINATION + " = '?'";
+				" AND " + KEY_LINE + " = ? " +
+				" AND " + KEY_DESTINATION + " = ?";
 		String args[] = new String[] { Integer.toString(station.stationId), line, destination };
 				
 		final Cursor cursor = db.query(table, COLUMNS, query, args, null, null, null);
