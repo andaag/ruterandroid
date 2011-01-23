@@ -395,10 +395,6 @@ public class RealtimeView extends ListActivity {
 				 */
 				realtimeList.addDevi(deviData);
 				realtimeList.itemsAddedWithoutNotify++;
-				if (realtimeList.itemsAddedWithoutNotify > 5) {
-					realtimeList.itemsAddedWithoutNotify = 0;
-					realtimeList.notifyDataSetChanged();
-				}
 			}
 
 			@Override
