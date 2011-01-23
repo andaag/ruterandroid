@@ -636,11 +636,6 @@ class RealtimeAdapter extends BaseAdapter {
 	public int itemsAddedWithoutNotify = 0; // List of items added during load without a .notifyDataUpdated
 	
 	/*
-	 * Devi data:
-	 */
-	private ArrayList<DeviData> deviItems = new ArrayList<DeviData>();
-	
-	/*
 	 * This variable is set by getItem, it indicates this station is the first of the current platform, so platform should be shown.
 	 */
 	private boolean renderPlatform = false;
@@ -657,7 +652,6 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	public void clear() {
 		items.clear();
-		deviItems.clear();
 		itemsSize = 0;
 		itemsAddedWithoutNotify = 0;
 	}
@@ -665,7 +659,6 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Saving instance state
 	 */
 	public void saveInstanceState(Bundle outState) {
-		outState.putParcelableArrayList(KEY_STATIONDEVILIST, deviItems);
 		outState.putInt(KEY_ITEMSSIZE, itemsSize);
 		outState.putParcelableArrayList(KEY_REALTIMELIST, items);
 	}
@@ -674,7 +667,6 @@ class RealtimeAdapter extends BaseAdapter {
 	 * Loading instance state
 	 */
 	public void loadInstanceState(Bundle inState) {
-		deviItems = inState.getParcelableArrayList(KEY_STATIONDEVILIST);
 		itemsSize = inState.getInt(KEY_ITEMSSIZE);
 		items = inState.getParcelableArrayList(KEY_REALTIMELIST);		
 	}
