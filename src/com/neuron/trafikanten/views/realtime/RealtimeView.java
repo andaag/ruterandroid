@@ -56,6 +56,7 @@ import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.dataSets.listadapters.GenericKeyList.RealtimeDataRendererData;
+import com.neuron.trafikanten.dataSets.listadapters.GenericKeyList.RealtimeGenericListContent;
 import com.neuron.trafikanten.dataSets.listadapters.RealtimePlatformList;
 import com.neuron.trafikanten.db.FavoriteLineDbAdapter;
 import com.neuron.trafikanten.hacks.StationIcons;
@@ -591,7 +592,8 @@ class RealtimeAdapter extends BaseAdapter {
 	
 	private RealtimePlatformList items = new RealtimePlatformList();
 	public void addRealtimeData(RealtimeData data) {
-		items.addRealtimeData(data);
+		RealtimeGenericListContent list = items.getOrCreateHeader("Plattform " + data.departurePlatform);
+		items.addRealtimeData(list, data);
 	}
 	public void addDevi(DeviData data) {
 		items.addDevi(data);
@@ -703,8 +705,8 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.line.setText(data.line);
 		}
 		
-		if (renderData.renderHeader && data.departurePlatform != 0) {
-			holder.platform.setText("Plattform " + data.departurePlatform);
+		if (renderData.renderHeader && renderData.header != null && renderData.header.length() > 0) {
+			holder.platform.setText(renderData.header);
 			holder.platform.setVisibility(View.VISIBLE);
 		} else {
 			holder.platform.setVisibility(View.GONE);

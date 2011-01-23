@@ -1,12 +1,8 @@
 package com.neuron.trafikanten.dataSets.listadapters;
 
-import java.util.ArrayList;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.neuron.trafikanten.dataSets.DeviData;
-import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.listadapters.GenericKeyList.RealtimeGenericListContent;
 
 /*
@@ -16,7 +12,7 @@ import com.neuron.trafikanten.dataSets.listadapters.GenericKeyList.RealtimeGener
  */
 public class RealtimePlatformList extends GenericKeyList<RealtimePlatformListContent> {
 	
-	public RealtimePlatformListContent createGenericListContent(int id) {
+	public RealtimePlatformListContent createGenericListContent(String id) {
 		return new RealtimePlatformListContent(id);
 	}
 	
@@ -50,7 +46,7 @@ class RealtimePlatformListContent extends RealtimeGenericListContent {
 	 * For this kind, id = platform
 	 */
 
-	public RealtimePlatformListContent(int platform) {
+	public RealtimePlatformListContent(String platform) {
 		super(platform);
 	}
 

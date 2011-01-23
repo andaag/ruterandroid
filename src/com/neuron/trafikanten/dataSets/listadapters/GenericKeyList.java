@@ -48,17 +48,17 @@ public abstract class GenericKeyList<T> implements Parcelable {
 		}
 	}
 	
-	public abstract T createGenericListContent(int id);
+	public abstract T createGenericListContent(String id);
 
 	/*
 	 * Simple function that gets (or creates a new) platform/station in items
 	 */
-	public RealtimeGenericListContent getOrCreateHeader(int id) {
+	public RealtimeGenericListContent getOrCreateHeader(String id) {
 		/*
 		 * If the platform already exists in the database just return it
 		 */
 		for (RealtimeGenericListContent list : items) {
-			if (list.id == id) {
+			if (list.id.equals(id)) {
 				return list;
 			}
 		}
@@ -73,7 +73,7 @@ public abstract class GenericKeyList<T> implements Parcelable {
 		 */
 		int pos = 0;
 		for (; pos < items.size(); pos++) {
-			if (id < items.get(pos).id) {
+			if (id.compareTo(items.get(pos).id) < 0) {
 				break;
 			}
 		}
@@ -97,7 +97,7 @@ public abstract class GenericKeyList<T> implements Parcelable {
 				} else {
 					renderHeader = false;
 				}
-				return new RealtimeDataRendererData(list.get(pos), renderHeader);
+				return new RealtimeDataRendererData(list.get(pos), renderHeader, list.id);
 			} else {
 				pos = pos - list.size();
 			}
@@ -107,9 +107,12 @@ public abstract class GenericKeyList<T> implements Parcelable {
 	public class RealtimeDataRendererData {
 		public RealtimeData data;
 		public boolean renderHeader;
-		public RealtimeDataRendererData(RealtimeData data,  boolean renderHeader) {
+		public String header;
+		public RealtimeDataRendererData(RealtimeData data,  boolean renderHeader, String header) {
 			this.data = data;
 			this.renderHeader = renderHeader;
+			if (header != null)
+			this.header = header;
 		}
 		
 	}
@@ -117,8 +120,7 @@ public abstract class GenericKeyList<T> implements Parcelable {
 	/*
 	 * Adding an item puts it in the platform category, and compressed duplicate data to one entry.
 	 */
-	public void addRealtimeData(RealtimeData item) {
-		RealtimeGenericListContent list = getOrCreateHeader(item.departurePlatform);
+	public void addRealtimeData(RealtimeGenericListContent list, RealtimeData item) {
 		for (RealtimeData d : list) {
 			if (d.destination.equals(item.destination) && d.line.equals(item.line)) {
 				/*
@@ -140,14 +142,14 @@ public abstract class GenericKeyList<T> implements Parcelable {
 	 */
 	public static abstract class RealtimeGenericListContent extends ArrayList<RealtimeData> implements Parcelable {
 		private static final long serialVersionUID = -8158771022676013360L;
-		public int id;
+		public String id;
 		
-		public RealtimeGenericListContent(int id) {
+		public RealtimeGenericListContent(String id) {
 			super();
 			this.id = id;
 		}
 		public RealtimeGenericListContent(Parcel in) {
-			id = in.readInt();
+			id = in.readString();
 			in.readList(this, RealtimeData.class.getClassLoader());
 		}
 
@@ -158,7 +160,7 @@ public abstract class GenericKeyList<T> implements Parcelable {
 		 */
 		@Override
 		public void writeToParcel(Parcel out, int flags) {
-			out.writeInt(id);
+			out.writeString(id);
 			out.writeList(this);
 		}
 		
