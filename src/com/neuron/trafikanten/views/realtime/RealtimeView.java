@@ -68,7 +68,6 @@ public class RealtimeView extends ListActivity {
 	private static final String TAG = "Trafikanten-RealtimeView";
 	public static final String SETTING_HIDECA = "realtime_hideCaText";
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
-	public static final String KEY_DEVILIST = "devilist";
 	private static final String KEY_FINISHEDLOADING = "finishedLoading";
 	private static final String KEY_TIMEDIFFERENCE = "timeDifference";
 	/*
@@ -95,7 +94,6 @@ public class RealtimeView extends ListActivity {
 	public static StationData station;
 	private RealtimeAdapter realtimeList;
 	private long lastUpdate;
-	private ArrayList<DeviData> deviItems;
 	private boolean finishedLoading = false; // we're finishedLoading when devi has loaded successfully.
 	public long timeDifference = 0; // This is the time desync between system clock and trafikanten servers.
 	
@@ -158,7 +156,6 @@ public class RealtimeView extends ListActivity {
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
-        	deviItems = savedInstanceState.getParcelableArrayList(KEY_DEVILIST);
         	finishedLoading = savedInstanceState.getBoolean(KEY_FINISHEDLOADING);
         	timeDifference = savedInstanceState.getLong(KEY_TIMEDIFFERENCE);
         	
@@ -224,7 +221,7 @@ public class RealtimeView extends ListActivity {
     	/*
     	 * Render devi    	
     	 */
-    	if ((deviItems == null || deviItems.size() == 0) && timeDiff < 60) {
+    	if ((station.devi == null || station.devi.size() == 0) && timeDiff < 60) {
     		/*
     		 * Nothing to display
     		 */
@@ -253,7 +250,7 @@ public class RealtimeView extends ListActivity {
     			devi.addView(GenericDeviCreator.createDefaultDeviText(this, tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
     		}
     		
-    		for (final DeviData deviData : deviItems) {
+    		for (final DeviData deviData : station.devi) {
 				devi.addView(GenericDeviCreator.createDefaultDeviText(this, tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
     		}
   		
@@ -265,7 +262,7 @@ public class RealtimeView extends ListActivity {
 		realtimeList.itemsAddedWithoutNotify = 0;
     	realtimeList.clear();
     	realtimeList.notifyDataSetChanged();
-    	deviItems = new ArrayList<DeviData>();
+    	station.devi = new ArrayList<DeviData>();
     	devi.setVisibility(View.GONE);
     }
     
@@ -395,7 +392,7 @@ public class RealtimeView extends ListActivity {
 						/*
 						 * Station specific data
 						 */
-						deviItems.add(deviData);
+						station.devi.add(deviData);
 						break;
 					}
 				}
@@ -561,7 +558,6 @@ public class RealtimeView extends ListActivity {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
-		outState.putParcelableArrayList(KEY_DEVILIST, deviItems);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
 		outState.putLong(KEY_TIMEDIFFERENCE, timeDifference);
 		

@@ -44,7 +44,7 @@ public class RealtimeData implements Parcelable {
 	public ArrayList<RealtimeDataNextDeparture> nextDepartures;
 	
 	/*
-	 * List of devi data, this is a int list, it links to RealtimeView.RealtimeAdapter.deviItems
+	 * List of devi data, used by RealtimeView/FavoritesView
 	 */
 	public ArrayList<DeviData> devi;
 	

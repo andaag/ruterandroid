@@ -18,6 +18,8 @@
 
 package com.neuron.trafikanten.dataSets;
 
+import java.util.ArrayList;
+
 import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.UTMRef;
 import android.os.Bundle;
@@ -31,6 +33,11 @@ public class StationData implements Parcelable {
 	public int stationId;
 	public int walkingDistance = 0;
 	public boolean realtimeStop;
+
+	/*
+	 * List of devi data, used by RealtimeView/FavoritesView
+	 */
+	public ArrayList<DeviData> devi = null;
 	
 	public boolean isFavorite; // This is used for rendering a star next to favorites, this is NOT stored.
 	
@@ -58,11 +65,13 @@ public class StationData implements Parcelable {
 		this.realtimeStop = realtimeStop;
 		this.stationId = stationId;
 		this.utmCoords = utmCoords;
+		devi = new ArrayList<DeviData>();
 	}
 	
 	public StationData(String stopName, int stationId) {
 		this.stopName = stopName;
 		this.stationId = stationId;
+		devi = new ArrayList<DeviData>();
 	}
 	
 	/*
@@ -104,6 +113,10 @@ public class StationData implements Parcelable {
 		
 		latLongCoords[0] = in.readDouble();
 		latLongCoords[1] = in.readDouble();
+		
+		devi = new ArrayList<DeviData>();
+		in.readList(devi, Integer.class.getClassLoader());
+
 	}
 	
 	/*
@@ -124,6 +137,8 @@ public class StationData implements Parcelable {
 		
 		out.writeDouble(latLongCoords[0]);
 		out.writeDouble(latLongCoords[1]);
+		
+		out.writeList(devi);
 	}
 	
 	/*
