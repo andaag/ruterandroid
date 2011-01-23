@@ -103,7 +103,7 @@ public abstract class GenericRealtimeAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.realtime_list, null);
 			
 			holder = new ViewHolder();
-			holder.platform = (TextView) convertView.findViewById(R.id.platform);
+			//ASDASDASDADASD holder.platform = (TextView) convertView.findViewById(R.id.platform);
 			holder.line = (TextView) convertView.findViewById(R.id.line);
 			holder.icon = (ImageView) convertView.findViewById(R.id.icon);
 			holder.destination = (TextView) convertView.findViewById(R.id.destination);

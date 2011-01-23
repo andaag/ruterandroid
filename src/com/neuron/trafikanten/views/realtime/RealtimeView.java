@@ -25,17 +25,24 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,10 +55,12 @@ import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
-import com.neuron.trafikanten.dataSets.listadapters.GenericKeyList.RealtimeGenericListContent;
-import com.neuron.trafikanten.dataSets.listadapters.GenericRealtimeAdapter;
-import com.neuron.trafikanten.dataSets.listadapters.RealtimePlatformList;
+import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter;
+import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter.GenericRealtimeRenderer;
+import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter.PlatformRenderer;
+import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter.RealtimeRenderer;
 import com.neuron.trafikanten.db.FavoriteLineDbAdapter;
+import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.tasks.NotificationTask;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
 import com.neuron.trafikanten.tasks.ShowRealtimeLineDetails;
@@ -256,9 +265,7 @@ public class RealtimeView extends ListActivity {
     
     private void clearView() {
     	finishedLoading = false;
-		realtimeList.itemsAddedWithoutNotify = 0;
     	realtimeList.clear();
-    	realtimeList.notifyDataSetChanged();
     	station.devi = new ArrayList<DeviData>();
     	devi.setVisibility(View.GONE);
     }
@@ -295,8 +302,7 @@ public class RealtimeView extends ListActivity {
 					caVisibilityChecked = true;
 		        	caText.setVisibility(View.VISIBLE);
 				}
-				realtimeList.addRealtimeData(realtimeData);
-				realtimeList.itemsAddedWithoutNotify++;
+				realtimeList.items.addData(realtimeData, GenericRealtimeListAdapter.RENDERER_PLATFORM);
 			}
 
 			@Override
@@ -318,10 +324,7 @@ public class RealtimeView extends ListActivity {
 					 * Show info text if view is empty
 					 */
 					infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
-					if (realtimeList.itemsAddedWithoutNotify > 0) {
-						realtimeList.itemsAddedWithoutNotify = 0;
-						realtimeList.notifyDataSetChanged();
-					}
+					realtimeList.notifyDataSetChanged();
 					loadDevi();	
 				}
 			}
@@ -342,11 +345,14 @@ public class RealtimeView extends ListActivity {
     	 */
     	ArrayList<String> lineList = new ArrayList<String>();
     	{
+    		
 	    	final int count = realtimeList.getCount();
 	    	for (int i = 0; i < count; i++) {
-	    		final RealtimeData realtimeData = realtimeList.getItem(i).data;
-	    		if (!lineList.contains(realtimeData.line)) {
-	    			lineList.add(realtimeData.line);
+	    		final RealtimeData realtimeData = realtimeList.getRealtimeItem(i);
+	    		if (realtimeData != null) {
+		    		if (!lineList.contains(realtimeData.line)) {
+		    			lineList.add(realtimeData.line);
+		    		}
 	    		}
 	    	}
     	}
@@ -393,8 +399,7 @@ public class RealtimeView extends ListActivity {
 				/*
 				 * Line data (will be ignored if line isn't shown in view, so no point in checking data.lines)
 				 */
-				realtimeList.addDevi(deviData);
-				realtimeList.itemsAddedWithoutNotify++;
+				realtimeList.items.addData(deviData);
 			}
 
 			@Override
@@ -414,10 +419,7 @@ public class RealtimeView extends ListActivity {
 		
 				} else {
 					refreshDevi();
-					if (realtimeList.itemsAddedWithoutNotify > 0) {
-						realtimeList.itemsAddedWithoutNotify = 0;
-						realtimeList.notifyDataSetChanged();
-					}
+					realtimeList.notifyDataSetChanged();
 				}
 			}
 
@@ -480,7 +482,8 @@ public class RealtimeView extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-		final RealtimeData realtimeData = realtimeList.getItem(info.position).data;
+		final RealtimeData realtimeData = realtimeList.getRealtimeItem(info.position);
+		if (realtimeData == null) return;
 		
 		if (realtimeData.devi.size() > 0)
 			menu.add(0, DEVI_ID, 0, R.string.warnings);
@@ -500,7 +503,8 @@ public class RealtimeView extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         selectedId = info.position;
-		final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId).data;
+		final RealtimeData realtimeData = (RealtimeData) realtimeList.getRealtimeItem(selectedId);
+		if (realtimeData == null) { super.onContextItemSelected(item); } // this should never happen
 		
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
@@ -571,7 +575,207 @@ public class RealtimeView extends ListActivity {
 	}
 }
 
-class RealtimeAdapter extends GenericRealtimeAdapter {
+
+class RealtimeAdapter extends BaseAdapter {
+	private static final long serialVersionUID = -6787256501969153396L;
+	private static final String KEY_LIST = "realtimeAdapterList";
+	private RealtimeView parent;
+	private LayoutInflater inflater;
+	public GenericRealtimeListAdapter items = new GenericRealtimeListAdapter();
+	
+	public RealtimeAdapter(RealtimeView parent) {
+		super();
+		this.parent = parent;
+		inflater = LayoutInflater.from(parent);
+	}
+
+	public void clear() {
+		items.clear();
+    	notifyDataSetChanged();
+	}
+
+	@Override
+	public int getCount() {
+		return items.size();
+	}
+
+	@Override
+	public GenericRealtimeRenderer getItem(int pos) {
+		return items.get(pos);
+	}
+	public RealtimeData getRealtimeItem(int pos) {
+		GenericRealtimeRenderer renderer = getItem(pos);
+		if (renderer.renderType == GenericRealtimeListAdapter.RENDERER_REALTIME) {
+			final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) renderer;
+			return realtimeRenderer.data;
+		}
+		return null;
+	}
+
+	@Override
+	public long getItemId(int position) { return position; }
+
+	
+	@Override
+	public int getItemViewType(int pos) {
+		final GenericRealtimeRenderer renderer = getItem(pos);
+		return renderer.renderType - 1; // view types are 0 indexed.
+	}
+
+	@Override
+	public int getViewTypeCount() {
+		return 2;
+	}
+
+	/*
+	 * Setup the view
+	 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
+	 */
+	@Override
+	public View getView(int pos, View convertView, ViewGroup arg2) {
+		final GenericRealtimeRenderer renderer = getItem(pos);
+		/*
+		 * Setup holder, for performance and readability.
+		 */
+		
+		if (convertView == null) {
+			/*
+			 * New view, inflate and setup holder.
+			 */
+			switch(renderer.renderType) {
+			case GenericRealtimeListAdapter.RENDERER_REALTIME:
+				final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) renderer;
+				final ViewHolderRealtime holderRealtime = new ViewHolderRealtime();
+				convertView = inflater.inflate(R.layout.realtime_list, null);
+				holderRealtime.line = (TextView) convertView.findViewById(R.id.line);
+				holderRealtime.icon = (ImageView) convertView.findViewById(R.id.icon);
+				holderRealtime.destination = (TextView) convertView.findViewById(R.id.destination);
+				holderRealtime.departures = (TextView) convertView.findViewById(R.id.departures);
+				holderRealtime.departures.setTypeface(GenericDeviCreator.getDeviTypeface(parent));
+				holderRealtime.departures.setMovementMethod(ScrollingMovementMethod.getInstance());
+				holderRealtime.departures.setHorizontallyScrolling(true);
+				holderRealtime.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
+				renderRealtimeView(holderRealtime, realtimeRenderer.data);
+				convertView.setTag(R.layout.realtime_list, holderRealtime);
+				return convertView;
+			case GenericRealtimeListAdapter.RENDERER_PLATFORM:
+				final ViewHolderHeader holderHeader = new ViewHolderHeader();
+				final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
+				
+				convertView = inflater.inflate(R.layout.realtime_list_header, null);
+				holderHeader.header = (TextView) convertView.findViewById(R.id.header);
+				
+				renderHeaderView(holderHeader, "Plattform " + platformRenderer.platform);
+				convertView.setTag(R.layout.realtime_list_header, holderHeader);
+				return convertView;
+			}
+
+
+		} else {
+			switch(renderer.renderType) {
+			case GenericRealtimeListAdapter.RENDERER_REALTIME:
+				final ViewHolderRealtime holderRealtime = (ViewHolderRealtime) convertView.getTag(R.layout.realtime_list);
+				final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) renderer;
+				renderRealtimeView(holderRealtime, realtimeRenderer.data);
+				return convertView;
+			case GenericRealtimeListAdapter.RENDERER_PLATFORM:
+				final ViewHolderHeader holderHeader = (ViewHolderHeader) convertView.getTag(R.layout.realtime_list_header);
+				final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
+				renderHeaderView(holderHeader, "Plattform " + platformRenderer.platform);
+				return convertView;
+			}
+		}
+		
+
+		
+		return convertView;
+	}
+	
+	private ViewHolderRealtime renderRealtimeView(ViewHolderRealtime holder, final RealtimeData data) {
+		/*
+		 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
+		 * TODO : Check if this workaround is still needed, HACK
+		 */
+		/*{
+			final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
+			tableLayout.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					new ShowRealtimeLineDetails(parent, parent.tracker, System.currentTimeMillis() - parent.timeDifference, data);
+				}
+			});
+			tableLayout.setLongClickable(true);
+		}*/
+		
+		/*
+		 * Render data to view.
+		 */
+		holder.departures.setText(data.renderDepartures(System.currentTimeMillis() - parent.timeDifference, parent));
+		holder.destination.setText(data.destination);
+		if (data.destination.equals(data.line)) {
+			holder.line.setText("-");
+		} else {
+			holder.line.setText(data.line);
+		}
+		
+		holder.icon.setImageResource(StationIcons.hackGetLineIcon(data.line));
+		
+		/*
+		 * Setup devi
+		 */
+		if (data.devi.size() > 0) {
+			holder.departureInfo.setVisibility(View.VISIBLE);
+			holder.departureInfo.removeAllViews();
+			
+			for (DeviData devi : data.devi) {
+				/*
+				 * Add all devi items.
+				 */
+				holder.departureInfo.addView(GenericDeviCreator.createDefaultDeviText(parent, parent.tracker, devi.title, devi, false), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+			}
+		} else {
+			holder.departureInfo.setVisibility(View.GONE);
+		}
+		return holder;
+	}
+	
+	private ViewHolderHeader renderHeaderView(ViewHolderHeader holder, String title) {
+		if (title != null && title.length() > 0) {
+			holder.header.setText(title);
+			holder.header.setVisibility(View.VISIBLE);
+		} else {
+			holder.header.setVisibility(View.GONE);
+		}
+		return holder;
+	}
+	
+	/*
+	 * Classes for caching the view.
+	 */
+	static class ViewHolderHeader {
+		TextView header;
+	}
+	
+	static class ViewHolderRealtime {
+		TextView line;
+		TextView destination;
+		ImageView icon;
+		TextView departures;
+		
+		LinearLayout departureInfo;
+	}
+	
+	protected void saveInstanceState(Bundle outState) {
+		outState.putParcelableArrayList(KEY_LIST, items);		
+	}
+	
+	public void loadInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.getParcelableArrayList(KEY_LIST);
+	}
+
+	
+}
+/*class RealtimeAdapter extends GenericRealtimeAdapter {
 	private RealtimeView parent;
 	
 	public void addRealtimeData(RealtimeData data) {
@@ -596,4 +800,4 @@ class RealtimeAdapter extends GenericRealtimeAdapter {
 		return parent.timeDifference;
 	}
 
-};
+};*/
