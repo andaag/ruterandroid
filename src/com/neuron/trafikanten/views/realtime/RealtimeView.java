@@ -519,7 +519,7 @@ public class RealtimeView extends ListActivity {
 			new NotificationTask(this, tracker, realtimeData, station, notifyWith, timeDifference);
 			return true;
 		case DEVI_ID:
-			final ArrayList<DeviData> deviPopup = realtimeList.getDevi(realtimeData);
+			final ArrayList<DeviData> deviPopup = realtimeData.devi;
 			new SelectDeviTask(this, tracker, deviPopup);
 			return true;
 		}
@@ -689,37 +689,18 @@ class RealtimeAdapter extends BaseAdapter {
 	 *  - This only cares about devi's linked to a line, station devi's are handled in main class.
 	 */
 	public void addDeviItem(DeviData item) {
-		int pos = deviItems.size();
-		boolean addDevi = false;
-
 		/*
 		 * Scan and add the devi position index to all realtime data
 		 */
 		for (RealtimePlatformList realtimePlatformList : items) {
 			for (RealtimeData d : realtimePlatformList) {
 				if (item.lines.contains(d.line)) {
-					addDevi = true;
-					d.devi.add(pos);
+					d.devi.add(item);
 				}
 			}
 		}
-		
-		if (addDevi) {
-			deviItems.add(item);
-		}
 	}
 		
-	/*
-	 * Get a list of devi's assosiated with a line
-	 */
-	public ArrayList<DeviData> getDevi(RealtimeData realtimeData) {
-		ArrayList<DeviData> result = new ArrayList<DeviData>();
-		for (Integer i : realtimeData.devi) {
-			result.add(deviItems.get(i));
-		}
-		return result;
-	}
-	
 	/*
 	 * Simple function that gets (or creates a new) platform in items
 	 */
@@ -883,11 +864,10 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.departureInfo.setVisibility(View.VISIBLE);
 			holder.departureInfo.removeAllViews();
 			
-			for (Integer i : data.devi) {
+			for (DeviData devi : data.devi) {
 				/*
 				 * Add all devi items.
 				 */
-				final DeviData devi = deviItems.get(i);
 				holder.departureInfo.addView(GenericDeviCreator.createDefaultDeviText(parent, parent.tracker, devi.title, devi, false), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 			}
 		} else {

@@ -46,11 +46,11 @@ public class RealtimeData implements Parcelable {
 	/*
 	 * List of devi data, this is a int list, it links to RealtimeView.RealtimeAdapter.deviItems
 	 */
-	public ArrayList<Integer> devi;
+	public ArrayList<DeviData> devi;
 	
 	public RealtimeData() {
 		nextDepartures = new ArrayList<RealtimeDataNextDeparture>();
-		devi = new ArrayList<Integer>();
+		devi = new ArrayList<DeviData>();
 	}
 	
 	public void addDeparture(long expectedDeparture, boolean realtime, String stopVisitNote) {
@@ -107,7 +107,7 @@ public class RealtimeData implements Parcelable {
 		nextDepartures = new ArrayList<RealtimeDataNextDeparture>();
 		in.readList(nextDepartures, RealtimeDataNextDeparture.class.getClassLoader());
 		
-		devi = new ArrayList<Integer>();
+		devi = new ArrayList<DeviData>();
 		in.readList(devi, Integer.class.getClassLoader());
 	}
 	
