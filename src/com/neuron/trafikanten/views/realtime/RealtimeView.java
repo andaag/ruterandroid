@@ -504,7 +504,6 @@ public class RealtimeView extends ListActivity {
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         selectedId = info.position;
 		final RealtimeData realtimeData = (RealtimeData) realtimeList.getRealtimeItem(selectedId);
-		if (realtimeData == null) { super.onContextItemSelected(item); } // this should never happen
 		
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
@@ -626,7 +625,7 @@ class RealtimeAdapter extends BaseAdapter {
 	public int getViewTypeCount() {
 		return 2;
 	}
-
+	
 	/*
 	 * Setup the view
 	 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
@@ -657,6 +656,23 @@ class RealtimeAdapter extends BaseAdapter {
 				holderRealtime.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
 				renderRealtimeView(holderRealtime, realtimeRenderer.data);
 				convertView.setTag(R.layout.realtime_list, holderRealtime);
+				
+				
+				/*
+				 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
+				 * TODO : Check if this workaround is still needed, HACK
+				 */
+				{
+					final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
+					tableLayout.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							new ShowRealtimeLineDetails(parent, parent.tracker, System.currentTimeMillis() - parent.timeDifference, realtimeRenderer.data);
+						}
+					});
+					tableLayout.setLongClickable(true);
+				}
+				
 				return convertView;
 			case GenericRealtimeListAdapter.RENDERER_PLATFORM:
 				final ViewHolderHeader holderHeader = new ViewHolderHeader();
@@ -692,20 +708,7 @@ class RealtimeAdapter extends BaseAdapter {
 	}
 	
 	private ViewHolderRealtime renderRealtimeView(ViewHolderRealtime holder, final RealtimeData data) {
-		/*
-		 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
-		 * TODO : Check if this workaround is still needed, HACK
-		 */
-		/*{
-			final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
-			tableLayout.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					new ShowRealtimeLineDetails(parent, parent.tracker, System.currentTimeMillis() - parent.timeDifference, data);
-				}
-			});
-			tableLayout.setLongClickable(true);
-		}*/
+
 		
 		/*
 		 * Render data to view.
@@ -775,29 +778,3 @@ class RealtimeAdapter extends BaseAdapter {
 
 	
 }
-/*class RealtimeAdapter extends GenericRealtimeAdapter {
-	private RealtimeView parent;
-	
-	public void addRealtimeData(RealtimeData data) {
-		RealtimeGenericListContent list = items.getOrCreateHeader("Plattform " + data.departurePlatform);
-		items.addRealtimeData(list, data);
-	}
-	
-	public RealtimeAdapter(RealtimeView parent) {
-		super(parent, parent.tracker);
-		this.parent = parent;
-		items = new RealtimePlatformList();
-	}
-
-	@Override
-	public void triggerOnClick(RealtimeData data) {
-		new ShowRealtimeLineDetails(parent, parent.tracker, System.currentTimeMillis() - parent.timeDifference, data);
-	}
-
-
-	@Override
-	public long getTimeDifference() {
-		return parent.timeDifference;
-	}
-
-};*/
