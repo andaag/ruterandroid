@@ -55,8 +55,8 @@ import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
+import com.neuron.trafikanten.dataSets.listadapters.GenericKeyList.RealtimeDataRendererData;
 import com.neuron.trafikanten.dataSets.listadapters.RealtimePlatformList;
-import com.neuron.trafikanten.dataSets.listadapters.RealtimePlatformList.RealtimeDataRendererData;
 import com.neuron.trafikanten.db.FavoriteLineDbAdapter;
 import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.tasks.NotificationTask;
@@ -703,7 +703,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.line.setText(data.line);
 		}
 		
-		if (renderData.renderPlatform && data.departurePlatform != 0) {
+		if (renderData.renderHeader && data.departurePlatform != 0) {
 			holder.platform.setText("Plattform " + data.departurePlatform);
 			holder.platform.setVisibility(View.VISIBLE);
 		} else {
