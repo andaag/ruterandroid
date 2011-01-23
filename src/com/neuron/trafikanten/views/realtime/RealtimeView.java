@@ -25,20 +25,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,7 +45,6 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
@@ -57,6 +55,8 @@ import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
+import com.neuron.trafikanten.dataSets.listadapters.RealtimePlatformList;
+import com.neuron.trafikanten.dataSets.listadapters.RealtimePlatformList.RealtimeDataRendererData;
 import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.tasks.NotificationTask;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
@@ -298,12 +298,8 @@ public class RealtimeView extends ListActivity {
 					caVisibilityChecked = true;
 		        	caText.setVisibility(View.VISIBLE);
 				}
-				realtimeList.addItem(realtimeData);
+				realtimeList.items.addRealtimeData(realtimeData);
 				realtimeList.itemsAddedWithoutNotify++;
-				if (realtimeList.itemsAddedWithoutNotify > 5) {
-					realtimeList.itemsAddedWithoutNotify = 0;
-					realtimeList.notifyDataSetChanged();
-				}				
 			}
 
 			@Override
@@ -351,7 +347,7 @@ public class RealtimeView extends ListActivity {
     	{
 	    	final int count = realtimeList.getCount();
 	    	for (int i = 0; i < count; i++) {
-	    		final RealtimeData realtimeData = realtimeList.getItem(i);
+	    		final RealtimeData realtimeData = realtimeList.getItem(i).data;
 	    		if (!lineList.contains(realtimeData.line)) {
 	    			lineList.add(realtimeData.line);
 	    		}
@@ -400,7 +396,7 @@ public class RealtimeView extends ListActivity {
 				/*
 				 * Line data (will be ignored if line isn't shown in view, so no point in checking data.lines)
 				 */
-				realtimeList.addDeviItem(deviData);
+				realtimeList.items.addDevi(deviData);
 				realtimeList.itemsAddedWithoutNotify++;
 				if (realtimeList.itemsAddedWithoutNotify > 5) {
 					realtimeList.itemsAddedWithoutNotify = 0;
@@ -491,7 +487,7 @@ public class RealtimeView extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-		final RealtimeData realtimeData = realtimeList.getItem(info.position);
+		final RealtimeData realtimeData = realtimeList.getItem(info.position).data;
 		
 		if (realtimeData.devi.size() > 0)
 			menu.add(0, DEVI_ID, 0, R.string.warnings);
@@ -506,7 +502,7 @@ public class RealtimeView extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         selectedId = info.position;
-		final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId);
+		final RealtimeData realtimeData = (RealtimeData) realtimeList.getItem(selectedId).data;
 		
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
@@ -572,57 +568,8 @@ public class RealtimeView extends ListActivity {
 	}
 }
 
-class RealtimePlatformList extends ArrayList<RealtimeData> implements Parcelable {
-	private static final long serialVersionUID = -8158771022676013360L;
-	public int platform;
-	
-	public RealtimePlatformList(int platform) {
-		super();
-		this.platform = platform;
-	}
-
-	/*
-	 * @see android.os.Parcelable
-	 */
-	@Override
-	public int describeContents() {	return 0; }
-	
-	/*
-	 * Function for reading the parcel
-	 */
-	public RealtimePlatformList(Parcel in) {
-		platform = in.readInt();
-		in.readList(this, RealtimeData.class.getClassLoader());
-	}
-	
-	/*
-	 * Writing current data to parcel.
-	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
-	 */
-	@Override
-	public void writeToParcel(Parcel out, int flags) {
-		out.writeInt(platform);
-		out.writeList(this);
-	}
-	
-	/*
-	 * Used for bundle.getParcel 
-	 */
-    public static final Parcelable.Creator<RealtimePlatformList> CREATOR = new Parcelable.Creator<RealtimePlatformList>() {
-		public RealtimePlatformList createFromParcel(Parcel in) {
-		    return new RealtimePlatformList(in);
-		}
-		
-		public RealtimePlatformList[] newArray(int size) {
-		    return new RealtimePlatformList[size];
-		}
-	};
-}
-
 class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_REALTIMELIST = "realtimelist";
-	public static final String KEY_STATIONDEVILIST = "stationdevilist";
-	public static final String KEY_ITEMSSIZE = "devilistsize";
 	private LayoutInflater inflater;
 	
 	/*
@@ -631,14 +578,8 @@ class RealtimeAdapter extends BaseAdapter {
 	 *     line + destination ->
 	 *         RealtimeData	
 	 */
-	private ArrayList<RealtimePlatformList> items = new ArrayList<RealtimePlatformList>();
-	private int itemsSize = 0; // Cached for performance, this is len(items) + len(item[0]) + len(item[1]) ...
 	public int itemsAddedWithoutNotify = 0; // List of items added during load without a .notifyDataUpdated
-	
-	/*
-	 * This variable is set by getItem, it indicates this station is the first of the current platform, so platform should be shown.
-	 */
-	private boolean renderPlatform = false;
+	RealtimePlatformList items = new RealtimePlatformList();
 	
 	private RealtimeView parent;
 	
@@ -652,97 +593,20 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	public void clear() {
 		items.clear();
-		itemsSize = 0;
 		itemsAddedWithoutNotify = 0;
 	}
 	/*
 	 * Saving instance state
 	 */
 	public void saveInstanceState(Bundle outState) {
-		outState.putInt(KEY_ITEMSSIZE, itemsSize);
-		outState.putParcelableArrayList(KEY_REALTIMELIST, items);
+		outState.putParcelable(KEY_REALTIMELIST, items);
 	}
 	
 	/*
 	 * Loading instance state
 	 */
 	public void loadInstanceState(Bundle inState) {
-		itemsSize = inState.getInt(KEY_ITEMSSIZE);
-		items = inState.getParcelableArrayList(KEY_REALTIMELIST);		
-	}
-
-	
-	/*
-	 * Function to add devi data
-	 *  - This only cares about devi's linked to a line, station devi's are handled in main class.
-	 */
-	public void addDeviItem(DeviData item) {
-		/*
-		 * Scan and add the devi position index to all realtime data
-		 */
-		for (RealtimePlatformList realtimePlatformList : items) {
-			for (RealtimeData d : realtimePlatformList) {
-				if (item.lines.contains(d.line)) {
-					d.devi.add(item);
-				}
-			}
-		}
-	}
-		
-	/*
-	 * Simple function that gets (or creates a new) platform in items
-	 */
-	public RealtimePlatformList getOrCreatePlatform(int platform) {
-		/*
-		 * If the platform already exists in the database just return it
-		 */
-		for (RealtimePlatformList realtimePlatformList : items) {
-			if (realtimePlatformList.platform == platform) {
-				return realtimePlatformList;
-			}
-		}
-		
-		/*
-		 * No platform found, create new
-		 */
-		RealtimePlatformList realtimePlatformList = new RealtimePlatformList(platform);
-		
-		/*
-		 * We make sure the platform list is sorted the same way every time.
-		 */
-		int pos = 0;
-		for (; pos < items.size(); pos++) {
-			if (platform < items.get(pos).platform) {
-				break;
-			}
-		}
-		
-		/*
-		 * Finally add it and return
-		 */
-		items.add(pos, realtimePlatformList);
-		return realtimePlatformList;
-	}
-	
-	/*
-	 * Adding an item puts it in the platform category, and compressed duplicate data to one entry.
-	 */
-	public void addItem(RealtimeData item) {
-		RealtimePlatformList realtimePlatformList = getOrCreatePlatform(item.departurePlatform);
-		for (RealtimeData d : realtimePlatformList) {
-			if (d.destination.equals(item.destination) && d.line.equals(item.line)) {
-				/*
-				 * Data already exists, we add it to the arrival list and return
-				 */
-				d.addDeparture(item.expectedDeparture, item.realtime, item.stopVisitNote);
-				return;
-			}
-		}
-		/*
-		 * Data does not exist, add it
-		 */
-		realtimePlatformList.add(item);
-		itemsSize++;
+		items = inState.getParcelable(KEY_REALTIMELIST);		
 	}
 	
 	/*
@@ -754,25 +618,13 @@ class RealtimeAdapter extends BaseAdapter {
 			itemsAddedWithoutNotify = 0;
 			notifyDataSetChanged(); // This is incase getCount is called between our data set updates, which triggers IllegalStateException, listView does a simple if (mItemCount != mAdapter.getCount()) {
 		}
-		return itemsSize; 
+		return items.size();
 	}
 	@Override
 	public long getItemId(int pos) { return pos; }
 	@Override
-	public RealtimeData getItem(int pos) {
-		for (RealtimePlatformList realtimePlatformList : items) {
-			if (pos < realtimePlatformList.size()) {
-				if (pos == 0) {
-					renderPlatform = true;
-				} else {
-					renderPlatform = false;
-				}
-				return realtimePlatformList.get(pos);
-			} else {
-				pos = pos - realtimePlatformList.size();
-			}
-		}
-		return null;
+	public RealtimeDataRendererData getItem(int pos) {
+		return items.getRealtimeData(pos);
 	}
 	
 	/*
@@ -781,7 +633,8 @@ class RealtimeAdapter extends BaseAdapter {
 	 */
 	@Override
 	public View getView(int pos, View convertView, ViewGroup arg2) {
-		final RealtimeData data = getItem(pos);
+		final RealtimeDataRendererData renderData = getItem(pos);
+		final RealtimeData data = renderData.data; 
 		/*
 		 * Setup holder, for performance and readability.
 		 */
@@ -836,7 +689,7 @@ class RealtimeAdapter extends BaseAdapter {
 			holder.line.setText(data.line);
 		}
 		
-		if (renderPlatform && data.departurePlatform != 0) {
+		if (renderData.renderPlatform && data.departurePlatform != 0) {
 			holder.platform.setText("Plattform " + data.departurePlatform);
 			holder.platform.setVisibility(View.VISIBLE);
 		} else {
