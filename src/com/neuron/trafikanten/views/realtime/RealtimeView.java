@@ -298,7 +298,7 @@ public class RealtimeView extends ListActivity {
 					caVisibilityChecked = true;
 		        	caText.setVisibility(View.VISIBLE);
 				}
-				realtimeList.items.addRealtimeData(realtimeData);
+				realtimeList.addRealtimeData(realtimeData);
 				realtimeList.itemsAddedWithoutNotify++;
 			}
 
@@ -396,7 +396,7 @@ public class RealtimeView extends ListActivity {
 				/*
 				 * Line data (will be ignored if line isn't shown in view, so no point in checking data.lines)
 				 */
-				realtimeList.items.addDevi(deviData);
+				realtimeList.addDevi(deviData);
 				realtimeList.itemsAddedWithoutNotify++;
 				if (realtimeList.itemsAddedWithoutNotify > 5) {
 					realtimeList.itemsAddedWithoutNotify = 0;
@@ -572,16 +572,16 @@ class RealtimeAdapter extends BaseAdapter {
 	public static final String KEY_REALTIMELIST = "realtimelist";
 	private LayoutInflater inflater;
 	
-	/*
-	 * Structure:
-	 * platform ->
-	 *     line + destination ->
-	 *         RealtimeData	
-	 */
 	public int itemsAddedWithoutNotify = 0; // List of items added during load without a .notifyDataUpdated
-	RealtimePlatformList items = new RealtimePlatformList();
-	
 	private RealtimeView parent;
+	
+	private RealtimePlatformList items = new RealtimePlatformList();
+	public void addRealtimeData(RealtimeData data) {
+		items.addRealtimeData(data);
+	}
+	public void addDevi(DeviData data) {
+		items.addDevi(data);
+	}
 	
 	public RealtimeAdapter(RealtimeView parent) {
 		inflater = LayoutInflater.from(parent);
