@@ -165,7 +165,7 @@ public class RealtimeView extends ListActivity {
         	finishedLoading = savedInstanceState.getBoolean(KEY_FINISHEDLOADING);
         	timeDifference = savedInstanceState.getLong(KEY_TIMEDIFFERENCE);
         	
-        	realtimeList.loadInstanceState(savedInstanceState);
+        	realtimeList.loadFromBundle(savedInstanceState);
         	realtimeList.notifyDataSetChanged();
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
         	
@@ -302,7 +302,7 @@ public class RealtimeView extends ListActivity {
 					caVisibilityChecked = true;
 		        	caText.setVisibility(View.VISIBLE);
 				}
-				realtimeList.items.addData(realtimeData, GenericRealtimeListAdapter.RENDERER_PLATFORM);
+				realtimeList.addData(realtimeData);
 			}
 
 			@Override
@@ -399,7 +399,7 @@ public class RealtimeView extends ListActivity {
 				/*
 				 * Line data (will be ignored if line isn't shown in view, so no point in checking data.lines)
 				 */
-				realtimeList.items.addData(deviData);
+				realtimeList.addData(deviData);
 			}
 
 			@Override
@@ -562,8 +562,7 @@ public class RealtimeView extends ListActivity {
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
 		outState.putLong(KEY_TIMEDIFFERENCE, timeDifference);
-		
-		realtimeList.saveInstanceState(outState);
+		realtimeList.saveToBundle(outState);
 	}
 	
 	@Override
@@ -577,15 +576,30 @@ public class RealtimeView extends ListActivity {
 
 class RealtimeAdapter extends BaseAdapter {
 	private static final long serialVersionUID = -6787256501969153396L;
-	private static final String KEY_LIST = "realtimeAdapterList";
 	private RealtimeView parent;
 	private LayoutInflater inflater;
-	public GenericRealtimeListAdapter items = new GenericRealtimeListAdapter();
+	public GenericRealtimeListAdapter items = new GenericRealtimeListAdapter(GenericRealtimeListAdapter.RENDERER_PLATFORM);
+	private boolean dirty = false;
 	
 	public RealtimeAdapter(RealtimeView parent) {
 		super();
 		this.parent = parent;
 		inflater = LayoutInflater.from(parent);
+	}
+	
+	public void addData(DeviData deviData) {
+		/*
+		 * Yes, this is needed. Stupid getParcebleArrayList gets confused otherwise..
+		 */
+		items.addData(deviData);
+		dirty = true;
+	}
+	public void addData(RealtimeData data) {
+		/*
+		 * Yes, this is needed. Stupid getParcebleArrayList gets confused otherwise..
+		 */
+		items.addData(data);
+		dirty = true;
 	}
 
 	public void clear() {
@@ -595,6 +609,10 @@ class RealtimeAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
+		if (dirty) {
+			dirty = false;
+			notifyDataSetChanged();
+		}
 		return items.size();
 	}
 
@@ -768,12 +786,13 @@ class RealtimeAdapter extends BaseAdapter {
 		LinearLayout departureInfo;
 	}
 	
-	protected void saveInstanceState(Bundle outState) {
-		outState.putParcelableArrayList(KEY_LIST, items);		
+	public void saveToBundle(Bundle bundle) {
+		items.saveToBundle(bundle);
 	}
 	
-	public void loadInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.getParcelableArrayList(KEY_LIST);
+	public void loadFromBundle(Bundle bundle) {
+		items = new GenericRealtimeListAdapter(bundle);
+		dirty = true;
 	}
 
 	

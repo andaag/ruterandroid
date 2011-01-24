@@ -2,29 +2,59 @@ package com.neuron.trafikanten.dataSets.realtime;
 
 import java.util.ArrayList;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
-import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter.GenericRealtimeRenderer;
 
-public class GenericRealtimeListAdapter extends ArrayList<GenericRealtimeRenderer> {
+public class GenericRealtimeListAdapter {
+	private static final String KEY_LIST = "GRLA.items";
+	private static final String KEY_GROUPBY = "GRLA.groupby";
 	private static final long serialVersionUID = 4587512040075849425L;
 	public static final int RENDERER_REALTIME = 1;
 	public static final int RENDERER_PLATFORM = 2;
-
-	public void addData(RealtimeData data, int groupBy) {
+	private ArrayList<GenericRealtimeRenderer> items;
+	private int groupBy;
+	
+	public GenericRealtimeListAdapter(int groupBy) {
+		super();
+		this.groupBy = groupBy;
+		items = new ArrayList<GenericRealtimeRenderer>();
+	}
+	
+	public void clear() { items.clear(); }
+	public int size() { return items.size(); }
+	public GenericRealtimeRenderer get(int pos) { return items.get(pos); }
+	
+	public GenericRealtimeListAdapter(Bundle bundle) {
+		super();
+		Log.i("TrafikantenDebug","Reading bundle #1");
+		groupBy = bundle.getInt(KEY_GROUPBY);
+		Log.i("TrafikantenDebug","Reading bundle #2");
+		items = bundle.getParcelableArrayList(KEY_LIST);
+	}
+	
+	public void saveToBundle(Bundle bundle) {
+		bundle.putInt(KEY_GROUPBY, groupBy);
+		bundle.putParcelableArrayList(KEY_LIST, items);
+	}
+	
+	public void addData(RealtimeData data) {
 		if (groupBy == RENDERER_PLATFORM) {
 			/*
-			 * Scan through everything to find platform types, append if found.
+			 * This will convert a flat list of RealtimeData to:
+			 * platform ->
+			 *   realtimeData line,departure ->
+			 *     realtimeData.nextDepartures if line.departure matches previous find.
 			 */
 			int i = 0;
-			final int size = size();
+			final int size = items.size();
 			for (;i < size;i++) {
 				//Log.d("DEBUGTrafikanten", "List iteration " + i + " / " + size);
-				final GenericRealtimeRenderer renderer = get(i);
+				final GenericRealtimeRenderer renderer = items.get(i);
 				if (renderer.renderType == RENDERER_PLATFORM) {
 					PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
 					/*
@@ -34,10 +64,10 @@ public class GenericRealtimeListAdapter extends ArrayList<GenericRealtimeRendere
 						// we're in the right platform, keep going until we find the end of it.
 						i++;
 						while (i < size) {
-							final GenericRealtimeRenderer subRenderer = get(i);
+							final GenericRealtimeRenderer subRenderer = items.get(i);
 							//Log.d("DEBUGTrafikanten", "sub list iteration " + i + " / " + size);
 							if (subRenderer.renderType == RENDERER_PLATFORM) {
-								Log.d("DEBUGTrafikanten", "Position " + i + " contains next platform, must insert above");
+								//Log.d("DEBUGTrafikanten", "Position " + i + " contains next platform, must insert above");
 								// ok we just ran into the next platform, break and insert
 								break;
 							} else if (subRenderer.renderType == RENDERER_REALTIME) {
@@ -54,7 +84,7 @@ public class GenericRealtimeListAdapter extends ArrayList<GenericRealtimeRendere
 						}
 						// insert item here!
 						//Log.d("DEBUGTrafikanten", "Inserting data at " + i);
-						add(i, new RealtimeRenderer(data));
+						items.add(i, new RealtimeRenderer(data));
 						return;
 					}
 					if (platformRenderer.platform > data.departurePlatform) {
@@ -62,8 +92,8 @@ public class GenericRealtimeListAdapter extends ArrayList<GenericRealtimeRendere
 						 * Should insert before this, and include the header
 						 */
 						//Log.d("DEBUGTrafikanten", "Inserting data at " + i + " due to platform insertion");
-						add(i, new PlatformRenderer(data.departurePlatform));
-						add(i + 1, new RealtimeRenderer(data));
+						items.add(i, new PlatformRenderer(data.departurePlatform));
+						items.add(i + 1, new RealtimeRenderer(data));
 						return;
 					}
 				}
@@ -71,9 +101,9 @@ public class GenericRealtimeListAdapter extends ArrayList<GenericRealtimeRendere
 			/*
 			 * We never found it, append to the end
 			 */
-			Log.d("DEBUGTrafikanten", "Appending data at end of list" + size);
-			add(size, new PlatformRenderer(data.departurePlatform));
-			add(size + 1, new RealtimeRenderer(data));
+			//Log.d("DEBUGTrafikanten", "Appending data at end of list" + size);
+			items.add(size, new PlatformRenderer(data.departurePlatform));
+			items.add(size + 1, new RealtimeRenderer(data));
 		} else {
 			//TODO : Render type station
 		}
@@ -86,7 +116,7 @@ public class GenericRealtimeListAdapter extends ArrayList<GenericRealtimeRendere
 		/*
 		 * Add devi to tree, ignore station devi, that's handled elsewhere.
 		 */
-		for(GenericRealtimeRenderer renderer : this) {
+		for(GenericRealtimeRenderer renderer : items) {
 			switch(renderer.renderType) {
 			case RENDERER_REALTIME:
 				final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) renderer;
@@ -107,34 +137,78 @@ public class GenericRealtimeListAdapter extends ArrayList<GenericRealtimeRendere
 	public abstract class GenericRealtimeRenderer implements Parcelable {
 		public int renderType = -1;
 		
+		public GenericRealtimeRenderer(int renderType) {
+			super();
+			this.renderType = renderType;
+		}
+		
 		@Override
 		public int describeContents() { return renderType; };
 
-		@Override
-		public void writeToParcel(Parcel out, int flags) {
-			out.writeInt(renderType);
-		}
 	}
 
 	public class RealtimeRenderer extends GenericRealtimeRenderer {
 		public RealtimeData data;
 		public RealtimeRenderer(RealtimeData data) {
-			super();
+			super(GenericRealtimeListAdapter.RENDERER_REALTIME);
 			this.data = data;
-			renderType = GenericRealtimeListAdapter.RENDERER_REALTIME;
 		}
-
+		
+		public RealtimeRenderer(Parcel in) {
+			super(GenericRealtimeListAdapter.RENDERER_REALTIME);
+			this.data = in.readParcelable(RealtimeData.class.getClassLoader());
+		}
+		
+		@Override
+		public void writeToParcel(Parcel out, int flags) {
+			out.writeParcelable(data, 0);
+		}
+		
+		/*
+		 * Used for bundle.getParcel 
+		 */
+	    public final Parcelable.Creator<RealtimeRenderer> CREATOR = new Parcelable.Creator<RealtimeRenderer>() {
+			public RealtimeRenderer createFromParcel(Parcel in) {
+			    return new RealtimeRenderer(in);
+			}
+			
+			public RealtimeRenderer[] newArray(int size) {
+			    return new RealtimeRenderer[size];
+			}
+		};
 	}
 
 	public class PlatformRenderer extends GenericRealtimeRenderer {
 		public int platform = 0;
 		
 		public PlatformRenderer(int platform) {
-			super();
-			renderType = GenericRealtimeListAdapter.RENDERER_PLATFORM;
+			super(GenericRealtimeListAdapter.RENDERER_PLATFORM);
 			this.platform = platform;
 		}
+		
+		public PlatformRenderer(Parcel in) {
+			super(GenericRealtimeListAdapter.RENDERER_PLATFORM);
+			this.platform = in.readInt();
+		}
 
+		@Override
+		public void writeToParcel(Parcel out, int flags) {
+			out.writeInt(platform);
+		}
+		
+		/*
+		 * Used for bundle.getParcel 
+		 */
+	    public final Parcelable.Creator<PlatformRenderer> CREATOR = new Parcelable.Creator<PlatformRenderer>() {
+			public PlatformRenderer createFromParcel(Parcel in) {
+			    return new PlatformRenderer(in);
+			}
+			
+			public PlatformRenderer[] newArray(int size) {
+			    return new PlatformRenderer[size];
+			}
+		};
 	}
+
 }
 
