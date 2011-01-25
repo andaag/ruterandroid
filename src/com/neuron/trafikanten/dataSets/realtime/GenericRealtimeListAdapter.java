@@ -2,17 +2,18 @@ package com.neuron.trafikanten.dataSets.realtime;
 
 import java.util.ArrayList;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
+import com.neuron.trafikanten.dataSets.realtime.renderers.GenericRealtimeRenderer;
+import com.neuron.trafikanten.dataSets.realtime.renderers.PlatformRenderer;
+import com.neuron.trafikanten.dataSets.realtime.renderers.RealtimeRenderer;
 
-public class GenericRealtimeListAdapter {
-	private static final String KEY_LIST = "GRLA.items";
-	private static final String KEY_GROUPBY = "GRLA.groupby";
+public class GenericRealtimeListAdapter implements Parcelable {
+	private static final String TAG = "Trafikanten-GenericRealtimeListAdapter";
 	private static final long serialVersionUID = 4587512040075849425L;
 	public static final int RENDERER_REALTIME = 1;
 	public static final int RENDERER_PLATFORM = 2;
@@ -25,22 +26,20 @@ public class GenericRealtimeListAdapter {
 		items = new ArrayList<GenericRealtimeRenderer>();
 	}
 	
+	/*public void debugParcel() {
+		Bundle b = new Bundle();
+		b.putParcelable("TEST", this);
+		GenericRealtimeListAdapter testList = b.getParcelable("TEST");
+		Log.i("DEBUG CODE","DEBUGPARCEL : " + items.size() + " = " + testList.items.size());
+		
+		for (int i = 0; i < items.size(); i++) {
+			Log.i("DEBUG CodE"," DebugParcel renderTypes : " + items.get(i).renderType + " = " + testList.items.get(i).renderType);
+		}
+	}*/
+	
 	public void clear() { items.clear(); }
 	public int size() { return items.size(); }
 	public GenericRealtimeRenderer get(int pos) { return items.get(pos); }
-	
-	public GenericRealtimeListAdapter(Bundle bundle) {
-		super();
-		Log.i("TrafikantenDebug","Reading bundle #1");
-		groupBy = bundle.getInt(KEY_GROUPBY);
-		Log.i("TrafikantenDebug","Reading bundle #2");
-		items = bundle.getParcelableArrayList(KEY_LIST);
-	}
-	
-	public void saveToBundle(Bundle bundle) {
-		bundle.putInt(KEY_GROUPBY, groupBy);
-		bundle.putParcelableArrayList(KEY_LIST, items);
-	}
 	
 	public void addData(RealtimeData data) {
 		if (groupBy == RENDERER_PLATFORM) {
@@ -131,84 +130,68 @@ public class GenericRealtimeListAdapter {
 	
 	
 	
+
+
+
+
 	/**
-	 * * * * * * * * * DATA TYPES START HERE * * * * * * * *
+	 * Parcel code 
 	 */
-	public abstract class GenericRealtimeRenderer implements Parcelable {
-		public int renderType = -1;
-		
-		public GenericRealtimeRenderer(int renderType) {
-			super();
-			this.renderType = renderType;
-		}
-		
-		@Override
-		public int describeContents() { return renderType; };
+	@Override
+	public int describeContents() { return 0; }
 
+	public GenericRealtimeListAdapter(Parcel in) {
+		groupBy = in.readInt();
+		int size = in.readInt();
+		items = new ArrayList<GenericRealtimeRenderer>();
+		while (size > 0) {
+			size--;
+			final int renderType = in.readInt();
+			switch(renderType) {
+			case GenericRealtimeListAdapter.RENDERER_REALTIME:
+				items.add(new RealtimeRenderer(in));
+				break;
+			case GenericRealtimeListAdapter.RENDERER_PLATFORM:
+				items.add(new PlatformRenderer(in));
+				break;
+			default:
+				Log.e(TAG,"Error, unmatched renderType when unpacking realtime list");
+			}
+		}
+	}
+	
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(groupBy);
+		dest.writeInt(items.size());
+		
+		for(GenericRealtimeRenderer item : items) {
+			dest.writeInt(item.renderType);
+			item.writeToParcel(dest, 0);
+			/*switch(item.renderType) {
+			case GenericRealtimeListAdapter.RENDERER_REALTIME:
+				final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) item;
+				dest.writeParcelable(realtimeRenderer, 0);
+				break;
+			case GenericRealtimeListAdapter.RENDERER_PLATFORM:
+				final PlatformRenderer platformRenderer = (PlatformRenderer) item;
+				dest.writeParcelable(platformRenderer, 0);
+				break;
+			}*/
+		}
 	}
 
-	public class RealtimeRenderer extends GenericRealtimeRenderer {
-		public RealtimeData data;
-		public RealtimeRenderer(RealtimeData data) {
-			super(GenericRealtimeListAdapter.RENDERER_REALTIME);
-			this.data = data;
+	/*
+	 * Used for bundle.getParcel 
+	 */
+    public static final Parcelable.Creator<GenericRealtimeListAdapter> CREATOR = new Parcelable.Creator<GenericRealtimeListAdapter>() {
+		public GenericRealtimeListAdapter createFromParcel(Parcel in) {
+		    return new GenericRealtimeListAdapter(in);
 		}
 		
-		public RealtimeRenderer(Parcel in) {
-			super(GenericRealtimeListAdapter.RENDERER_REALTIME);
-			this.data = in.readParcelable(RealtimeData.class.getClassLoader());
+		public GenericRealtimeListAdapter[] newArray(int size) {
+		    return new GenericRealtimeListAdapter[size];
 		}
-		
-		@Override
-		public void writeToParcel(Parcel out, int flags) {
-			out.writeParcelable(data, 0);
-		}
-		
-		/*
-		 * Used for bundle.getParcel 
-		 */
-	    public final Parcelable.Creator<RealtimeRenderer> CREATOR = new Parcelable.Creator<RealtimeRenderer>() {
-			public RealtimeRenderer createFromParcel(Parcel in) {
-			    return new RealtimeRenderer(in);
-			}
-			
-			public RealtimeRenderer[] newArray(int size) {
-			    return new RealtimeRenderer[size];
-			}
-		};
-	}
-
-	public class PlatformRenderer extends GenericRealtimeRenderer {
-		public int platform = 0;
-		
-		public PlatformRenderer(int platform) {
-			super(GenericRealtimeListAdapter.RENDERER_PLATFORM);
-			this.platform = platform;
-		}
-		
-		public PlatformRenderer(Parcel in) {
-			super(GenericRealtimeListAdapter.RENDERER_PLATFORM);
-			this.platform = in.readInt();
-		}
-
-		@Override
-		public void writeToParcel(Parcel out, int flags) {
-			out.writeInt(platform);
-		}
-		
-		/*
-		 * Used for bundle.getParcel 
-		 */
-	    public final Parcelable.Creator<PlatformRenderer> CREATOR = new Parcelable.Creator<PlatformRenderer>() {
-			public PlatformRenderer createFromParcel(Parcel in) {
-			    return new PlatformRenderer(in);
-			}
-			
-			public PlatformRenderer[] newArray(int size) {
-			    return new PlatformRenderer[size];
-			}
-		};
-	}
-
+	};
 }
 

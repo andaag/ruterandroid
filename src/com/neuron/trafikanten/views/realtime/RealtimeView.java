@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -56,9 +57,9 @@ import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter;
-import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter.GenericRealtimeRenderer;
-import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter.PlatformRenderer;
-import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter.RealtimeRenderer;
+import com.neuron.trafikanten.dataSets.realtime.renderers.GenericRealtimeRenderer;
+import com.neuron.trafikanten.dataSets.realtime.renderers.PlatformRenderer;
+import com.neuron.trafikanten.dataSets.realtime.renderers.RealtimeRenderer;
 import com.neuron.trafikanten.db.FavoriteLineDbAdapter;
 import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.tasks.NotificationTask;
@@ -73,6 +74,7 @@ public class RealtimeView extends ListActivity {
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	private static final String KEY_FINISHEDLOADING = "finishedLoading";
 	private static final String KEY_TIMEDIFFERENCE = "timeDifference";
+	private static final String KEY_LIST = "list";
 	/*
 	 * Options menu:
 	 */
@@ -164,8 +166,8 @@ public class RealtimeView extends ListActivity {
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
         	finishedLoading = savedInstanceState.getBoolean(KEY_FINISHEDLOADING);
         	timeDifference = savedInstanceState.getLong(KEY_TIMEDIFFERENCE);
+        	realtimeList.setItems(savedInstanceState.getParcelable(KEY_LIST));
         	
-        	realtimeList.loadFromBundle(savedInstanceState);
         	realtimeList.notifyDataSetChanged();
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
         	
@@ -562,7 +564,7 @@ public class RealtimeView extends ListActivity {
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
 		outState.putLong(KEY_TIMEDIFFERENCE, timeDifference);
-		realtimeList.saveToBundle(outState);
+		outState.putParcelable(KEY_LIST, realtimeList.getParcelable());
 	}
 	
 	@Override
@@ -575,7 +577,6 @@ public class RealtimeView extends ListActivity {
 
 
 class RealtimeAdapter extends BaseAdapter {
-	private static final long serialVersionUID = -6787256501969153396L;
 	private RealtimeView parent;
 	private LayoutInflater inflater;
 	public GenericRealtimeListAdapter items = new GenericRealtimeListAdapter(GenericRealtimeListAdapter.RENDERER_PLATFORM);
@@ -629,6 +630,20 @@ class RealtimeAdapter extends BaseAdapter {
 		return null;
 	}
 
+	
+	
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+		dirty = false;
+	}
+
+	@Override
+	public void notifyDataSetInvalidated() {
+		super.notifyDataSetInvalidated();
+		dirty = false;
+	}
+
 	@Override
 	public long getItemId(int position) { return position; }
 
@@ -651,6 +666,7 @@ class RealtimeAdapter extends BaseAdapter {
 	@Override
 	public View getView(int pos, View convertView, ViewGroup arg2) {
 		final GenericRealtimeRenderer renderer = getItem(pos);
+		
 		/*
 		 * Setup holder, for performance and readability.
 		 */
@@ -786,12 +802,12 @@ class RealtimeAdapter extends BaseAdapter {
 		LinearLayout departureInfo;
 	}
 	
-	public void saveToBundle(Bundle bundle) {
-		items.saveToBundle(bundle);
+	public Parcelable getParcelable() {
+		return items;
 	}
 	
-	public void loadFromBundle(Bundle bundle) {
-		items = new GenericRealtimeListAdapter(bundle);
+	public void setItems(Parcelable items) {
+		this.items = (GenericRealtimeListAdapter) items;
 		dirty = true;
 	}
 

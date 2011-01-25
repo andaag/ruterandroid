@@ -115,7 +115,7 @@ public class StationData implements Parcelable {
 		latLongCoords[1] = in.readDouble();
 		
 		devi = new ArrayList<DeviData>();
-		in.readList(devi, Integer.class.getClassLoader());
+		in.readList(devi, DeviData.class.getClassLoader());
 
 	}
 	

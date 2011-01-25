@@ -108,7 +108,7 @@ public class RealtimeData implements Parcelable {
 		in.readList(nextDepartures, RealtimeDataNextDeparture.class.getClassLoader());
 		
 		devi = new ArrayList<DeviData>();
-		in.readList(devi, Integer.class.getClassLoader());
+		in.readList(devi, DeviData.class.getClassLoader());
 	}
 	
 	/*
