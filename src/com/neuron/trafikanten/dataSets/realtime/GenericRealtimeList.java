@@ -12,7 +12,10 @@ import com.neuron.trafikanten.dataSets.realtime.renderers.GenericRealtimeRendere
 import com.neuron.trafikanten.dataSets.realtime.renderers.PlatformRenderer;
 import com.neuron.trafikanten.dataSets.realtime.renderers.RealtimeRenderer;
 
-public class GenericRealtimeListAdapter implements Parcelable {
+/*
+ * This is GenericRealtimeListAdapter's list. Aka GenericRealtimeListAdapter.items
+ */
+public class GenericRealtimeList implements Parcelable {
 	private static final String TAG = "Trafikanten-GenericRealtimeListAdapter";
 	private static final long serialVersionUID = 4587512040075849425L;
 	public static final int RENDERER_REALTIME = 1;
@@ -20,7 +23,7 @@ public class GenericRealtimeListAdapter implements Parcelable {
 	private ArrayList<GenericRealtimeRenderer> items;
 	private int groupBy;
 	
-	public GenericRealtimeListAdapter(int groupBy) {
+	public GenericRealtimeList(int groupBy) {
 		super();
 		this.groupBy = groupBy;
 		items = new ArrayList<GenericRealtimeRenderer>();
@@ -140,7 +143,7 @@ public class GenericRealtimeListAdapter implements Parcelable {
 	@Override
 	public int describeContents() { return 0; }
 
-	public GenericRealtimeListAdapter(Parcel in) {
+	public GenericRealtimeList(Parcel in) {
 		groupBy = in.readInt();
 		int size = in.readInt();
 		items = new ArrayList<GenericRealtimeRenderer>();
@@ -148,10 +151,10 @@ public class GenericRealtimeListAdapter implements Parcelable {
 			size--;
 			final int renderType = in.readInt();
 			switch(renderType) {
-			case GenericRealtimeListAdapter.RENDERER_REALTIME:
+			case GenericRealtimeList.RENDERER_REALTIME:
 				items.add(new RealtimeRenderer(in));
 				break;
-			case GenericRealtimeListAdapter.RENDERER_PLATFORM:
+			case GenericRealtimeList.RENDERER_PLATFORM:
 				items.add(new PlatformRenderer(in));
 				break;
 			default:
@@ -184,13 +187,13 @@ public class GenericRealtimeListAdapter implements Parcelable {
 	/*
 	 * Used for bundle.getParcel 
 	 */
-    public static final Parcelable.Creator<GenericRealtimeListAdapter> CREATOR = new Parcelable.Creator<GenericRealtimeListAdapter>() {
-		public GenericRealtimeListAdapter createFromParcel(Parcel in) {
-		    return new GenericRealtimeListAdapter(in);
+    public static final Parcelable.Creator<GenericRealtimeList> CREATOR = new Parcelable.Creator<GenericRealtimeList>() {
+		public GenericRealtimeList createFromParcel(Parcel in) {
+		    return new GenericRealtimeList(in);
 		}
 		
-		public GenericRealtimeListAdapter[] newArray(int size) {
-		    return new GenericRealtimeListAdapter[size];
+		public GenericRealtimeList[] newArray(int size) {
+		    return new GenericRealtimeList[size];
 		}
 	};
 }

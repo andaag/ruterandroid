@@ -2,18 +2,18 @@ package com.neuron.trafikanten.dataSets.realtime.renderers;
 
 import android.os.Parcel;
 
-import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeListAdapter;
+import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeList;
 
 public class PlatformRenderer extends GenericRealtimeRenderer {
 	public int platform = 0;
 	
 	public PlatformRenderer(int platform) {
-		super(GenericRealtimeListAdapter.RENDERER_PLATFORM);
+		super(GenericRealtimeList.RENDERER_PLATFORM);
 		this.platform = platform;
 	}
 	
 	public PlatformRenderer(Parcel in) {
-		super(GenericRealtimeListAdapter.RENDERER_PLATFORM);
+		super(GenericRealtimeList.RENDERER_PLATFORM);
 		this.platform = in.readInt();
 	}
 
