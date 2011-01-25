@@ -40,6 +40,7 @@ public class FavoritesView extends GenericRealtimeView {
         setContentView(R.layout.favorites);
         favStations = favoriteLineDbAdapter.getFavoriteData();
         favStationsDevi = favoriteLineDbAdapter.getFavoriteData();
+        clearView();
         load();
     }
 
@@ -103,6 +104,7 @@ public class FavoritesView extends GenericRealtimeView {
 			}
 		});
 	}
+	
 	
 	private void loadDevi() {
 		if (deviProvider != null) return;
