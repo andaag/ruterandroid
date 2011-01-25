@@ -15,10 +15,12 @@ import android.widget.TextView;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeList;
 import com.neuron.trafikanten.dataSets.realtime.renderers.GenericRealtimeRenderer;
 import com.neuron.trafikanten.dataSets.realtime.renderers.PlatformRenderer;
 import com.neuron.trafikanten.dataSets.realtime.renderers.RealtimeRenderer;
+import com.neuron.trafikanten.dataSets.realtime.renderers.StationRenderer;
 import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.tasks.ShowRealtimeLineDetails;
 import com.neuron.trafikanten.views.GenericDeviCreator;
@@ -29,27 +31,26 @@ import com.neuron.trafikanten.views.GenericDeviCreator;
 public class GenericRealtimeListAdapter extends BaseAdapter {
 	private GenericRealtimeView parent;
 	private LayoutInflater inflater;
-	public GenericRealtimeList items = new GenericRealtimeList(GenericRealtimeList.RENDERER_PLATFORM);
+	public GenericRealtimeList items;
 	private boolean dirty = false;
 	
-	public GenericRealtimeListAdapter(GenericRealtimeView parent) {
+	public GenericRealtimeListAdapter(GenericRealtimeView parent, int groupBy) {
 		super();
 		this.parent = parent;
 		inflater = LayoutInflater.from(parent);
+		items = new GenericRealtimeList(groupBy);
 	}
 	
 	public void addData(DeviData deviData) {
-		/*
-		 * Yes, this is needed. Stupid getParcebleArrayList gets confused otherwise..
-		 */
 		items.addData(deviData);
 		dirty = true;
 	}
 	public void addData(RealtimeData data) {
-		/*
-		 * Yes, this is needed. Stupid getParcebleArrayList gets confused otherwise..
-		 */
 		items.addData(data);
+		dirty = true;
+	}
+	public void addData(RealtimeData data, StationData station) {
+		items.addData(data, station);
 		dirty = true;
 	}
 
@@ -106,7 +107,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 
 	@Override
 	public int getViewTypeCount() {
-		return 2;
+		return 3;
 	}
 	
 	/*
@@ -159,13 +160,21 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				
 				return convertView;
 			case GenericRealtimeList.RENDERER_PLATFORM:
+			case GenericRealtimeList.RENDERER_STATION:
 				final ViewHolderHeader holderHeader = new ViewHolderHeader();
-				final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
-				
 				convertView = inflater.inflate(R.layout.realtime_list_header, null);
 				holderHeader.header = (TextView) convertView.findViewById(R.id.header);
-				
-				renderHeaderView(holderHeader, "Plattform " + platformRenderer.platform);
+
+				switch(renderer.renderType) {
+				case GenericRealtimeList.RENDERER_PLATFORM:
+					final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
+					renderHeaderView(holderHeader, "Plattform " + platformRenderer.platform);
+					break;
+				case GenericRealtimeList.RENDERER_STATION:
+					final StationRenderer stationRenderer = (StationRenderer) renderer;
+					renderHeaderView(holderHeader, stationRenderer.station.stopName);
+					break;
+				}
 				convertView.setTag(R.layout.realtime_list_header, holderHeader);
 				return convertView;
 			}
@@ -179,9 +188,18 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				renderRealtimeView(holderRealtime, realtimeRenderer.data);
 				return convertView;
 			case GenericRealtimeList.RENDERER_PLATFORM:
+			case GenericRealtimeList.RENDERER_STATION:
 				final ViewHolderHeader holderHeader = (ViewHolderHeader) convertView.getTag(R.layout.realtime_list_header);
-				final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
-				renderHeaderView(holderHeader, "Plattform " + platformRenderer.platform);
+				switch(renderer.renderType) {
+				case GenericRealtimeList.RENDERER_PLATFORM:
+					final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
+					renderHeaderView(holderHeader, "Plattform " + platformRenderer.platform);
+					break;
+				case GenericRealtimeList.RENDERER_STATION:
+					final StationRenderer stationRenderer = (StationRenderer) renderer;
+					renderHeaderView(holderHeader, stationRenderer.station.stopName);
+					break;
+				}
 				return convertView;
 			}
 		}

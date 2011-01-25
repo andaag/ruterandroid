@@ -26,8 +26,8 @@ import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Window;
@@ -40,6 +40,7 @@ import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
 import com.neuron.trafikanten.tasks.ShowTipsTask;
+import com.neuron.trafikanten.views.realtime.FavoritesView;
 import com.neuron.trafikanten.views.realtime.RealtimeView;
 import com.neuron.trafikanten.views.realtime.SelectRealtimeStationView;
 import com.neuron.trafikanten.views.route.SelectRouteView;
@@ -109,6 +110,15 @@ public class Trafikanten extends TabActivity {
 		    tabHost.addTab(tabHost.newTabSpec("RouteTab")
 		 			.setIndicator(getText(R.string.route), getResources().getDrawable(R.drawable.ic_menu_directions))
 		 			.setContent(new Intent(this, SelectRouteView.class)));
+	 	}
+	 	
+	 	{
+	 		/*
+	 		 * Add favorites tab
+	 		 */
+		    tabHost.addTab(tabHost.newTabSpec("FavoritesTab")
+		 			.setIndicator(getText(R.string.favorites), getResources().getDrawable(R.drawable.ic_list_starred))
+		 			.setContent(new Intent(this, FavoritesView.class)));
 	 	}
 	 	
 	 	new ShowTipsTask(this, tracker, Trafikanten.class.getName(), R.string.tipFrontscreen, 35);

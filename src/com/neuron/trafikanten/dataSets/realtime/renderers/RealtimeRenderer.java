@@ -21,6 +21,4 @@ public class RealtimeRenderer extends GenericRealtimeRenderer  {
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeParcelable(data, 0);
 	}
-	
-
 }

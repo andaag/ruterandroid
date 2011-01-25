@@ -77,7 +77,10 @@ public class FavoriteLineDbAdapter {
         }
     }
     
-    public FavoriteLineDbAdapter(Context context) { this.context = context; }
+    public FavoriteLineDbAdapter(Context context) { 
+    	this.context = context;
+    	open();
+    }
 
     /*
      * Open the database and check if we're on an old version.
@@ -168,7 +171,7 @@ public class FavoriteLineDbAdapter {
 			 * Load destination and line
 			 */
 			data.destination = cursor.getString(2);
-			data.line = cursor.getString(2);
+			data.line = cursor.getString(3);
 			
 			/*
 			 * Find previous station in items
@@ -185,6 +188,7 @@ public class FavoriteLineDbAdapter {
 			FavoriteStation favStation = new FavoriteStation();
 			favStation.station = station;
 			favStation.items.add(data);
+			items.add(favStation);
 		}
 		cursor.close();
 		return items;

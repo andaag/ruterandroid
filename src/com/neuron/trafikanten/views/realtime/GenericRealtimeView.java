@@ -16,6 +16,7 @@ import com.neuron.trafikanten.db.FavoriteLineDbAdapter;
  */
 public abstract class GenericRealtimeView extends ListActivity {
 	private static final String KEY_TIMEDIFFERENCE = "timeDifference";
+	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	private static final String KEY_LIST = "list";
 	/*
 	 * Data providers
@@ -29,6 +30,7 @@ public abstract class GenericRealtimeView extends ListActivity {
 	 */
 	protected GenericRealtimeListAdapter realtimeList;
 	public long timeDifference = 0; // This is the time desync between system clock and trafikanten servers.
+	protected long lastUpdate;
 	
 	/*
 	 * Other
@@ -36,7 +38,7 @@ public abstract class GenericRealtimeView extends ListActivity {
     public GoogleAnalyticsTracker tracker;
 	
 	/** Called when the activity is first created. */
-    public void onCreate(Bundle savedInstanceState, String viewName) {
+    public void onCreate(Bundle savedInstanceState, String viewName, int groupBy) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
@@ -46,10 +48,12 @@ public abstract class GenericRealtimeView extends ListActivity {
 		tracker = GoogleAnalyticsTracker.getInstance();
 		tracker.start("UA-16690738-3", this);
 		tracker.trackPageView(viewName);
+		favoriteLineDbAdapter = new FavoriteLineDbAdapter(this);
+		realtimeList = new GenericRealtimeListAdapter(this, groupBy);
 		
-		realtimeList = new GenericRealtimeListAdapter(this);
 		if (savedInstanceState != null) {
 			timeDifference = savedInstanceState.getLong(KEY_TIMEDIFFERENCE);
+        	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
         	realtimeList.setItems(savedInstanceState.getParcelable(KEY_LIST));
         	realtimeList.notifyDataSetChanged();
 		}
@@ -66,8 +70,17 @@ public abstract class GenericRealtimeView extends ListActivity {
     	}
     }
     
-    protected abstract void refresh();
-    protected abstract void load();
+    protected void refresh() {
+    	realtimeList.notifyDataSetChanged(); // force rendering times again
+    }
+    protected void load() {
+        lastUpdate = System.currentTimeMillis();
+    	stopProviders();
+    	clearView();
+    }
+    protected void clearView() {
+    	realtimeList.clear();
+    }
     
     
     /*
@@ -90,6 +103,7 @@ public abstract class GenericRealtimeView extends ListActivity {
 		super.onSaveInstanceState(outState);
 		outState.putLong(KEY_TIMEDIFFERENCE, timeDifference);
 		outState.putParcelable(KEY_LIST, realtimeList.getParcelable());
+		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 	}
 	
 	/*

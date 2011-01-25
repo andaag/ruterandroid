@@ -473,7 +473,7 @@ class RouteRealtimeLoader {
 			@Override
 			public void onData(RealtimeData item) {
 				//Log.i("DEBUG CODE","Comparing '" + item.line + "' == '" + searchLine + "' and '" + item.destination + "' == '" + searchDestination + "'");
-				if (item.line.equals(searchLine) && item.destination.equals(searchDestination)) {
+				if (item.destination.equals(searchDestination) && item.line.equals(searchLine)) {
 					if (routeData.realtimeData == null) {
 						routeData.realtimeData = item;
 						routeList.notifyDataSetChanged();

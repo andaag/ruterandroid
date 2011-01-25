@@ -43,7 +43,7 @@ import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
-import com.neuron.trafikanten.db.FavoriteLineDbAdapter;
+import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeList;
 import com.neuron.trafikanten.tasks.NotificationTask;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
 import com.neuron.trafikanten.tasks.ShowTipsTask;
@@ -52,7 +52,6 @@ import com.neuron.trafikanten.views.GenericDeviCreator;
 public class RealtimeView extends GenericRealtimeView {
 	private static final String TAG = "Trafikanten-RealtimeView";
 	public static final String SETTING_HIDECA = "realtime_hideCaText";
-	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	private static final String KEY_FINISHEDLOADING = "finishedLoading";
 
 	/*
@@ -79,7 +78,6 @@ public class RealtimeView extends GenericRealtimeView {
 	 */
 	// HACK STATIONICONS, this does not need to be public static
 	public static StationData station;
-	private long lastUpdate;
 	private boolean finishedLoading = false; // we're finishedLoading when devi has loaded successfully.
 	
 	/*
@@ -99,7 +97,7 @@ public class RealtimeView extends GenericRealtimeView {
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState,"/realtime");
+        super.onCreate(savedInstanceState,"/realtime", GenericRealtimeList.RENDERER_PLATFORM);
         
         /*
          * Setup view and adapter.
@@ -109,7 +107,6 @@ public class RealtimeView extends GenericRealtimeView {
 		infoText = (TextView) findViewById(R.id.emptyText);
 		caText = (TextView) findViewById(R.id.caInfoText);
 		settings = getSharedPreferences("trafikanten", MODE_PRIVATE);
-		favoriteLineDbAdapter = new FavoriteLineDbAdapter(this);
         		
         /*
          * Load instance state
@@ -127,7 +124,6 @@ public class RealtimeView extends GenericRealtimeView {
         	load();
         } else {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
-        	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
         	finishedLoading = savedInstanceState.getBoolean(KEY_FINISHEDLOADING);
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
         	
@@ -206,9 +202,10 @@ public class RealtimeView extends GenericRealtimeView {
     	}
     }
     
-    private void clearView() {
+    @Override
+    protected void clearView() {
+    	super.clearView();
     	finishedLoading = false;
-    	realtimeList.clear();
     	station.devi = new ArrayList<DeviData>();
     	devi.setVisibility(View.GONE);
     }
@@ -219,10 +216,7 @@ public class RealtimeView extends GenericRealtimeView {
     private boolean caVisibilityChecked;
     @Override
     protected void load() {
-        lastUpdate = System.currentTimeMillis();
-    	stopProviders();
-    	
-    	clearView();
+    	super.load();
 
 		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
 		
@@ -475,15 +469,14 @@ public class RealtimeView extends GenericRealtimeView {
 	
 	@Override
 	protected void refresh() {
+		super.refresh();
 		refreshTitle();
-		realtimeList.notifyDataSetChanged(); // force refreshing times.
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(StationData.PARCELABLE, station);
-		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
 	}
 	
