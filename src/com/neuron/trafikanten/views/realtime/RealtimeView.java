@@ -54,9 +54,7 @@ public class RealtimeView extends GenericRealtimeView {
 	public static final String SETTING_HIDECA = "realtime_hideCaText";
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	private static final String KEY_FINISHEDLOADING = "finishedLoading";
-	private static final String KEY_LIST = "list";
 
-	
 	/*
 	 * Options menu:
 	 */
@@ -74,13 +72,13 @@ public class RealtimeView extends GenericRealtimeView {
 	 * Dialogs
 	 */
 	private int selectedId = 0;
+
 	
 	/*
 	 * Saved instance data
 	 */
 	// HACK STATIONICONS, this does not need to be public static
 	public static StationData station;
-	private GenericRealtimeListAdapter realtimeList;
 	private long lastUpdate;
 	private boolean finishedLoading = false; // we're finishedLoading when devi has loaded successfully.
 	
@@ -107,7 +105,6 @@ public class RealtimeView extends GenericRealtimeView {
          * Setup view and adapter.
          */
         setContentView(R.layout.realtime);
-        realtimeList = new GenericRealtimeListAdapter(this);
         devi = (LinearLayout) findViewById(R.id.devi);
 		infoText = (TextView) findViewById(R.id.emptyText);
 		caText = (TextView) findViewById(R.id.caInfoText);
@@ -132,9 +129,6 @@ public class RealtimeView extends GenericRealtimeView {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
         	finishedLoading = savedInstanceState.getBoolean(KEY_FINISHEDLOADING);
-        	realtimeList.setItems(savedInstanceState.getParcelable(KEY_LIST));
-        	
-        	realtimeList.notifyDataSetChanged();
         	infoText.setVisibility(realtimeList.getCount() > 0 ? View.GONE : View.VISIBLE);
         	
         	if (!finishedLoading) {
@@ -142,7 +136,7 @@ public class RealtimeView extends GenericRealtimeView {
         	}
         }
 
-        setListAdapter(realtimeList);
+        registerForContextMenu(getListView());
         refreshTitle();
         refreshDevi();
         
@@ -223,7 +217,8 @@ public class RealtimeView extends GenericRealtimeView {
      * Load data, variable used to prevent updating data set on every iteration.
      */
     private boolean caVisibilityChecked;
-    private void load() {
+    @Override
+    protected void load() {
         lastUpdate = System.currentTimeMillis();
     	stopProviders();
     	
@@ -379,12 +374,18 @@ public class RealtimeView extends GenericRealtimeView {
     	});
     }
     
+    /**
+     * menu code
+     */
+    
 	/*
 	 * Options menu, visible on menu button.
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		
 		final MenuItem refresh = menu.add(0, REFRESH_ID, 0, R.string.refresh);
 		refresh.setIcon(R.drawable.ic_menu_refresh);
         
@@ -404,7 +405,7 @@ public class RealtimeView extends GenericRealtimeView {
         case REFRESH_ID:
         	tracker.trackEvent("Navigation", "Realtime", "Refresh", 0);
         	load();
-        	break;
+        	return true;
         case HIDECA_ID:
         	boolean hideCaText = !(caText.getVisibility() == View.GONE);
         	SharedPreferences.Editor editor = settings.edit();
@@ -416,11 +417,10 @@ public class RealtimeView extends GenericRealtimeView {
             	editor.putBoolean(SETTING_HIDECA, false);
             }
             editor.commit();
-        	break;
+        	return true;
         }
 		return super.onOptionsItemSelected(item);
 	}
-	
 
 	/*
 	 * onCreate - Context menu is a popup from a longpress on a list item.
@@ -434,10 +434,10 @@ public class RealtimeView extends GenericRealtimeView {
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 		final RealtimeData realtimeData = realtimeList.getRealtimeItem(info.position);
 		if (realtimeData == null) return;
-		
+
 		if (realtimeData.devi.size() > 0)
 			menu.add(0, DEVI_ID, 0, R.string.warnings);
-		menu.add(0, NOTIFY_ID, 0, R.string.alarm);
+		menu.add(0, NOTIFY_ID, 0, R.string.alarm);		
 		if (favoriteLineDbAdapter.isFavorite(station, realtimeData.line, realtimeData.destination)) {
 			menu.add(0, FAVORITE_ID, 0, R.string.removeFavorite);
 		} else {
@@ -473,7 +473,8 @@ public class RealtimeView extends GenericRealtimeView {
 		return super.onContextItemSelected(item);
 	}
 	
-	public void refresh() {
+	@Override
+	protected void refresh() {
 		refreshTitle();
 		realtimeList.notifyDataSetChanged(); // force refreshing times.
 	}
@@ -484,7 +485,6 @@ public class RealtimeView extends GenericRealtimeView {
 		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
-		outState.putParcelable(KEY_LIST, realtimeList.getParcelable());
 	}
 	
 

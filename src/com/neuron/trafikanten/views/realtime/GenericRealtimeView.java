@@ -16,16 +16,18 @@ import com.neuron.trafikanten.db.FavoriteLineDbAdapter;
  */
 public abstract class GenericRealtimeView extends ListActivity {
 	private static final String KEY_TIMEDIFFERENCE = "timeDifference";
+	private static final String KEY_LIST = "list";
 	/*
 	 * Data providers
 	 */
-	public TrafikantenRealtime realtimeProvider = null;
-	public TrafikantenDevi deviProvider = null;
-	public FavoriteLineDbAdapter favoriteLineDbAdapter = null;
+	protected TrafikantenRealtime realtimeProvider = null;
+	protected TrafikantenDevi deviProvider = null;
+	protected FavoriteLineDbAdapter favoriteLineDbAdapter = null;
 	
 	/*
 	 * Saved instance data
 	 */
+	protected GenericRealtimeListAdapter realtimeList;
 	public long timeDifference = 0; // This is the time desync between system clock and trafikanten servers.
 	
 	/*
@@ -45,11 +47,14 @@ public abstract class GenericRealtimeView extends ListActivity {
 		tracker.start("UA-16690738-3", this);
 		tracker.trackPageView(viewName);
 		
+		realtimeList = new GenericRealtimeListAdapter(this);
 		if (savedInstanceState != null) {
 			timeDifference = savedInstanceState.getLong(KEY_TIMEDIFFERENCE);
+        	realtimeList.setItems(savedInstanceState.getParcelable(KEY_LIST));
+        	realtimeList.notifyDataSetChanged();
 		}
 		
-        registerForContextMenu(getListView());
+        setListAdapter(realtimeList);
     }
     
     public void stopProviders() {
@@ -61,7 +66,8 @@ public abstract class GenericRealtimeView extends ListActivity {
     	}
     }
     
-    public abstract void refresh();
+    protected abstract void refresh();
+    protected abstract void load();
     
     
     /*
@@ -74,12 +80,16 @@ public abstract class GenericRealtimeView extends ListActivity {
 			autoRefreshHandler.sendEmptyMessageDelayed(0, 10000);
 			return true;
 		}
-	});
+	});   
     
+	/**
+	 * Saving load instance state/onpause/ondestroy etc
+	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putLong(KEY_TIMEDIFFERENCE, timeDifference);
+		outState.putParcelable(KEY_LIST, realtimeList.getParcelable());
 	}
 	
 	/*
