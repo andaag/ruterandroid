@@ -29,17 +29,6 @@ public class GenericRealtimeList implements Parcelable {
 		items = new ArrayList<GenericRealtimeRenderer>();
 	}
 	
-	/*public void debugParcel() {
-		Bundle b = new Bundle();
-		b.putParcelable("TEST", this);
-		GenericRealtimeListAdapter testList = b.getParcelable("TEST");
-		Log.i("DEBUG CODE","DEBUGPARCEL : " + items.size() + " = " + testList.items.size());
-		
-		for (int i = 0; i < items.size(); i++) {
-			Log.i("DEBUG CodE"," DebugParcel renderTypes : " + items.get(i).renderType + " = " + testList.items.get(i).renderType);
-		}
-	}*/
-	
 	public void clear() { items.clear(); }
 	public int size() { return items.size(); }
 	public GenericRealtimeRenderer get(int pos) { return items.get(pos); }
@@ -130,12 +119,6 @@ public class GenericRealtimeList implements Parcelable {
 			}
 		}
 	}
-	
-	
-	
-
-
-
 
 	/**
 	 * Parcel code 

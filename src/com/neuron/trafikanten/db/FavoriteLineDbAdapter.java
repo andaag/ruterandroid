@@ -43,11 +43,11 @@ public class FavoriteLineDbAdapter {
     
     private static final String database_name = "favoriteline";
     private static final String table = "Trafikanten";
-    private int database_version = 1;
+    private int database_version = 2;
     
     private static final String DATABASE_CREATE_TABLE =
         "(_id integer primary key autoincrement, "
-    			+ KEY_STATIONID + " int unique,"
+    			+ KEY_STATIONID + " int,"
     			+ KEY_STOPNAME + " text not null,"
     			+ KEY_DESTINATION + " text,"
     			+ KEY_LINE + " text,"
@@ -108,24 +108,6 @@ public class FavoriteLineDbAdapter {
 		}
 	}
     
-	/*
-	 * Add new station to list.
-	 */
-    public long add(StationData station, int lineId, String line) {
-    	final ContentValues values = new ContentValues();
-    	values.put(KEY_STATIONID, station.stationId);
-    	values.put(KEY_STOPNAME, station.stopName);
-    	values.put(KEY_DESTINATION, lineId);
-    	values.put(KEY_LINE, line);
-    	values.put(KEY_UTM_X, station.utmCoords[0]);
-    	values.put(KEY_UTM_Y, station.utmCoords[1]);
-    	values.put(KEY_LATITUDE, station.latLongCoords[0]);
-    	values.put(KEY_LONGITUDE, station.latLongCoords[1]);
-    	
-    	return db.insert(table, null, values);
-    }
-    
-
     /*
      * Check if station is favorite
      */
@@ -134,9 +116,11 @@ public class FavoriteLineDbAdapter {
 				" AND " + KEY_LINE + " = ? " +
 				" AND " + KEY_DESTINATION + " = ?";
 		String args[] = new String[] { Integer.toString(station.stationId), line, destination };
-				
+		boolean isFav = false;
 		final Cursor cursor = db.query(table, COLUMNS, query, args, null, null, null);
-		return cursor.moveToFirst();
+		isFav = cursor.moveToFirst();
+		cursor.close();
+		return isFav;
 	}
 
 	/*
@@ -145,8 +129,8 @@ public class FavoriteLineDbAdapter {
 	public void toggleFavorite(StationData station, String line, String destination) {
 		if (isFavorite(station, line, destination)) {
 			String query = KEY_STATIONID + " = ? " +
-				" AND " + KEY_LINE + " = '?' " +
-				" AND " + KEY_DESTINATION + " = '?'";
+				" AND " + KEY_LINE + " = ? " +
+				" AND " + KEY_DESTINATION + " = ?";
 			String args[] = new String[] { Integer.toString(station.stationId), line, destination };
 			db.delete(table, query, args);
 		} else {
@@ -202,6 +186,7 @@ public class FavoriteLineDbAdapter {
 			favStation.station = station;
 			favStation.items.add(data);
 		}
+		cursor.close();
 		return items;
 	}
 	
