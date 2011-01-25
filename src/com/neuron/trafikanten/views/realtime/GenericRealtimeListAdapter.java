@@ -1,4 +1,4 @@
-package com.neuron.trafikanten.views;
+package com.neuron.trafikanten.views.realtime;
 
 import android.os.Parcelable;
 import android.text.method.ScrollingMovementMethod;
@@ -21,18 +21,18 @@ import com.neuron.trafikanten.dataSets.realtime.renderers.PlatformRenderer;
 import com.neuron.trafikanten.dataSets.realtime.renderers.RealtimeRenderer;
 import com.neuron.trafikanten.hacks.StationIcons;
 import com.neuron.trafikanten.tasks.ShowRealtimeLineDetails;
-import com.neuron.trafikanten.views.realtime.RealtimeView;
+import com.neuron.trafikanten.views.GenericDeviCreator;
 
 /*
  * This list adapter is shared between favorites and realtime views
  */
 public class GenericRealtimeListAdapter extends BaseAdapter {
-	private RealtimeView parent;
+	private GenericRealtimeView parent;
 	private LayoutInflater inflater;
 	public GenericRealtimeList items = new GenericRealtimeList(GenericRealtimeList.RENDERER_PLATFORM);
 	private boolean dirty = false;
 	
-	public GenericRealtimeListAdapter(RealtimeView parent) {
+	public GenericRealtimeListAdapter(GenericRealtimeView parent) {
 		super();
 		this.parent = parent;
 		inflater = LayoutInflater.from(parent);

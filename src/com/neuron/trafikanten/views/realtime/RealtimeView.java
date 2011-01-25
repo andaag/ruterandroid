@@ -20,18 +20,14 @@ package com.neuron.trafikanten.views.realtime;
 
 import java.util.ArrayList;
 
-import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
@@ -39,7 +35,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
@@ -53,15 +48,15 @@ import com.neuron.trafikanten.tasks.NotificationTask;
 import com.neuron.trafikanten.tasks.SelectDeviTask;
 import com.neuron.trafikanten.tasks.ShowTipsTask;
 import com.neuron.trafikanten.views.GenericDeviCreator;
-import com.neuron.trafikanten.views.GenericRealtimeListAdapter;
 
-public class RealtimeView extends ListActivity {
+public class RealtimeView extends GenericRealtimeView {
 	private static final String TAG = "Trafikanten-RealtimeView";
 	public static final String SETTING_HIDECA = "realtime_hideCaText";
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	private static final String KEY_FINISHEDLOADING = "finishedLoading";
-	private static final String KEY_TIMEDIFFERENCE = "timeDifference";
 	private static final String KEY_LIST = "list";
+
+	
 	/*
 	 * Options menu:
 	 */
@@ -88,7 +83,6 @@ public class RealtimeView extends ListActivity {
 	private GenericRealtimeListAdapter realtimeList;
 	private long lastUpdate;
 	private boolean finishedLoading = false; // we're finishedLoading when devi has loaded successfully.
-	public long timeDifference = 0; // This is the time desync between system clock and trafikanten servers.
 	
 	/*
 	 * UI
@@ -97,31 +91,17 @@ public class RealtimeView extends ListActivity {
 	private TextView infoText;
 	private TextView caText;
 	
-	/*
-	 * Data providers
-	 */
-	private TrafikantenRealtime realtimeProvider = null;
-	private TrafikantenDevi deviProvider = null;
-	private FavoriteLineDbAdapter favoriteLineDbAdapter = null;
+
 	
 	/*
 	 * Other
 	 */
     public SharedPreferences settings;
-    public GoogleAnalyticsTracker tracker;
     
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        
-        /*
-         * Analytics
-         */
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-3", this);
-		tracker.trackPageView("/realtime");
+        super.onCreate(savedInstanceState,"/realtime");
         
         /*
          * Setup view and adapter.
@@ -152,7 +132,6 @@ public class RealtimeView extends ListActivity {
         	station = savedInstanceState.getParcelable(StationData.PARCELABLE);
         	lastUpdate = savedInstanceState.getLong(KEY_LAST_UPDATE);
         	finishedLoading = savedInstanceState.getBoolean(KEY_FINISHEDLOADING);
-        	timeDifference = savedInstanceState.getLong(KEY_TIMEDIFFERENCE);
         	realtimeList.setItems(savedInstanceState.getParcelable(KEY_LIST));
         	
         	realtimeList.notifyDataSetChanged();
@@ -163,31 +142,12 @@ public class RealtimeView extends ListActivity {
         	}
         }
 
-        registerForContextMenu(getListView());
         setListAdapter(realtimeList);
         refreshTitle();
         refreshDevi();
         
         new ShowTipsTask(this, tracker, RealtimeView.class.getName(), R.string.tipRealtime, 38);
     }
-    
-    private void stopProviders() {
-    	if (realtimeProvider != null) {
-    		realtimeProvider.kill();
-    	}
-    	if (deviProvider != null) {
-    		deviProvider.kill();
-    	}
-    }
-    
-    final Handler autoRefreshHandler = new Handler(new Handler.Callback() {
-		@Override
-		public boolean handleMessage(Message msg) {
-			refresh();
-			autoRefreshHandler.sendEmptyMessageDelayed(0, 10000);
-			return true;
-		}
-	});
     
     /*
      * Refreshes the title
@@ -433,8 +393,8 @@ public class RealtimeView extends ListActivity {
 
 		return true;
 	}
-
-	/*O
+    
+	/*
 	 * Options menu item selected, options menu visible on menu button.
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
@@ -460,6 +420,7 @@ public class RealtimeView extends ListActivity {
         }
 		return super.onOptionsItemSelected(item);
 	}
+	
 
 	/*
 	 * onCreate - Context menu is a popup from a longpress on a list item.
@@ -512,36 +473,9 @@ public class RealtimeView extends ListActivity {
 		return super.onContextItemSelected(item);
 	}
 	
-	private void refresh() {
+	public void refresh() {
 		refreshTitle();
 		realtimeList.notifyDataSetChanged(); // force refreshing times.
-	}
-	
-	/*
-	 * Functions for dealing with program state.
-	 */
-	@Override
-	protected void onPause() {
-		super.onPause();
-		favoriteLineDbAdapter.close();
-		autoRefreshHandler.removeMessages(0);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		favoriteLineDbAdapter.open();
-		refresh();
-		autoRefreshHandler.sendEmptyMessageDelayed(0, 10000);
-	}
-	
-	@Override
-	protected void onStop() {
-		/*
-		 * make sure background threads is properly killed off.
-		 */
-		stopProviders();
-		super.onStop();
 	}
 
 	@Override
@@ -550,15 +484,9 @@ public class RealtimeView extends ListActivity {
 		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putLong(KEY_LAST_UPDATE, lastUpdate);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
-		outState.putLong(KEY_TIMEDIFFERENCE, timeDifference);
 		outState.putParcelable(KEY_LIST, realtimeList.getParcelable());
 	}
 	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		//Stop the tracker when it is no longer needed.
-		tracker.stop();
-	}
+
 }
 
