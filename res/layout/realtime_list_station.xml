@@ -1,3 +1,5 @@
+
+<!-- This is the realtime list header : station -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
@@ -13,5 +15,12 @@
 		android:textColor="#ffffff"
 		android:background="@drawable/skin_platform"
 		/>
-    
+		
+    <LinearLayout
+    	android:id="@+id/devi"
+    	android:orientation="vertical"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    />
+        
 </LinearLayout>

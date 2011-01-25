@@ -184,7 +184,15 @@ public class GenericRealtimeList implements Parcelable {
 				if (deviData.lines.contains(realtimeData.line)) {
 					realtimeData.devi.add(deviData);					
 				}
-			// TODO : RENDERER_STATION to add station devi
+				break;
+			case RENDERER_STATION:
+				final StationRenderer stationRenderer = (StationRenderer) renderer;
+				final StationData station = stationRenderer.station;
+				if (deviData.stops.contains(station.stopName)) {
+					station.devi.add(deviData);					
+				}
+
+				break;
 			}
 		}
 	}

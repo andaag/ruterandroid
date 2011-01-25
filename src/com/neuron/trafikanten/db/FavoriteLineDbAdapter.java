@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 
 /*
@@ -159,8 +160,6 @@ public class FavoriteLineDbAdapter {
 		final Cursor cursor = db.query(table, COLUMNS, null, null, null, null, null);
 		ArrayList<FavoriteStation> items = new ArrayList<FavoriteStation>();
 		while (cursor.moveToNext()) {
-			final FavoriteData data = new FavoriteData();
-			
 			/*
 			 * Load station
 			 */
@@ -170,23 +169,28 @@ public class FavoriteLineDbAdapter {
 			/*
 			 * Load destination and line
 			 */
-			data.destination = cursor.getString(2);
-			data.line = cursor.getString(3);
+			final FavoriteData data = new FavoriteData(cursor.getString(3), cursor.getString(2));
 			
 			/*
 			 * Find previous station in items
 			 */
-			for (FavoriteStation favStation : items) {
-				if (favStation.station.stationId == station.stationId) {
-					favStation.items.add(data);
+			{
+			boolean found = false;
+				for (FavoriteStation favStation : items) {
+					if (favStation.station.stationId == station.stationId) {
+						favStation.items.add(data);
+						found = true;
+						break;
+					}
+				}
+				if (found) {
 					continue;
 				}
 			}
 			/*
 			 * Couldn't find previous station, add a new one.
 			 */
-			FavoriteStation favStation = new FavoriteStation();
-			favStation.station = station;
+			FavoriteStation favStation = new FavoriteStation(station);
 			favStation.items.add(data);
 			items.add(favStation);
 		}
@@ -194,14 +198,25 @@ public class FavoriteLineDbAdapter {
 		return items;
 	}
 	
-	public class FavoriteStation {
+	public static class FavoriteStation {
 		public StationData station;
 		public ArrayList<FavoriteData> items = new ArrayList<FavoriteData>();
+		public FavoriteStation(StationData station) {
+			this.station = station;
+		}
 	}
 	
-	public class FavoriteData {
+	public static class FavoriteData {
 		public String line;
 		public String destination;
+		public FavoriteData(RealtimeData data) {
+			line = data.line;
+			destination = data.destination;
+		}
+		public FavoriteData(String line, String destination) {
+			this.line = line;
+			this.destination = destination;
+		}
 	}
 }
 

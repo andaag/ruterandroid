@@ -49,7 +49,7 @@ public abstract class GenericRealtimeView extends ListActivity {
 		tracker.start("UA-16690738-3", this);
 		tracker.trackPageView(viewName);
 		favoriteLineDbAdapter = new FavoriteLineDbAdapter(this);
-		realtimeList = new GenericRealtimeListAdapter(this, groupBy);
+		realtimeList = new GenericRealtimeListAdapter(this, this, tracker, groupBy);
 		
 		if (savedInstanceState != null) {
 			timeDifference = savedInstanceState.getLong(KEY_TIMEDIFFERENCE);

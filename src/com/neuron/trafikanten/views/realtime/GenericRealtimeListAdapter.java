@@ -1,5 +1,6 @@
 package com.neuron.trafikanten.views.realtime;
 
+import android.app.Activity;
 import android.os.Parcelable;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -9,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
@@ -34,10 +37,15 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 	public GenericRealtimeList items;
 	private boolean dirty = false;
 	
-	public GenericRealtimeListAdapter(GenericRealtimeView parent, int groupBy) {
+	private GoogleAnalyticsTracker tracker;
+	private Activity activity;
+	
+	public GenericRealtimeListAdapter(GenericRealtimeView parent, Activity activity, GoogleAnalyticsTracker tracker, int groupBy) {
 		super();
 		this.parent = parent;
 		inflater = LayoutInflater.from(parent);
+		this.tracker = tracker;
+		this.activity = activity;
 		items = new GenericRealtimeList(groupBy);
 	}
 	
@@ -160,22 +168,25 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				
 				return convertView;
 			case GenericRealtimeList.RENDERER_PLATFORM:
+				final ViewHolderPlatform holderPlatform = new ViewHolderPlatform();
+				final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
+				
+				convertView = inflater.inflate(R.layout.realtime_list_platform, null);
+				holderPlatform.header = (TextView) convertView.findViewById(R.id.header);
+				
+				renderPlatformView(holderPlatform, platformRenderer.platform);
+				convertView.setTag(R.layout.realtime_list_platform, holderPlatform);
+				return convertView;
 			case GenericRealtimeList.RENDERER_STATION:
-				final ViewHolderHeader holderHeader = new ViewHolderHeader();
-				convertView = inflater.inflate(R.layout.realtime_list_header, null);
-				holderHeader.header = (TextView) convertView.findViewById(R.id.header);
-
-				switch(renderer.renderType) {
-				case GenericRealtimeList.RENDERER_PLATFORM:
-					final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
-					renderHeaderView(holderHeader, "Plattform " + platformRenderer.platform);
-					break;
-				case GenericRealtimeList.RENDERER_STATION:
-					final StationRenderer stationRenderer = (StationRenderer) renderer;
-					renderHeaderView(holderHeader, stationRenderer.station.stopName);
-					break;
-				}
-				convertView.setTag(R.layout.realtime_list_header, holderHeader);
+				final ViewHolderStation holderStation = new ViewHolderStation();
+				final StationRenderer stationRenderer = (StationRenderer) renderer;
+				
+				convertView = inflater.inflate(R.layout.realtime_list_station, null);
+				holderStation.header = (TextView) convertView.findViewById(R.id.header);
+				holderStation.devi = (LinearLayout) convertView.findViewById(R.id.devi);
+				
+				renderStationView(holderStation, stationRenderer.station);
+				convertView.setTag(R.layout.realtime_list_station, holderStation);
 				return convertView;
 			}
 
@@ -188,19 +199,16 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				renderRealtimeView(holderRealtime, realtimeRenderer.data);
 				return convertView;
 			case GenericRealtimeList.RENDERER_PLATFORM:
-			case GenericRealtimeList.RENDERER_STATION:
-				final ViewHolderHeader holderHeader = (ViewHolderHeader) convertView.getTag(R.layout.realtime_list_header);
-				switch(renderer.renderType) {
-				case GenericRealtimeList.RENDERER_PLATFORM:
-					final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
-					renderHeaderView(holderHeader, "Plattform " + platformRenderer.platform);
-					break;
-				case GenericRealtimeList.RENDERER_STATION:
-					final StationRenderer stationRenderer = (StationRenderer) renderer;
-					renderHeaderView(holderHeader, stationRenderer.station.stopName);
-					break;
-				}
+				final ViewHolderPlatform holderPlatform = (ViewHolderPlatform) convertView.getTag(R.layout.realtime_list_platform);
+				final PlatformRenderer platformRenderer = (PlatformRenderer) renderer;
+				renderPlatformView(holderPlatform, platformRenderer.platform);
 				return convertView;
+				
+			case GenericRealtimeList.RENDERER_STATION:
+				final ViewHolderStation holderStation = (ViewHolderStation) convertView.getTag(R.layout.realtime_list_station);
+				final StationRenderer stationRenderer = (StationRenderer) renderer;
+				renderStationView(holderStation, stationRenderer.station);
+				return convertView;				
 			}
 		}
 		
@@ -209,7 +217,32 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		return convertView;
 	}
 	
-	private ViewHolderRealtime renderRealtimeView(ViewHolderRealtime holder, final RealtimeData data) {
+	private void renderPlatformView(ViewHolderPlatform holder, final int platform) {
+		if (platform > 0) {
+			holder.header.setText("Plattform " + platform);
+			holder.header.setVisibility(View.VISIBLE);
+		} else {
+			holder.header.setVisibility(View.GONE);
+		}
+	}
+	
+	private void renderStationView(ViewHolderStation holder, StationData station) {
+		holder.header.setText(station.stopName);
+		
+		holder.devi.removeAllViews();
+		if (station.devi.size() > 0) {
+			holder.devi.setVisibility(View.VISIBLE);
+    		for (final DeviData deviData : station.devi) {
+				holder.devi.addView(GenericDeviCreator.createDefaultDeviText(activity, tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+    		}
+		} else {
+			holder.devi.setVisibility(View.GONE);
+			
+		}
+
+	}
+	
+	private void renderRealtimeView(ViewHolderRealtime holder, final RealtimeData data) {
 
 		
 		/*
@@ -241,24 +274,20 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		} else {
 			holder.departureInfo.setVisibility(View.GONE);
 		}
-		return holder;
 	}
 	
-	private ViewHolderHeader renderHeaderView(ViewHolderHeader holder, String title) {
-		if (title != null && title.length() > 0) {
-			holder.header.setText(title);
-			holder.header.setVisibility(View.VISIBLE);
-		} else {
-			holder.header.setVisibility(View.GONE);
-		}
-		return holder;
-	}
+
 	
 	/*
 	 * Classes for caching the view.
 	 */
-	static class ViewHolderHeader {
+	static class ViewHolderPlatform {
 		TextView header;
+	}
+	
+	static class ViewHolderStation {
+		TextView header;
+		LinearLayout devi;
 	}
 	
 	static class ViewHolderRealtime {
