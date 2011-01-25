@@ -14,6 +14,9 @@ import com.neuron.trafikanten.tasks.ShowDeviTask;
 
 public class GenericDeviCreator {
 	
+	/*
+	 * Create custom font for devi.
+	 */
     private static Typeface mDeparturesTypeface = null;
     public static Typeface getDeviTypeface(Activity activity) {
     	if (mDeparturesTypeface == null) {
@@ -26,9 +29,6 @@ public class GenericDeviCreator {
     /*
      * Function for creating the default devi text, used both for line data and station data
      */
-    
-    
-    
     public static TextView createDefaultDeviText(final Activity activity, final GoogleAnalyticsTracker tracker , final String title, final DeviData deviData, boolean station) {
     	Typeface departuresTypeface = getDeviTypeface(activity);
     	TextView deviText = new TextView(activity);
