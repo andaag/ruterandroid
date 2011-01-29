@@ -3,6 +3,7 @@ package com.neuron.trafikanten.views.realtime;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class FavoritesView extends GenericRealtimeView {
         favStations = favoriteLineDbAdapter.getFavoriteData();
         favStationsDevi = new ArrayList<FavoriteStation>();
         clearView();
+        Debug.startMethodTracing("trafikantenLoad");
         load();
         registerForContextMenu(getListView());
     }
@@ -60,7 +62,7 @@ public class FavoritesView extends GenericRealtimeView {
 		
 		tracker.trackEvent("Data", "Favorites", "Data", 0);
 		final TrafikantenRealtime realtimeProvider = createRealtimeProvider(this, favStation.station.stationId);
-		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
+		realtimeProvider.start(new IGenericProviderHandler<ArrayList<RealtimeData> >() {
 			@Override
 			public void onExtra(int what, Object obj) {
 				switch (what) {
@@ -70,17 +72,21 @@ public class FavoritesView extends GenericRealtimeView {
 				}
 			}
 			
+			
 			@Override
-			public void onData(RealtimeData realtimeData) {
-				final String line = realtimeData.line;
-				final String destination = realtimeData.destination;
-				for (FavoriteData favoriteData : favStation.items) {
-					if (favoriteData.destination.equals(destination) && favoriteData.line.equals(line)) {
-						realtimeList.addData(realtimeData, favStation.station);
-						break;
+			public void onData(ArrayList<RealtimeData> data) {
+				for (RealtimeData realtimeData : data) {
+					final String line = realtimeData.line;
+					final String destination = realtimeData.destination;
+					for (FavoriteData favoriteData : favStation.items) {
+						if (favoriteData.destination.equals(destination) && favoriteData.line.equals(line)) {
+							realtimeList.addData(realtimeData, favStation.station);
+							break;
+						}
 					}
 				}
 			}
+
 
 			@Override
 			public void onPostExecute(Exception exception) {
@@ -117,7 +123,10 @@ public class FavoritesView extends GenericRealtimeView {
 	private void loadDevi() {
 		if (deviProvider != null) return;
 		if (favStationsDevi.size() == 0) {
-			setProgressBarIndeterminateVisibility(false);
+			if (favStations.size() == 0) {
+				setProgressBarIndeterminateVisibility(false);
+				Debug.stopMethodTracing();
+			}
 			return;
 		}
 		final FavoriteStation favStation = favStationsDevi.get(0);

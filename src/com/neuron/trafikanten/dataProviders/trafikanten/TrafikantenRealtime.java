@@ -25,6 +25,8 @@
 
 package com.neuron.trafikanten.dataProviders.trafikanten;
 
+import java.util.ArrayList;
+
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,7 +40,7 @@ import com.neuron.trafikanten.HelperFunctions.StreamWithTime;
 import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 
-public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData> {
+public class TrafikantenRealtime extends GenericDataProviderThread<ArrayList<RealtimeData> > {
 	public final static int MSG_TIMEDATA = 10;
 	private static final String TAG = "Trafikanten-T-RealtimeThread";
 	private final Context context;
@@ -67,6 +69,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 			//Log.i(TAG,"PERF : Getting realtime data");
 			final JSONArray jsonArray = new JSONArray(HelperFunctions.InputStreamToString(streamWithTime.stream));
 			final int arraySize = jsonArray.length();
+			final ArrayList<RealtimeData> realtimeDataBulk = new ArrayList<RealtimeData>();
 			for (int i = 0; i < arraySize; i++) {
 				final JSONObject json = jsonArray.getJSONObject(i);
 				
@@ -78,8 +81,9 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				realtimeData.departurePlatform = json.getInt("DeparturePlatformName");
 				realtimeData.stopVisitNote = json.getString("StopVisitNote");
 				
-				ThreadHandlePostData(realtimeData);
+				realtimeDataBulk.add(realtimeData);
 			}
+			ThreadHandlePostData(realtimeDataBulk);
 			//Log.i(TAG,"PERF : Parsing web request took " + ((System.currentTimeMillis() - perfSTART)) + "ms");
 
 		} catch(Exception e) {

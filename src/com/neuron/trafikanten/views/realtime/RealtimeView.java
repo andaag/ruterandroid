@@ -203,7 +203,7 @@ public class RealtimeView extends GenericRealtimeView {
 		
 		tracker.trackEvent("Data", "Realtime", "Data", 0);
 		final TrafikantenRealtime realtimeProvider = createRealtimeProvider(this, station.stationId);
-		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
+		realtimeProvider.start(new IGenericProviderHandler<ArrayList<RealtimeData> >() {
 			@Override
 			public void onExtra(int what, Object obj) {
 				switch (what) {
@@ -214,15 +214,18 @@ public class RealtimeView extends GenericRealtimeView {
 			}
 			
 			@Override
-			public void onData(RealtimeData realtimeData) {
-				if (!caVisibilityChecked && !realtimeData.realtime) {
-					/*
-					 * check "ca info text" visibility
-					 */
-					caVisibilityChecked = true;
-		        	caText.setVisibility(View.VISIBLE);
+			public void onData(ArrayList<RealtimeData> data) {
+				for (RealtimeData realtimeData : data) {
+					if (!caVisibilityChecked && !realtimeData.realtime) {
+						/*
+						 * check "ca info text" visibility
+						 */
+						caVisibilityChecked = true;
+			        	caText.setVisibility(View.VISIBLE);
+					}
+					realtimeList.addData(realtimeData);
 				}
-				realtimeList.addData(realtimeData);
+				
 			}
 
 			@Override
