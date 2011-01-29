@@ -54,8 +54,11 @@ public class FavoritesView extends GenericRealtimeView {
 		final FavoriteStation favStation = favStations.get(0);
 		favStations.remove(0);
 		
+		//final long STARTTIME = System.currentTimeMillis();
+		
 		tracker.trackEvent("Data", "Favorites", "Data", 0);
-		realtimeProvider = new TrafikantenRealtime(this, favStation.station.stationId, new IGenericProviderHandler<RealtimeData>() {
+		final TrafikantenRealtime realtimeProvider = createRealtimeProvider(this, favStation.station.stationId);
+		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
 			@Override
 			public void onExtra(int what, Object obj) {
 				switch (what) {
@@ -80,7 +83,8 @@ public class FavoritesView extends GenericRealtimeView {
 			@Override
 			public void onPostExecute(Exception exception) {
 				setProgressBarIndeterminateVisibility(false);
-				realtimeProvider = null;
+				clearRealtimeProvider(realtimeProvider);
+				//Log.d(TAG,"PERF : Download + parse of realtime data for " + favStation.station.stopName + " took " + (System.currentTimeMillis() - STARTTIME) + "ms");
 				if (exception != null) {
 					Log.w(TAG,"onException " + exception);
 			        if (exception.getClass().getSimpleName().equals("ParseException")) {

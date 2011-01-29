@@ -26,12 +26,12 @@ public class TrafikantenTrip extends GenericDataProviderThread<StationData> {
 	 * to ignore filtering set startStation = stopStation = 0
 	 */
 	public TrafikantenTrip(Context context, int tourID, int startStation, int stopStation, IGenericProviderHandler<StationData> handler) {
-		super(handler);
+		super();
 		this.context = context;
 		this.tourID = tourID;
 		this.startStation = startStation;
 		this.stopStation = stopStation;
-		start();
+		start(handler);
 	}
 	
 	@Override

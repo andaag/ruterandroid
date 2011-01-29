@@ -43,7 +43,7 @@ public class RouteSearchData implements Parcelable {
 	 */
 	public int changePunish = 2; // in minutes
 	public int changeMargin = 2; // in minutes
-	public int proposals = 8; // asking for 8 results, as it perfectly fills the screen.
+	public int proposals = 10; // asking for 10 results by default
 	
 	// ORDER : transportBus, transportTrain, transportTram, transportMetro, transportAirportBus, transportAirportTrain, transportBoat
 	public Boolean[] transportTypes = {true, true, true, true, true, true, true};
@@ -56,7 +56,7 @@ public class RouteSearchData implements Parcelable {
 	public void resetAdvancedOptions() {
 		changePunish = 2;
 		changeMargin = 2;
-		proposals = 8;
+		proposals = 10;
 		
 		for (int i = 0; i < 7; i++) {
 			transportTypes[i] = true;

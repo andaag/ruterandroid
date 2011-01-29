@@ -460,7 +460,8 @@ class RouteRealtimeLoader {
 		}
 		
 		tracker.trackEvent("Data", "Realtime", "Data", 0);
-		realtimeProvider = new TrafikantenRealtime(activity, station.stationId, new IGenericProviderHandler<RealtimeData>() {
+		realtimeProvider = new TrafikantenRealtime(activity, station.stationId);
+		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
 			@Override
 			public void onExtra(int what, Object obj) {
 				switch (what) {

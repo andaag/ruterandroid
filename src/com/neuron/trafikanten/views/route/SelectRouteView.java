@@ -526,8 +526,10 @@ public class SelectRouteView extends ListActivity {
 			    	switch(item) {
 			    	case 6:
 			    		routeSearch.proposals = 15;
+			    		break;
 			    	case 5:
 			    		routeSearch.proposals = 10;
+			    		break;
 			    	default:
 			    		routeSearch.proposals = item + 1;
 			    	}

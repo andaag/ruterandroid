@@ -36,7 +36,6 @@ import android.util.Log;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.HelperFunctions.StreamWithTime;
 import com.neuron.trafikanten.dataProviders.GenericDataProviderThread;
-import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 
 public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData> {
@@ -46,13 +45,12 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 	
 	private final int stationId;
 	
-	public TrafikantenRealtime(Context context, int stationId, IGenericProviderHandler<RealtimeData> handler) {
-		super(handler);
+	public TrafikantenRealtime(Context context, int stationId) {
+		super();
 		this.context = context;
 		this.stationId = stationId;
-		start();
 	}
-	
+		
     @Override
 	public void run() {
 		try {
@@ -65,8 +63,8 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 			/*
 			 * Parse json
 			 */
-			long perfSTART = System.currentTimeMillis();
-			Log.i(TAG,"PERF : Getting realtime data");
+			//long perfSTART = System.currentTimeMillis();
+			//Log.i(TAG,"PERF : Getting realtime data");
 			final JSONArray jsonArray = new JSONArray(HelperFunctions.InputStreamToString(streamWithTime.stream));
 			final int arraySize = jsonArray.length();
 			for (int i = 0; i < arraySize; i++) {
@@ -82,7 +80,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				
 				ThreadHandlePostData(realtimeData);
 			}
-			Log.i(TAG,"PERF : Parsing web request took " + ((System.currentTimeMillis() - perfSTART)) + "ms");
+			//Log.i(TAG,"PERF : Parsing web request took " + ((System.currentTimeMillis() - perfSTART)) + "ms");
 
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {

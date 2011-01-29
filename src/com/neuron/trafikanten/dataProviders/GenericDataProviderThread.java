@@ -10,7 +10,7 @@ public abstract class GenericDataProviderThread<T> extends Thread {
 	private final static int MSG_POSTEXECUTE = 1;
 	private AtomicBoolean stopped = new AtomicBoolean(false);
 	
-	private final IGenericProviderHandler<T> handler;
+	private IGenericProviderHandler<T> handler;
 	public final Handler threadHandler = new Handler() {
 		@SuppressWarnings("unchecked")
 		@Override
@@ -35,9 +35,14 @@ public abstract class GenericDataProviderThread<T> extends Thread {
 		interrupt();
 	}
 	
-	public GenericDataProviderThread(IGenericProviderHandler<T> handler) {
+	public GenericDataProviderThread() {
+
+	}
+	
+	public void start(IGenericProviderHandler<T> handler) {
 		this.handler = handler;
 		handler.onPreExecute();
+		super.start();
 	}
 	   
     /*

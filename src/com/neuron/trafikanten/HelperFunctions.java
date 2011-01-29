@@ -101,7 +101,7 @@ public class HelperFunctions {
 	 * Converts inputstream to string
 	 */
     public static String InputStreamToString(InputStream stream) throws IOException {
-    	long perfSTART = System.currentTimeMillis();
+    	//long perfSTART = System.currentTimeMillis();
     	
 	    final InputStreamReader input = new InputStreamReader(stream, "UTF-8");
 	    final char[] buffer = new char[8192];
@@ -111,8 +111,7 @@ public class HelperFunctions {
 	            output.append(buffer, 0, read);
 	        }
 	    } catch (IOException e) { }
-	    //PERF
-	    Log.i(TAG,"PERF : Downloading web request took " + ((System.currentTimeMillis() - perfSTART)) + "ms");
+	    //Log.i(TAG,"PERF : Downloading web request took " + ((System.currentTimeMillis() - perfSTART)) + "ms");
 	    return output.toString();
     }
 	
@@ -142,7 +141,7 @@ public class HelperFunctions {
 	}
 	
 	public static StreamWithTime executeHttpRequest(Context context, HttpUriRequest request, boolean parseTime) throws IOException {
-		long perfSTART = System.currentTimeMillis();
+		//long perfSTART = System.currentTimeMillis();
 		
 		/*
 		 * Add gzip header
@@ -190,8 +189,7 @@ public class HelperFunctions {
 			Log.i(TAG,"Recieved UNCOMPRESSED data - Problem server side");
 		}
 		
-		//PERF
-		Log.i(TAG,"PERF : Sending web request took " + ((System.currentTimeMillis() - perfSTART)) + "ms");
+		//Log.i(TAG,"PERF : Sending web request took " + ((System.currentTimeMillis() - perfSTART)) + "ms");
 		
 		//return content;
 		return new StreamWithTime(content, timeDifference);

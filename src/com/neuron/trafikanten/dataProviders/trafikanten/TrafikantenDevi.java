@@ -48,11 +48,11 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 	private final String lines;
 	
 	public TrafikantenDevi(Context context, int stationId, String lines, IGenericProviderHandler<DeviData> handler) {
-		super(handler);
+		super();
 		this.context = context;
 		this.stationId = stationId;
 		this.lines = lines;
-		start();
+		start(handler);
 	}
 	
     @Override

@@ -1,6 +1,9 @@
 package com.neuron.trafikanten.views.realtime;
 
+import java.util.ArrayList;
+
 import android.app.ListActivity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,7 +24,7 @@ public abstract class GenericRealtimeView extends ListActivity {
 	/*
 	 * Data providers
 	 */
-	protected TrafikantenRealtime realtimeProvider = null;
+	protected ArrayList<TrafikantenRealtime> _realtimeProviders = null;
 	protected TrafikantenDevi deviProvider = null;
 	protected FavoriteLineDbAdapter favoriteLineDbAdapter = null;
 	
@@ -61,9 +64,26 @@ public abstract class GenericRealtimeView extends ListActivity {
         setListAdapter(realtimeList);
     }
     
+    public TrafikantenRealtime createRealtimeProvider(Context context, int stationId) {
+    	TrafikantenRealtime provider = new TrafikantenRealtime(context, stationId);
+    	if (_realtimeProviders == null) {
+    		_realtimeProviders = new ArrayList<TrafikantenRealtime>();
+    	}
+    	_realtimeProviders.add(provider);
+    	return provider;
+    }
+    
+    public void clearRealtimeProvider(TrafikantenRealtime realtimeProvider) {
+    	if (_realtimeProviders != null) {
+    		_realtimeProviders.remove(realtimeProvider);
+    	}
+    }
+    
     public void stopProviders() {
-    	if (realtimeProvider != null) {
-    		realtimeProvider.kill();
+    	if (_realtimeProviders != null) {
+	    	for (TrafikantenRealtime realtimeProvider : _realtimeProviders) {
+	    		realtimeProvider.kill();
+	    	}
     	}
     	if (deviProvider != null) {
     		deviProvider.kill();

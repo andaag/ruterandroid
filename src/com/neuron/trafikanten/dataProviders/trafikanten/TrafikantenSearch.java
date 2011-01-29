@@ -54,20 +54,20 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 	private boolean isRealtimeStopFiltered = false;
 	
 	public TrafikantenSearch(Context context, double latitude, double longitude, boolean isRealtimeStopFiltered, IGenericProviderHandler<StationData> handler) {
-		super(handler);
+		super();
 		this.context = context;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.isRealtimeStopFiltered = isRealtimeStopFiltered;
-		start();
+		start(handler);
 	}
 	
 	public TrafikantenSearch(Context context, String query, boolean isRealtimeStopFiltered, IGenericProviderHandler<StationData> handler) {
-		super(handler);
+		super();
 		this.context = context;
 		this.query = query;
 		this.isRealtimeStopFiltered = isRealtimeStopFiltered;
-		start();
+		start(handler);
 	}
 	
 	/*

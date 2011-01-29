@@ -221,7 +221,8 @@ public class RealtimeView extends GenericRealtimeView {
 		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
 		
 		tracker.trackEvent("Data", "Realtime", "Data", 0);
-		realtimeProvider = new TrafikantenRealtime(this, station.stationId, new IGenericProviderHandler<RealtimeData>() {
+		final TrafikantenRealtime realtimeProvider = createRealtimeProvider(this, station.stationId);
+		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
 			@Override
 			public void onExtra(int what, Object obj) {
 				switch (what) {
@@ -246,7 +247,7 @@ public class RealtimeView extends GenericRealtimeView {
 			@Override
 			public void onPostExecute(Exception exception) {
 				setProgressBarIndeterminateVisibility(false);
-				realtimeProvider = null;
+				clearRealtimeProvider(realtimeProvider);
 				if (exception != null) {
 					Log.w(TAG,"onException " + exception);
 					clearView();
