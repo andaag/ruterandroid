@@ -50,7 +50,6 @@ public class FavoritesView extends GenericRealtimeView {
 	@Override
 	protected void load() {
 		if (favStations.size() == 0) {
-			setProgressBarIndeterminateVisibility(false);
 			loadDevi();
 			return;
 		}
