@@ -81,15 +81,27 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		return items.get(pos);
 	}
 	public RealtimeData getRealtimeItem(int pos) {
-		GenericRealtimeRenderer renderer = getItem(pos);
+		final GenericRealtimeRenderer renderer = getItem(pos);
 		if (renderer.renderType == GenericRealtimeList.RENDERER_REALTIME) {
 			final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) renderer;
 			return realtimeRenderer.data;
 		}
 		return null;
 	}
-
 	
+	/*
+	 * This finds a station belonging to a realtime item position. It does it by looking up until it finds a station.
+	 */
+	public StationData getStationForRealtimeItem(int pos) {
+		while (pos > 0) {
+			final GenericRealtimeRenderer renderer = getItem(pos);
+			if (renderer.renderType == GenericRealtimeList.RENDERER_STATION) {
+				return ((StationRenderer) renderer).station;
+			}
+			pos--;
+		}
+		return null;
+	}
 	
 	@Override
 	public void notifyDataSetChanged() {

@@ -12,6 +12,7 @@ import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenDevi;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
+import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeList;
 import com.neuron.trafikanten.db.FavoriteLineDbAdapter.FavoriteData;
 import com.neuron.trafikanten.db.FavoriteLineDbAdapter.FavoriteStation;
@@ -191,6 +192,11 @@ public class FavoritesView extends GenericRealtimeView {
         favStations = favoriteLineDbAdapter.getFavoriteData();
         favStationsDevi = new ArrayList<FavoriteStation>();
     	load();
+	}
+	
+	@Override
+	public StationData getStation(int pos) {
+		return realtimeList.getStationForRealtimeItem(pos);
 	}
 
 }

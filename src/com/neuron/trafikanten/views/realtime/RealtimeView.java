@@ -23,13 +23,9 @@ import java.util.ArrayList;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,8 +40,6 @@ import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeList;
-import com.neuron.trafikanten.tasks.NotificationTask;
-import com.neuron.trafikanten.tasks.SelectDeviTask;
 import com.neuron.trafikanten.tasks.ShowTipsTask;
 import com.neuron.trafikanten.views.GenericDeviCreator;
 
@@ -59,19 +53,7 @@ public class RealtimeView extends GenericRealtimeView {
 	 */
 	private static final int HIDECA_ID = Menu.FIRST + 100;
 	
-	/*
-	 * Context menu:
-	 */
-	private static final int NOTIFY_ID = Menu.FIRST;
-	private static final int DEVI_ID = Menu.FIRST + 1;
-	private static final int FAVORITE_ID = Menu.FIRST + 2;
-	
-	/*
-	 * Dialogs
-	 */
-	private int selectedId = 0;
 
-	
 	/*
 	 * Saved instance data
 	 */
@@ -131,7 +113,6 @@ public class RealtimeView extends GenericRealtimeView {
         	}
         }
 
-        registerForContextMenu(getListView());
         refreshTitle();
         refreshDevi();
         
@@ -415,57 +396,6 @@ public class RealtimeView extends GenericRealtimeView {
     	load();
 	}
 
-	/*
-	 * onCreate - Context menu is a popup from a longpress on a list item.
-	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
-	 */
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		
-		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-		final RealtimeData realtimeData = realtimeList.getRealtimeItem(info.position);
-		if (realtimeData == null) return;
-
-		if (realtimeData.devi.size() > 0)
-			menu.add(0, DEVI_ID, 0, R.string.warnings);
-		menu.add(0, NOTIFY_ID, 0, R.string.alarm);		
-		if (favoriteLineDbAdapter.isFavorite(station, realtimeData.line, realtimeData.destination)) {
-			menu.add(0, FAVORITE_ID, 0, R.string.removeFavorite);
-		} else {
-			menu.add(0, FAVORITE_ID, 0, R.string.addFavorite);
-		}
-	}
-	
-	/*
-	 * onSelected - Context menu is a popup from a longpress on a list item.
-	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
-	 */
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-        final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        selectedId = info.position;
-		final RealtimeData realtimeData = (RealtimeData) realtimeList.getRealtimeItem(selectedId);
-		
-		switch(item.getItemId()) {
-		case NOTIFY_ID:
-			final String notifyWith = realtimeData.line.equals(realtimeData.destination) 
-				? realtimeData.line 
-				: realtimeData.line + " " + realtimeData.destination;
-			new NotificationTask(this, tracker, realtimeData, station, notifyWith, timeDifference);
-			return true;
-		case DEVI_ID:
-			final ArrayList<DeviData> deviPopup = realtimeData.devi;
-			new SelectDeviTask(this, tracker, deviPopup);
-			return true;
-		case FAVORITE_ID:
-			favoriteLineDbAdapter.toggleFavorite(station, realtimeData.line, realtimeData.destination);
-			return true;
-		}
-		return super.onContextItemSelected(item);
-	}
-	
 	@Override
 	protected void refresh() {
 		super.refresh();
@@ -477,6 +407,11 @@ public class RealtimeView extends GenericRealtimeView {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(StationData.PARCELABLE, station);
 		outState.putBoolean(KEY_FINISHEDLOADING, finishedLoading);
+	}
+
+	@Override
+	public StationData getStation(int pos) {
+		return station;
 	}
 	
 
