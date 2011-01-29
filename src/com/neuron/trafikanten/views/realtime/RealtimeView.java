@@ -57,8 +57,7 @@ public class RealtimeView extends GenericRealtimeView {
 	/*
 	 * Options menu:
 	 */
-	private static final int REFRESH_ID = Menu.FIRST;
-	private static final int HIDECA_ID = Menu.FIRST + 1;
+	private static final int HIDECA_ID = Menu.FIRST + 100;
 	
 	/*
 	 * Context menu:
@@ -381,9 +380,6 @@ public class RealtimeView extends GenericRealtimeView {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		
-		final MenuItem refresh = menu.add(0, REFRESH_ID, 0, R.string.refresh);
-		refresh.setIcon(R.drawable.ic_menu_refresh);
-        
         final MenuItem showHideCaText = menu.add(0, HIDECA_ID, 0, R.string.changeCaTextVisibility);
         showHideCaText.setIcon(android.R.drawable.ic_menu_info_details);
 
@@ -397,10 +393,6 @@ public class RealtimeView extends GenericRealtimeView {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-        case REFRESH_ID:
-        	tracker.trackEvent("Navigation", "Realtime", "Refresh", 0);
-        	load();
-        	return true;
         case HIDECA_ID:
         	boolean hideCaText = !(caText.getVisibility() == View.GONE);
         	SharedPreferences.Editor editor = settings.edit();
@@ -415,6 +407,12 @@ public class RealtimeView extends GenericRealtimeView {
         	return true;
         }
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onOptionsMenuRefresh() {
+    	tracker.trackEvent("Navigation", "Realtime", "Refresh", 0);
+    	load();
 	}
 
 	/*

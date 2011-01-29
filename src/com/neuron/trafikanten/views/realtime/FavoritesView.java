@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.neuron.trafikanten.R;
@@ -20,11 +18,6 @@ import com.neuron.trafikanten.db.FavoriteLineDbAdapter.FavoriteStation;
 
 public class FavoritesView extends GenericRealtimeView {
 	private static final String TAG = "Trafikanten-FavoritesView";
-	
-	/*
-	 * Options menu:
-	 */
-	private static final int REFRESH_ID = Menu.FIRST;
 	
 	/*
 	 * This is a queue of favorite stations, when size = 0 we're done loading
@@ -191,36 +184,13 @@ public class FavoritesView extends GenericRealtimeView {
      * menu code
      */
     
-	/*
-	 * Options menu, visible on menu button.
-	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-	 */
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		
-		final MenuItem refresh = menu.add(0, REFRESH_ID, 0, R.string.refresh);
-		refresh.setIcon(R.drawable.ic_menu_refresh);
-        
-		return true;
-	}
-	
-	/*
-	 * Options menu item selected, options menu visible on menu button.
-	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
-	 */
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-        case REFRESH_ID:
-        	stopProviders();
-        	tracker.trackEvent("Navigation", "Favorites", "Refresh", 0);
-            favStations = favoriteLineDbAdapter.getFavoriteData();
-            favStationsDevi = new ArrayList<FavoriteStation>();
-        	load();
-        	return true;
-        }
-		return super.onOptionsItemSelected(item);
+	public void onOptionsMenuRefresh() {
+    	stopProviders();
+    	tracker.trackEvent("Navigation", "Favorites", "Refresh", 0);
+        favStations = favoriteLineDbAdapter.getFavoriteData();
+        favStationsDevi = new ArrayList<FavoriteStation>();
+    	load();
 	}
 
 }

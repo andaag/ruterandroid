@@ -7,9 +7,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenDevi;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
 import com.neuron.trafikanten.db.FavoriteLineDbAdapter;
@@ -21,6 +24,11 @@ public abstract class GenericRealtimeView extends ListActivity {
 	private static final String KEY_TIMEDIFFERENCE = "timeDifference";
 	private static final String KEY_LAST_UPDATE = "lastUpdate";
 	private static final String KEY_LIST = "list";
+	
+	/*
+	 * Options menu:
+	 */
+	private static final int REFRESH_ID = Menu.FIRST;
 	/*
 	 * Data providers
 	 */
@@ -159,4 +167,37 @@ public abstract class GenericRealtimeView extends ListActivity {
 		//Stop the tracker when it is no longer needed.
 		tracker.stop();
 	}
+	
+	
+	/**
+	 * Menu code
+	 */
+	/*
+	 * Options menu, visible on menu button.
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		
+		final MenuItem refresh = menu.add(0, REFRESH_ID, 0, R.string.refresh);
+		refresh.setIcon(R.drawable.ic_menu_refresh);
+        
+		return true;
+	}
+	
+	/*
+	 * Options menu item selected, options menu visible on menu button.
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case REFRESH_ID:
+        	onOptionsMenuRefresh();
+        	return true;
+        }
+		return super.onOptionsItemSelected(item);
+	}
+	public abstract void onOptionsMenuRefresh();
 }
