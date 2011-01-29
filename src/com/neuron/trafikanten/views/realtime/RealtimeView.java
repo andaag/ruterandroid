@@ -115,6 +115,7 @@ public class RealtimeView extends GenericRealtimeView {
 
         refreshTitle();
         refreshDevi();
+        registerForContextMenu(getListView());
         
         new ShowTipsTask(this, tracker, RealtimeView.class.getName(), R.string.tipRealtime, 38);
     }

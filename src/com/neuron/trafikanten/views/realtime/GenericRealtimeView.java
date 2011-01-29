@@ -93,7 +93,6 @@ public abstract class GenericRealtimeView extends ListActivity {
 		}
 		
         setListAdapter(realtimeList);
-        registerForContextMenu(getListView());
     }
     
     public TrafikantenRealtime createRealtimeProvider(Context context, int stationId) {

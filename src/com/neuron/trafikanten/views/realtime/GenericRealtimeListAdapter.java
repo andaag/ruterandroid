@@ -93,7 +93,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 	 * This finds a station belonging to a realtime item position. It does it by looking up until it finds a station.
 	 */
 	public StationData getStationForRealtimeItem(int pos) {
-		while (pos > 0) {
+		while (pos >= 0) {
 			final GenericRealtimeRenderer renderer = getItem(pos);
 			if (renderer.renderType == GenericRealtimeList.RENDERER_STATION) {
 				return ((StationRenderer) renderer).station;
@@ -130,6 +130,22 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		return 3;
 	}
 	
+	
+	/*
+	 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
+	 * TODO : Check if this workaround is still needed, HACK
+	 */
+	public void tableLayoutOnclickHack(View convertView, final RealtimeRenderer realtimeRenderer) {
+		final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
+		tableLayout.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new ShowRealtimeLineDetails(parent, parent.tracker, System.currentTimeMillis() - parent.timeDifference, realtimeRenderer.data);
+			}
+		});
+		tableLayout.setLongClickable(true);
+	}
+	
 	/*
 	 * Setup the view
 	 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
@@ -161,22 +177,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				holderRealtime.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
 				renderRealtimeView(holderRealtime, realtimeRenderer.data);
 				convertView.setTag(R.layout.realtime_list, holderRealtime);
-				
-				
-				/*
-				 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
-				 * TODO : Check if this workaround is still needed, HACK
-				 */
-				{
-					final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
-					tableLayout.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							new ShowRealtimeLineDetails(parent, parent.tracker, System.currentTimeMillis() - parent.timeDifference, realtimeRenderer.data);
-						}
-					});
-					tableLayout.setLongClickable(true);
-				}
+				tableLayoutOnclickHack(convertView, realtimeRenderer);
 				
 				return convertView;
 			case GenericRealtimeList.RENDERER_PLATFORM:
@@ -209,6 +210,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				final ViewHolderRealtime holderRealtime = (ViewHolderRealtime) convertView.getTag(R.layout.realtime_list);
 				final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) renderer;
 				renderRealtimeView(holderRealtime, realtimeRenderer.data);
+				tableLayoutOnclickHack(convertView, realtimeRenderer);
 				return convertView;
 			case GenericRealtimeList.RENDERER_PLATFORM:
 				final ViewHolderPlatform holderPlatform = (ViewHolderPlatform) convertView.getTag(R.layout.realtime_list_platform);

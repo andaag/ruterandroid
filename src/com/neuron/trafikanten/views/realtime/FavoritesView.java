@@ -44,11 +44,13 @@ public class FavoritesView extends GenericRealtimeView {
         favStationsDevi = new ArrayList<FavoriteStation>();
         clearView();
         load();
+        registerForContextMenu(getListView());
     }
 
 	@Override
 	protected void load() {
 		if (favStations.size() == 0) {
+			setProgressBarIndeterminateVisibility(false);
 			loadDevi();
 			return;
 		}
@@ -83,7 +85,6 @@ public class FavoritesView extends GenericRealtimeView {
 
 			@Override
 			public void onPostExecute(Exception exception) {
-				setProgressBarIndeterminateVisibility(false);
 				clearRealtimeProvider(realtimeProvider);
 				//Log.d(TAG,"PERF : Download + parse of realtime data for " + favStation.station.stopName + " took " + (System.currentTimeMillis() - STARTTIME) + "ms");
 				if (exception != null) {
@@ -117,6 +118,7 @@ public class FavoritesView extends GenericRealtimeView {
 	private void loadDevi() {
 		if (deviProvider != null) return;
 		if (favStationsDevi.size() == 0) {
+			setProgressBarIndeterminateVisibility(false);
 			return;
 		}
 		final FavoriteStation favStation = favStationsDevi.get(0);
@@ -156,7 +158,6 @@ public class FavoritesView extends GenericRealtimeView {
 
 			@Override
 			public void onPostExecute(Exception exception) {
-				setProgressBarIndeterminateVisibility(false);
 				deviProvider = null;
 
 				if (exception != null) {
@@ -188,6 +189,7 @@ public class FavoritesView extends GenericRealtimeView {
 	@Override
 	public void onOptionsMenuRefresh() {
     	stopProviders();
+		clearView();
     	tracker.trackEvent("Navigation", "Favorites", "Refresh", 0);
         favStations = favoriteLineDbAdapter.getFavoriteData();
         favStationsDevi = new ArrayList<FavoriteStation>();
