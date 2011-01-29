@@ -461,7 +461,7 @@ class RouteRealtimeLoader {
 		
 		tracker.trackEvent("Data", "Realtime", "Data", 0);
 		realtimeProvider = new TrafikantenRealtime(activity, station.stationId);
-		realtimeProvider.start(new IGenericProviderHandler<ArrayList<RealtimeData> >() {
+		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
 			@Override
 			public void onExtra(int what, Object obj) {
 				switch (what) {
@@ -471,20 +471,16 @@ class RouteRealtimeLoader {
 				}
 			}
 			
-			
-			
 			@Override
-			public void onData(ArrayList<RealtimeData> data) {
-				for (RealtimeData item : data) {
-					//Log.i("DEBUG CODE","Comparing '" + item.line + "' == '" + searchLine + "' and '" + item.destination + "' == '" + searchDestination + "'");
-					if (item.destination.equals(searchDestination) && item.line.equals(searchLine)) {
-						if (routeData.realtimeData == null) {
-							routeData.realtimeData = item;
-							routeList.notifyDataSetChanged();
-						} else {
-							routeData.realtimeData.addDeparture(item.expectedDeparture, item.realtime, item.stopVisitNote);
-							routeList.notifyDataSetChanged();
-						}
+			public void onData(RealtimeData item) {
+				//Log.i("DEBUG CODE","Comparing '" + item.line + "' == '" + searchLine + "' and '" + item.destination + "' == '" + searchDestination + "'");
+				if (item.destination.equals(searchDestination) && item.line.equals(searchLine)) {
+					if (routeData.realtimeData == null) {
+						routeData.realtimeData = item;
+						routeList.notifyDataSetChanged();
+					} else {
+						routeData.realtimeData.addDeparture(item.expectedDeparture, item.realtime, item.stopVisitNote);
+						routeList.notifyDataSetChanged();
 					}
 				}
 			}

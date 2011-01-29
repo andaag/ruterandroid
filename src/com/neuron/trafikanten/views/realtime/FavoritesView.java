@@ -44,7 +44,6 @@ public class FavoritesView extends GenericRealtimeView {
         favStations = favoriteLineDbAdapter.getFavoriteData();
         favStationsDevi = new ArrayList<FavoriteStation>();
         clearView();
-        Debug.startMethodTracing("trafikantenLoad");
         load();
         registerForContextMenu(getListView());
     }
@@ -62,7 +61,7 @@ public class FavoritesView extends GenericRealtimeView {
 		
 		tracker.trackEvent("Data", "Favorites", "Data", 0);
 		final TrafikantenRealtime realtimeProvider = createRealtimeProvider(this, favStation.station.stationId);
-		realtimeProvider.start(new IGenericProviderHandler<ArrayList<RealtimeData> >() {
+		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
 			@Override
 			public void onExtra(int what, Object obj) {
 				switch (what) {
@@ -74,15 +73,13 @@ public class FavoritesView extends GenericRealtimeView {
 			
 			
 			@Override
-			public void onData(ArrayList<RealtimeData> data) {
-				for (RealtimeData realtimeData : data) {
-					final String line = realtimeData.line;
-					final String destination = realtimeData.destination;
-					for (FavoriteData favoriteData : favStation.items) {
-						if (favoriteData.destination.equals(destination) && favoriteData.line.equals(line)) {
-							realtimeList.addData(realtimeData, favStation.station);
-							break;
-						}
+			public void onData(RealtimeData realtimeData) {
+				final String line = realtimeData.line;
+				final String destination = realtimeData.destination;
+				for (FavoriteData favoriteData : favStation.items) {
+					if (favoriteData.destination.equals(destination) && favoriteData.line.equals(line)) {
+						realtimeList.addData(realtimeData, favStation.station);
+						break;
 					}
 				}
 			}
@@ -125,7 +122,6 @@ public class FavoritesView extends GenericRealtimeView {
 		if (favStationsDevi.size() == 0) {
 			if (favStations.size() == 0) {
 				setProgressBarIndeterminateVisibility(false);
-				Debug.stopMethodTracing();
 			}
 			return;
 		}
