@@ -3,7 +3,6 @@ package com.neuron.trafikanten.views.realtime;
 import java.util.ArrayList;
 
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -171,8 +170,6 @@ public class FavoritesView extends GenericRealtimeView {
 			        } else {
 			        	Toast.makeText(FavoritesView.this, R.string.trafikantenErrorOther, Toast.LENGTH_LONG).show();
 			        }
-
-		
 				} else {
 					realtimeList.notifyDataSetChanged();
 				}

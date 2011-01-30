@@ -48,11 +48,6 @@ public abstract class GenericRealtimeView extends ListActivity {
 	private static final int FAVORITE_ID = Menu.FIRST + 2;
 	
 	/*
-	 * Dialogs
-	 */
-	private int selectedId = 0;
-	
-	/*
 	 * Data providers
 	 */
 	protected ArrayList<TrafikantenRealtime> _realtimeProviders = null;
@@ -239,7 +234,7 @@ public abstract class GenericRealtimeView extends ListActivity {
 		
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 		final RealtimeData realtimeData = realtimeList.getRealtimeItem(info.position);
-		final StationData station = getStation(selectedId);
+		final StationData station = getStation(info.position);
 		if (realtimeData == null || station == null) return;
 
 		if (realtimeData.devi.size() > 0)
@@ -259,9 +254,8 @@ public abstract class GenericRealtimeView extends ListActivity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        selectedId = info.position;
-		final RealtimeData realtimeData = (RealtimeData) realtimeList.getRealtimeItem(selectedId);
-		final StationData station = getStation(selectedId);
+		final RealtimeData realtimeData = (RealtimeData) realtimeList.getRealtimeItem(info.position);
+		final StationData station = getStation(info.position);
 		
 		if (realtimeData != null && station != null) {
 			switch(item.getItemId()) {
