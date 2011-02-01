@@ -58,10 +58,28 @@ public class FavoritesView extends GenericRealtimeView {
         	emptyText.setVisibility(View.VISIBLE);
         }
         favStationsDevi = new ArrayList<FavoriteStation>();
-        clearView();
-        load();
         registerForContextMenu(getListView());
+        /*
+         * Load is triggered by onResume
+         */
     }
+    
+    
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		/*
+		 * If user was in favorites screen. And added something, we should refresh.
+		 */
+		int oldFavSize = favStations.size();
+		favStations = favoriteLineDbAdapter.getFavoriteData();
+		if (favStations.size() != oldFavSize) {
+			onOptionsMenuRefresh();
+		}
+	}
+
+
 
 	@Override
 	protected void load() {
