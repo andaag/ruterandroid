@@ -5,20 +5,20 @@ import android.os.Parcel;
 import com.neuron.trafikanten.dataSets.realtime.GenericRealtimeList;
 
 public class PlatformRenderer extends GenericRealtimeRenderer {
-	public int platform = 0;
+	public String platform = null;
 	
-	public PlatformRenderer(int platform) {
+	public PlatformRenderer(String platform) {
 		super(GenericRealtimeList.RENDERER_PLATFORM);
 		this.platform = platform;
 	}
 	
 	public PlatformRenderer(Parcel in) {
 		super(GenericRealtimeList.RENDERER_PLATFORM);
-		this.platform = in.readInt();
+		this.platform = in.readString();
 	}
 
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeInt(platform);
+		out.writeString(platform);
 	}
 }

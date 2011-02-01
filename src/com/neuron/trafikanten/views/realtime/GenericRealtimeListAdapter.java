@@ -231,8 +231,8 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		return convertView;
 	}
 	
-	private void renderPlatformView(ViewHolderPlatform holder, final int platform) {
-		if (platform > 0) {
+	private void renderPlatformView(ViewHolderPlatform holder, final String platform) {
+		if (platform != null) {
 			holder.header.setText("Plattform " + platform);
 			holder.header.setVisibility(View.VISIBLE);
 		} else {
@@ -257,8 +257,6 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 	}
 	
 	private void renderRealtimeView(ViewHolderRealtime holder, final RealtimeData data) {
-
-		
 		/*
 		 * Render data to view.
 		 */

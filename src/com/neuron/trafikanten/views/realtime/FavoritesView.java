@@ -31,6 +31,11 @@ public class FavoritesView extends GenericRealtimeView {
 	 */
 	private ArrayList<FavoriteStation> favStationsDevi;
 	
+	/*
+	 * List of devi id's already parsed
+	 */
+	private ArrayList<Integer> parsedIds = new ArrayList<Integer>();
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,7 +109,6 @@ public class FavoritesView extends GenericRealtimeView {
 					realtimeList.notifyDataSetChanged();
 					favStationsDevi.add(favStation);
 					load(); // keep loading until we are done.
-					loadDevi(); // keep loading until we are done.
 				}
 			}
 
@@ -116,6 +120,10 @@ public class FavoritesView extends GenericRealtimeView {
 	}
 	
 	
+	/*
+	 * NOTE, devi is not loaded in parallel with data, since some devi are duplicated.
+	 * For example, we load devi id 123 that applies to both current data, and not yet loaded data. This would end up being duplicated OR ignored, which is not what we want.
+	 */
 	private void loadDevi() {
 		if (deviProvider != null) return;
 		if (favStationsDevi.size() == 0) {
@@ -156,7 +164,19 @@ public class FavoritesView extends GenericRealtimeView {
 
 			@Override
 			public void onData(DeviData deviData) {
+				Log.i("DEBUG CODE","Parseids length : " + parsedIds.size());
+				for(Integer i : parsedIds) {
+					if (i.intValue() == deviData.id) {
+						Log.d("DEBUG CODE","Skipping id " + deviData.id);
+						return;
+					} else {
+						Log.d("DEBUG CODE","NO MATCH " + deviData.id + " " + i.intValue());
+					}
+				}
 				realtimeList.addData(deviData);
+				Log.d("DEBUG CODE","Parsed id : " + deviData.id);
+				parsedIds.add(deviData.id);
+				Log.i("DEBUG CODE","Parseids END function : " + parsedIds.size());
 			}
 
 			@Override
@@ -191,6 +211,7 @@ public class FavoritesView extends GenericRealtimeView {
 	public void onOptionsMenuRefresh() {
     	stopProviders();
 		clearView();
+		parsedIds.clear();
     	tracker.trackEvent("Navigation", "Favorites", "Refresh", 0);
         favStations = favoriteLineDbAdapter.getFavoriteData();
         favStationsDevi = new ArrayList<FavoriteStation>();

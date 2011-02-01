@@ -26,6 +26,7 @@ import android.os.Parcelable;
 public class DeviData implements Parcelable {
 	public final static String PARCELABLE = "DeviData";
 	
+	public int id;
 	public String title;
 	public String description;
 	public String body;
@@ -50,6 +51,7 @@ public class DeviData implements Parcelable {
 	 * Function for reading the parcel
 	 */
 	public DeviData(Parcel in) {
+		id = in.readInt();
 		title = in.readString();
 		description = in.readString();
 		body = in.readString();
@@ -71,6 +73,7 @@ public class DeviData implements Parcelable {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
+		out.writeInt(id);
 		out.writeString(title);
 		out.writeString(description);
 		out.writeString(body);

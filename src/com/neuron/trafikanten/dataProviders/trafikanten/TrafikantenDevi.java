@@ -110,6 +110,7 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 				deviData.body = json.getString("body");
 				deviData.validTo = HelperFunctions.jsonToDate(json.getString("validTo"));
 				deviData.important = json.getBoolean("important");
+				deviData.id = json.getInt("id");
 				
 				{
 					/*

@@ -123,7 +123,7 @@ public class GenericRealtimeList implements Parcelable {
 				/*
 				 * Found our platform
 				 */
-				if (platformRenderer.platform == data.departurePlatform) {
+				if (platformRenderer.platform.equals(data.departurePlatform)) {
 					// we're in the right platform, keep going until we find the end of it.
 					i++;
 					while (i < size) {
@@ -150,7 +150,7 @@ public class GenericRealtimeList implements Parcelable {
 					items.add(i, new RealtimeRenderer(data));
 					return;
 				}
-				if (platformRenderer.platform > data.departurePlatform) {
+				if (platformRenderer.platform.compareTo(data.departurePlatform) > 0) {
 					/*
 					 * Should insert before this, and include the header
 					 */
