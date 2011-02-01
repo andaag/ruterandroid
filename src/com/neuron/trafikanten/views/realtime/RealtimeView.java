@@ -306,14 +306,11 @@ public class RealtimeView extends GenericRealtimeView {
 
 			@Override
 			public void onData(DeviData deviData) {
-				for (final String deviName : deviData.stops) {
-					if (deviName.equals(station.stopName)) {
-						/*
-						 * Station specific data
-						 */
-						station.devi.add(deviData);
-						break;
-					}
+				if (deviData.stops.contains(station.stationId)) {
+					/*
+					 * Station specific data
+					 */
+					station.devi.add(deviData);
 				}
 
 				/*

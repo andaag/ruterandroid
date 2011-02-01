@@ -164,19 +164,15 @@ public class FavoritesView extends GenericRealtimeView {
 
 			@Override
 			public void onData(DeviData deviData) {
-				Log.i("DEBUG CODE","Parseids length : " + parsedIds.size());
-				for(Integer i : parsedIds) {
-					if (i.intValue() == deviData.id) {
-						Log.d("DEBUG CODE","Skipping id " + deviData.id);
-						return;
-					} else {
-						Log.d("DEBUG CODE","NO MATCH " + deviData.id + " " + i.intValue());
-					}
+				if (parsedIds.contains(deviData.id)) {
+					return;
 				}
-				realtimeList.addData(deviData);
-				Log.d("DEBUG CODE","Parsed id : " + deviData.id);
+				if (!realtimeList.addData(deviData)) {
+					// Force adding station and devi data
+					realtimeList.addData(null, favStation.station);
+					realtimeList.addData(deviData);
+				}
 				parsedIds.add(deviData.id);
-				Log.i("DEBUG CODE","Parseids END function : " + parsedIds.size());
 			}
 
 			@Override

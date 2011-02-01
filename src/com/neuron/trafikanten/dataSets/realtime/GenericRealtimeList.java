@@ -70,17 +70,21 @@ public class GenericRealtimeList implements Parcelable {
 							/*
 							 * This is the same departure as us, merge
 							 */
-							final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) subRenderer;
-							if (realtimeRenderer.data.destination.equals(data.destination) && realtimeRenderer.data.line.equals(data.line)) {
-								realtimeRenderer.data.addDeparture(data.expectedDeparture, data.realtime, data.stopVisitNote);
-								return;
+							if (data != null) {
+								final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) subRenderer;
+								if (realtimeRenderer.data.destination.equals(data.destination) && realtimeRenderer.data.line.equals(data.line)) {
+									realtimeRenderer.data.addDeparture(data.expectedDeparture, data.realtime, data.stopVisitNote);
+									return;
+								}
 							}
 						}
 						i++;
 					}
 					// insert item here!
 					//Log.d("DEBUGTrafikanten", "Inserting data at " + i);
-					items.add(i, new RealtimeRenderer(data));
+					if (data != null) {
+						items.add(i, new RealtimeRenderer(data));
+					}
 					return;
 				}
 				if (stationRenderer.station.stationId > station.stationId) {
@@ -89,7 +93,9 @@ public class GenericRealtimeList implements Parcelable {
 					 */
 					//Log.d("DEBUGTrafikanten", "Inserting data at " + i + " due to station insertion");
 					items.add(i, new StationRenderer(station));
-					items.add(i + 1, new RealtimeRenderer(data));
+					if (data != null) {
+						items.add(i + 1, new RealtimeRenderer(data));
+					}
 					return;
 				}
 			}
@@ -99,7 +105,9 @@ public class GenericRealtimeList implements Parcelable {
 		 */
 		//Log.d("DEBUGTrafikanten", "Appending data at end of list" + size);
 		items.add(size, new StationRenderer(station));
-		items.add(size + 1, new RealtimeRenderer(data));
+		if (data != null) {
+			items.add(size + 1, new RealtimeRenderer(data));
+		}
 	}
 	
 	public void addData(RealtimeData data) {
@@ -172,10 +180,11 @@ public class GenericRealtimeList implements Parcelable {
 	/*
 	 * Add devi data to the tree.
 	 */
-	public void addData(DeviData deviData) {
+	public boolean addData(DeviData deviData) {
 		/*
 		 * Add devi to tree, ignore station devi, that's handled elsewhere.
 		 */
+		boolean addedData = false;
 		for(GenericRealtimeRenderer renderer : items) {
 			switch(renderer.renderType) {
 			case RENDERER_REALTIME:
@@ -184,17 +193,19 @@ public class GenericRealtimeList implements Parcelable {
 				if (deviData.lines.contains(realtimeData.line)) {
 					realtimeData.devi.add(deviData);					
 				}
+				addedData = true;
 				break;
 			case RENDERER_STATION:
 				final StationRenderer stationRenderer = (StationRenderer) renderer;
 				final StationData station = stationRenderer.station;
-				if (deviData.stops.contains(station.stopName)) {
+				if (deviData.stops.contains(station.stationId)) {
 					station.devi.add(deviData);					
 				}
-
+				addedData = true;
 				break;
 			}
 		}
+		return addedData;
 	}
 
 	/**

@@ -122,20 +122,16 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 						deviData.lines.add(jsonLines.getJSONObject(j).getString("lineName"));
 					}
 				}
+				
+				
 				{
-			    	/*
-			    	 * We filter (region) from data so we're forced to do it here as well. It should not be an issue as devi is filtered on line + station already.
-			    	 */
-					final JSONArray jsonStops = json.getJSONArray("stops");
-					final int jsonLinesSize = jsonStops.length();
+					/*
+					 * Grab stops array
+					 */
+					final JSONArray jsonLines = json.getJSONArray("stops");
+					final int jsonLinesSize = jsonLines.length();
 					for (int j = 0; j < jsonLinesSize; j++) {
-						String stopName = jsonStops.getJSONObject(j).getString("stopName");
-						int startAddress = stopName.indexOf('(');
-						if (startAddress > 0) {
-							stopName = stopName.substring(0, startAddress - 1);
-						}
-							
-						deviData.stops.add(stopName);					
+						deviData.stops.add(jsonLines.getJSONObject(j).getInt("stopID"));
 					}
 				}
 				

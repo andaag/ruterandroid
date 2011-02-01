@@ -49,9 +49,10 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		items = new GenericRealtimeList(groupBy);
 	}
 	
-	public void addData(DeviData deviData) {
-		items.addData(deviData);
+	public boolean addData(DeviData deviData) {
+		boolean added = items.addData(deviData);
 		dirty = true;
+		return added;
 	}
 	public void addData(RealtimeData data) {
 		items.addData(data);
