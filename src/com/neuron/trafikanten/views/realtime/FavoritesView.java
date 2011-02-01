@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neuron.trafikanten.R;
@@ -36,6 +38,11 @@ public class FavoritesView extends GenericRealtimeView {
 	 */
 	private ArrayList<Integer> parsedIds = new ArrayList<Integer>();
 	
+	/*
+	 * UI
+	 */
+	private TextView emptyText;
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +52,11 @@ public class FavoritesView extends GenericRealtimeView {
          * Setup view and adapter.
          */
         setContentView(R.layout.favorites);
+        emptyText = (TextView) findViewById(R.id.emptyText);
         favStations = favoriteLineDbAdapter.getFavoriteData();
+        if (favStations.size() == 0) {
+        	emptyText.setVisibility(View.VISIBLE);
+        }
         favStationsDevi = new ArrayList<FavoriteStation>();
         clearView();
         load();
@@ -58,6 +69,7 @@ public class FavoritesView extends GenericRealtimeView {
 			loadDevi();
 			return;
 		}
+    	emptyText.setVisibility(View.GONE);
 		final FavoriteStation favStation = favStations.get(0);
 		favStations.remove(0);
 		

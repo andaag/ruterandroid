@@ -119,6 +119,10 @@ Trykk på et reiseforslag for detaljer!</string>
 da er det tider fra rutetabellen som vises.</string>
 <string name="changeCaTextVisibility">Vis/Skjul "ca" help text</string>
 
+		<!-- Favorites view -->
+		<string name="favoritesEmpty">For å legge til en favoritt, gå inn i sanntid visning og hold nede på en avgang.</string>
+
+
 		<!--  Realtime Clock incorrect -->
 		<string name="clockDiffTitle">Klokken din er feil!</string>
 		<string name="clockDiffDescription">Din lokale klokke er forskjellig fra Trafikanten\'s klokke!</string>

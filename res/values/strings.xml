@@ -124,6 +124,9 @@ Click a travel proposal for a detailed view!</string>
 we fallback to travel planner information.</string>
 		<string name="changeCaTextVisibility">Show/Hide "ca" help text</string>
 		
+		<!-- Favorites view -->
+		<string name="favoritesEmpty">To add a realtime favorite, go to the realtime view and long press on a realtime departure.</string>
+		
 		<!--  Realtime Clock incorrect -->
 		<string name="clockDiffTitle">Local clock incorrect!</string>
 		<string name="clockDiffDescription">The local system clock does not match Trafikanten\'s server time!</string>

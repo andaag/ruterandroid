@@ -14,15 +14,14 @@
         android:layout_above="@+id/caInfoText"
         />
         
-    <!-- <TextView
+    <TextView
     	android:id="@+id/emptyText"
    		android:layout_marginTop="50dip"
-    	android:layout_below="@+id/search"
     	android:layout_width="280dip"
     	android:layout_height="wrap_content"
     	android:layout_centerVertical="true"
     	android:layout_centerHorizontal="true"
     	android:text="@string/favoritesEmpty"
-    	android:visibility="invisible" />  -->
+    	android:visibility="invisible" />
     	
 </RelativeLayout>
