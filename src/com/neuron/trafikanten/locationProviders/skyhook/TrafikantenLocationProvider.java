@@ -27,7 +27,7 @@ public class TrafikantenLocationProvider extends GenericDataProviderThread<Locat
 	private XPS _xps;
 
 	public TrafikantenLocationProvider(Context context, IGenericProviderHandler<LocationData> handler) {
-		super();
+		super(handler);
 		handler.onPreExecute(); // we're running this even when we're not a thread, so we manually trigger onPreExecute
 		_auth = new WPSAuthentication("aagaande", "trafikanten");
 		

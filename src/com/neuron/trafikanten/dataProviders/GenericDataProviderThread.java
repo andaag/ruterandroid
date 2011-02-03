@@ -39,6 +39,10 @@ public abstract class GenericDataProviderThread<T> extends Thread {
 
 	}
 	
+	public GenericDataProviderThread(IGenericProviderHandler<T> handler) {
+		this.handler = handler;
+	}
+	
 	public void start(IGenericProviderHandler<T> handler) {
 		this.handler = handler;
 		handler.onPreExecute();
