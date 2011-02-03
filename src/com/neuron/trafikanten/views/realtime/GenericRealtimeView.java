@@ -114,6 +114,7 @@ public abstract class GenericRealtimeView extends ListActivity {
     	if (deviProvider != null) {
     		deviProvider.kill();
     	}
+    	setProgressBarIndeterminateVisibility(false);
     }
     
     protected void refresh() {

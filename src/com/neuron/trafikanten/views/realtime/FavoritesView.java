@@ -70,13 +70,9 @@ public class FavoritesView extends GenericRealtimeView {
 	protected void onResume() {
 		super.onResume();
 		/*
-		 * If user was in favorites screen. And added something, we should refresh.
+		 * Force refresh always
 		 */
-		int oldFavSize = favStations.size();
-		favStations = favoriteLineDbAdapter.getFavoriteData();
-		if (favStations.size() != oldFavSize) {
-			onOptionsMenuRefresh();
-		}
+		onOptionsMenuRefresh();
 	}
 
 
