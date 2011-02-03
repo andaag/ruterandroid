@@ -57,6 +57,18 @@ public class RealtimeData implements Parcelable {
 		nextDepartures.add(new RealtimeDataNextDeparture(expectedDeparture, realtime, stopVisitNote));
 	}
 	
+	public int _platformNumber = -1;
+	public int getPlatformNumber() {
+		if (_platformNumber == -1) {
+			try {
+				_platformNumber = Integer.parseInt(departurePlatform);
+			} catch (NumberFormatException e) {
+				_platformNumber = 0;
+			}
+		}
+		return _platformNumber;
+	}
+	
 	/*
 	 * Renders all departures, expectedDeparture + nextDepartures
 	 */

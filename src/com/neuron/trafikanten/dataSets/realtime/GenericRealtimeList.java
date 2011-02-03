@@ -158,7 +158,10 @@ public class GenericRealtimeList implements Parcelable {
 					items.add(i, new RealtimeRenderer(data));
 					return;
 				}
-				if (platformRenderer.platform.compareTo(data.departurePlatform) > 0) {
+				/*
+				 * Sorting based on string platform.
+				 */
+				if (platformRenderer.compareTo(data) > 0) {
 					/*
 					 * Should insert before this, and include the header
 					 */
