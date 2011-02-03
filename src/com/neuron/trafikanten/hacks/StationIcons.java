@@ -32,7 +32,7 @@ public class StationIcons {
 		/*
 		 * Parse string lines
 		 */
-		if (line.equals("R01") || line.equals("R20") || line.equals("R21") || line.equals("R22") || line.equals("R25") || line.equals("R41") || line.equals("R50") || line.equals("R51") || line.equals("FT")) {
+		if (line.equals("R01") || line.equals("R04") || line.equals("R20") || line.equals("R21") || line.equals("R22") || line.equals("R25") || line.equals("R41") || line.equals("R50") || line.equals("R51") || line.equals("FT")) {
 			return R.drawable.icon_line_train;
 		}
 		
