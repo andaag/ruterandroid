@@ -86,7 +86,7 @@ public class HelperFunctions {
 	 * Do proper encoding that doesn't add + to the string (with JSON doesn't want)
 	 */
 	public static String properEncode(String query) throws UnsupportedEncodingException {
-		return URLEncoder.encode(query.trim().replaceAll(" ", "%20"), "UTF-8");
+		return URLEncoder.encode(query.trim(), "UTF-8").replace("+", "%20");
 	}
 	
 	/*
