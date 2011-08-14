@@ -168,7 +168,6 @@ public class HelperFunctions {
 				//timeDifference = System.currentTimeMillis() - (System.currentTimeMillis() - timeDifference) - trafikantenTime;
 				timeDifference = System.currentTimeMillis() - responseTime - trafikantenTime;
 				Log.i(TAG,"Timedifference between local clock and trafikanten server : " + timeDifference + "ms (" + (timeDifference / 1000) + "s)");
-	
 			} catch (Exception e) {
 				e.printStackTrace(); // ignore this error, it's not critical.
 			}

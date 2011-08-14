@@ -129,8 +129,11 @@ we fallback to travel planner information.</string>
 		<string name="favoritesEmpty">To add a realtime favorite, go to the realtime view and long press on a realtime departure.</string>
 		
 		<!--  Realtime Clock incorrect -->
-		<string name="clockDiffTitle">Local clock incorrect!</string>
+		<string name="clockDiffTitle">Phone clock incorrect!</string>
+		<string name="clockDiffTitleTimezone">Phone timezone incorrect!</string>
 		<string name="clockDiffDescription">The local system clock does not match Trafikanten\'s server time!</string>
+		<string name="clockDiffDescriptionTimezone">Timezone incorrect!\n\nYour timezone settings are incorrect, and the local clock is set to adjust it!\nThe correct timezone is %1$s while your phone is set to %2$s.</string>
+		<string name="clockDiffDescriptionTimezoneError">The local system clock does not match Trafikanten\'s server time!\nAdditionally your phone can not load default android timezones.</string>
 		<string name="clockDiffBodyHead">The realtime view will show data based on Trafikanten time, but reminders/travel planner data could be wrong!</string>
 		<string name="clockDiffBodyYourClock">Your clock is</string>
 		<string name="clockDiffBodyBehind">behind Trafikanten\'s time.</string>

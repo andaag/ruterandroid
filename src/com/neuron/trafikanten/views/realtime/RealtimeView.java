@@ -19,8 +19,11 @@
 package com.neuron.trafikanten.views.realtime;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -164,6 +167,28 @@ public class RealtimeView extends GenericRealtimeView {
     			deviData.title = (String) getText(R.string.clockDiffTitle);
     			deviData.description = (String) getText(R.string.clockDiffDescription); 
     			deviData.body = (String) getText(R.string.clockDiffBodyHead);
+    			
+    			TimeZone timeZone = TimeZone.getTimeZone("CET");
+    			if (timeZone == null) {
+    				
+    			}
+    			if (timeZone == null) {
+    				timeZone = TimeZone.getTimeZone("Europe/Berlin");
+    			}
+    			
+    			TimeZone phoneTimezone = TimeZone.getDefault();
+    			
+    			if (timeZone == null || !timeZone.equals(phoneTimezone)) {
+					final Resources resources = getResources();
+					deviData.title = (String) getText(R.string.clockDiffTitleTimezone);
+					if (timeZone == null) {
+						deviData.body = String.format(resources.getString(R.string.clockDiffDescriptionTimezoneError));
+					} else {
+						deviData.body = String.format(resources.getString(R.string.clockDiffDescriptionTimezone), timeZone.getID(), phoneTimezone.getID());
+					}
+					
+    			}
+    			
     			if (timeDifference < 0) {
     				deviData.body = deviData.body + "\n\n" + getText(R.string.clockDiffBodyYourClock) + " " +  timeDiff + "s " + getText(R.string.clockDiffBodyBehind);   				
     			} else {
