@@ -16,3 +16,4 @@ fixlangRegion() {
     cp -r res/values-nb res/values-$1-r$2
 }
 fixlangRegion en NO
+fixlangRegion en SE
