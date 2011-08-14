@@ -378,6 +378,21 @@ public class SelectRouteView extends ListActivity {
 		switch(id) {
 		case DIALOG_SELECTTIME:
 			/*
+			 * Load previous info into display.
+			 */
+			Calendar oldTime = null;
+			boolean travelAt = true;
+			if (routeSearch.arrival > 0) {
+				travelAt = false;
+				oldTime = Calendar.getInstance();
+				oldTime.setTimeInMillis(routeSearch.arrival);
+			} else if (routeSearch.departure > 0) {
+				oldTime = Calendar.getInstance();
+				oldTime.setTimeInMillis(routeSearch.departure);
+			}
+			
+			
+			/*
 			 * Create a dialog for selecting travel day and time.
 			 */
 			final Dialog dialog = new Dialog(this);
@@ -394,12 +409,21 @@ public class SelectRouteView extends ListActivity {
 			final ArrayAdapter<CharSequence> travelAtArriveBeforeAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, travelAtArriveBeforeItems);
 			travelAtArriveBeforeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			travelAtArriveBeforeSpinner.setAdapter(travelAtArriveBeforeAdapter);
+			if (!travelAt) {
+				travelAtArriveBeforeSpinner.setSelection(1);
+			}
 			
 			/*
 			 * Setup the time picker
 			 */
 			final TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker);
 			timePicker.setIs24HourView(true);
+			if (oldTime != null) {
+				timePicker.setCurrentHour(oldTime.get(Calendar.HOUR_OF_DAY));
+				timePicker.setCurrentMinute(oldTime.get(Calendar.MINUTE));
+			}
+			
+			
 			
 			/*
 			 * Setup list of days in "Select day to travel" dropdown.
@@ -409,7 +433,11 @@ public class SelectRouteView extends ListActivity {
 			ArrayList<String> dateList = new ArrayList<String>();
 			
 			Calendar date = Calendar.getInstance();
+			int positionOfOldTime = 0;
 			for (int i = 0; i < 14; i++) {
+				if (oldTime != null && date.get(Calendar.DAY_OF_YEAR) == oldTime.get(Calendar.DAY_OF_YEAR)) {
+					positionOfOldTime = i;
+				}
 				dateList.add(DATEFORMAT.format(date.getTime()));
 				date.add(Calendar.DAY_OF_YEAR, 1);
 			}
@@ -417,6 +445,7 @@ public class SelectRouteView extends ListActivity {
 			final ArrayAdapter<String> dayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dateList);
 			dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			dayList.setAdapter(dayAdapter);
+			dayList.setSelection(positionOfOldTime);
 			
 			/*
 			 * Setup button
