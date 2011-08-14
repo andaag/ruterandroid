@@ -26,6 +26,7 @@ import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
@@ -51,6 +52,7 @@ import com.neuron.trafikanten.views.route.SelectRouteView;
 
 public class Trafikanten extends TabActivity {
 	private static Activity activity;
+	public static final String KEY_SELECTEDTAB = "selectedtab";
 	public final static String KEY_MYLOCATION = "myLocation";
 	private GoogleAnalyticsTracker tracker = null;
 	private boolean firstTabChange = true;
@@ -120,6 +122,11 @@ public class Trafikanten extends TabActivity {
 		        	firstTabChange = false;
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(tabHost.getApplicationWindowToken(), 0);
+					
+					SharedPreferences preferences = activity.getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.putInt(KEY_SELECTEDTAB, tabHost.getCurrentTab());
+					editor.commit();
 				}
 		    });
 	 	}
@@ -153,6 +160,12 @@ public class Trafikanten extends TabActivity {
 		    tabHost.addTab(tabHost.newTabSpec("FavoritesTab")
 		 			.setIndicator(getText(R.string.favorites), getResources().getDrawable(R.drawable.ic_list_starred))
 		 			.setContent(new Intent(this, FavoritesView.class)));
+	 	}
+	 	
+	 	{
+	 		// Sticky tabs, load last used.
+			SharedPreferences preferences = activity.getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
+	 		tabHost.setCurrentTab(preferences.getInt(KEY_SELECTEDTAB, 0));
 	 	}
 	 	
 	 	new ShowTipsTask(this, tracker, Trafikanten.class.getName(), R.string.tipFrontscreen, 35);
