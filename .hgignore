@@ -5,3 +5,7 @@ bin/*
 gen/*
 build.sh
 testing/*
+
+res/values-en-rNO
+res/values-no
+res/values-sv
