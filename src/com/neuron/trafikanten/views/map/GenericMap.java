@@ -88,8 +88,7 @@ public class GenericMap extends MapActivity {
 	 */
 	private MapView mapView;
 	
-	@SuppressWarnings("unchecked") // we ignore ArrayList<RouteData/StationData>
-	public static void Show(Activity activity, ArrayList stationList, boolean isRoute, int what) {
+	public static void Show(Activity activity, @SuppressWarnings("rawtypes") ArrayList stationList, boolean isRoute, int what) {
 		Intent intent = new Intent(activity, GenericMap.class);
 		if (isRoute) {
 			intent.putExtra(RouteData.PARCELABLE, stationList);
