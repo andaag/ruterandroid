@@ -424,7 +424,6 @@ public class SelectRouteView extends ListActivity {
 			}
 			
 			
-			
 			/*
 			 * Setup list of days in "Select day to travel" dropdown.
 			 */
@@ -473,7 +472,20 @@ public class SelectRouteView extends ListActivity {
 						// This can't happen.
 					}					
 				}
-				
+			});
+			
+			/*
+			 * Setup reset/now button
+			 */
+			final Button resetButton = (Button) dialog.findViewById(R.id.resetButton);
+			resetButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					routeSearch.departure = 0;
+					routeSearch.arrival = 0;
+					refreshMenu();
+					dialog.dismiss();					
+				}
 			});
 			
 			return dialog;
