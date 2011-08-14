@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.neuron.trafikanten.R;
@@ -40,7 +41,12 @@ public class NotificationIntent extends BroadcastReceiver {
     	final String with = notificationData.with;
     	
     	final String notificationString = with == null ? stopName : with + " " + context.getText(R.string.fromShort) + " " + stopName;
-    	Notification notification = new Notification(R.drawable.icon_line_bus_black, notificationString, departureTime);
+    	
+    	int notificationIcon = R.drawable.icon_line_bus_black;
+    	if (Build.VERSION.SDK_INT >= 9) {
+    		notificationIcon = R.drawable.icon_notify;
+    	}
+    	Notification notification = new Notification(notificationIcon, notificationString, departureTime);
     	//Notification.FLAG_INSISTENT
     	notification.flags |= Notification.FLAG_AUTO_CANCEL;
     	notification.defaults |= Notification.DEFAULT_ALL;

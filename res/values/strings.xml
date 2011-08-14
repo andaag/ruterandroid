@@ -3,12 +3,13 @@
         <!-- Static strings -->
     <string name="app_name">Trafikanten</string>
     <!--  REMEMBER TO UPDATE ANDROIDMANIFEST -->
-    <string name="app_version">2.2</string>
+    <string name="app_version">2.2.1</string>
     
     <!-- Front page -->
     <string name="realtime">Realtime</string>
     <string name="route">Travel planner</string>
     <string name="now">Now</string>
+    <string name="legacyMessage">Your version of android is unfortunatly too old. If you want to continue using Trafikanten\'s mobile application you will need to download "Trafikanten Android 1.5" from market. \n\nThe market page should open when you click ok.</string>
     
     <!-- SelectRoute -->
     <string name="searchForRoutes">Search for travel proposals</string>
@@ -177,4 +178,5 @@ we fallback to travel planner information.</string>
         <string name="tipSelectRoute">* Click menu for more features.\n\n* Use select multiple stations to for example travel from (Oslo S or Oslo S [Tog]) to (Storo or Grefsen [Tog])!</string>
         <string name="tipDetailedRoute">* Press a departure to show realtime data.\n* Longpress a departure to set alarms!\n* Click menu for more features.</string>
         <!-- <string name="tipDetailedRouteRealtime">The information in brackets is departure platform.</string>  -->
+        
 </resources>

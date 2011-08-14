@@ -27,7 +27,10 @@ import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Window;
@@ -49,12 +52,43 @@ import com.neuron.trafikanten.views.route.SelectRouteView;
 public class Trafikanten extends TabActivity {
 	private static Activity activity;
 	public final static String KEY_MYLOCATION = "myLocation";
-	private GoogleAnalyticsTracker tracker;
+	private GoogleAnalyticsTracker tracker = null;
 	private boolean firstTabChange = true;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		/*
+		 * Check too old android version
+		 *  - We need to parse Build.Version.SDK because SDK_INT isn't available in early android versions
+		 */
+		if (Integer.parseInt(Build.VERSION.SDK) <= 3) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.legacyMessage)
+			       .setCancelable(false)
+			       .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.neuron.trafikantenlegacy"));
+			        	   startActivity(intent);
+			        	   finish();
+			        	   return;
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
+			alert.setOnDismissListener(new OnDismissListener() {
+
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					finish();
+					return;
+				}
+				
+			});
+			return;
+		}
+		
         /*
          * Google analytics
          */
@@ -243,6 +277,8 @@ public class Trafikanten extends TabActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		//Stop the tracker when it is no longer needed.
-		tracker.stop();
+		if (tracker != null) {
+			tracker.stop();
+		}
 	}
 }

@@ -4,6 +4,7 @@
     <string name="realtime">Sanntid</string>
     <string name="route">Reise</string>
     <string name="now">Nå</string>
+<string name="legacyMessage">Din versjon av android er for gammel. Hvis du ønsker å fortsette å bruke Trafikanten for android må du laste ned "Trafikanten Android 1.5" i android market. \n\nAndroid market vil åpne seg når du trykker ok.</string>
     
     <!-- SelectRoute -->
     <string name="searchForRoutes">Søk etter reiseforslag</string>
