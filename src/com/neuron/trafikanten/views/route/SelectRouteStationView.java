@@ -50,16 +50,16 @@ public class SelectRouteStationView extends GenericSelectStationView {
 		isRealtimeSelector = false;
         super.onCreate(savedInstanceState);
 
-		if (savedInstanceState != null) {
+		/*if (savedInstanceState != null) {
 			/*
 			 * Not saving instance state for this view, just confusing to switch into a station selector for the route view.
-			 */
+			 *
 			favoriteDbAdapter.close();
 			historyDbAdapter.close();
 			setResult(RESULT_CANCELED);
 			finish();
 			return;
-		}
+		}*/
 		
 		multiSelectButton = (Button) findViewById(R.id.multiSelectButton);
 		multiSelectButton.setOnClickListener(new OnClickListener() {
