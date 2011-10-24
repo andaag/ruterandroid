@@ -24,7 +24,6 @@ import com.neuron.trafikanten.dataSets.realtime.renderers.PlatformRenderer;
 import com.neuron.trafikanten.dataSets.realtime.renderers.RealtimeRenderer;
 import com.neuron.trafikanten.dataSets.realtime.renderers.StationRenderer;
 import com.neuron.trafikanten.hacks.StationIcons;
-import com.neuron.trafikanten.tasks.ShowRealtimeLineDetails;
 import com.neuron.trafikanten.views.GenericDeviCreator;
 
 /*
@@ -138,9 +137,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		tableLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
 				convertView.showContextMenu();
-				//new ShowRealtimeLineDetails(parent, System.currentTimeMillis() - parent.timeDifference, realtimeRenderer.data);
 			}
 		});
 		tableLayout.setLongClickable(true);
