@@ -104,7 +104,7 @@ public class SelectRouteStationView extends GenericSelectStationView {
 		});
 		multiSelectButton.setVisibility(View.VISIBLE);
 		
-		new ShowTipsTask(this, tracker, SelectRouteStationView.class.getName(), R.string.tipSelectRoute, 35);
+		new ShowTipsTask(this, SelectRouteStationView.class.getName(), R.string.tipSelectRoute, 35);
 	}
 	
 	private void refreshMultiSelect() {

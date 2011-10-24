@@ -26,22 +26,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
@@ -87,7 +87,6 @@ public class OverviewRouteView extends ListActivity {
 	 * UI
 	 */
 	private TextView infoText;
-	private GoogleAnalyticsTracker tracker;
 	
 	public static void ShowRoute(Activity activity, RouteSearchData routeSearch) {
 		Intent intent = new Intent(activity, OverviewRouteView.class);
@@ -103,9 +102,7 @@ public class OverviewRouteView extends ListActivity {
         /*
          * Analytics
          */
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-3", this);
-		tracker.trackPageView("/overviewRouteView");
+        AnalyticsUtils.getInstance(this).trackPageView("/overviewRouteView");
 		
 		/*
 		 * Setup the view
@@ -142,14 +139,7 @@ public class OverviewRouteView extends ListActivity {
     	routeList.getList().clear();
     	routeList.notifyDataSetChanged();
     	
-		tracker.trackEvent("Data", "Route", "Data", 0);
-		
-		/*
-		 * Send dispatch along with request, as they take time anyway.
-		 */
-		try {
-			tracker.dispatch();
-		} catch (Exception e) {}
+		AnalyticsUtils.getInstance(this).trackEvent("Data", "Route", "Data", 0);
 		
     	routeProvider = new TrafikantenRoute(this, routeSearch, new IGenericProviderHandler<RouteProposal>() {
     		@Override
@@ -262,10 +252,10 @@ public class OverviewRouteView extends ListActivity {
 		case NOTIFY_ID:
 			final RouteData notifyRouteData = routeList.getItem(selectedId).travelStageList.get(0);
 			final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
-			new NotificationTask(this, tracker, routeList.getList(), selectedId, deviList, notifyRouteData.departure, notifyWith);
+			new NotificationTask(this, routeList.getList(), selectedId, deviList, notifyRouteData.departure, notifyWith);
 			return true;
 		case DEVI_ID:
-			new SelectDeviTask(this, tracker, routeList.getDevi(info.position, false));
+			new SelectDeviTask(this, routeList.getDevi(info.position, false));
 			return true;
 		case MAP_ID:
 			GenericMap.Show(this, routeList.getList().get(selectedId).travelStageList, true, 0);
@@ -295,13 +285,6 @@ public class OverviewRouteView extends ListActivity {
 		outState.putParcelable(RouteSearchData.PARCELABLE, routeSearch);
 		outState.putParcelableArrayList(OverviewRouteAdapter.KEY_ROUTELIST, routeList.getList());
 		outState.putParcelable(RouteDeviData.PARCELABLE, deviList);
-	}
-	 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		//Stop the tracker when it is no longer needed.
-		tracker.stop();
 	}
 }
 

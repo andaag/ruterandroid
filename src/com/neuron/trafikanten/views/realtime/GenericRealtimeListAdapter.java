@@ -14,7 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
@@ -37,14 +36,12 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 	public GenericRealtimeList items;
 	private boolean dirty = false;
 	
-	private GoogleAnalyticsTracker tracker;
 	private Activity activity;
 	
-	public GenericRealtimeListAdapter(GenericRealtimeView parent, Activity activity, GoogleAnalyticsTracker tracker, int groupBy) {
+	public GenericRealtimeListAdapter(GenericRealtimeView parent, Activity activity, int groupBy) {
 		super();
 		this.parent = parent;
 		inflater = LayoutInflater.from(parent);
-		this.tracker = tracker;
 		this.activity = activity;
 		items = new GenericRealtimeList(groupBy);
 	}
@@ -141,7 +138,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		tableLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new ShowRealtimeLineDetails(parent, parent.tracker, System.currentTimeMillis() - parent.timeDifference, realtimeRenderer.data);
+				new ShowRealtimeLineDetails(parent, System.currentTimeMillis() - parent.timeDifference, realtimeRenderer.data);
 			}
 		});
 		tableLayout.setLongClickable(true);
@@ -248,7 +245,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		if (station.devi.size() > 0) {
 			holder.devi.setVisibility(View.VISIBLE);
     		for (final DeviData deviData : station.devi) {
-				holder.devi.addView(GenericDeviCreator.createDefaultDeviText(activity, tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+				holder.devi.addView(GenericDeviCreator.createDefaultDeviText(activity, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
     		}
 		} else {
 			holder.devi.setVisibility(View.GONE);
@@ -282,7 +279,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				/*
 				 * Add all devi items.
 				 */
-				holder.departureInfo.addView(GenericDeviCreator.createDefaultDeviText(parent, parent.tracker, devi.title, devi, false), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+				holder.departureInfo.addView(GenericDeviCreator.createDefaultDeviText(parent, devi.title, devi, false), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 			}
 		} else {
 			holder.departureInfo.setVisibility(View.GONE);

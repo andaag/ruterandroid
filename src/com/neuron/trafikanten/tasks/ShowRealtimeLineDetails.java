@@ -2,13 +2,11 @@ package com.neuron.trafikanten.tasks;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.RealtimeData;
@@ -20,13 +18,11 @@ public class ShowRealtimeLineDetails implements GenericTask {
     private RealtimeData data;
     private Dialog dialog;
     private long currentTime;
-    private GoogleAnalyticsTracker tracker;
     
-    public ShowRealtimeLineDetails(Activity activity, GoogleAnalyticsTracker tracker, long currentTime, RealtimeData data) 
+    public ShowRealtimeLineDetails(Activity activity, long currentTime, RealtimeData data) 
     {
         this.activity = activity;
-        this.tracker = tracker;
-        tracker.trackPageView("/task/showRealtimeLineDetails");
+        AnalyticsUtils.getInstance(activity).trackPageView("/task/showRealtimeLineDetails");
         this.data = data;
         this.currentTime = currentTime;
         showDialog();
@@ -68,12 +64,6 @@ public class ShowRealtimeLineDetails implements GenericTask {
 			renderDeparture(body, departure.expectedDeparture, departure.realtime, departure.stopVisitNote);
 		}
 		
-        dialog.setOnDismissListener(new OnDismissListener() {
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				tracker.stop();				
-			}	
-        });		
 		dialog.show();
     }
 

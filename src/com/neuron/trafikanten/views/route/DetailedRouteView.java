@@ -27,17 +27,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,9 +46,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
@@ -66,7 +66,6 @@ import com.neuron.trafikanten.views.map.GenericMap;
 public class DetailedRouteView extends ListActivity {
 	private final static String TAG = "Trafikanten-DetailedRouteView";
 	private RouteAdapter routeList;
-	public GoogleAnalyticsTracker tracker;
 	private RouteDeviLoader routeDeviLoader;
 	
 	/*
@@ -123,9 +122,7 @@ public class DetailedRouteView extends ListActivity {
         /*
          * Analytics
          */
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-3", this);
-		tracker.trackPageView("/detailedRouteView");
+		AnalyticsUtils.getInstance(this).trackPageView("/detailedRouteView");
 		/*
 		 * Setup the view
 		 */
@@ -170,7 +167,7 @@ public class DetailedRouteView extends ListActivity {
 		registerForContextMenu(getListView());
 		loadDevi();
 		
-		new ShowTipsTask(this, tracker, DetailedRouteView.class.getName(), R.string.tipDetailedRoute, 44);
+		new ShowTipsTask(this, DetailedRouteView.class.getName(), R.string.tipDetailedRoute, 44);
 	}
 	
 	/*
@@ -367,7 +364,7 @@ public class DetailedRouteView extends ListActivity {
 	private void loadRealtimeData(RouteData routeData) {
 		if (routeData.canRealtime()) {
 			if (routeRealtimeLoader == null) {
-				routeRealtimeLoader = new RouteRealtimeLoader(tracker, this, routeList);
+				routeRealtimeLoader = new RouteRealtimeLoader(this, routeList);
 			}
 			routeRealtimeLoader.load(routeData.fromStation, routeData);
 		}
@@ -399,7 +396,7 @@ public class DetailedRouteView extends ListActivity {
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
 			final String notifyWith = routeData.line.equals(routeData.destination) ? routeData.line : routeData.line + " " + routeData.destination;
-			new NotificationTask(this, tracker, routeProposalList, proposalPosition, deviList, routeData.departure, notifyWith);
+			new NotificationTask(this, routeProposalList, proposalPosition, deviList, routeData.departure, notifyWith);
 			return true;
 		case REALTIME_ID:
 			loadRealtimeData(routeData);
@@ -422,15 +419,12 @@ public class DetailedRouteView extends ListActivity {
 			routeDeviLoader = null;
 		}
 		super.onDestroy();
-		//Stop the tracker when it is no longer needed.
-		tracker.stop();
 	}
 }
 
 class RouteRealtimeLoader {
 	private static final String TAG = "Trafikanten-RouteRealtimeLoader";
 	private TrafikantenRealtime realtimeProvider = null;
-	public GoogleAnalyticsTracker tracker;
 	private Activity activity;
 	private RouteAdapter routeList;
 	
@@ -438,8 +432,7 @@ class RouteRealtimeLoader {
 	private String searchDestination;
 	
 	
-	public RouteRealtimeLoader(GoogleAnalyticsTracker tracker, Activity activity, RouteAdapter routeList) {
-		this.tracker = tracker;
+	public RouteRealtimeLoader(Activity activity, RouteAdapter routeList) {
 		this.activity = activity;
 		this.routeList = routeList;
 		
@@ -459,7 +452,7 @@ class RouteRealtimeLoader {
 			searchDestination = routeData.destination;
 		}
 		
-		tracker.trackEvent("Data", "Realtime", "Data", 0);
+		AnalyticsUtils.getInstance(activity).trackEvent("Data", "Realtime", "Data", 0);
 		realtimeProvider = new TrafikantenRealtime(activity, station.stationId);
 		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
 			@Override
@@ -669,7 +662,7 @@ class RouteAdapter extends BaseAdapter {
 			 * We have devi, add them all to the devi list.
 			 */
 			for (DeviData deviData : deviList) {
-				holder.devi.addView(GenericDeviCreator.createDefaultDeviText(parent, parent.tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));				
+				holder.devi.addView(GenericDeviCreator.createDefaultDeviText(parent, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));				
 			}
 		}
 		

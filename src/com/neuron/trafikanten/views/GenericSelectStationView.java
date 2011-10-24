@@ -50,7 +50,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
@@ -113,15 +113,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 * Other
 	 */
 	private EditText searchEdit;
-	public GoogleAnalyticsTracker tracker;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-3", this);
-		//tracker.trackPageView("/search"); // this is pointless, as it's on the home screen.
 		
         /*
          * Setup view
@@ -247,7 +243,7 @@ public abstract class GenericSelectStationView extends ListActivity {
     		if (searchProvider != null)
     			searchProvider.kill();
     		searchProvider = new TrafikantenSearch(this, searchEdit.getText().toString(), isRealtimeSelector, searchHandler);
-    		tracker.trackEvent("Data", "StationSearch", "String", 0);
+    		AnalyticsUtils.getInstance(this).trackEvent("Data", "StationSearch", "String", 0);
     		infoText.setVisibility(View.GONE);
     		infoText.setText(getInfoHelpText());
     	}
@@ -365,11 +361,11 @@ public abstract class GenericSelectStationView extends ListActivity {
         	searchAddressTask();
         	break;
         case FAVORITES_ID:
-        	tracker.trackEvent("Navigation", "Home", "Favorites", 0);
+        	AnalyticsUtils.getInstance(this).trackEvent("Navigation", "Home", "Favorites", 0);
         	resetView();
         	break;
         case HELP_ID:
-        	new ShowHelpTask(this, tracker);
+        	new ShowHelpTask(this);
         	break;
         default:
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());
@@ -384,7 +380,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private void selectContact() {
 		if (searchProvider != null)
 			searchProvider.kill();
-		activeTask = new SelectContactTask(this, tracker, getReturnCoordinatesHandler());
+		activeTask = new SelectContactTask(this, getReturnCoordinatesHandler());
 	}
 	
 	
@@ -418,7 +414,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	        			searchProvider.kill();
 	        		final boolean filterRealtime = getViewType() == TYPE_REALTIME;
 	        		searchProvider = new TrafikantenSearch(GenericSelectStationView.this, latitude, longitude, filterRealtime, searchHandler);
-	        		tracker.trackEvent("Data", "StationSearch", "Location", 0);
+	        		AnalyticsUtils.getInstance(GenericSelectStationView.this).trackEvent("Data", "StationSearch", "Location", 0);
 	        }
 	
 	        @Override
@@ -434,7 +430,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	public void findMyLocationTask() {
 		if (searchProvider != null)
 			searchProvider.kill();
-		activeTask = new LocationTask(this, tracker, getReturnCoordinatesHandler());
+		activeTask = new LocationTask(this, getReturnCoordinatesHandler());
 	}
 	
 	/*
@@ -443,7 +439,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private void searchAddressTask() {
 		if (searchProvider != null)
 			searchProvider.kill();
-		activeTask = new SearchAddressTask(this, tracker, getReturnCoordinatesHandler());
+		activeTask = new SearchAddressTask(this, getReturnCoordinatesHandler());
 	}
 	
 	/*
@@ -593,13 +589,6 @@ public abstract class GenericSelectStationView extends ListActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putParcelableArrayList(StationListAdapter.KEY_SEARCHSTATIONLIST, stationListAdapter.getList());
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		//Stop the tracker when it is no longer needed.
-		tracker.stop();
 	}
 }
 

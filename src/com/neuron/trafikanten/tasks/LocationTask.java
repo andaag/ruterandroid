@@ -24,13 +24,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Handler;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.LocationData;
@@ -42,7 +42,6 @@ import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
  */
 public class LocationTask implements GenericTask {
 	private TrafikantenLocationProvider locationProvider;
-	private GoogleAnalyticsTracker tracker;
 	private Activity activity;
 	private ReturnCoordinatesHandler handler;
 	private TextView message;
@@ -62,11 +61,10 @@ public class LocationTask implements GenericTask {
     private long showContinueAfterMs = 20000;
 	
 	
-    public LocationTask(Activity activity, GoogleAnalyticsTracker tracker, ReturnCoordinatesHandler handler)
+    public LocationTask(Activity activity, ReturnCoordinatesHandler handler)
     {
             this.activity = activity;
-            this.tracker = tracker;
-            tracker.trackPageView("/task/location");
+            AnalyticsUtils.getInstance(activity).trackPageView("/task/location");
             this.handler = handler;
             showDialog();
     }
@@ -119,7 +117,7 @@ public class LocationTask implements GenericTask {
         			/*
         			 * Return instant location ok only if accuracy is enough, and it's not a cached gps location (accuracy 0.0 meters)
         			 */
-        			tracker.trackEvent("Task", "FoundLocation", null, (int)data.accuracy);
+        			AnalyticsUtils.getInstance(activity).trackEvent("Task", "FoundLocation", null, (int)data.accuracy);
         			returnLocation();
         			dialog.dismiss();
         		}
@@ -146,7 +144,6 @@ public class LocationTask implements GenericTask {
 			public void onCancel(DialogInterface dialog) {
 				locationProvider.kill();
 				handler.onCanceled();	
-				tracker.stop();
 			}
 		});
 		
@@ -156,7 +153,6 @@ public class LocationTask implements GenericTask {
     private void returnLocation() 
     {
     	locationProvider.kill();
-    	tracker.stop();
 		if (latitude == 0) {
 			Toast.makeText(activity, R.string.noLocationFoundError, Toast.LENGTH_SHORT).show();
 			return;
@@ -166,7 +162,7 @@ public class LocationTask implements GenericTask {
     
 	@Override
 	public void stop() {
-		tracker.trackEvent("Task", "FoundLocation", null, -1);
+		AnalyticsUtils.getInstance(activity).trackEvent("Task", "FoundLocation", null, -1);
 		locationProvider.kill();
 		handler.onCanceled();
 		dialog.dismiss();

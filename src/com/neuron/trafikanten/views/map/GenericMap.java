@@ -34,16 +34,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.AnalyticsUtils;
 import com.google.android.FixedMyLocationOverlay;
 import com.google.android.TransparentPanel;
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -62,7 +62,6 @@ public class GenericMap extends MapActivity {
 	private MyLocationOverlay locationOverlay;
 	private static GenericStationOverlay stationOverlay;
 	private static ViewHolder viewHolder = new ViewHolder();
-	private GoogleAnalyticsTracker tracker;
 	private FavoriteDbAdapter favoriteDbAdapter = null;
 	private Drawable iconMapMarker = null;
 	
@@ -106,9 +105,7 @@ public class GenericMap extends MapActivity {
 		favoriteDbAdapter = new FavoriteDbAdapter(this);
 		iconMapMarker = getResources().getDrawable(R.drawable.icon_mapmarker);
 		
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-3", this);
-		tracker.trackPageView("/map");
+		AnalyticsUtils.getInstance(this).trackPageView("/map");
 		
 		/*
 		 * Setup map view
@@ -255,7 +252,7 @@ public class GenericMap extends MapActivity {
 		/*
 		 * We have a tour id, lets get our list.
 		 */
-		tracker.trackPageView("/map/showTrip");
+		AnalyticsUtils.getInstance(this).trackPageView("/map/showTrip");
 		tripProvider = new TrafikantenTrip(this, routeData.tourID, routeData.fromStation.stationId, routeData.toStation.stationId, new IGenericProviderHandler<StationData>() {
 			@Override
 			public void onData(StationData data) {
@@ -397,14 +394,6 @@ public class GenericMap extends MapActivity {
 			tripProvider.kill();
 		}
 		super.onStop();
-	}
-
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		//Stop the tracker when it is no longer needed.
-		tracker.stop();
 	}
 	
 	static class ViewHolder {

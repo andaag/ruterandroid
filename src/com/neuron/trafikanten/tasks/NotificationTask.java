@@ -10,13 +10,11 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.widget.TimePicker;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.dataSets.NotificationData;
 import com.neuron.trafikanten.dataSets.RealtimeData;
 import com.neuron.trafikanten.dataSets.RouteDeviData;
@@ -29,24 +27,22 @@ public class NotificationTask implements GenericTask {
 	private static int notificationCode = 0;
     private Activity activity;
     private Dialog dialog;
-    private GoogleAnalyticsTracker tracker;
     
-    public void init(Activity activity, GoogleAnalyticsTracker tracker) 
+    public void init(Activity activity) 
     {
         this.activity = activity;
-        this.tracker = tracker;
-        tracker.trackPageView("/task/notification");
+        AnalyticsUtils.getInstance(activity).trackPageView("/task/notification");
     }
     
-	public NotificationTask(Activity activity, GoogleAnalyticsTracker tracker, RealtimeData realtimeData, StationData station, String with, long timeDifference) {
-		init(activity, tracker);
-		tracker.trackEvent("Notification", "Realtime", null, 0);
+	public NotificationTask(Activity activity, RealtimeData realtimeData, StationData station, String with, long timeDifference) {
+		init(activity);
+		AnalyticsUtils.getInstance(activity).trackEvent("Notification", "Realtime", null, 0);
 		showDialog(realtimeData.expectedDeparture + timeDifference, new NotificationData(station, realtimeData, 0, with));
 	}
 	
-	public NotificationTask(Activity activity, GoogleAnalyticsTracker tracker, ArrayList<RouteProposal> routeProposalList, int proposalPosition, RouteDeviData deviList, long departure, String with) {
-		init(activity, tracker);
-		tracker.trackEvent("Notification", "Route", null, 0);
+	public NotificationTask(Activity activity, ArrayList<RouteProposal> routeProposalList, int proposalPosition, RouteDeviData deviList, long departure, String with) {
+		init(activity);
+		AnalyticsUtils.getInstance(activity).trackEvent("Notification", "Route", null, 0);
 		showDialog(departure, new NotificationData(routeProposalList, proposalPosition, deviList, departure, 0, with));
 	}
 	
@@ -80,13 +76,7 @@ public class NotificationTask implements GenericTask {
 			}
     		
     	}, 0, 10, true);
-    	
-        dialog.setOnDismissListener(new OnDismissListener() {
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				tracker.stop();				
-			}	
-        });		
+    		
 		dialog.show();
     }
 

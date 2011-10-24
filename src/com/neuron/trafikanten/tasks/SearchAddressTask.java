@@ -15,13 +15,13 @@ import android.location.Geocoder;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnKeyListener;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
@@ -32,14 +32,12 @@ public class SearchAddressTask implements GenericTask {
 	private List<Address> addresses;
 	ReturnCoordinatesHandler handler;
 	private Dialog dialog; 
-	private GoogleAnalyticsTracker tracker;
 	    
 	
-	public SearchAddressTask(Activity activity, GoogleAnalyticsTracker tracker, ReturnCoordinatesHandler handler) 
+	public SearchAddressTask(Activity activity, ReturnCoordinatesHandler handler) 
 	{
 		this.activity = activity;
-		this.tracker = tracker;
-		tracker.trackPageView("/task/searchAddress");
+		AnalyticsUtils.getInstance(activity).trackPageView("/task/searchAddress");
 		this.handler = handler;
 		showAddressField();
 	}
@@ -145,7 +143,6 @@ public class SearchAddressTask implements GenericTask {
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				handler.onCanceled();
-				tracker.stop();
 			}
 		});
 		dialog.show();
@@ -181,8 +178,6 @@ public class SearchAddressTask implements GenericTask {
 	
 	private void foundLocation(Address location) {
 		handler.onFinished(location.getLatitude(), location.getLongitude());
-		tracker.stop();				
-
 	}
 
 	@Override

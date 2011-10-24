@@ -26,10 +26,10 @@ import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,7 +39,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.dataSets.StationData;
 import com.neuron.trafikanten.db.FavoriteDbAdapter;
 import com.neuron.trafikanten.db.HistoryDbAdapter;
@@ -54,8 +54,6 @@ public class Trafikanten extends TabActivity {
 	private static Activity activity;
 	public static final String KEY_SELECTEDTAB = "selectedtab";
 	public final static String KEY_MYLOCATION = "myLocation";
-	private GoogleAnalyticsTracker tracker = null;
-	private boolean firstTabChange = true;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +92,7 @@ public class Trafikanten extends TabActivity {
         /*
          * Google analytics
          */
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-3", this);
-        tracker.trackPageView("/home");
+		AnalyticsUtils.getInstance(this).trackPageView("/home");
 		
 		Trafikanten.activity = this;
 	 	setTitle("Trafikanten - " + getText(R.string.app_version));
@@ -116,10 +112,6 @@ public class Trafikanten extends TabActivity {
 	 		 */
             tabHost.setOnTabChangedListener(new OnTabChangeListener() {
 		        public void onTabChanged(String tabId) {
-		        	if (!firstTabChange) {
-		        		tracker.trackEvent("Navigation", "Home", "TabChange:"+tabId, 0);
-		        	}
-		        	firstTabChange = false;
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(tabHost.getApplicationWindowToken(), 0);
 					
@@ -168,7 +160,7 @@ public class Trafikanten extends TabActivity {
 	 		tabHost.setCurrentTab(preferences.getInt(KEY_SELECTEDTAB, 0));
 	 	}
 	 	
-	 	new ShowTipsTask(this, tracker, Trafikanten.class.getName(), R.string.tipFrontscreen, 35);
+	 	new ShowTipsTask(this, Trafikanten.class.getName(), R.string.tipFrontscreen, 35);
 	}
 	
 	private boolean isShortcut() {
@@ -177,7 +169,7 @@ public class Trafikanten extends TabActivity {
         if (!Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
         	return false;        	
         }
-        tracker.trackPageView("/createShortcut");
+        AnalyticsUtils.getInstance(this).trackPageView("/createShortcut");
         
         /*
          * Todo show list of shortcuts to create.
@@ -284,14 +276,5 @@ public class Trafikanten extends TabActivity {
 	public static void tabHostSetProgressBarIndeterminateVisibility(boolean value)
 	{
 		activity.setProgressBarIndeterminateVisibility(value);
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		//Stop the tracker when it is no longer needed.
-		if (tracker != null) {
-			tracker.stop();
-		}
 	}
 }

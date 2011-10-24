@@ -16,7 +16,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenDevi;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenRealtime;
@@ -61,11 +61,6 @@ public abstract class GenericRealtimeView extends ListActivity {
 	public long timeDifference = 0; // This is the time desync between system clock and trafikanten servers.
 	protected long lastUpdate;
 	
-	/*
-	 * Other
-	 */
-    public GoogleAnalyticsTracker tracker;
-	
 	/** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState, String viewName, int groupBy) {
         super.onCreate(savedInstanceState);
@@ -74,11 +69,9 @@ public abstract class GenericRealtimeView extends ListActivity {
         /*
          * Analytics
          */
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.start("UA-16690738-3", this);
-		tracker.trackPageView(viewName);
+        AnalyticsUtils.getInstance(this).trackPageView(viewName);
 		favoriteLineDbAdapter = new FavoriteLineDbAdapter(this);
-		realtimeList = new GenericRealtimeListAdapter(this, this, tracker, groupBy);
+		realtimeList = new GenericRealtimeListAdapter(this, this, groupBy);
 		
 		if (savedInstanceState != null) {
 			timeDifference = savedInstanceState.getLong(KEY_TIMEDIFFERENCE);
@@ -180,14 +173,6 @@ public abstract class GenericRealtimeView extends ListActivity {
 		super.onStop();
 	}
 	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		//Stop the tracker when it is no longer needed.
-		tracker.stop();
-	}
-	
-	
 	/**
 	 * Options menu code
 	 */
@@ -264,11 +249,11 @@ public abstract class GenericRealtimeView extends ListActivity {
 				final String notifyWith = realtimeData.line.equals(realtimeData.destination) 
 					? realtimeData.line 
 					: realtimeData.line + " " + realtimeData.destination;
-				new NotificationTask(this, tracker, realtimeData, station, notifyWith, timeDifference);
+				new NotificationTask(this, realtimeData, station, notifyWith, timeDifference);
 				return true;
 			case DEVI_ID:
 				final ArrayList<DeviData> deviPopup = realtimeData.devi;
-				new SelectDeviTask(this, tracker, deviPopup);
+				new SelectDeviTask(this, deviPopup);
 				return true;
 			case FAVORITE_ID:
 				favoriteLineDbAdapter.toggleFavorite(station, realtimeData.line, realtimeData.destination);

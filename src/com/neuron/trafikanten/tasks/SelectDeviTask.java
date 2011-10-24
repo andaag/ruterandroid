@@ -24,9 +24,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.dataSets.DeviData;
 
 /*
@@ -36,15 +35,13 @@ import com.neuron.trafikanten.dataSets.DeviData;
 public class SelectDeviTask implements GenericTask {
     //private static final String TAG = "Trafikanten-SelectDeviTask";
     private Activity activity;
-    private GoogleAnalyticsTracker tracker;
     private ArrayList<DeviData> devi;
     private Dialog dialog;
     
-    public SelectDeviTask(Activity activity, GoogleAnalyticsTracker tracker, ArrayList<DeviData> devi) 
+    public SelectDeviTask(Activity activity, ArrayList<DeviData> devi) 
     {
         this.activity = activity;
-        this.tracker = tracker;
-        tracker.trackPageView("/task/selectDevi");
+        AnalyticsUtils.getInstance(activity).trackPageView("/task/selectDevi");
         this.devi = devi;
         showDialog();
     }
@@ -78,13 +75,6 @@ public class SelectDeviTask implements GenericTask {
         
         dialog = builder.create();
         
-        dialog.setOnDismissListener(new OnDismissListener() {
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				tracker.stop();				
-			}	
-        });
-        
         /*
          * Show dialog
          */
@@ -92,7 +82,7 @@ public class SelectDeviTask implements GenericTask {
     }
     
     private void deviSelected(DeviData deviData) {
-    	new ShowDeviTask(activity, tracker, deviData);
+    	new ShowDeviTask(activity, deviData);
     }
 
 	@Override

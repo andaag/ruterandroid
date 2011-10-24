@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.tasks.ShowDeviTask;
@@ -29,7 +28,7 @@ public class GenericDeviCreator {
     /*
      * Function for creating the default devi text, used both for line data and station data
      */
-    public static TextView createDefaultDeviText(final Activity activity, final GoogleAnalyticsTracker tracker , final String title, final DeviData deviData, boolean station) {
+    public static TextView createDefaultDeviText(final Activity activity, final String title, final DeviData deviData, boolean station) {
     	Typeface departuresTypeface = getDeviTypeface(activity);
     	TextView deviText = new TextView(activity);
 		deviText.setText(title);
@@ -49,7 +48,7 @@ public class GenericDeviCreator {
 		deviText.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-		    	new ShowDeviTask(activity, tracker, deviData);
+		    	new ShowDeviTask(activity, deviData);
 								
 			}
         });

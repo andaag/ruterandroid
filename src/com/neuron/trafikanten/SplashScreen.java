@@ -14,7 +14,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.hacks.GoogleAnalyticsCleanup;
 
 
@@ -56,12 +56,10 @@ public class SplashScreen extends Activity {
 	         }, SPLASH_DISPLAY_LENGHT); 
 	         
 	         
-         	GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
-    		tracker.start("UA-16690738-3", this);
 			try {
 	         	PackageInfo packageInfo = getPackageManager().getPackageInfo("com.neuron.trafikanten", PackageManager.GET_META_DATA);
 				//tracker.trackEvent("Version", "Application", URLEncoder.encode(packageInfo.versionName,"UTF-8"), packageInfo.versionCode);
-	         	tracker.trackEvent("Version", "Application", URLEncoder.encode((String) getText(R.string.app_version),"UTF-8"), packageInfo.versionCode);
+	         	AnalyticsUtils.getInstance(this).trackEvent("Version", "Application", URLEncoder.encode((String) getText(R.string.app_version),"UTF-8"), packageInfo.versionCode);
 			} catch (NameNotFoundException e) {
          	} catch (UnsupportedEncodingException e) {}
          	
@@ -77,10 +75,7 @@ public class SplashScreen extends Activity {
                 	Log.e("Trafikanten-SplashScreen","Deleted " + deleted + " invalid google analyics database entries");
 					try {
 						int packageVersion = getPackageManager().getPackageInfo("com.neuron.trafikanten", PackageManager.GET_META_DATA).versionCode;
-	            		tracker.trackEvent("Error", "GoogleAnalytics", "Version:" + packageVersion, deleted);
-	            		try {
-	            			tracker.dispatch();
-	            		} catch (Exception e) {}
+	            		AnalyticsUtils.getInstance(this).trackEvent("Error", "GoogleAnalytics", "Version:" + packageVersion, deleted);
 					} catch (NameNotFoundException e) {}
                 }
 

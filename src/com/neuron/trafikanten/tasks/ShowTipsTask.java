@@ -20,36 +20,31 @@ package com.neuron.trafikanten.tasks;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.R;
 
 public class ShowTipsTask implements GenericTask {
 	private final static String PREF_TIPSHOWN = "tipshown-";
     private Activity activity;
-    private GoogleAnalyticsTracker tracker;
     private Dialog dialog;
     private SharedPreferences preferences;
-    
     private String tipClassName;
     private int tipMessage;
     private int tipLastUpdated;
     
     
-    public ShowTipsTask(Activity activity, GoogleAnalyticsTracker tracker, String tipClassName, int tipMessage, int tipLastUpdated) 
+    public ShowTipsTask(Activity activity, String tipClassName, int tipMessage, int tipLastUpdated) 
     {
         this.activity = activity;
-        this.tracker = tracker;
         this.tipClassName = tipClassName;
         this.tipMessage = tipMessage;
         this.tipLastUpdated = tipLastUpdated;
@@ -60,7 +55,7 @@ public class ShowTipsTask implements GenericTask {
          */
         
         if (shouldShow()) {
-            tracker.trackPageView("/task/showTips");
+        	AnalyticsUtils.getInstance(activity).trackPageView("/task/showTips");
         	showDialog();
         	updateLastShown();
         }
@@ -125,17 +120,7 @@ public class ShowTipsTask implements GenericTask {
 			public void onClick(View v) {
 				dialog.dismiss();
 			}
-    		
     	});
-    	
-
-        dialog.setOnDismissListener(new OnDismissListener() {
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				tracker.stop();
-			}
-        	
-        });
         
         /*
          * Show dialog

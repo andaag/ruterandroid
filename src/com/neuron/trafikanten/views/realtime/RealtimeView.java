@@ -33,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
@@ -119,7 +120,7 @@ public class RealtimeView extends GenericRealtimeView {
         refreshDevi();
         registerForContextMenu(getListView());
         
-        new ShowTipsTask(this, tracker, RealtimeView.class.getName(), R.string.tipRealtime, 38);
+        new ShowTipsTask(this, RealtimeView.class.getName(), R.string.tipRealtime, 38);
     }
     
     /*
@@ -197,11 +198,11 @@ public class RealtimeView extends GenericRealtimeView {
     			deviData.validFrom = 0;
     			deviData.validTo = 0;
     			
-    			devi.addView(GenericDeviCreator.createDefaultDeviText(this, tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+    			devi.addView(GenericDeviCreator.createDefaultDeviText(this, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
     		}
     		
     		for (final DeviData deviData : station.devi) {
-				devi.addView(GenericDeviCreator.createDefaultDeviText(this, tracker, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+				devi.addView(GenericDeviCreator.createDefaultDeviText(this, deviData.title, deviData, true), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
     		}
   		
     	}
@@ -225,7 +226,7 @@ public class RealtimeView extends GenericRealtimeView {
 
 		caVisibilityChecked = settings.getBoolean(RealtimeView.SETTING_HIDECA, false); // if hideca = true we skip the visibility check
 		
-		tracker.trackEvent("Data", "Realtime", "Data", 0);
+		AnalyticsUtils.getInstance(this).trackEvent("Data", "Realtime", "Data", 0);
 		final TrafikantenRealtime realtimeProvider = createRealtimeProvider(this, station.stationId);
 		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
 			@Override
@@ -314,13 +315,7 @@ public class RealtimeView extends GenericRealtimeView {
 	    	}
     	}
     	
-    	tracker.trackEvent("Data", "Realtime", "Devi", 0);
-		/*
-		 * Send dispatch along with devi data request.
-		 */
-		try {
-			tracker.dispatch();
-		} catch (Exception e) {}
+    	AnalyticsUtils.getInstance(this).trackEvent("Data", "Realtime", "Devi", 0);
 		
     	deviProvider = new TrafikantenDevi(this, station.stationId, deviLines.toString(), new IGenericProviderHandler<DeviData>() {
     		@Override
@@ -414,7 +409,7 @@ public class RealtimeView extends GenericRealtimeView {
 	
 	@Override
 	public void onOptionsMenuRefresh() {
-    	tracker.trackEvent("Navigation", "Realtime", "Refresh", 0);
+		AnalyticsUtils.getInstance(this).trackEvent("Navigation", "Realtime", "Refresh", 0);
     	load();
 	}
 

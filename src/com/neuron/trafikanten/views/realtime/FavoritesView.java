@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenDevi;
@@ -88,8 +89,8 @@ public class FavoritesView extends GenericRealtimeView {
 		favStations.remove(0);
 		
 		//final long STARTTIME = System.currentTimeMillis();
+		AnalyticsUtils.getInstance(this).trackEvent("Data", "Favorites", "Data", 0);
 		
-		tracker.trackEvent("Data", "Favorites", "Data", 0);
 		final TrafikantenRealtime realtimeProvider = createRealtimeProvider(this, favStation.station.stationId);
 		realtimeProvider.start(new IGenericProviderHandler<RealtimeData>() {
 			@Override
@@ -174,13 +175,7 @@ public class FavoritesView extends GenericRealtimeView {
 	    	}
     	}
     	
-    	tracker.trackEvent("Data", "Favorites", "Devi", 0);
-		/*
-		 * Send dispatch along with devi data request.
-		 */
-		try {
-			tracker.dispatch();
-		} catch (Exception e) {}
+    	AnalyticsUtils.getInstance(this).trackEvent("Data", "Favorites", "Devi", 0);
 		
     	deviProvider = new TrafikantenDevi(this, favStation.station.stationId, deviLines.toString(), new IGenericProviderHandler<DeviData>() {
     		@Override
@@ -234,7 +229,7 @@ public class FavoritesView extends GenericRealtimeView {
     	stopProviders();
 		clearView();
 		parsedIds.clear();
-    	tracker.trackEvent("Navigation", "Favorites", "Refresh", 0);
+    	AnalyticsUtils.getInstance(this).trackEvent("Navigation", "Favorites", "Refresh", 0);
         favStations = favoriteLineDbAdapter.getFavoriteData();
         favStationsDevi = new ArrayList<FavoriteStation>();
     	load();
