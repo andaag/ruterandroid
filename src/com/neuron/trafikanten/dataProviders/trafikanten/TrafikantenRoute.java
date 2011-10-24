@@ -192,7 +192,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
              */
             travelStage.departure = HelperFunctions.jsonToDate(json.getString("DepartureTime"));
             travelStage.arrival = HelperFunctions.jsonToDate(json.getString("ArrivalTime"));
-            travelStage.line = json.getString("LineName");
+            travelStage.line = json.getString("LineID");
             travelStage.destination = json.getString("Destination");
             travelStage.tourID = json.getInt("TourID");
             
