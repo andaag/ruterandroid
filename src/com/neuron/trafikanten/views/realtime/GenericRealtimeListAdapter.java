@@ -133,12 +133,14 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 	 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
 	 * TODO : Check if this workaround is still needed, HACK
 	 */
-	public void tableLayoutOnclickHack(View convertView, final RealtimeRenderer realtimeRenderer) {
+	public void tableLayoutOnclickHack(final View convertView, final RealtimeRenderer realtimeRenderer) {
 		final TableLayout tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout);
 		tableLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new ShowRealtimeLineDetails(parent, System.currentTimeMillis() - parent.timeDifference, realtimeRenderer.data);
+				
+				convertView.showContextMenu();
+				//new ShowRealtimeLineDetails(parent, System.currentTimeMillis() - parent.timeDifference, realtimeRenderer.data);
 			}
 		});
 		tableLayout.setLongClickable(true);
