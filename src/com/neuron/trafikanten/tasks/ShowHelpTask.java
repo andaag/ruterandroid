@@ -44,17 +44,29 @@ public class ShowHelpTask implements GenericTask {
     private Activity activity;
     private Dialog dialog;
     
-    private ClickableSpan sendMailSpan = new ClickableSpan() {
+    private ClickableSpan sendCodeboxMailSpan = new ClickableSpan() {
 		@Override
 		public void onClick(View widget) {
 			final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND); 
 			emailIntent.setType("plain/text"); 
-			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"aagaande@gmail.com"}); 
+			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"anders@codebox.no"}); 
+			emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trafikanten android"); 
+			activity.startActivity(emailIntent);
+		}
+    };
+    
+    private ClickableSpan sendTrafikantenMailSpan = new ClickableSpan() {
+		@Override
+		public void onClick(View widget) {
+			final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND); 
+			emailIntent.setType("plain/text"); 
+			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"qa@trafikanten.no"}); 
 			emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trafikanten android"); 
 			activity.startActivity(emailIntent);
 		}
     	
     };
+    
     
     public ShowHelpTask(Activity activity) 
     {
@@ -75,20 +87,27 @@ public class ShowHelpTask implements GenericTask {
 		dialog.setTitle("Hjelp");
 		dialog.setContentView(R.layout.dialog_progress);
 		
-		SpannableStringBuilder builder = new SpannableStringBuilder("Trafikanten for android er utviklet av Anders Aagaard i samarbeid med ");
-		addTextSpan(builder, "www.trafikanten.no", new URLSpan("http://www.trafikanten.no/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		SpannableStringBuilder builder = new SpannableStringBuilder("Trafikanten for android er utviklet av ");
+		addTextSpan(builder, "codebox.no", new URLSpan("http://www.codebox.no/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		builder.append(" i samarbeid med ");
+		addTextSpan(builder, "trafikanten", new URLSpan("http://www.trafikanten.no/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		builder.append(".\n\n");
 		
-		builder.append("Jeg tar gjerne tilbakemeldinger på ");
-		addTextSpan(builder, "mail", sendMailSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		builder.append("Tilbakemeldinger på app'en sendes til på mail til ");
+		addTextSpan(builder, "codebox.no", sendCodeboxMailSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		
 		builder.append(" eller via ");
-		addTextSpan(builder, "hjemmesiden", new URLSpan("http://code.google.com/p/trafikanten/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-		builder.append(". Alle feilmeldinger/tilbakemeldinger skal gå til meg, ikke til Trafikanten.\n\n");
+		addTextSpan(builder, "hjemmesiden", new URLSpan("http://www.codebox.no/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		builder.append(".\n\n");
 		
-		/*builder.append(" Du kan ringe trafikanten direkte på ");
-		addTextSpan(builder, "177", new URLSpan("tel:177"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-		builder.append(" for å få øyeblikkelig ruteinformasjon.\n\n");*/
+		builder.append("Feil i rutetider/avvik eller sanntiddata sendes direkte til ");
+		addTextSpan(builder, "trafikanten", sendTrafikantenMailSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		builder.append(".\n\n");
+		
+		builder.append("Trafikanten på android er GPL lisensiert, og hele kildekoden kan lastes ned på ");
+		addTextSpan(builder, "google code", new URLSpan("http://code.google.com/p/trafikanten/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		builder.append(".\n\n");
+
 		
 		
 		
@@ -103,7 +122,7 @@ public class ShowHelpTask implements GenericTask {
 		
 		
 		builder.append("Din båndbreddebruk: " + new DecimalFormat("0.##").format(downloadMb) + "MB. \n");
-		builder.append("Eksempel på hva dette har kostet deg:\n");
+		builder.append("Eksempel på hva dette kan ha kostet deg:\n");
 		builder.append(" - for 1kr/MB : " + new DecimalFormat("0.##").format(pris) + " kr.\n");
 		builder.append(" - for 20kr (!) /MB : " + new DecimalFormat("0.##").format(prisLarge) + " kr.\n");
 		builder.append("Priser pr mb varierer på mobil leverandør. For prisinformasjon på mobilleverandører se ");
