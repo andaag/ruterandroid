@@ -48,13 +48,13 @@ public class RouteDeviLoader {
 			 * if tourId = 0 we're walking, no devi for that ;)
 			 */
 			if (routeData.tourID > 0) {
-				deviKey = deviList.getDeviKey(routeData.fromStation.stationId, routeData.line);
+				deviKey = deviList.getDeviKey(routeData.fromStation.stationId, routeData.lineId);
 				/*
 				 * if the deviList contains the key we've already asked.
 				 */
 				if (!deviList.items.containsKey(deviKey)) {
 					Log.i(TAG,"Loading route devi " + deviKey);
-					loadDevi(routeData, routeData.fromStation.stationId, routeData.line);
+					loadDevi(routeData, routeData.fromStation.stationId, routeData.lineId);
 					return true;
 				} /* else {
 					Log.i(TAG,"Found " + deviKey + " in cache");
@@ -65,8 +65,8 @@ public class RouteDeviLoader {
 		return false;
 	}
 	
-	private void loadDevi(final RouteData routeData, int stationId, String line) {
-		deviProvider = new TrafikantenDevi(context, stationId, line, new IGenericProviderHandler<DeviData>() {
+	private void loadDevi(final RouteData routeData, int stationId, int lineId) {
+		deviProvider = new TrafikantenDevi(context, stationId, new Integer(lineId).toString(), new IGenericProviderHandler<DeviData>() {
 			private ArrayList<DeviData> list = new ArrayList<DeviData>();
 
     		@Override

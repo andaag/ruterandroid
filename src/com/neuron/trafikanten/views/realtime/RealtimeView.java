@@ -288,15 +288,15 @@ public class RealtimeView extends GenericRealtimeView {
     	/*
     	 * Create list of lines - first create lineList
     	 */
-    	ArrayList<String> lineList = new ArrayList<String>();
+    	ArrayList<Integer> lineList = new ArrayList<Integer>();
     	{
     		
 	    	final int count = realtimeList.getCount();
 	    	for (int i = 0; i < count; i++) {
 	    		final RealtimeData realtimeData = realtimeList.getRealtimeItem(i);
 	    		if (realtimeData != null) {
-		    		if (!lineList.contains(realtimeData.line)) {
-		    			lineList.add(realtimeData.line);
+		    		if (!lineList.contains(realtimeData.lineId)) {
+		    			lineList.add(realtimeData.lineId);
 		    		}
 	    		}
 	    	}

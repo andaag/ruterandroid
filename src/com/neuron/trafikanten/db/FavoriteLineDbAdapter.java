@@ -115,7 +115,8 @@ public class FavoriteLineDbAdapter {
     /*
      * Check if station is favorite
      */
-	public boolean isFavorite(StationData station, String line, String destination) {
+	public boolean isFavorite(StationData station, int lineId, String destination) {
+		final String line = new Integer(lineId).toString();
 		String query = KEY_STATIONID + " = ? " +
 				" AND " + KEY_LINE + " = ? " +
 				" AND " + KEY_DESTINATION + " = ?";
@@ -130,8 +131,9 @@ public class FavoriteLineDbAdapter {
 	/*
 	 * Toggle favorite status
 	 */
-	public void toggleFavorite(StationData station, String line, String destination) {
-		if (isFavorite(station, line, destination)) {
+	public void toggleFavorite(StationData station, int lineId, String destination) {
+		final String line = new Integer(lineId).toString();
+		if (isFavorite(station, lineId, destination)) {
 			String query = KEY_STATIONID + " = ? " +
 				" AND " + KEY_LINE + " = ? " +
 				" AND " + KEY_DESTINATION + " = ?";
@@ -169,7 +171,20 @@ public class FavoriteLineDbAdapter {
 			/*
 			 * Load destination and line
 			 */
-			final FavoriteData data = new FavoriteData(cursor.getString(3), cursor.getString(2));
+			// This is done because of old database structure, lineid used to be a string.
+			String lineName = cursor.getString(3);
+			FavoriteData data = null;
+			try {
+				int lineId = Integer.parseInt(lineName);
+				if (lineId > 0) {
+					data = new FavoriteData(lineId, cursor.getString(2));
+				}
+			} catch (NumberFormatException  e) {}
+			
+			if (data == null) {
+				//TODO : cleanup old entry in database
+				continue;
+			}
 			
 			/*
 			 * Find previous station in items
@@ -207,14 +222,14 @@ public class FavoriteLineDbAdapter {
 	}
 	
 	public static class FavoriteData {
-		public String line;
+		public int lineId;
 		public String destination;
 		public FavoriteData(RealtimeData data) {
-			line = data.line;
+			lineId = data.lineId;
 			destination = data.destination;
 		}
-		public FavoriteData(String line, String destination) {
-			this.line = line;
+		public FavoriteData(int lineId, String destination) {
+			this.lineId = lineId;
 			this.destination = destination;
 		}
 	}

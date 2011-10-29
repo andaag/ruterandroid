@@ -259,13 +259,13 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		 */
 		holder.departures.setText(data.renderDepartures(System.currentTimeMillis() - parent.timeDifference, parent));
 		holder.destination.setText(data.destination);
-		if (data.destination.equals(data.line)) {
+		if (data.destination.equals(data.lineName)) {
 			holder.line.setText("-");
 		} else {
-			holder.line.setText(data.line);
+			holder.line.setText(data.lineName);
 		}
 		
-		holder.icon.setImageResource(StationIcons.hackGetLineIcon(data.line));
+		holder.icon.setImageResource(StationIcons.hackGetLineIcon(data.lineName));
 		
 		/*
 		 * Setup devi

@@ -29,7 +29,8 @@ import com.neuron.trafikanten.R;
 
 public class RealtimeData implements Parcelable {
 	public final static String PARCELABLE = "RealtimeData";
-	public String line;
+	public String lineName;
+	public int lineId;
 	public String destination;
 	public boolean inCongestion;
 	public boolean realtime;
@@ -107,7 +108,8 @@ public class RealtimeData implements Parcelable {
 	 * Function for reading the parcel
 	 */
 	public RealtimeData(Parcel in) {
-		line = in.readString();
+		lineName = in.readString();
+		lineId = in.readInt();
 		destination = in.readString();
 		inCongestion = in.readInt() != 0;
 		realtime = in.readInt() != 0;
@@ -129,7 +131,8 @@ public class RealtimeData implements Parcelable {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeString(line);
+		out.writeString(lineName);
+		out.writeInt(lineId);
 		out.writeString(destination);
 		out.writeInt(inCongestion ? 1 : 0);
 		out.writeInt(realtime ? 1 : 0);

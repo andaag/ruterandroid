@@ -38,7 +38,8 @@ public class RouteData implements Parcelable {
 	public StationData toStation;
 	public long arrival;
 	
-	public String line;
+	public String lineName;
+	public int lineId;
 	public String destination; // line destination = end station
 	public int tourID;
 	public String extra;
@@ -71,7 +72,8 @@ public class RouteData implements Parcelable {
 		toStation = in.readParcelable(StationData.class.getClassLoader());
 		arrival = in.readLong();
 		
-		line = in.readString();
+		lineName = in.readString();
+		lineId = in.readInt();
 		destination = in.readString();
 		tourID = in.readInt();
 		extra = in.readString();
@@ -95,7 +97,8 @@ public class RouteData implements Parcelable {
 		out.writeParcelable(toStation, 0);
 		out.writeLong(arrival);
 		
-		out.writeString(line);
+		out.writeString(lineName);
+		out.writeInt(lineId);
 		out.writeString(destination);
 		out.writeInt(tourID);
 		out.writeString(extra);

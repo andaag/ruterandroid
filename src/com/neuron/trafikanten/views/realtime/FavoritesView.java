@@ -105,10 +105,10 @@ public class FavoritesView extends GenericRealtimeView {
 			
 			@Override
 			public void onData(RealtimeData realtimeData) {
-				final String line = realtimeData.line;
+				final int lineId = realtimeData.lineId;
 				final String destination = realtimeData.destination;
 				for (FavoriteData favoriteData : favStation.items) {
-					if (favoriteData.destination.equals(destination) && favoriteData.line.equals(line)) {
+					if (favoriteData.lineId == lineId && favoriteData.destination.equals(destination)) {
 						realtimeList.addData(realtimeData, favStation.station);
 						break;
 					}
@@ -171,7 +171,7 @@ public class FavoritesView extends GenericRealtimeView {
 	    		if (i > 0) {
 	    			deviLines.append(",");
 	    		}
-	    		deviLines.append(favStation.items.get(i).line);
+	    		deviLines.append(favStation.items.get(i).lineId);
 	    	}
     	}
     	

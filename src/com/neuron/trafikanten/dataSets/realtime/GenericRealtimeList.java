@@ -72,7 +72,7 @@ public class GenericRealtimeList implements Parcelable {
 							 */
 							if (data != null) {
 								final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) subRenderer;
-								if (realtimeRenderer.data.destination.equals(data.destination) && realtimeRenderer.data.line.equals(data.line)) {
+								if (realtimeRenderer.data.lineId == data.lineId && realtimeRenderer.data.destination.equals(data.destination)) {
 									realtimeRenderer.data.addDeparture(data.expectedDeparture, data.realtime, data.stopVisitNote);
 									return;
 								}
@@ -146,7 +146,7 @@ public class GenericRealtimeList implements Parcelable {
 							 * This is the same departure as us, merge
 							 */
 							final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) subRenderer;
-							if (realtimeRenderer.data.destination.equals(data.destination) && realtimeRenderer.data.line.equals(data.line)) {
+							if (realtimeRenderer.data.lineId == data.lineId && realtimeRenderer.data.destination.equals(data.destination)) {
 								realtimeRenderer.data.addDeparture(data.expectedDeparture, data.realtime, data.stopVisitNote);
 								return;
 							}
@@ -193,7 +193,7 @@ public class GenericRealtimeList implements Parcelable {
 			case RENDERER_REALTIME:
 				final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) renderer;
 				final RealtimeData realtimeData = realtimeRenderer.data;
-				if (deviData.lines.contains(realtimeData.line)) {
+				if (deviData.lines.contains(realtimeData.lineId)) {
 					realtimeData.devi.add(deviData);					
 				}
 				addedData = true;

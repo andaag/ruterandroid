@@ -395,7 +395,7 @@ public class DetailedRouteView extends ListActivity {
 		
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
-			final String notifyWith = routeData.line.equals(routeData.destination) ? routeData.line : routeData.line + " " + routeData.destination;
+			final String notifyWith = routeData.lineName.equals(routeData.destination) ? routeData.lineName : routeData.lineName + " " + routeData.destination;
 			new NotificationTask(this, routeProposalList, proposalPosition, deviList, routeData.departure, notifyWith);
 			return true;
 		case REALTIME_ID:
@@ -428,7 +428,7 @@ class RouteRealtimeLoader {
 	private Activity activity;
 	private RouteAdapter routeList;
 	
-	private String searchLine;
+	private int searchLine;
 	private String searchDestination;
 	
 	
@@ -444,7 +444,7 @@ class RouteRealtimeLoader {
 		/*
 		 * Filter out [T-bane] and such
 		 */
-		searchLine = routeData.line;
+		searchLine = routeData.lineId;
 		int bracket = routeData.destination.indexOf('[');
 		if (bracket > 0) {
 			searchDestination = routeData.destination.subSequence(0, bracket - 1).toString();
@@ -467,7 +467,7 @@ class RouteRealtimeLoader {
 			@Override
 			public void onData(RealtimeData item) {
 				//Log.i("DEBUG CODE","Comparing '" + item.line + "' == '" + searchLine + "' and '" + item.destination + "' == '" + searchDestination + "'");
-				if (item.destination.equals(searchDestination) && item.line.equals(searchLine)) {
+				if (item.lineId == searchLine && item.destination.equals(searchDestination)) {
 					if (routeData.realtimeData == null) {
 						routeData.realtimeData = item;
 						routeList.notifyDataSetChanged();
@@ -595,7 +595,7 @@ class RouteAdapter extends BaseAdapter {
 			holder.transportDestination.setText(routeData.destination);
 			holder.line.setVisibility(View.VISIBLE);
 		}
-		holder.line.setText(routeData.line);
+		holder.line.setText(routeData.lineName);
 				
 		holder.from.setText(routeData.fromStation.stopName);
 		holder.fromTime.setText(HelperFunctions.hourFormater.format(routeData.departure));
@@ -654,7 +654,7 @@ class RouteAdapter extends BaseAdapter {
 		/*
 		 * Setup devi
 		 */
-		final String deviKey = parent.deviList.getDeviKey(routeData.fromStation.stationId, routeData.line);
+		final String deviKey = parent.deviList.getDeviKey(routeData.fromStation.stationId, routeData.lineId);
 		final ArrayList<DeviData> deviList = parent.deviList.items.get(deviKey);
 		holder.devi.removeAllViews();
 		if (deviList != null) {

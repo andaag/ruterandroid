@@ -71,7 +71,8 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				final JSONObject json = jsonArray.getJSONObject(i);
 				
 				RealtimeData realtimeData = new RealtimeData();
-				realtimeData.line = json.getString("PublishedLineName");
+				realtimeData.lineName = json.getString("PublishedLineName");
+				realtimeData.lineId = json.getInt("LineRef");
 				realtimeData.destination = json.getString("DestinationName");
 				realtimeData.realtime = json.getBoolean("Monitored");
 				realtimeData.expectedDeparture = HelperFunctions.jsonToDate(json.getString("ExpectedDepartureTime"));

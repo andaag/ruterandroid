@@ -251,7 +251,7 @@ public class OverviewRouteView extends ListActivity {
 		switch(item.getItemId()) {
 		case NOTIFY_ID:
 			final RouteData notifyRouteData = routeList.getItem(selectedId).travelStageList.get(0);
-			final String notifyWith = notifyRouteData.line.equals(notifyRouteData.destination) ? notifyRouteData.line : notifyRouteData.line + " " + notifyRouteData.destination;
+			final String notifyWith = notifyRouteData.lineName.equals(notifyRouteData.destination) ? notifyRouteData.lineName : notifyRouteData.lineName + " " + notifyRouteData.destination;
 			new NotificationTask(this, routeList.getList(), selectedId, deviList, notifyRouteData.departure, notifyWith);
 			return true;
 		case DEVI_ID:
@@ -324,7 +324,7 @@ class OverviewRouteAdapter extends BaseAdapter {
 			 * TODO, come up with a better way of id'ing the different values, using a string for this is dumb.
 			 *  - this is also in routeDeviLoader
 			 */
-			final String deviKey = parent.deviList.getDeviKey(routeData.fromStation.stationId, routeData.line);
+			final String deviKey = parent.deviList.getDeviKey(routeData.fromStation.stationId, routeData.lineId);
 			ArrayList<DeviData> deviList = parent.deviList.items.get(deviKey);
 			if (deviList != null) {
 				for(DeviData devi : deviList) {
@@ -396,8 +396,8 @@ class OverviewRouteAdapter extends BaseAdapter {
 					final ImageView icon = (ImageView) layout.findViewById(R.id.icon);
 
 					icon.setImageResource(symbolImage);
-					if (routeData.line.length() > 0) {
-						line.setText(routeData.line);
+					if (routeData.lineName.length() > 0) {
+						line.setText(routeData.lineName);
 						line.setVisibility(View.VISIBLE);
 					} else {
 						line.setVisibility(View.GONE);

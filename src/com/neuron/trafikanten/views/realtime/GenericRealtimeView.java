@@ -226,7 +226,7 @@ public abstract class GenericRealtimeView extends ListActivity {
 		if (realtimeData.devi.size() > 0)
 			menu.add(0, DEVI_ID, 0, R.string.warnings);
 		menu.add(0, NOTIFY_ID, 0, R.string.alarm);		
-		if (favoriteLineDbAdapter.isFavorite(station, realtimeData.line, realtimeData.destination)) {
+		if (favoriteLineDbAdapter.isFavorite(station, realtimeData.lineId, realtimeData.destination)) {
 			menu.add(0, FAVORITE_ID, 0, R.string.removeFavorite);
 		} else {
 			menu.add(0, FAVORITE_ID, 0, R.string.addFavorite);
@@ -246,9 +246,9 @@ public abstract class GenericRealtimeView extends ListActivity {
 		if (realtimeData != null && station != null) {
 			switch(item.getItemId()) {
 			case NOTIFY_ID:
-				final String notifyWith = realtimeData.line.equals(realtimeData.destination) 
-					? realtimeData.line 
-					: realtimeData.line + " " + realtimeData.destination;
+				final String notifyWith = realtimeData.lineName.equals(realtimeData.destination) 
+					? realtimeData.lineName 
+					: realtimeData.lineName + " " + realtimeData.destination;
 				new NotificationTask(this, realtimeData, station, notifyWith, timeDifference);
 				return true;
 			case DEVI_ID:
@@ -256,7 +256,7 @@ public abstract class GenericRealtimeView extends ListActivity {
 				new SelectDeviTask(this, deviPopup);
 				return true;
 			case FAVORITE_ID:
-				favoriteLineDbAdapter.toggleFavorite(station, realtimeData.line, realtimeData.destination);
+				favoriteLineDbAdapter.toggleFavorite(station, realtimeData.lineId, realtimeData.destination);
 				return true;
 			}
 		}

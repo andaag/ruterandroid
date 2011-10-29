@@ -27,6 +27,7 @@ package com.neuron.trafikanten.dataProviders.trafikanten;
 
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.apache.http.client.methods.HttpGet;
@@ -46,6 +47,8 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 	private Context context;
 	private final int stationId;
 	private final String lines;
+	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
+
 	
 	public TrafikantenDevi(Context context, int stationId, String lines, IGenericProviderHandler<DeviData> handler) {
 		super();
@@ -58,13 +61,15 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
     @Override
 	public void run() {
 		try {
-			String urlString = "http://devi.trafikanten.no/devirest.svc/json/linenames/";
+			//String urlString = "http://devi.trafikanten.no/devirest.svc/json/linenames/";
+			String urlString = "http://devi.trafikanten.no/devirest.svc/json/lineids/";
 			if (lines.length() > 0) {
 				urlString = urlString + URLEncoder.encode(lines,"UTF-8");
 			} else {
 				urlString = urlString + "null";
 			}
 			urlString = urlString + "/stopids/" + stationId + "/";
+			urlString = urlString + "from/" + dateFormater.format(System.currentTimeMillis()) + "/to/2030-12-31";
 			Log.i(TAG,"Loading devi data : " + urlString);
 			
 			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString), false).stream;
@@ -119,7 +124,7 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 					final JSONArray jsonLines = json.getJSONArray("lines");
 					final int jsonLinesSize = jsonLines.length();
 					for (int j = 0; j < jsonLinesSize; j++) {
-						deviData.lines.add(jsonLines.getJSONObject(j).getString("lineName"));
+						deviData.lines.add(jsonLines.getJSONObject(j).getInt("lineID"));
 					}
 				}
 				
