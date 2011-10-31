@@ -93,7 +93,7 @@ public class ShowHelpTask implements GenericTask {
 		addTextSpan(builder, "trafikanten", new URLSpan("http://www.trafikanten.no/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		builder.append(".\n\n");
 		
-		builder.append("Tilbakemeldinger på app'en sendes til på mail til ");
+		builder.append("Tilbakemeldinger på appen sendes på mail til ");
 		addTextSpan(builder, "codebox.no", sendCodeboxMailSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		
 		builder.append(" eller via ");
