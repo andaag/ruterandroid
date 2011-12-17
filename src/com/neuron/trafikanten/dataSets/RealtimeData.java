@@ -32,7 +32,7 @@ public class RealtimeData implements Parcelable {
 	public String lineName;
 	public int lineId;
 	public String destination;
-	public boolean inCongestion;
+	public boolean inCongestion = false;
 	public boolean realtime;
 	public String departurePlatform;
 	public String stopVisitNote;
