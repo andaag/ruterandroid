@@ -94,7 +94,7 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 			        	 * This data starts more than 3 hours into the future, hide it.
 			        	 */
 			        	continue;
-			        }					
+			        }
 				}
 				{
 					/*
@@ -105,7 +105,16 @@ public class TrafikantenDevi extends GenericDataProviderThread<DeviData> {
 			        	continue;
 			        }
 				}
-	
+				{
+					/*
+					 * Check validto, and see if this should be visible yet.
+					 */
+					final long validToDate = HelperFunctions.jsonToDate(json.getString("validTo"));
+			        if (System.currentTimeMillis() > validToDate) {
+			        	continue;
+			        }
+				}
+				
 
 				/*
 				 * Grab the easy data
