@@ -129,7 +129,7 @@ da er det tider fra rutetabellen som vises.</string>
 		<string name="clockDiffTitleTimezone">Feil tidssone instillinger!</string>
 		<string name="clockDiffDescription">Din lokale klokke er forskjellig fra Trafikanten\'s klokke!</string>
 		<string name="clockDiffDescriptionTimezone">Feil tidszone!\nTelefonen sin tidssone instillinger feil, og den lokale klokken er satt til å justere for feilen! Telefonens tidssone skal være %1$s, men på din telefon er den satt til %2$s</string>
-		<string name="clockDiffDescriptionTimezoneError">Din lokale klokke er forskjellig fra Trafikanten\'s klokke! Og telefonen klarer ikke laste standard tidssone informasjon!</string>
+		<string name="clockDiffDescriptionTimezoneError">Din lokale klokke er forskjellig fra Trafikanten\'s klokke! Og telefonen klarer ikke laste standard tidssone informasjon! Din telefon\'s tidssone er satt til %1$s</string>
 		<string name="clockDiffBodyHead">Sanntid visning vil vise data basert på Trafikanten\'s klokke, men påminnelser/reise data kan vise feil!</string>
 		<string name="clockDiffBodyYourClock">Klokken din er</string>
 		<string name="clockDiffBodyBehind">bak Trafikanten\'s tid.</string>

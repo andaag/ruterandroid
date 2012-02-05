@@ -170,10 +170,13 @@ public class RealtimeView extends GenericRealtimeView {
     			
     			TimeZone timeZone = TimeZone.getTimeZone("CET");
     			if (timeZone == null) {
-    				
+    				timeZone = TimeZone.getTimeZone("Europe/Oslo");
     			}
     			if (timeZone == null) {
     				timeZone = TimeZone.getTimeZone("Europe/Berlin");
+    			}
+    			if (timeZone == null) {
+    				timeZone = TimeZone.getTimeZone("Europe/Amsterdam");
     			}
     			
     			TimeZone phoneTimezone = TimeZone.getDefault();
@@ -182,7 +185,7 @@ public class RealtimeView extends GenericRealtimeView {
 					final Resources resources = getResources();
 					deviData.title = (String) getText(R.string.clockDiffTitleTimezone);
 					if (timeZone == null) {
-						deviData.body = String.format(resources.getString(R.string.clockDiffDescriptionTimezoneError));
+						deviData.body = String.format(resources.getString(R.string.clockDiffDescriptionTimezoneError), phoneTimezone.getID());
 					} else {
 						deviData.body = String.format(resources.getString(R.string.clockDiffDescriptionTimezone), timeZone.getID(), phoneTimezone.getID());
 					}
