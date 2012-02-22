@@ -83,6 +83,15 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				} catch (org.json.JSONException e) {
 					// can happen when incongestion is empty string.
 				}
+				if (json.has("VehicleFeatureRef")) {
+					realtimeData.lowFloor = json.getString("VehicleFeatureRef").equals("lowFloor");
+				}
+				
+				try {
+					realtimeData.numberOfBlockParts = json.getJSONArray("TrainBlockPart").getJSONObject(0).getInt("NumberOfBlockParts");
+				} catch (org.json.JSONException e) {
+					// missing either trainblockpart or numberofblockparts
+				}
 				
 				ThreadHandlePostData(realtimeData);
 			}

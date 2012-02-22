@@ -39,6 +39,10 @@ public class RealtimeData implements Parcelable {
 	
 	public long expectedDeparture;
 	
+	public boolean lowFloor = false; // kun trikk
+	public int numberOfBlockParts = 0; // kun t-bane (3 = kort tog, 6 = langt tog).
+	
+	
 	/*
 	 * Data set of coming departures
 	 */
@@ -123,6 +127,9 @@ public class RealtimeData implements Parcelable {
 		
 		devi = new ArrayList<DeviData>();
 		in.readList(devi, DeviData.class.getClassLoader());
+		
+		lowFloor = in.readInt() != 0;
+		numberOfBlockParts = in.readInt();
 	}
 	
 	/*
@@ -143,6 +150,9 @@ public class RealtimeData implements Parcelable {
 		
 		out.writeList(nextDepartures);
 		out.writeList(devi);
+		
+		out.writeInt(lowFloor ? 1 : 0);
+		out.writeInt(numberOfBlockParts);
 	}
 	
 	/*
