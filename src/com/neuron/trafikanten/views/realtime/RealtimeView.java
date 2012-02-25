@@ -141,7 +141,27 @@ public class RealtimeView extends GenericRealtimeView {
     /*
      * Refreshes station specific devi data.
      */
-    private static TimeZone timeZone = TimeZone.getTimeZone("CET"); //FIXME : change to getTimezone and put the timezone code under in that function
+    private static boolean _searchedTimezones = false;
+    private static TimeZone _timeZone = TimeZone.getTimeZone("CET");
+    
+    private static TimeZone getTimeZoneCET() {
+    	if (_searchedTimezones) {
+    		return _timeZone;
+    	}
+		if (_timeZone == null) {
+			_timeZone = TimeZone.getTimeZone("Europe/Oslo");
+		}
+		if (_timeZone == null) {
+			_timeZone = TimeZone.getTimeZone("Europe/Berlin");
+		}
+		if (_timeZone == null) {
+			_timeZone = TimeZone.getTimeZone("Europe/Amsterdam");
+		}
+		_searchedTimezones = true;
+		return _timeZone;
+    	
+    }
+    
     private void refreshDevi() {
     	/*
     	 * Calculate a time difference it's easier to work with
@@ -171,15 +191,7 @@ public class RealtimeView extends GenericRealtimeView {
     			deviData.description = (String) getText(R.string.clockDiffDescription); 
     			deviData.body = (String) getText(R.string.clockDiffBodyHead);
     			
-    			if (timeZone == null) {
-    				timeZone = TimeZone.getTimeZone("Europe/Oslo");
-    			}
-    			if (timeZone == null) {
-    				timeZone = TimeZone.getTimeZone("Europe/Berlin");
-    			}
-    			if (timeZone == null) {
-    				timeZone = TimeZone.getTimeZone("Europe/Amsterdam");
-    			}
+    			final TimeZone timeZone = getTimeZoneCET();
     			
     			TimeZone phoneTimezone = TimeZone.getDefault();
     			
