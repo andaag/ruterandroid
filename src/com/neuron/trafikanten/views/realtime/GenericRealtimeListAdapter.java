@@ -2,7 +2,6 @@ package com.neuron.trafikanten.views.realtime;
 
 import android.app.Activity;
 import android.os.Parcelable;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -167,10 +166,8 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				holderRealtime.line = (TextView) convertView.findViewById(R.id.line);
 				holderRealtime.icon = (ImageView) convertView.findViewById(R.id.icon);
 				holderRealtime.destination = (TextView) convertView.findViewById(R.id.destination);
-				holderRealtime.departures = (TextView) convertView.findViewById(R.id.departures);
-				holderRealtime.departures.setTypeface(GenericDeviCreator.getDeviTypeface(parent));
-				holderRealtime.departures.setMovementMethod(ScrollingMovementMethod.getInstance());
-				holderRealtime.departures.setHorizontallyScrolling(true);
+				holderRealtime.departures = (LinearLayout) convertView.findViewById(R.id.departures);
+				
 				holderRealtime.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
 				renderRealtimeView(holderRealtime, realtimeRenderer.data);
 				convertView.setTag(R.layout.realtime_list, holderRealtime);
@@ -257,7 +254,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		/*
 		 * Render data to view.
 		 */
-		holder.departures.setText(data.renderDepartures(System.currentTimeMillis() - parent.timeDifference, parent));
+		data.renderDepartures(holder.departures, parent, System.currentTimeMillis() - parent.timeDifference);
 		holder.destination.setText(data.destination);
 		if (data.destination.equals(data.lineName)) {
 			holder.line.setText("-");
@@ -303,7 +300,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		TextView line;
 		TextView destination;
 		ImageView icon;
-		TextView departures;
+		LinearLayout departures;
 		
 		LinearLayout departureInfo;
 	}

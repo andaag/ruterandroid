@@ -19,8 +19,8 @@
 			android:id="@+id/line"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:paddingLeft="3px"
-			android:paddingRight="3px"
+			android:paddingLeft="3dp"
+			android:paddingRight="3dp"
 			
 			android:background="#ffffff"
 			android:textColor="#3c65bf"
@@ -31,10 +31,9 @@
 			android:textSize="14dip"
 			android:gravity="center"
 			android:singleLine="true"
-			
-			android:text="301"
 			/>
-			
+		
+		
 		<TextView
 			android:id="@+id/destination"
 			android:layout_width="wrap_content"
@@ -52,9 +51,8 @@
 			
 			android:ellipsize="marquee"
 			android:singleLine="true"
-			
-			android:text="Varingskollen [tog]"
 			/>
+
 			
 		<ImageView
 			android:id="@+id/icon"
@@ -64,27 +62,22 @@
 			android:layout_marginRight="12dip"
 			/>
 	</TableRow>
-			
+	    
 	<!-- This shares layout with route_detailed_list.xml -->
-    <TextView android:id="@+id/departures"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-				
-		android:textColor="#faf400"
-		android:background="@drawable/skin_sanntid_avganger"
+    <LinearLayout
+    	android:id="@+id/departures"
+    	android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		
 		android:paddingLeft="3dip"
 		android:paddingTop="1dip"
 		android:paddingRight="8dip"
 		android:paddingBottom="1dip"
-		android:textSize="14dip"
 		android:gravity="center_vertical"
-		android:ellipsize="none"
-				
-		android:singleLine="true"
 		
-		android:text="9m 13:43 14:53"
-		
-    	/>
+		android:background="@drawable/skin_sanntid_avganger"
+    />
     
     <!-- departureInfo contains stopVisitNote and devi -->
     <LinearLayout

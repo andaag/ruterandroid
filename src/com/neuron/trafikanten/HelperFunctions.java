@@ -33,8 +33,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
 
@@ -193,4 +195,15 @@ public class HelperFunctions {
 		//return content;
 		return new StreamWithTime(content, timeDifference);
 	}
+	
+	/*
+	 * Create custom font for devi.
+	 */
+    private static Typeface mTypeface = null;
+    public static Typeface getTypeface(Activity activity) {
+    	if (mTypeface == null) {
+    		mTypeface = Typeface.createFromAsset(activity.getAssets(), "fonts/DejaVuSans.ttf");
+    	}
+    	return mTypeface;
+    }
 }

@@ -105,25 +105,24 @@
 		android:text="@string/realtime"
 		android:layout_marginRight="45dip"/>
 		
-	<!-- This shares layout with realtime_list.xml -->
-    <TextView android:id="@+id/departures"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/to"
-				
-		android:textColor="#faf400"
-		android:background="@drawable/skin_sanntid_avganger"
+    <LinearLayout
+    	android:id="@+id/departures"
+    	android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/to"
+		
 		android:paddingLeft="50dip"
 		android:paddingTop="1dip"
 		android:paddingRight="8dip"
 		android:paddingBottom="1dip"
-		android:textSize="14dip"
 		android:gravity="center_vertical"
-		android:ellipsize="none"
+		
 		android:visibility="gone"
-				
-		android:singleLine="true"
-    	/>
+		
+		android:background="@drawable/skin_sanntid_avganger"
+    />
+			
     	
     <!-- <TextView android:id="@+id/departurePlatform"
         android:layout_width="wrap_content"
@@ -144,6 +143,8 @@
 				
 		android:singleLine="true"
     	/> -->
+    	
+    	
 		
 		
 	<!-- Devi info under -->

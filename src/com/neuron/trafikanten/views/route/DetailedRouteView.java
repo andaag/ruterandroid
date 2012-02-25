@@ -472,7 +472,7 @@ class RouteRealtimeLoader {
 						routeData.realtimeData = item;
 						routeList.notifyDataSetChanged();
 					} else {
-						routeData.realtimeData.addDeparture(item.expectedDeparture, item.realtime, item.stopVisitNote);
+						routeData.realtimeData.addDeparture(item);
 						routeList.notifyDataSetChanged();
 					}
 				}
@@ -573,7 +573,7 @@ class RouteAdapter extends BaseAdapter {
 			holder.waittime = (TextView) convertView.findViewById(R.id.waittime);
 			holder.devi = (LinearLayout) convertView.findViewById(R.id.devi);
 			holder.realtimeText = (TextView) convertView.findViewById(R.id.realtimeText);
-			holder.departures = (TextView) convertView.findViewById(R.id.departures);
+			holder.departures = (LinearLayout) convertView.findViewById(R.id.departures);
 			//holder.departurePlatform = (TextView) convertView.findViewById(R.id.departurePlatform);
 			convertView.setTag(holder);
 		} else {
@@ -627,14 +627,7 @@ class RouteAdapter extends BaseAdapter {
 		 * Setup realtime view
 		 */
 		if (routeData.realtimeData != null) {
-			holder.departures.setText(routeData.realtimeData.renderDepartures(System.currentTimeMillis() - routeData.timeDifference, parent));
-			/*if (routeData.realtimeData.departurePlatform > 0) {
-				holder.departurePlatform.setText("[" + routeData.realtimeData.departurePlatform + "]");
-				holder.departurePlatform.setVisibility(View.VISIBLE);
-				new ShowTipsTask(parent, parent.tracker, DetailedRouteView.class.getName(), R.string.tipDetailedRouteRealtime, 46);
-			} else {
-				holder.departurePlatform.setVisibility(View.GONE);
-			}*/
+			routeData.realtimeData.renderDepartures(holder.departures, parent, System.currentTimeMillis() - routeData.timeDifference);
 			holder.departures.setVisibility(View.VISIBLE);
 		} else {
 			holder.departures.setVisibility(View.GONE);
@@ -683,7 +676,7 @@ class RouteAdapter extends BaseAdapter {
 		TextView waittime;
 		
 		TextView realtimeText;
-		TextView departures;
+		LinearLayout departures;
 		//TextView departurePlatform;
 		
 		LinearLayout devi;

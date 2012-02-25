@@ -7,29 +7,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataSets.DeviData;
 import com.neuron.trafikanten.tasks.ShowDeviTask;
 
 public class GenericDeviCreator {
-	
-	/*
-	 * Create custom font for devi.
-	 */
-    private static Typeface mDeparturesTypeface = null;
-    public static Typeface getDeviTypeface(Activity activity) {
-    	if (mDeparturesTypeface == null) {
-    		mDeparturesTypeface = Typeface.createFromAsset(activity.getAssets(), "fonts/DejaVuSans.ttf");
-    	}
-    	return mDeparturesTypeface;
-    }
-
-    
     /*
      * Function for creating the default devi text, used both for line data and station data
      */
     public static TextView createDefaultDeviText(final Activity activity, final String title, final DeviData deviData, boolean station) {
-    	Typeface departuresTypeface = getDeviTypeface(activity);
+    	Typeface departuresTypeface = HelperFunctions.getTypeface(activity);
     	TextView deviText = new TextView(activity);
 		deviText.setText(title);
 		

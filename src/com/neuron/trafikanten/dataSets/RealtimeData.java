@@ -20,33 +20,23 @@ package com.neuron.trafikanten.dataSets;
 
 import java.util.ArrayList;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.R;
-
-public class RealtimeData implements Parcelable {
+public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	public final static String PARCELABLE = "RealtimeData";
 	public String lineName;
 	public int lineId;
 	public String destination;
-	public boolean inCongestion = false;
-	public boolean realtime;
 	public String departurePlatform;
-	public String stopVisitNote;
-	
-	public long expectedDeparture;
-	
-	public boolean lowFloor = false; // kun trikk
-	public int numberOfBlockParts = 0; // kun t-bane (3 = kort tog, 6 = langt tog).
-	
 	
 	/*
 	 * Data set of coming departures
 	 */
-	public ArrayList<RealtimeDataNextDeparture> nextDepartures;
+	public ArrayList<RealtimeDataGeneric> nextDepartures;
 	
 	/*
 	 * List of devi data, used by RealtimeView/FavoritesView
@@ -54,12 +44,12 @@ public class RealtimeData implements Parcelable {
 	public ArrayList<DeviData> devi;
 	
 	public RealtimeData() {
-		nextDepartures = new ArrayList<RealtimeDataNextDeparture>();
+		nextDepartures = new ArrayList<RealtimeDataGeneric>();
 		devi = new ArrayList<DeviData>();
 	}
 	
-	public void addDeparture(long expectedDeparture, boolean realtime, String stopVisitNote) {
-		nextDepartures.add(new RealtimeDataNextDeparture(expectedDeparture, realtime, stopVisitNote));
+	public void addDeparture(RealtimeDataGeneric realtimeData) {
+		nextDepartures.add(realtimeData);
 	}
 	
 	public int _platformNumber = -1;
@@ -74,32 +64,17 @@ public class RealtimeData implements Parcelable {
 		return _platformNumber;
 	}
 	
+		
 	/*
 	 * Renders all departures, expectedDeparture + nextDepartures
 	 */
-	public CharSequence renderDepartures(Long currentTime, Context context) {
-		StringBuffer departures = new StringBuffer();
-		if (!realtime) {
-			departures.append(context.getText(R.string.ca));
-			departures.append(" ");
-		} else if (inCongestion) {
-			departures.append(context.getText(R.string.congestion));
-			departures.append(" ");
-		}
-		departures.append(HelperFunctions.renderTime(currentTime, context, expectedDeparture));
+	public void renderDepartures(LinearLayout container, Activity activity, Long currentTime) {
+		container.removeAllViews();
+		TextView reusedTextView = renderToContainer(container, false, activity, currentTime, null);
 		
-		for (RealtimeDataNextDeparture nextDeparture : nextDepartures) {
-			departures.append("  ");
-			if (!nextDeparture.realtime) {
-				departures.append(context.getText(R.string.ca));
-				departures.append(" ");
-			} else if (inCongestion) {
-				departures.append(context.getText(R.string.congestion));
-				departures.append(" ");
-			}
-			departures.append(HelperFunctions.renderTime(currentTime, context, nextDeparture.expectedDeparture));
+		for (RealtimeDataGeneric nextDeparture : nextDepartures) {
+			reusedTextView = nextDeparture.renderToContainer(container, true, activity, currentTime, reusedTextView);
 		}
-		return departures;
 	}
 	
 	/*
@@ -112,24 +87,18 @@ public class RealtimeData implements Parcelable {
 	 * Function for reading the parcel
 	 */
 	public RealtimeData(Parcel in) {
+		super(in);
 		lineName = in.readString();
 		lineId = in.readInt();
 		destination = in.readString();
-		inCongestion = in.readInt() != 0;
-		realtime = in.readInt() != 0;
 		departurePlatform = in.readString();
-		stopVisitNote = in.readString();
 
-		expectedDeparture = in.readLong();
-		
-		nextDepartures = new ArrayList<RealtimeDataNextDeparture>();
-		in.readList(nextDepartures, RealtimeDataNextDeparture.class.getClassLoader());
+		nextDepartures = new ArrayList<RealtimeDataGeneric>();
+		in.readList(nextDepartures, RealtimeDataGeneric.class.getClassLoader());
 		
 		devi = new ArrayList<DeviData>();
 		in.readList(devi, DeviData.class.getClassLoader());
 		
-		lowFloor = in.readInt() != 0;
-		numberOfBlockParts = in.readInt();
 	}
 	
 	/*
@@ -138,23 +107,16 @@ public class RealtimeData implements Parcelable {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
+		super.writeToParcel(out, flags);
 		out.writeString(lineName);
 		out.writeInt(lineId);
 		out.writeString(destination);
-		out.writeInt(inCongestion ? 1 : 0);
-		out.writeInt(realtime ? 1 : 0);
 		out.writeString(departurePlatform);
-		out.writeString(stopVisitNote);
-		
-		out.writeLong(expectedDeparture);
 		
 		out.writeList(nextDepartures);
 		out.writeList(devi);
-		
-		out.writeInt(lowFloor ? 1 : 0);
-		out.writeInt(numberOfBlockParts);
 	}
-	
+
 	/*
 	 * Used for bundle.getParcel 
 	 */
