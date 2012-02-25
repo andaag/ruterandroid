@@ -103,6 +103,8 @@ public class RealtimeDataGeneric  implements Parcelable {
 			container.addView(txt);
 		}
 		
+		
+		//FIXME : check layout sizes on mdpi and ldpi, icons might not align!
 		if (lowFloor) {
 			txt = null;
 			ImageView img = new ImageView(activity);
