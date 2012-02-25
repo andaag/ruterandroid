@@ -24,6 +24,7 @@ import java.util.TimeZone;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -81,6 +82,7 @@ public class RealtimeView extends GenericRealtimeView {
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	//Debug.startMethodTracing("trafikanten-realtimeview");
         super.onCreate(savedInstanceState,"/realtime", GenericRealtimeList.RENDERER_PLATFORM);
         
         /*
@@ -139,6 +141,7 @@ public class RealtimeView extends GenericRealtimeView {
     /*
      * Refreshes station specific devi data.
      */
+    private static TimeZone timeZone = TimeZone.getTimeZone("CET"); //FIXME : change to getTimezone and put the timezone code under in that function
     private void refreshDevi() {
     	/*
     	 * Calculate a time difference it's easier to work with
@@ -168,7 +171,6 @@ public class RealtimeView extends GenericRealtimeView {
     			deviData.description = (String) getText(R.string.clockDiffDescription); 
     			deviData.body = (String) getText(R.string.clockDiffBodyHead);
     			
-    			TimeZone timeZone = TimeZone.getTimeZone("CET");
     			if (timeZone == null) {
     				timeZone = TimeZone.getTimeZone("Europe/Oslo");
     			}
@@ -211,7 +213,15 @@ public class RealtimeView extends GenericRealtimeView {
     	}
     }
     
+    
+    
     @Override
+	protected void onDestroy() {
+    	Debug.stopMethodTracing();
+		super.onDestroy();
+	}
+
+	@Override
     protected void clearView() {
     	super.clearView();
     	finishedLoading = false;
@@ -346,6 +356,7 @@ public class RealtimeView extends GenericRealtimeView {
 				setProgressBarIndeterminateVisibility(false);
 				finishedLoading = true;
 				deviProvider = null;
+				Debug.startMethodTracing("trafikanten-realtimeview-scrolling");
 
 				if (exception != null) {
 					Log.w(TAG,"onException " + exception);

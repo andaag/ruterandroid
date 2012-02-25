@@ -61,6 +61,7 @@ public class RealtimeDataGeneric  implements Parcelable {
 		out.writeInt(numberOfBlockParts);
 	}
 	
+	//TODO : http://developer.android.com/training/improving-layouts/smooth-scrolling.html ?
 	private TextView buildTextView(boolean marginLeft, Activity activity, long currentTime, TextView reusedTextview) {
 		TextView tv;
 		if (reusedTextview == null) {
@@ -89,7 +90,7 @@ public class RealtimeDataGeneric  implements Parcelable {
 			txt.append(activity.getText(R.string.congestion));
 			txt.append(" ");
 		}
-		txt.append(HelperFunctions.renderTime(currentTime, activity, expectedDeparture));
+		HelperFunctions.renderTime(txt, currentTime, activity, expectedDeparture);
 		tv.setText(txt);
 		return tv;
 	}

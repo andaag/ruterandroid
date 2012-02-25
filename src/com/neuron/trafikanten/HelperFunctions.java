@@ -55,19 +55,28 @@ public class HelperFunctions {
 	 * Render time in the way trafikanten.no wants
 	 *   From 1-9 minutes we use "X m", above that we use HH:MM
 	 */
-    public static String renderTime(Long currentTime, Context context, long time) {
+	private static CharSequence nowText;
+    public static void renderTime(final StringBuffer txt, Long currentTime, Context context, long time) {
 		int diffMinutes = Math.round(((float)(time - currentTime)) / MINUTE);
 
 		if (diffMinutes < -1) {
 			// Negative time!
 			diffMinutes = diffMinutes * -1;
-			return "-" + diffMinutes + " min";
+			txt.append("-");
+			txt.append(diffMinutes);
+			txt.append(" min");
 		} else if (diffMinutes < 1) {
-			return context.getText(R.string.now).toString();
+			if (nowText == null) {
+				nowText = context.getText(R.string.now);
+			}
+			txt.append(nowText);
 		} else if (diffMinutes <= 9) {
-			return diffMinutes + " min";
+			txt.append(diffMinutes);
+			txt.append(" min");
 		}
-		return hourFormater.format(time).toString();
+		
+		//TODO Performance : hourFormater slow? can we construct HH:mm faster ourselfes and write directly to stringbuffer? aprox 110ms here
+		txt.append(hourFormater.format(time));
     }
     
 	private static String userAgentString = null;
