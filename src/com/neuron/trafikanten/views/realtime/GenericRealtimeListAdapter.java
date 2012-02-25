@@ -234,6 +234,9 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		}
 	}
 	
+	/*
+	 * This is used in favorites
+	 */
 	private void renderStationView(ViewHolderStation holder, StationData station) {
 		holder.header.setText(station.stopName);
 		
