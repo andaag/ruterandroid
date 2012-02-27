@@ -1,5 +1,6 @@
 package com.neuron.trafikanten.dataSets;
 
+import junit.framework.Assert;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Parcel;
@@ -77,7 +78,7 @@ public class RealtimeDataGeneric  implements Parcelable {
 		} else {
 			tv = reusedTextview; 
 		}
-		
+		//Assert.assertTrue(marginLeft || reusedTextview == null);
 		
 		StringBuffer txt = new StringBuffer(tv.getText());
 		if (marginLeft) {

@@ -65,14 +65,17 @@ public class HelperFunctions {
 			txt.append("-");
 			txt.append(diffMinutes);
 			txt.append(" min");
+			return;
 		} else if (diffMinutes < 1) {
 			if (nowText == null) {
 				nowText = context.getText(R.string.now);
 			}
 			txt.append(nowText);
+			return;
 		} else if (diffMinutes <= 9) {
 			txt.append(diffMinutes);
 			txt.append(" min");
+			return;
 		}
 		
 		//TODO Performance : hourFormater slow? can we construct HH:mm faster ourselfes and write directly to stringbuffer? aprox 110ms here
