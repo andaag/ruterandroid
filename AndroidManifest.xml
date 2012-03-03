@@ -3,6 +3,9 @@
       package="com.neuron.trafikanten"
       android:versionName="2.2.7" android:versionCode="72">
       <!--  REMEMBER TO UPDATE STRINGS -->
+      
+     <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="4" />
+      
     <application android:icon="@drawable/icon" android:label="@string/app_name">
     
     
@@ -51,11 +54,12 @@
         <uses-library android:name="com.google.android.maps"></uses-library>
         <receiver android:name=".notification.NotificationIntent"></receiver>
         <activity android:name=".views.route.OverviewRouteView"></activity>
+        
+        
 </application>
 
 
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="4" />
-    
+   
 <supports-screens
             largeScreens="true"
             normalScreens="true"
