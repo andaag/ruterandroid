@@ -30,7 +30,7 @@
 	android:id="@+id/body"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:paddingLeft="8dip"
     android:paddingTop="10dip"
@@ -43,7 +43,7 @@
         android:layout_gravity="center_vertical"
         android:textSize="13dip"
         
-        android:text="Gyldig fra 03.01.2010 14:30" />
+        />
         
     <TextView android:id="@+id/title"
     	android:padding="6dip"
@@ -54,7 +54,7 @@
         android:layout_gravity="center_vertical"
         
         
-        android:text="T-bane line 5 : Buss stovner vestli" />
+        />
         
     <TextView android:id="@+id/description"
     	android:padding="6dip"
@@ -65,7 +65,7 @@
         android:layout_gravity="center_vertical"
         
         
-        android:text="Det kjøres buss for bane mellom Stovner og Vestli fra 4.januar 2010. Buss for bane har 15 minutters rute. " />
+         />
         
     <TextView android:id="@+id/devibody"
     	android:paddingLeft="6dip"
@@ -78,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         
-        android:text="Årsaken er oppgradering og fornyelse av adkomstveiene på Vestli stasjon og det er nødvendig å stenge stasjonen for trafikk. Buss vil derfor erstatte bane mellom Stovner og Vestli i anleggsperioden." />
+         />
 
 </LinearLayout>
 
