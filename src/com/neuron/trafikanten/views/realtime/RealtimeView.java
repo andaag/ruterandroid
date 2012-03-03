@@ -229,7 +229,7 @@ public class RealtimeView extends GenericRealtimeView {
     
     @Override
 	protected void onDestroy() {
-    	Debug.stopMethodTracing();
+    	//Debug.stopMethodTracing();
 		super.onDestroy();
 	}
 
@@ -368,7 +368,7 @@ public class RealtimeView extends GenericRealtimeView {
 				setProgressBarIndeterminateVisibility(false);
 				finishedLoading = true;
 				deviProvider = null;
-				Debug.startMethodTracing("trafikanten-realtimeview-scrolling");
+				//Debug.startMethodTracing("trafikanten-realtimeview-scrolling");
 
 				if (exception != null) {
 					Log.w(TAG,"onException " + exception);
