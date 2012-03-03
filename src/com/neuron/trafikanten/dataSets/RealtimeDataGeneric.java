@@ -106,7 +106,7 @@ public class RealtimeDataGeneric  implements Parcelable {
 		}
 		
 		
-		//FIXME : check layout sizes on mdpi and ldpi, icons might not align!
+		//FIXME : should create drawable-hdpi/mdpi/ldpi of all icons used in realtime view for performance.
 		if (lowFloor) {
 			txt = null;
 			ImageView img = new ImageView(activity);
