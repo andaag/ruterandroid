@@ -1,90 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This is the entry of every item in realtime.xml's list. -->
-<TableLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/tablelayout"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-    android:stretchColumns="1"
-	>
-	
-	<TableRow
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:padding="4dip"
-		android:background="@drawable/skin_sanntid_header"
-		>
-		
-		<TextView
-			android:id="@+id/line"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:paddingLeft="3dp"
-			android:paddingRight="3dp"
-			
-			android:background="#ffffff"
-			android:textColor="#3c65bf"
-			android:paddingTop="1dip"
-			android:paddingBottom="1dip"
-			android:textStyle="bold"
-			android:typeface="sans"
-			android:textSize="14dip"
-			android:gravity="center"
-			android:singleLine="true"
-			/>
-		
-		
-		<TextView
-			android:id="@+id/destination"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			
-			android:textColor="#ffffff"
-			android:textStyle="bold"
-			android:typeface="sans"
-			android:textSize="14dip"
-			
-			android:paddingLeft="4dip"
-			android:paddingTop="1dip"
-			android:paddingRight="1dip"
-			android:paddingBottom="1dip"
-			
-			android:ellipsize="marquee"
-			android:singleLine="true"
-			/>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tablelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="1" >
 
-			
-		<ImageView
-			android:id="@+id/icon"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="right"
-			android:layout_marginRight="12dip"
-			/>
-	</TableRow>
-	    
-	<!-- This shares layout with route_detailed_list.xml -->
-    <LinearLayout
-    	android:id="@+id/departures"
-    	android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		
-		android:paddingLeft="3dip"
-		android:paddingTop="1dip"
-		android:paddingRight="8dip"
-		android:paddingBottom="1dip"
-		android:gravity="center_vertical"
-		
-		android:background="@drawable/skin_sanntid_avganger"
-    />
-    
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/skin_sanntid_header"
+        android:padding="4dip" >
+
+        <TextView
+            android:id="@+id/line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:paddingBottom="1dip"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:paddingTop="1dip"
+            android:singleLine="true"
+            android:textColor="#3c65bf"
+            android:textSize="14dip"
+            android:textStyle="bold"
+            android:typeface="sans" />
+
+        <TextView
+            android:id="@+id/destination"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:paddingBottom="1dip"
+            android:paddingLeft="4dip"
+            android:paddingRight="1dip"
+            android:paddingTop="1dip"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:textSize="14dip"
+            android:textStyle="bold"
+            android:typeface="sans" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dip"
+            android:gravity="right" />
+    </TableRow>
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalscrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/skin_sanntid_avganger"
+        android:gravity="center_vertical"
+        android:paddingBottom="0dip"
+        android:paddingTop="4dip"
+        android:scrollbarSize="0px"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbars="none" >
+
+        <!-- This shares layout with route_detailed_list.xml -->
+
+        <LinearLayout
+            android:id="@+id/departures"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="3dip"
+            android:paddingRight="8dip"
+            android:scrollbarSize="0px"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbars="none" />
+    </HorizontalScrollView>
+
     <!-- departureInfo contains stopVisitNote and devi -->
+
     <LinearLayout
-    	android:id="@+id/departureInfo"
-    	android:orientation="vertical"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-    />
+        android:id="@+id/departureInfo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 
 </TableLayout>

@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.neuron.trafikanten.R;
@@ -125,6 +128,24 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 	}
 	
 	/*
+	 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
+	 * TODO : Check if this workaround is still needed, HACK
+	 */
+	private void onClickHack(final View convertView, final LinearLayout departures, final TableLayout tableLayout, final RealtimeRenderer realtimeRenderer) {
+		final OnClickListener onClickListener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				convertView.showContextMenu();
+			}
+		};
+	
+		
+		tableLayout.setOnClickListener(onClickListener);
+		departures.setOnClickListener(onClickListener);
+		
+		}
+	
+	/*
 	 * Setup the view
 	 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
 	 */
@@ -149,10 +170,12 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				holderRealtime.icon = (ImageView) convertView.findViewById(R.id.icon);
 				holderRealtime.destination = (TextView) convertView.findViewById(R.id.destination);
 				holderRealtime.departures = (LinearLayout) convertView.findViewById(R.id.departures);
+				holderRealtime.tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout); // Needed for onclickhack
 				
 				holderRealtime.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
 				renderRealtimeView(holderRealtime, realtimeRenderer.data);
 				convertView.setTag(R.layout.realtime_list, holderRealtime);
+				onClickHack(convertView, holderRealtime.departures, holderRealtime.tableLayout, realtimeRenderer);
 				
 				return convertView;
 			case GenericRealtimeList.RENDERER_PLATFORM:
@@ -185,6 +208,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				final ViewHolderRealtime holderRealtime = (ViewHolderRealtime) convertView.getTag(R.layout.realtime_list);
 				final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) renderer;
 				renderRealtimeView(holderRealtime, realtimeRenderer.data);
+				onClickHack(convertView, holderRealtime.departures, holderRealtime.tableLayout, realtimeRenderer);
 				return convertView;
 			case GenericRealtimeList.RENDERER_PLATFORM:
 				final ViewHolderPlatform holderPlatform = (ViewHolderPlatform) convertView.getTag(R.layout.realtime_list_platform);
@@ -286,6 +310,8 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		LinearLayout departures;
 		
 		LinearLayout departureInfo;
+		
+		TableLayout tableLayout; // Needed for onclickhack
 	}
 	
 	public Parcelable getParcelable() {

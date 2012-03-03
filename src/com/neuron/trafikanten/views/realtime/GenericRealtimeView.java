@@ -262,7 +262,7 @@ public abstract class GenericRealtimeView extends ListActivity {
 		}
 		return super.onContextItemSelected(item);
 	}
-	
+
 	/*
 	 * For realtime this returns current station. For favorites this scans up from the selected position to find the station belonging to that realtime data.
 	 */
