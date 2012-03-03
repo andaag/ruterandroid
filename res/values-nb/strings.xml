@@ -100,7 +100,7 @@ Trykk meny for å søke på addresse istedet for stasjonsnavn.</string>
         <string name="waitTime">Ventetid</string>
         <string name="walk">Gå</string>
         <string name="noRoutesFound">Ingen reise funnet!</string>  
-        <string name="routeLoading">Laster reiseinformasjon ...\n\n
+        <string name="routeLoading">Laster reiseinformasjon …\n\n
 Trykk på et reiseforslag for detaljer!</string>
         
         <!-- GenericMap -->
@@ -136,7 +136,7 @@ da er det tider fra rutetabellen som vises.</string>
 		<string name="clockDiffBodyAhead">forran Trafikanten\'s tid.</string>
                 
         <!-- LocationTask -->
-        <string name="locationWaiting">Venter for posisjon...</string>
+        <string name="locationWaiting">Venter for posisjon…</string>
         <string name="current">Nøyaktighet:</string>
         <string name="noLocationFoundError">Ingen posisjon funnet, vent eller trykk tilbake for å avbryte</string>
         <string name="locationContinue">Fortsett</string>

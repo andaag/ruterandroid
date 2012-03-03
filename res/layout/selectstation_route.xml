@@ -21,7 +21,7 @@
     
 	    <EditText android:id="@+id/search"
 	        android:singleLine="true"
-	        android:layout_width="fill_parent"
+	        android:layout_width="0dip"
 	        android:layout_height="fill_parent"
 	        android:hint="@string/search_for_station"
 

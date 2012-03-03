@@ -101,7 +101,7 @@ Try clicking menu and searching for an address instead!</string>
         <string name="waitTime">Wait time</string>
         <string name="walk">Walk</string>
         <string name="noRoutesFound">No travel proposals found!</string>  
-        <string name="routeLoading">Travel proposals loading...\n\n
+        <string name="routeLoading">Travel proposals loading…\n\n
 Click a travel proposal for a detailed view!</string>
         
         <!-- GenericMap -->
@@ -136,7 +136,7 @@ we fallback to travel planner information.</string>
 		<string name="clockDiffBodyAhead">ahead of Trafikanten\'s time.</string>
         
         <!-- LocationTask -->
-        <string name="locationWaiting">Waiting for location...</string>
+        <string name="locationWaiting">Waiting for location…</string>
         <string name="current">Accuracy :</string>
         <string name="noLocationFoundError">No location found, please wait or click back to cancel</string>
         <string name="locationContinue">Continue</string>
