@@ -4,4 +4,7 @@
     <issue id="UseCompoundDrawables">
         <ignore path="res/layout/dialog_showtips.xml" />
     </issue>
+    <issue id="UselessParent">
+        <ignore path="res/layout/dialog_showtips.xml" />
+    </issue>
 </lint>

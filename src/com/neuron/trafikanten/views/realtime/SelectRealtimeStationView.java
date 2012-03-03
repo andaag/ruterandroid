@@ -20,7 +20,6 @@ package com.neuron.trafikanten.views.realtime;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.view.Window;
 
 import com.neuron.trafikanten.R;

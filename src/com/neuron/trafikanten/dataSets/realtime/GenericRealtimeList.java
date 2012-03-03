@@ -19,7 +19,6 @@ import com.neuron.trafikanten.dataSets.realtime.renderers.StationRenderer;
  */
 public class GenericRealtimeList implements Parcelable {
 	private static final String TAG = "Trafikanten-GenericRealtimeListAdapter";
-	private static final long serialVersionUID = 4587512040075849425L;
 	public static final int RENDERER_REALTIME = 1;
 	public static final int RENDERER_PLATFORM = 2;
 	public static final int RENDERER_STATION = 3;

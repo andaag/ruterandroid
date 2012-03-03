@@ -13,7 +13,6 @@ import android.os.Parcelable;
 public class RouteDeviData implements Parcelable  {
 	public HashMap<String, ArrayList<DeviData> > items = new HashMap<String, ArrayList<DeviData> >();
 	public final static String PARCELABLE = "RouteDeviData";
-	private static final long serialVersionUID = 275828144368446465L;
 
 	public RouteDeviData() {
 	}

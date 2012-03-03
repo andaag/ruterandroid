@@ -1,12 +1,9 @@
 package com.neuron.trafikanten.dataSets;
 
-import junit.framework.Assert;
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.TypedValue;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,6 +14,7 @@ import com.neuron.trafikanten.R;
 /*
  * This is realtime data that is available for "all" realtime sets, aka available both for main view and for subdepartures
  */
+//FIXME : should use higher quality images for hdpi, most of them are now upscaled
 public class RealtimeDataGeneric  implements Parcelable {
 	public long expectedDeparture;
 	
@@ -105,8 +103,6 @@ public class RealtimeDataGeneric  implements Parcelable {
 			container.addView(txt);
 		}
 		
-		
-		//FIXME : should create drawable-hdpi/mdpi/ldpi of all icons used in realtime view for performance.
 		if (lowFloor) {
 			txt = null;
 			ImageView img = new ImageView(activity);
