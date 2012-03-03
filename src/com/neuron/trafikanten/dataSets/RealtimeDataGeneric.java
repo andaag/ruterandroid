@@ -72,7 +72,7 @@ public class RealtimeDataGeneric  implements Parcelable {
 				tv.setTextColor(-330752); 		//Color.parseColor("#FAF400"); // -330752
 			/*} else {
 				tv.setTextColor(Color.parseColor("#ecebea"));
-			}*/ //TODO : add this, and dont reuse the textview if textcolor changes.
+			}*/ //TODO : add yellow text only if departure is realtime (aka current), and dont reuse the textview if textcolor changes.
 		} else {
 			tv = reusedTextview; 
 		}
