@@ -36,6 +36,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
@@ -82,10 +83,23 @@ public class HelperFunctions {
 		txt.append(hourFormater.format(time));
     }
     
+    private static String _applicationVersion = null;
+    public static String GetApplicationVersion(Context context) {
+    	if (_applicationVersion == null) {
+	    	try {
+	    		_applicationVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0 ).versionName;
+			} catch (NameNotFoundException e) {
+				e.printStackTrace();
+				_applicationVersion = "0";
+			}
+    	}
+    	return _applicationVersion;
+    }
+    
 	private static String userAgentString = null;
 	private static String getUserAgent(Context context) {
 		if (userAgentString == null) {
-			CharSequence appVersion = context.getText(R.string.app_version);
+			CharSequence appVersion = GetApplicationVersion(context);
 
 			userAgentString = "TrafikantenAndroid/" + appVersion + " (aagaande) Device/" + 
 				Build.VERSION.RELEASE + " (" + Locale.getDefault() + "; " + Build.MODEL + ")";			

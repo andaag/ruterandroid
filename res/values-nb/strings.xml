@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Trafikanten</string>
-    <!--  REMEMBER TO UPDATE ANDROIDMANIFEST AND OTHER STRINGS.XML FILES -->
-    <string name="app_version">2.2.7</string>    
     
     <!-- Front page -->
     <string name="realtime">Sanntid</string>

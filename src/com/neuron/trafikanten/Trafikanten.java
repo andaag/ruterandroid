@@ -95,7 +95,7 @@ public class Trafikanten extends TabActivity {
 		AnalyticsUtils.getInstance(this).trackPageView("/home");
 		
 		Trafikanten.activity = this;
-	 	setTitle("Trafikanten - " + getText(R.string.app_version));
+	 	setTitle("Trafikanten - " + HelperFunctions.GetApplicationVersion(this));
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
         if (isShortcut()) {
