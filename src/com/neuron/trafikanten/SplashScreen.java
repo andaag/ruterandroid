@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -55,13 +56,32 @@ public class SplashScreen extends Activity {
 	              } 
 	         }, SPLASH_DISPLAY_LENGHT); 
 	         
-	         
+	        
+	         /*
+	          * Track version and log to analytics
+	          */
 			try {
 	         	PackageInfo packageInfo = getPackageManager().getPackageInfo("com.neuron.trafikanten", PackageManager.GET_META_DATA);
 				//tracker.trackEvent("Version", "Application", URLEncoder.encode(packageInfo.versionName,"UTF-8"), packageInfo.versionCode);
 	         	AnalyticsUtils.getInstance(this).trackEvent("Version", "Application", URLEncoder.encode(HelperFunctions.GetApplicationVersion(this),"UTF-8"), packageInfo.versionCode);
 			} catch (NameNotFoundException e) {
          	} catch (UnsupportedEncodingException e) {}
+			
+			
+			/*
+			 * Track first start of application and log to analytics
+			 */
+			{
+				SharedPreferences settings = getSharedPreferences("trafikanten", Activity.MODE_PRIVATE);
+				if (settings.getBoolean("firststart", true)) {
+					try {
+						AnalyticsUtils.getInstance(this).trackEvent("FirstStart", "Application", URLEncoder.encode(HelperFunctions.GetApplicationVersion(this),"UTF-8"), 0);
+						SharedPreferences.Editor editor = settings.edit();
+						editor.putBoolean("firststart", false);
+						editor.commit();
+					} catch (UnsupportedEncodingException e) {}
+				}
+			}
          	
 	         /*
 	          * Cleanup broken analytics database, this is a HACK
