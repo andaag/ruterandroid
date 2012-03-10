@@ -55,6 +55,7 @@ public class AnalyticsUtils {
 
         mApplicationContext = context.getApplicationContext();
         mTracker = GoogleAnalyticsTracker.getInstance();
+        mTracker.setAnonymizeIp(true);
 
         // Unfortunately this needs to be synchronous.
         //mTracker.start(UACODE, 300, mApplicationContext);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.neuron.trafikanten"
-    android:versionCode="73"
+    android:versionCode="74"
     android:versionName="2.2.8" >
     <!-- REMEMBER TO UPDATE STRINGS -->
 
@@ -94,6 +94,15 @@
 
         <activity android:name=".views.route.OverviewRouteView" >
         </activity>
+        
+        <receiver
+            android:name="com.google.android.apps.analytics.AnalyticsReceiver"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+        
     </application>
 
 </manifest>
