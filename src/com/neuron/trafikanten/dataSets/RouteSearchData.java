@@ -42,7 +42,7 @@ public class RouteSearchData implements Parcelable {
 	 * Advanced options, if advancedOptionsEnabled == false, dont use them
 	 */
 	public int changePunish = 2; // in minutes
-	public int changeMargin = 2; // in minutes
+	public int changeMargin = 8; // in minutes
 	public int proposals = 10; // asking for 10 results by default
 	
 	// ORDER : transportBus, transportTrain, transportTram, transportMetro, transportAirportBus, transportAirportTrain, transportBoat

@@ -567,7 +567,7 @@ public class SelectRouteView extends ListActivity {
 			});
 			return transportDialog;
 		case DIALOG_CHANGEMARGIN:
-			final CharSequence[] changeMarginItems = {"1m", "2m", "3m", "4m", "5m"};
+			final CharSequence[] changeMarginItems = {"1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m", "10m"};
 			
 			AlertDialog.Builder changeBuilder = new AlertDialog.Builder(this);
 			changeBuilder.setTitle(R.string.setChangeMargin);
