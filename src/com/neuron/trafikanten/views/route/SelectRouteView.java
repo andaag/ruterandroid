@@ -32,6 +32,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -414,38 +415,44 @@ public class SelectRouteView extends ListActivity {
 			 * Setup the time picker
 			 */
 			final TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker);
-			//timePicker.setIs24HourView(true);
 			
-			// HACK, ref http://code.google.com/p/android/issues/detail?id=18982
-			View amPmView  = ((ViewGroup)timePicker.getChildAt(0)).getChildAt(2);
-			if(amPmView instanceof Button)
-			{
-				amPmView.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						Log.d("OnClickListener", "OnClickListener called");
-						if(v instanceof Button)
-						{
-							if(((Button) v).getText().equals("AM"))
-							{
-								((Button) v).setText("PM");
-								 if (timePicker.getCurrentHour() < 12) {
-									 timePicker.setCurrentHour(timePicker.getCurrentHour() + 12);
-					                }  
-								
-							}
-							else{
-								((Button) v).setText("AM");
-								 if (timePicker.getCurrentHour() >= 12) {
-									 timePicker.setCurrentHour(timePicker.getCurrentHour() - 12);
-					                }
-							}
-						}
+			if (Build.VERSION.SDK_INT >= 11) {
+				// HACK, ref http://code.google.com/p/android/issues/detail?id=18982
+				View amPmView  = ((ViewGroup)timePicker.getChildAt(0)).getChildAt(2);
+				if(amPmView instanceof Button)
+				{
+					amPmView.setOnClickListener(new OnClickListener() {
 						
-					}
-				});
+						@Override
+						public void onClick(View v) {
+							Log.d("OnClickListener", "OnClickListener called");
+							if(v instanceof Button)
+							{
+								if(((Button) v).getText().equals("AM"))
+								{
+									((Button) v).setText("PM");
+									 if (timePicker.getCurrentHour() < 12) {
+										 timePicker.setCurrentHour(timePicker.getCurrentHour() + 12);
+						                }  
+									
+								}
+								else{
+									((Button) v).setText("AM");
+									 if (timePicker.getCurrentHour() >= 12) {
+										 timePicker.setCurrentHour(timePicker.getCurrentHour() - 12);
+						                }
+								}
+							}
+							
+						}
+					});
+				}
+			} else {
+				timePicker.setIs24HourView(true);
 			}
+			
+			
+
 			
 			
 			if (oldTime != null) {
