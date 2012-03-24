@@ -105,7 +105,7 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 				 */
 				final LatLng latLong = new LatLng(latitude, longitude);
 				final UTMRef utmRef = latLong.toUTMRef();
-				urlString = Trafikanten.getApiUrl() + "/Place/GetClosestStopsByCoordinates/?coordinates=(X=" +  (int) utmRef.getEasting() + ",Y=" + (int) utmRef.getNorthing() + ")&proposals=10";
+				urlString = Trafikanten.getApiUrl() + "/ReisRest/Stop/GetClosestStopsByCoordinates/?coordinates=(X=" +  (int) utmRef.getEasting() + ",Y=" + (int) utmRef.getNorthing() + ")&proposals=10";
 			}
 			Log.i(TAG,"Searching with url " + urlString);
 			final InputStream stream = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString), false).stream;
