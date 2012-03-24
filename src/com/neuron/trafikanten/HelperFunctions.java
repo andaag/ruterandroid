@@ -125,7 +125,13 @@ public class HelperFunctions {
 	public static Long jsonToDate(String jsonString) {
 		Calendar calendar = Calendar.getInstance();
 		int indexOfPlus = jsonString.indexOf("+");
-		calendar.setTimeInMillis(Long.parseLong(jsonString.substring(5, indexOfPlus)));
+		int startOfDate = 5;
+		if (jsonString.startsWith("/")) {
+			// LEGACY : parse /Date( strings
+			// Some date strings are /Date(253402297140000+0100)/, new ones are Date(253402297140000+0100)
+			startOfDate = 6;
+		}
+		calendar.setTimeInMillis(Long.parseLong(jsonString.substring(startOfDate, indexOfPlus)));
 		calendar.setTimeZone(TimeZone.getTimeZone("GMT-"+jsonString.substring(indexOfPlus, indexOfPlus+3)+":00"));
 		return calendar.getTimeInMillis();
 	}
