@@ -24,8 +24,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
@@ -121,7 +123,11 @@ public class HelperFunctions {
 	 * Convert trafikanten's json date to an actual date
 	 */
 	public static Long jsonToDate(String jsonString) {
-		return new Date(Long.parseLong(jsonString.substring(6, jsonString.indexOf("+")))).getTime();
+		Calendar calendar = Calendar.getInstance();
+		int indexOfPlus = jsonString.indexOf("+");
+		calendar.setTimeInMillis(Long.parseLong(jsonString.substring(5, indexOfPlus)));
+		calendar.setTimeZone(TimeZone.getTimeZone("GMT-"+jsonString.substring(indexOfPlus, indexOfPlus+3)+":00"));
+		return calendar.getTimeInMillis();
 	}
 
 	

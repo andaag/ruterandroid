@@ -24,7 +24,6 @@ public class RealtimeDataGeneric  implements Parcelable {
 	public int numberOfBlockParts = 0; // kun t-bane (3 = kort tog, 6 = langt tog).
 
 	
-	public String stopVisitNote;
 	public RealtimeDataGeneric() {
 	}
 	
@@ -41,7 +40,6 @@ public class RealtimeDataGeneric  implements Parcelable {
 		expectedDeparture = in.readLong();
 		inCongestion = in.readInt() != 0;
 		realtime = in.readInt() != 0;
-		stopVisitNote = in.readString();
 		lowFloor = in.readInt() != 0;
 		numberOfBlockParts = in.readInt();
 	}
@@ -55,7 +53,6 @@ public class RealtimeDataGeneric  implements Parcelable {
 		out.writeLong(expectedDeparture);
 		out.writeInt(inCongestion ? 1 : 0);
 		out.writeInt(realtime ? 1 : 0);
-		out.writeString(stopVisitNote);
 		out.writeInt(lowFloor ? 1 : 0);
 		out.writeInt(numberOfBlockParts);
 	}

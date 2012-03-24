@@ -25,12 +25,12 @@ public class Trafikanten {
 	public static final String getApiUrl() {
 		try {
 			if (new File("/sdcard/trafikanten.debug").exists()) {
-				return "http://staging.services.trafikanten.no";
+				return "http://staging.reis.trafikanten.no";
 			}
 		} catch (Exception e) {
 			// We don't care if this fails.
 		}
-		return "http://services.epi.trafikanten.no";
+		return "http://reis.trafikanten.no";
 	}
 	
 	

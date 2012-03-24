@@ -54,7 +54,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
     @Override
 	public void run() {
 		try {
-			final String urlString = Trafikanten.getApiUrl() + "/RealTime/GetRealTimeData/" + stationId;
+			final String urlString = Trafikanten.getApiUrl() + "/siri/smjson.ashx?id=" + stationId;
 			Log.i(TAG,"Loading realtime data : " + urlString);
 			
 			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString), true);
@@ -77,7 +77,6 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				realtimeData.realtime = json.getBoolean("Monitored");
 				realtimeData.expectedDeparture = HelperFunctions.jsonToDate(json.getString("ExpectedDepartureTime"));
 				realtimeData.departurePlatform = json.getString("DeparturePlatformName");
-				realtimeData.stopVisitNote = json.getString("StopVisitNote");
 				try {
 					realtimeData.inCongestion = json.getBoolean("InCongestion");
 				} catch (org.json.JSONException e) {
