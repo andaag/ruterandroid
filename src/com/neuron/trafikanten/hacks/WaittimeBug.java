@@ -5,7 +5,7 @@ import com.neuron.trafikanten.dataSets.RouteData;
 import com.neuron.trafikanten.dataSets.RouteProposal;
 
 /*
- * This class exists to track waittime in trafikantenRoute, this shouldn't be needed as trafikanten already sends this information, only as empty elements.
+ * HACK : This class exists to track waittime in trafikantenRoute, this shouldn't be needed as trafikanten already sends this information, only as empty elements.
  */
 public class WaittimeBug {
 	public static void onSendData(RouteProposal travelStage) {

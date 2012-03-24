@@ -53,6 +53,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 	private final Context context;
 	private final RouteSearchData routeSearch;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("ddMMyyyyHHmm");
+	private final static int WALKINGFACTOR = 5; //FIXME : whats default here?
 	
 	public TrafikantenRoute(Context context, RouteSearchData routeSearch, IGenericProviderHandler<RouteProposal> handler) {
 		super();
@@ -76,13 +77,12 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			/*
 			 * Begin building url
 			 */
-			StringBuffer urlString = new StringBuffer(Trafikanten.getApiUrl() + "/Travel/GetTravelsAdvanced/?time=" + dateFormater.format(travelTime));
+			StringBuffer urlString = new StringBuffer(Trafikanten.getApiUrl() + "/ReisRest/Travel/GetTravelsAdvanced/?time=" + dateFormater.format(travelTime) + "&walkingFactor=" + WALKINGFACTOR);
 			boolean firstInList = true;
 			
 			/*
 			 * Setup from stations
 			 */
-			// FIRSTINLIST IS TRUE HERE
 			for (StationData station : routeSearch.fromStation) {
 				if (firstInList) {
 					urlString.append("&fromStops=");
@@ -156,7 +156,8 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
      * This parses the top level "route" proposals
      */
     public void jsonParseRouteProposal(InputStream stream) throws JSONException, IOException {
-		final JSONArray jsonArray = new JSONArray(HelperFunctions.InputStreamToString(stream));
+    	final JSONObject getTravelsAdvancedResult = new JSONObject(HelperFunctions.InputStreamToString(stream));
+		final JSONArray jsonArray = getTravelsAdvancedResult.getJSONArray("GetTravelsAdvancedResult");
 		final int arraySize = jsonArray.length();
 		for (int i = 0; i < arraySize; i++) {
 			RouteProposal travelProposal = new RouteProposal();
