@@ -98,11 +98,7 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 				/*
 				 * Setup URL for a normal station search query.
 				 */
-				if (isRealtimeStopFiltered) {
-					urlString = Trafikanten.getApiUrl() + "/RealTime/FindMatches/" + HelperFunctions.properEncode(query);
-				} else {
-					urlString = Trafikanten.getApiUrl() + "/Place/FindMatches/" + HelperFunctions.properEncode(query);
-				}
+				urlString = Trafikanten.getApiUrl() + "/ReisRest/Place/FindMatches/" + HelperFunctions.properEncode(query);
 			} else {
 				/*
 				 * Setup URL for coordinate search.
@@ -127,19 +123,10 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 				if (json.getInt("Type") == 0) {
 					StationData station = new StationData();
 					
-					if (query != null) {
-						/*
-						 * Not a coordinate search, so we already know the realtime value.
-						 */
-						station.realtimeStop = isRealtimeStopFiltered;
-					} else {
-						station.realtimeStop = json.getBoolean("RealTimeStop");
-						if (isRealtimeStopFiltered && !station.realtimeStop) {
-							/*
-							 * Coordinate search, and we only want realtime data.
-							 */
-							continue;
-						}
+					// We parse realtimestop first for performance reason.
+					station.realtimeStop = json.getBoolean("RealTimeStop");
+					if (isRealtimeStopFiltered && !station.realtimeStop) {
+						continue;
 					}
 					
 					station.stationId = json.getInt("ID");
