@@ -70,14 +70,15 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 			 */
 			final Boolean isAfter = routeSearch.arrival == 0;
 			long travelTime = isAfter ? routeSearch.departure : routeSearch.arrival;
-			if (travelTime == 0) {
-				travelTime = Calendar.getInstance().getTimeInMillis();
-			}
 
 			/*
 			 * Begin building url
 			 */
-			StringBuffer urlString = new StringBuffer(Trafikanten.getApiUrl() + "/ReisRest/Travel/GetTravelsAdvanced/?time=" + dateFormater.format(travelTime) + "&walkingFactor=" + WALKINGFACTOR);
+			StringBuffer urlString = new StringBuffer(Trafikanten.getApiUrl() + "/ReisRest/Travel/GetTravelsAdvanced/?walkingFactor=" + WALKINGFACTOR);
+			if (travelTime > 0) {
+				urlString.append("&time=" + dateFormater.format(travelTime)); 
+			}
+
 			boolean firstInList = true;
 			
 			/*
