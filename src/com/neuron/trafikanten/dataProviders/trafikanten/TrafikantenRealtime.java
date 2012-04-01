@@ -54,7 +54,7 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
     @Override
 	public void run() {
 		try {
-			final String urlString = Trafikanten.getApiUrl() + "/siri/smjson.ashx?id=" + stationId;
+			final String urlString = Trafikanten.getApiUrl() + "/reisrest/realtime/GetAllDepartures/" + stationId;
 			Log.i(TAG,"Loading realtime data : " + urlString);
 			
 			final StreamWithTime streamWithTime = HelperFunctions.executeHttpRequest(context, new HttpGet(urlString), true);

@@ -127,12 +127,15 @@ public class HelperFunctions {
 		int indexOfPlus = jsonString.indexOf("+");
 		int startOfDate = 5;
 		if (jsonString.startsWith("/")) {
-			// LEGACY : parse /Date( strings
-			// Some date strings are /Date(253402297140000+0100)/, new ones are Date(253402297140000+0100)
+			// LEGACY : parse /Date( strings : Some date strings are /Date(253402297140000+0100)/, new ones are Date(253402297140000+0100)
 			startOfDate = 6;
+			calendar.setTimeInMillis(Long.parseLong(jsonString.substring(startOfDate, indexOfPlus > 0 ? indexOfPlus : jsonString.length()-2)));
+		} else {
+			calendar.setTimeInMillis(Long.parseLong(jsonString.substring(startOfDate, indexOfPlus > 0 ? indexOfPlus : jsonString.length()-1)));
 		}
-		calendar.setTimeInMillis(Long.parseLong(jsonString.substring(startOfDate, indexOfPlus)));
-		calendar.setTimeZone(TimeZone.getTimeZone("GMT-"+jsonString.substring(indexOfPlus, indexOfPlus+3)+":00"));
+		if (indexOfPlus > -1) {
+			calendar.setTimeZone(TimeZone.getTimeZone("GMT-"+jsonString.substring(indexOfPlus, indexOfPlus+3)+":00"));
+		}
 		return calendar.getTimeInMillis();
 	}
 
