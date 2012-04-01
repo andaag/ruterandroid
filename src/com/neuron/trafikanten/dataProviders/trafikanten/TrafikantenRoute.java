@@ -53,7 +53,7 @@ public class TrafikantenRoute extends GenericDataProviderThread<RouteProposal> {
 	private final Context context;
 	private final RouteSearchData routeSearch;
 	private final static SimpleDateFormat dateFormater = new SimpleDateFormat("ddMMyyyyHHmm");
-	private final static int WALKINGFACTOR = 5; //FIXME : whats default here?
+	private final static int WALKINGFACTOR = 100; // WalkingFactor har defaultverdi 100 (%), som betyr 70 m / minutt. 
 	
 	public TrafikantenRoute(Context context, RouteSearchData routeSearch, IGenericProviderHandler<RouteProposal> handler) {
 		super();
