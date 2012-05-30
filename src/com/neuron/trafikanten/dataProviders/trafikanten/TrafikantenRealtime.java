@@ -77,6 +77,9 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				realtimeData.realtime = json.getBoolean("Monitored");
 				realtimeData.expectedDeparture = HelperFunctions.jsonToDate(json.getString("ExpectedDepartureTime"));
 				realtimeData.departurePlatform = json.getString("DeparturePlatformName");
+				if (realtimeData.departurePlatform.equals("null")) {
+					realtimeData.departurePlatform = "";
+				}
 				try {
 					realtimeData.inCongestion = json.getBoolean("InCongestion");
 				} catch (org.json.JSONException e) {

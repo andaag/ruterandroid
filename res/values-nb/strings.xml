@@ -109,6 +109,7 @@ Trykk på et reiseforslag for detaljer!</string>
         
         <!-- RealtimeView -->
         <string name="ca">ca </string>
+        <string name="unknown">ukjent</string>
         <string name="congestion">kø </string>
         <string name="old">gammel</string>
         <string name="refresh">Oppdater</string>

@@ -32,6 +32,18 @@ public class PlatformRenderer extends GenericRealtimeRenderer {
 	
 	public int compareTo(RealtimeData data) {
 		/*
+		 * Sorting based on empty platform
+		 */
+		if (platform.length() == 0 && data.departurePlatform.length() > 0) {
+			return 1;
+		}
+		if (platform.length() > 0 && data.departurePlatform.length() == 0) {
+			return -1;
+		}
+		if (platform.length() == 0 && data.departurePlatform.length() == 0) {
+			return 0;
+		}
+		/*
 		 * Sorting based on numerical platform
 		 */
 		final int platNum = getPlatformNumber();

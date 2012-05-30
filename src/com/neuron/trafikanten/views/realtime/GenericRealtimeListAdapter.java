@@ -230,7 +230,12 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 	
 	private void renderPlatformView(ViewHolderPlatform holder, final String platform) {
 		if (platform != null) {
-			holder.header.setText("Plattform " + platform);
+			if (platform.length() == 0) {
+				holder.header.setText("Plattform " + activity.getString(R.string.unknown));
+			} else {
+				holder.header.setText("Plattform " + platform);
+			}
+			
 			holder.header.setVisibility(View.VISIBLE);
 		} else {
 			holder.header.setVisibility(View.GONE);
