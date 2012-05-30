@@ -131,9 +131,9 @@ public class RealtimeView extends GenericRealtimeView {
     	long lastUpdateDiff = (System.currentTimeMillis() - lastUpdate) / HelperFunctions.SECOND;
     	if (lastUpdateDiff > 60) {
     		lastUpdateDiff = lastUpdateDiff / 60;
-    		setTitle("Trafikanten - " + station.stopName + "   (" + lastUpdateDiff + " min " + getText(R.string.old) + ")");
+    		setTitle(getString(R.string.app_name) + " - " + station.stopName + "   (" + lastUpdateDiff + " min " + getText(R.string.old) + ")");
     	} else {
-    		setTitle("Trafikanten - " + station.stopName);
+    		setTitle(getString(R.string.app_name) + " - " + station.stopName);
     	}
     }
     
