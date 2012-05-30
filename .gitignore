@@ -1,0 +1,11 @@
+bin/*
+.project
+.classpath
+gen/*
+build.sh
+testing/*
+.sonar/
+res/values-en-rNO
+res/values-no
+res/values-sv
+res/values-en-rSE
