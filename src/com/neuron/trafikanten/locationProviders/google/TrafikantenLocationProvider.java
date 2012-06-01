@@ -40,6 +40,7 @@ public class TrafikantenLocationProvider extends GenericDataProviderThread<Locat
 		_stop = false;
 		
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
 	}
 	
 	
