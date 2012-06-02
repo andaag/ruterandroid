@@ -113,7 +113,7 @@ public class GenericMap extends MapActivity {
 		String apiKey = "0C4n0QlD7VKWny63h-bygLe8DF4bhWdnxCYYhNA";
 		try {
 			if (new File("/sdcard/trafikanten.debug").exists()) {
-				apiKey = "0C4n0QlD7VKUB4EwYFEyx5siil131jMTrC8k-EQ";
+				apiKey = "0C4n0QlD7VKUBXEwAaDHHuGHIpMavSe5zbT27AQ";
 			}
 		} catch (Exception e) {
 			// We don't care if this fails.
