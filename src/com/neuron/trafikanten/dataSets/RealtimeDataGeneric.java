@@ -54,7 +54,7 @@ public class RealtimeDataGeneric  implements Parcelable {
 	}
 	
 	public void renderToContainer(StringBuffer output, Activity activity, long currentTime) {
-		output.append("   ");
+		output.append(" &nbsp;");
 		if (lowFloor) {
 			output.append("<img src='LF'/>");
 		}

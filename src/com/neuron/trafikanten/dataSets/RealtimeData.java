@@ -84,7 +84,7 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 		}
 		
 		if (_cachedSpanned == null) 	{
-			StringBuffer content = new StringBuffer("   ");
+			StringBuffer content = new StringBuffer(" ");
 			renderToContainer(content, activity, currentTime);
 			for (RealtimeDataGeneric nextDeparture : nextDepartures) {
 				nextDeparture.renderToContainer(content, activity, currentTime);
