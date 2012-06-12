@@ -58,7 +58,7 @@
         android:background="@drawable/skin_sanntid_avganger"
         android:gravity="center_vertical"
         android:paddingBottom="0dip"
-        android:paddingTop="4dip"
+        android:paddingTop="2dip"
         android:scrollbarSize="0px"
         android:scrollbarStyle="outsideInset"
         android:scrollbars="none" >
@@ -71,7 +71,7 @@
             android:layout_height="fill_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="3dip"
+            android:paddingLeft="6dip"
             android:paddingRight="8dip"
             android:scrollbarSize="0px"
             android:scrollbarStyle="outsideInset"
