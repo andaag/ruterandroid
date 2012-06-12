@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
+import android.text.Spanned;
 import android.widget.TextView;
 
 import com.neuron.trafikanten.R;
@@ -73,26 +74,26 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	/*
 	 * Renders all departures, expectedDeparture + nextDepartures
 	 */
-	private String _cachedString = null;
+	private Spanned _cachedSpanned = null;
 	private int _cachednextDepartures = 0;
 	
 	public void renderDepartures(TextView tv, Activity activity, Long currentTime) {
 		if (_cachednextDepartures != nextDepartures.size()) {
 			_cachednextDepartures = 0;
-			_cachedString = null;
+			_cachedSpanned = null;
 		}
 		
-		if (_cachedString == null) 	{
+		if (_cachedSpanned == null) 	{
 			StringBuffer content = new StringBuffer("   ");
 			renderToContainer(content, activity, currentTime);
 			for (RealtimeDataGeneric nextDeparture : nextDepartures) {
 				nextDeparture.renderToContainer(content, activity, currentTime);
 			}
-			_cachedString = content.toString();
+			_cachedSpanned = Html.fromHtml(content.toString(), new ImageGetter(activity), null);
 			_cachednextDepartures = nextDepartures.size();
 		}
 		
-		tv.setText(Html.fromHtml(_cachedString, new ImageGetter(activity), null));
+		tv.setText(_cachedSpanned);
 	}
 	
 	private static class ImageGetter implements Html.ImageGetter {
