@@ -118,6 +118,9 @@
 		android:paddingBottom="1dip"
 		android:gravity="center_vertical"
 		
+		android:ellipsize="marquee"
+   		android:singleLine="true"
+		
 		android:visibility="gone"
 		
 		android:background="@drawable/skin_sanntid_avganger"
