@@ -79,6 +79,11 @@ public abstract class GenericRealtimeView extends ListActivity {
         	realtimeList.setItems(savedInstanceState.getParcelable(KEY_LIST));
         	realtimeList.notifyDataSetChanged();
 		}
+		/*
+		ListView lv = getListView();
+		lv.setCacheColorHint(Color.TRANSPARENT); 
+		lv.setFastScrollEnabled(true);
+		lv.setScrollingCacheEnabled(true);*/
 		
         setListAdapter(realtimeList);
     }

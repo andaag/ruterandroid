@@ -19,12 +19,18 @@
 package com.neuron.trafikanten.dataSets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.Activity;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Html;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.neuron.trafikanten.R;
 
 public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	public final static String PARCELABLE = "RealtimeData";
@@ -69,13 +75,72 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	 * Renders all departures, expectedDeparture + nextDepartures
 	 */
 	public void renderDepartures(LinearLayout container, Activity activity, Long currentTime) {
+		//FIXME : should remove container and only use textview.
 		container.removeAllViews();
+		TextView tv = new TextView(activity);
+
+		
+		StringBuffer content = new StringBuffer("   ");
+		renderToContainer(content, activity, currentTime);
+		for (RealtimeDataGeneric nextDeparture : nextDepartures) {
+			nextDeparture.renderToContainer(content, activity, currentTime);
+		}
+		
+		tv.setText(Html.fromHtml(content.toString(), new ImageGetter(activity), null));
+		container.addView(tv);
+		
+		
+		/*
+		
 		TextView reusedTextView = renderToContainer(container, false, activity, currentTime, null);
 		
 		for (RealtimeDataGeneric nextDeparture : nextDepartures) {
 			reusedTextView = nextDeparture.renderToContainer(container, true, activity, currentTime, reusedTextView);
-		}
+		}*/
 	}
+	
+	private static class ImageGetter implements Html.ImageGetter {
+		
+		Resources mResources;
+		static final HashMap<Integer, Drawable> mHashMap = new  HashMap<Integer, Drawable>();
+		
+		private Drawable getCachedDrawable(int id) {
+			Object o = mHashMap.get(id);
+			if (o != null) {
+				return (Drawable) o;
+			}
+			
+	        Drawable d = mResources.getDrawable(id);
+	        d.setBounds(0,0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+	        mHashMap.put(id, d);
+	        return d;
+		}
+		
+		public ImageGetter(Activity activity) {
+			super();
+			mResources = activity.getResources();
+			
+		}
+		
+	    public Drawable getDrawable(String source) {
+	        int id;
+	        
+	        if (source.equals("LF")) {
+	            id = R.drawable.departure_icon_lowfloor;
+	        }
+	        else if (source.equals("LF1")) {
+	            id = R.drawable.departure_icon_trainlength1;
+	        }
+	        else if (source.equals("LF2")) {
+	            id = R.drawable.departure_icon_trainlength2;
+	        }
+	        else {
+	            return null;
+	        }
+
+	        return getCachedDrawable(id);
+	    }
+	};
 	
 	/*
 	 * @see android.os.Parcelable

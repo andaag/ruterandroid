@@ -1,15 +1,11 @@
 package com.neuron.trafikanten.dataSets;
 
+import com.neuron.trafikanten.HelperFunctions;
+import com.neuron.trafikanten.R;
+
 import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.TypedValue;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.neuron.trafikanten.HelperFunctions;
-import com.neuron.trafikanten.R;
 
 /*
  * This is realtime data that is available for "all" realtime sets, aka available both for main view and for subdepartures
@@ -57,7 +53,9 @@ public class RealtimeDataGeneric  implements Parcelable {
 		out.writeInt(numberOfBlockParts);
 	}
 	
-	//TODO : http://developer.android.com/training/improving-layouts/smooth-scrolling.html ?
+	/*
+	 * //TODO : http://developer.android.com/training/improving-layouts/smooth-scrolling.html ?
+	 *
 	private TextView buildTextView(boolean marginLeft, Activity activity, long currentTime, TextView reusedTextview) {
 		TextView tv;
 		if (reusedTextview == null) {
@@ -65,11 +63,12 @@ public class RealtimeDataGeneric  implements Parcelable {
 			tv.setTypeface(HelperFunctions.getTypeface(activity));
 			tv.setSingleLine();
 			tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-			//if (realtime) {
+			if (realtime) {
 				tv.setTextColor(-330752); 		//Color.parseColor("#FAF400"); // -330752
-			/*} else {
-				tv.setTextColor(Color.parseColor("#ecebea"));
-			}*/ //TODO : add yellow text only if departure is realtime (aka current), and dont reuse the textview if textcolor changes.
+			} else {
+				//tv.setTextColor(Color.parseColor("#ecebea"));
+				tv.setTextColor(0);
+			}
 		} else {
 			tv = reusedTextview; 
 		}
@@ -93,7 +92,7 @@ public class RealtimeDataGeneric  implements Parcelable {
 	
 	/*
 	 * Returns TextView when it can be reused (aka if no icons are rendered)
-	 */
+	 *
 	public TextView renderToContainer(LinearLayout container, boolean marginLeft, Activity activity, long currentTime, TextView reusedTextview) {
 		TextView txt = buildTextView(marginLeft, activity, currentTime, reusedTextview);
 		if (reusedTextview == null) {
@@ -119,6 +118,32 @@ public class RealtimeDataGeneric  implements Parcelable {
 			container.addView(img);			
 		}
 		return txt;
+	}*/
+	
+	public void renderToContainer(StringBuffer output, Activity activity, long currentTime) {
+		output.append("   ");
+		if (lowFloor) {
+			output.append("<img src='LF'/>");
+		}
+		if (numberOfBlockParts == 3) {
+			output.append("<img src='TL1'/>");
+		}
+		else if (numberOfBlockParts == 6) {
+			output.append("<img src='TL2'/>");	
+		}
+		
+		if (inCongestion) {
+			output.append(activity.getText(R.string.congestion));
+			output.append(" ");
+		}
+		
+		if (realtime) {
+			output.append("<font color='#FAF400'>");
+		} else {
+			output.append("<font color='#ffffff'>");
+		}
+		HelperFunctions.renderTime(output, currentTime, activity, expectedDeparture);
+		output.append("</font>");
 	}
 	
 	/*
