@@ -116,7 +116,7 @@ Click a travel proposal for a detailed view!</string>
         <string name="refresh">Refresh</string>
         <string name="realtimeEmpty">No information found!</string>
         <string name="warnings">Warnings</string>
-        <string name="caHelpText">"ca" means realtime information is unavailable,
+        <string name="caHelpText">white color means realtime information is unavailable,
 we fallback to travel planner information.</string>
 		<string name="changeCaTextVisibility">Show/Hide "ca" help text</string>
 		

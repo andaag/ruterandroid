@@ -115,7 +115,7 @@ Trykk på et reiseforslag for detaljer!</string>
         <string name="refresh">Oppdater</string>
         <string name="realtimeEmpty">Ingen informasjon funnet!</string>
         <string name="warnings">Advarsler</string>
-        <string name="caHelpText">"ca" betyr at det ikke er sanntid for avgangen,
+        <string name="caHelpText">hvit farge betyr at det ikke er sanntid for avgangen,
 da er det tider fra rutetabellen som vises.</string>
 <string name="changeCaTextVisibility">Vis/Skjul "ca" help text</string>
 
