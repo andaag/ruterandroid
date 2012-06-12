@@ -34,7 +34,7 @@ import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.R;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataSets.LocationData;
-import com.neuron.trafikanten.locationProviders.skyhook.TrafikantenLocationProvider;
+import com.neuron.trafikanten.locationProviders.google.TrafikantenLocationProvider;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
 /*
