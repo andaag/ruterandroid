@@ -4,6 +4,7 @@
     android:versionCode="77"
     android:versionName="2.3.0" >
     <!-- REMEMBER TO UPDATE STRINGS -->
+    
 
     <uses-sdk
         android:minSdkVersion="4"
@@ -37,7 +38,8 @@
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:hardwareAccelerated="true" >
         <activity
             android:name=".SplashScreen"
             android:label="@string/app_name"
