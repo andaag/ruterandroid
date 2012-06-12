@@ -117,7 +117,7 @@ Trykk på et reiseforslag for detaljer!</string>
         <string name="warnings">Advarsler</string>
         <string name="caHelpText">hvit farge betyr at det ikke er sanntid for avgangen,
 da er det tider fra rutetabellen som vises.</string>
-<string name="changeCaTextVisibility">Vis/Skjul "ca" help text</string>
+<string name="changeCaTextVisibility">Vis/Skjul hjelpe tekst</string>
 
 		<!-- Favorites view -->
 		<string name="favoritesEmpty">For å legge til en favoritt, gå inn i sanntid visning og hold nede på en avgang.</string>
