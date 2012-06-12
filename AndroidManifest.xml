@@ -27,6 +27,8 @@
     </uses-permission>
     <uses-permission android:name="android.permission.WAKE_LOCK" >
     </uses-permission>
+    
+<!--   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />  -->  
 
     <supports-screens
         largeScreens="true"

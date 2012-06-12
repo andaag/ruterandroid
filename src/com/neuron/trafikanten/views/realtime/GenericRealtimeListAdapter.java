@@ -207,7 +207,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				final ViewHolderRealtime holderRealtime = (ViewHolderRealtime) convertView.getTag(R.layout.realtime_list);
 				final RealtimeRenderer realtimeRenderer = (RealtimeRenderer) renderer;
 				renderRealtimeView(holderRealtime, realtimeRenderer.data);
-				onClickHack(convertView, holderRealtime.departures, holderRealtime.tableLayout, realtimeRenderer);
+				//onClickHack(convertView, holderRealtime.departures, holderRealtime.tableLayout, realtimeRenderer);
 				return convertView;
 			case GenericRealtimeList.RENDERER_PLATFORM:
 				final ViewHolderPlatform holderPlatform = (ViewHolderPlatform) convertView.getTag(R.layout.realtime_list_platform);
@@ -222,8 +222,6 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				return convertView;				
 			}
 		}
-		
-
 		
 		return convertView;
 	}
@@ -265,6 +263,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		/*
 		 * Render data to view.
 		 */
+		
 		data.renderDepartures(holder.departures, parent, System.currentTimeMillis() - parent.timeDifference);
 		holder.destination.setText(data.destination);
 		if (data.destination.equals(data.lineName)) {
@@ -272,6 +271,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		} else {
 			holder.line.setText(data.lineName);
 		}
+	
 		
 		holder.icon.setImageResource(StationIcons.hackGetLineIcon(data.lineName));
 		

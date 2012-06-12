@@ -156,9 +156,10 @@ public abstract class GenericRealtimeView extends ListActivity {
 	 */
 	@Override
 	protected void onPause() {
-		super.onPause();
+		//Debug.stopMethodTracing();
 		favoriteLineDbAdapter.close();
 		autoRefreshHandler.removeMessages(0);
+		super.onPause();
 	}
 
 	@Override

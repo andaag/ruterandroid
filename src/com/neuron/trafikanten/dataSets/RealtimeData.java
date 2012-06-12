@@ -73,14 +73,26 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	/*
 	 * Renders all departures, expectedDeparture + nextDepartures
 	 */
+	private String _cachedString = null;
+	private int _cachednextDepartures = 0;
+	
 	public void renderDepartures(TextView tv, Activity activity, Long currentTime) {
-		StringBuffer content = new StringBuffer("   ");
-		renderToContainer(content, activity, currentTime);
-		for (RealtimeDataGeneric nextDeparture : nextDepartures) {
-			nextDeparture.renderToContainer(content, activity, currentTime);
+		if (_cachednextDepartures != nextDepartures.size()) {
+			_cachednextDepartures = 0;
+			_cachedString = null;
 		}
 		
-		tv.setText(Html.fromHtml(content.toString(), new ImageGetter(activity), null));
+		if (_cachedString == null) 	{
+			StringBuffer content = new StringBuffer("   ");
+			renderToContainer(content, activity, currentTime);
+			for (RealtimeDataGeneric nextDeparture : nextDepartures) {
+				nextDeparture.renderToContainer(content, activity, currentTime);
+			}
+			_cachedString = content.toString();
+			_cachednextDepartures = nextDepartures.size();
+		}
+		
+		tv.setText(Html.fromHtml(_cachedString, new ImageGetter(activity), null));
 	}
 	
 	private static class ImageGetter implements Html.ImageGetter {

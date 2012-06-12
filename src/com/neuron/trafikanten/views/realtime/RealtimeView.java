@@ -382,6 +382,8 @@ public class RealtimeView extends GenericRealtimeView {
 					refreshDevi();
 					realtimeList.notifyDataSetChanged();
 				}
+				
+				//Debug.startMethodTracing("scrolling");
 			}
 
 			@Override
