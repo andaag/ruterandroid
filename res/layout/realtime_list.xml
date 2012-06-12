@@ -65,7 +65,7 @@
 
         <!-- This shares layout with route_detailed_list.xml -->
 
-        <LinearLayout
+        <TextView
             android:id="@+id/departures"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"

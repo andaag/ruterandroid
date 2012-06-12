@@ -573,7 +573,7 @@ class RouteAdapter extends BaseAdapter {
 			holder.waittime = (TextView) convertView.findViewById(R.id.waittime);
 			holder.devi = (LinearLayout) convertView.findViewById(R.id.devi);
 			holder.realtimeText = (TextView) convertView.findViewById(R.id.realtimeText);
-			holder.departures = (LinearLayout) convertView.findViewById(R.id.departures);
+			holder.departures = (TextView) convertView.findViewById(R.id.departures);
 			//holder.departurePlatform = (TextView) convertView.findViewById(R.id.departurePlatform);
 			convertView.setTag(holder);
 		} else {
@@ -676,7 +676,7 @@ class RouteAdapter extends BaseAdapter {
 		TextView waittime;
 		
 		TextView realtimeText;
-		LinearLayout departures;
+		TextView departures;
 		//TextView departurePlatform;
 		
 		LinearLayout devi;

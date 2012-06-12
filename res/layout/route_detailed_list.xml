@@ -105,7 +105,7 @@
 		android:text="@string/realtime"
 		android:layout_marginRight="45dip"/>
 		
-    <LinearLayout
+    <TextView
     	android:id="@+id/departures"
     	android:orientation="horizontal"
 		android:layout_width="fill_parent"

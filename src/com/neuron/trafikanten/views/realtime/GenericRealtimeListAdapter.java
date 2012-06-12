@@ -130,7 +130,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 	 * Workaround for clickable bug, onListItemClick does not trigger at all if ScrollingMovementMethod is being used.
 	 * TODO : Check if this workaround is still needed, HACK
 	 */
-	private void onClickHack(final View convertView, final LinearLayout departures, final TableLayout tableLayout, final RealtimeRenderer realtimeRenderer) {
+	private void onClickHack(final View convertView, final TextView departures, final TableLayout tableLayout, final RealtimeRenderer realtimeRenderer) {
 		final OnClickListener onClickListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -168,7 +168,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 				holderRealtime.line = (TextView) convertView.findViewById(R.id.line);
 				holderRealtime.icon = (ImageView) convertView.findViewById(R.id.icon);
 				holderRealtime.destination = (TextView) convertView.findViewById(R.id.destination);
-				holderRealtime.departures = (LinearLayout) convertView.findViewById(R.id.departures);
+				holderRealtime.departures = (TextView) convertView.findViewById(R.id.departures);
 				holderRealtime.tableLayout = (TableLayout) convertView.findViewById(R.id.tablelayout); // Needed for onclickhack
 				
 				holderRealtime.departureInfo = (LinearLayout) convertView.findViewById(R.id.departureInfo);
@@ -311,7 +311,7 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		TextView line;
 		TextView destination;
 		ImageView icon;
-		LinearLayout departures;
+		TextView departures;
 		
 		LinearLayout departureInfo;
 		
