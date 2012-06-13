@@ -1,5 +1,6 @@
 #Project set filters:
 build.sh
+fixgraphics.sh
 testing/*
 proguard/
 .sonar/
