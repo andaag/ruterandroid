@@ -1,7 +1,4 @@
-bin/*
-.project
-.classpath
-gen/*
+#Project set filters:
 build.sh
 testing/*
 .sonar/
@@ -9,3 +6,23 @@ res/values-en-rNO
 res/values-no
 res/values-sv
 res/values-en-rSE
+
+
+#Standard from github:
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
