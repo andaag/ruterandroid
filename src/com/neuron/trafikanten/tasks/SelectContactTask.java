@@ -43,7 +43,15 @@ import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
  */
 
 public class SelectContactTask implements GenericTask {
-    private static final String TAG = "Trafikanten-SelectContactTask";
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+    /*private static final String TAG = "Trafikanten-SelectContactTask";
     private Activity activity;
     ReturnCoordinatesHandler handler;
     private Dialog dialog; 
@@ -58,11 +66,11 @@ public class SelectContactTask implements GenericTask {
     
     /*
      * Setup dialog for selecting contact
-     */
+     *
     private void showDialog() {
         /*
          * Setup list of names with addresses
-         */
+         *
         ArrayList<String> nameList = new ArrayList<String>();
         final Cursor cursor = activity.managedQuery(Contacts.ContactMethods.CONTENT_URI, CONTACTMETHODS_PROJECTION, FILTER_POSTAL, null, null);
         while (cursor.moveToNext()) {
@@ -72,7 +80,7 @@ public class SelectContactTask implements GenericTask {
         
         /*
          * Check if we found anything at all
-         */
+         *
         if (nameList.size() == 0) {
         	final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         	builder.setPositiveButton("Back",null);
@@ -86,7 +94,7 @@ public class SelectContactTask implements GenericTask {
         
         /*
          * Setup select contact alert dialog
-         */
+         *
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.selectContact);
         final String[] items = new String[nameList.size()];
@@ -111,7 +119,7 @@ public class SelectContactTask implements GenericTask {
         dialog = builder.create();
 		/*
 		 * Handler onCancel
-		 */
+		 *
 		dialog.setOnCancelListener(new OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
@@ -121,7 +129,7 @@ public class SelectContactTask implements GenericTask {
         
         /*
          * Show dialog
-         */
+         *
         dialog.show();
     }
     
@@ -133,7 +141,7 @@ public class SelectContactTask implements GenericTask {
     
     /*
      * Do geo mapping.
-     */
+     *
     private void geoMap(String name, String address) {
         final Geocoder geocoder = new Geocoder(activity);
         try {
@@ -152,7 +160,7 @@ public class SelectContactTask implements GenericTask {
         } catch (IOException e) {
             /*
              * Pass exceptions to parent
-             */
+             *
             handler.onError(e);
         }
     }
@@ -165,5 +173,5 @@ public class SelectContactTask implements GenericTask {
 	public void stop() {
 		handler.onCanceled();
 		dialog.dismiss();
-	}
+	}*/
 }

@@ -77,7 +77,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	 */
 	private final static int MYLOCATION_ID = Menu.FIRST;
 	private final static int MAP_ID = Menu.FIRST + 1;
-	private final static int CONTACT_ID = Menu.FIRST + 2;
+	/* private final static int CONTACT_ID = Menu.FIRST + 2; */
 	private final static int ADDRESS_ID = Menu.FIRST + 3;
 	private final static int FAVORITES_ID = Menu.FIRST + 4;
 	private final static int HELP_ID = Menu.FIRST + 5;
@@ -326,8 +326,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 		final MenuItem favorites = menu.add(0, FAVORITES_ID, 0, R.string.favorites);
 		favorites.setIcon(android.R.drawable.ic_menu_myplaces);
 		
-		final MenuItem contact = menu.add(0, CONTACT_ID, 0, R.string.contact);
-		contact.setIcon(R.drawable.ic_menu_cc);
+		/* final MenuItem contact = menu.add(0, CONTACT_ID, 0, R.string.contact);
+		contact.setIcon(R.drawable.ic_menu_cc); */
 	
 		final MenuItem address = menu.add(0, ADDRESS_ID, 0, R.string.address);
 		address.setIcon(R.drawable.ic_menu_directions);
@@ -354,9 +354,9 @@ public abstract class GenericSelectStationView extends ListActivity {
         case MAP_ID:
         	GenericMap.Show(this, stationListAdapter.getList(), false, 0);
         	break;
-        case CONTACT_ID:
+        /* case CONTACT_ID:
         	selectContact();
-        	break;
+        	break; */
         case ADDRESS_ID:
         	searchAddressTask();
         	break;
@@ -377,11 +377,11 @@ public abstract class GenericSelectStationView extends ListActivity {
 	/*
 	 * Deal with contact selection
 	*/
-	private void selectContact() {
+	/*private void selectContact() {
 		if (searchProvider != null)
 			searchProvider.kill();
 		activeTask = new SelectContactTask(this, getReturnCoordinatesHandler());
-	}
+	}*/
 	
 	
 	/*
