@@ -1,4 +1,4 @@
-Ruter Android
+Ruter Android (previously Trafikanten Android)
 ============
 
 Ruter.no's android application is developed by www.codebox.no.
