@@ -1,6 +1,7 @@
 #Project set filters:
 build.sh
 testing/*
+proguard/
 .sonar/
 res/values-en-rNO
 res/values-no
@@ -25,4 +26,5 @@ gen/
 
 # Local configuration file (sdk path, etc)
 local.properties
+ant.properties
 
