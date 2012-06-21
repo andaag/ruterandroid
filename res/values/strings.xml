@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
         <!-- Static strings -->
-    <string name="app_name">Ruter</string>
+    <string name="app_name">RuterReise</string>
     
     <!-- Front page -->
     <string name="realtime">Realtime</string>
