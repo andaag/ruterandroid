@@ -65,6 +65,8 @@ public class ShowHelpTask implements GenericTask {
 		
 		builder.append("Trafikanten på android er GPL lisensiert, og hele kildekoden kan lastes ned <a href='http://www.codebox.no'>via hjemmesiden</a><br/><br/>");
 
+		
+		/* TODO : Remove logging of bandwidth 
 		final SharedPreferences preferences = activity.getSharedPreferences("trafikantenandroid", Context.MODE_PRIVATE);
 		final double downloadMb = (double)preferences.getLong(HelperFunctions.KEY_DOWNLOADBYTE, 0) / 1024 / 1024;
 		final double pris = (double)(1 * downloadMb);
@@ -74,7 +76,7 @@ public class ShowHelpTask implements GenericTask {
 		builder.append("Eksempel på hva dette kan ha kostet deg:<br/>");
 		builder.append(" - for 1kr/MB : " + new DecimalFormat("0.##").format(pris) + " kr.<br/>");
 		builder.append(" - for 20kr (!) /MB : " + new DecimalFormat("0.##").format(prisLarge) + " kr.<br/>");
-		builder.append("Priser pr mb varierer på mobil leverandør. For prisinformasjon på mobilleverandører se <a href='http://www.telepriser.no'>telepriser.no</a>.");
+		builder.append("Priser pr mb varierer på mobil leverandør. For prisinformasjon på mobilleverandører se <a href='http://www.telepriser.no'>telepriser.no</a>."); */
 		
         final ProgressBar progress = (ProgressBar) dialog.findViewById(android.R.id.progress);
         progress.setVisibility(View.GONE);
