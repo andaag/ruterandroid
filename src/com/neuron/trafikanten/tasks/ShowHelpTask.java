@@ -59,11 +59,11 @@ public class ShowHelpTask implements GenericTask {
 		
 		SpannableStringBuilder builder = new SpannableStringBuilder("Reiseplanlegger, avgangstider og kart dekker hele Østlandsområdet. I tillegg får du trafikkmeldinger for Oslo og Akershus.<br/><br/>" + 
                 "Avgangstider i sanntid vises med gult klokkeslett der det er tilgjengelig. For øvrig vises avgangstider i hvitt etter planlagt rutetid.<br/><br/>" + 
-                "Applikasjonen er utviklet og distribuert av <a href='http://www.codebox.no'>codebox.no</a> i sammarbeid med Trafikanten AS - et datterselskap av Ruter AS.<br/><br/>" + 
-				  "For mer informasjon, se <a href='http://www.ruter.no/android'>ruter.no/android</a><br/><br/>");
+                "Utvikler av applikasjonen er <a href='http://www.codebox.no'>codebox.no</a> og ansvarlig utgiver er Trafikanten AS- et datterselskap av <a href='http://www.ruter.no'>Ruter As</a>.<br/><br/>" + 
+				  "For mer informasjon, se <a href='http://www.ruter.no/android'>ruter.no/android</a>.<br/><br/>");
 
 		
-		builder.append("Trafikanten på android er GPL lisensiert, og hele kildekoden kan lastes ned <a href='http://www.codebox.no'>via hjemmesiden</a><br/><br/>");
+		builder.append("Trafikanten på android er GPL lisensiert, og hele kildekoden kan lastes ned <a href='http://www.codebox.no'>via hjemmesiden</a>.");
 
 		
 		/* TODO : Remove logging of bandwidth 
