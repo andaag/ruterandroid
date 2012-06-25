@@ -20,19 +20,24 @@ package com.neuron.trafikanten.dataSets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.nfc.Tag;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.widget.TextView;
 
+import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 
 public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
+    private final static String TAG = "Trafikanten-RealtimeData";
 	public final static String PARCELABLE = "RealtimeData";
 	public String lineName;
 	public int lineId;
@@ -94,12 +99,20 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	 */
 	private Spanned _cachedSpanned = null;
 	private int _cachednextDepartures = 0;
+    private long _lastCacheUpdated = 0;
+    private static final long CACHE_INVALIDATETIME = HelperFunctions.SECOND * 30;
+    private static final Random RandomGenerator = new Random();
+
 	
 	public void renderDepartures(TextView tv, Activity activity, Long currentTime) {
 		if (_cachednextDepartures != nextDepartures.size()) {
-			_cachednextDepartures = 0;
 			_cachedSpanned = null;
 		}
+        if (_lastCacheUpdated == 0 || (System.currentTimeMillis() - _lastCacheUpdated) > (CACHE_INVALIDATETIME + (RandomGenerator.nextInt(15) * HelperFunctions.SECOND))) {
+            Log.d(TAG, "Invalidating cache for departure");
+            _cachedSpanned = null;
+        }
+
 		
 		if (_cachedSpanned == null) 	{
 			StringBuffer content = new StringBuffer(" ");
@@ -112,6 +125,7 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 		}
 		
 		tv.setText(_cachedSpanned);
+        _lastCacheUpdated = System.currentTimeMillis();
 	}
 	
 	private static class ImageGetter implements Html.ImageGetter {
