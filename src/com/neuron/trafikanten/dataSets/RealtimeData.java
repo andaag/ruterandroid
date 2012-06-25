@@ -38,6 +38,7 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	public int lineId;
 	public String destination;
 	public String departurePlatform;
+    public int vehicleMode;
 	
 	/*
 	 * Data set of coming departures
@@ -69,6 +70,23 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 		}
 		return _platformNumber;
 	}
+
+    public int getImageResource() {
+        switch(vehicleMode) {
+            case 0:
+                return R.drawable.icon_line_bus;
+            case 1:
+                return R.drawable.icon_line_boat;
+            case 2:
+                return R.drawable.icon_line_train;
+            case 3:
+                return R.drawable.icon_line_tram;
+            case 4:
+                return R.drawable.icon_line_underground;
+            default:
+                return R.drawable.icon_line_bus;
+        }
+    }
 	
 		
 	/*
@@ -154,6 +172,7 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 		lineId = in.readInt();
 		destination = in.readString();
 		departurePlatform = in.readString();
+        vehicleMode = in.readInt();
 
 		nextDepartures = new ArrayList<RealtimeDataGeneric>();
 		in.readList(nextDepartures, RealtimeDataGeneric.class.getClassLoader());
@@ -174,6 +193,7 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 		out.writeInt(lineId);
 		out.writeString(destination);
 		out.writeString(departurePlatform);
+        out.writeInt(vehicleMode);
 		
 		out.writeList(nextDepartures);
 		out.writeList(devi);

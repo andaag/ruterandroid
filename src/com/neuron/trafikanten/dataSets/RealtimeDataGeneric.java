@@ -19,8 +19,7 @@ public class RealtimeDataGeneric  implements Parcelable {
 	public boolean lowFloor = false; // kun trikk
 	public int numberOfBlockParts = 0; // kun t-bane (3 = kort tog, 6 = langt tog).
 
-	
-	public RealtimeDataGeneric() {
+    public RealtimeDataGeneric() {
 	}
 	
 	/*

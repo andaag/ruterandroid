@@ -3,10 +3,9 @@ package com.neuron.trafikanten.hacks;
 import com.neuron.trafikanten.R;
 
 /*
- * Station icons are currently not sent by the realtime api.
- * This is code to parse input and try to figure out what icons to use.
- * 
- * See also HACK_STATIONICONS in RealtimeView.java
+ * DEPRECATED
+ * This is currently only used by the maps.
+ * This is due to realtime api previously not sending vehiclemode.
  */
 
 public class StationIcons {

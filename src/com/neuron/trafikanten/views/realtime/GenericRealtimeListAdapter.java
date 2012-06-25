@@ -271,9 +271,8 @@ public class GenericRealtimeListAdapter extends BaseAdapter {
 		} else {
 			holder.line.setText(data.lineName);
 		}
-	
-		
-		holder.icon.setImageResource(StationIcons.hackGetLineIcon(data.lineName));
+
+		holder.icon.setImageResource(data.getImageResource());
 		
 		/*
 		 * Setup devi
