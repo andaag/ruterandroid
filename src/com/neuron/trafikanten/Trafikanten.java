@@ -132,7 +132,7 @@ public class Trafikanten extends TabActivity {
 	 			intent.putExtra(KEY_MYLOCATION, true);
 	 		}
 		    tabHost.addTab(tabHost.newTabSpec("RealtimeTab")
-		 			.setIndicator(getText(R.string.realtime), getResources().getDrawable(R.drawable.ic_menu_recent_history))
+		 			.setIndicator(getText(R.string.departures), getResources().getDrawable(R.drawable.ic_menu_recent_history))
 		 			.setContent(intent));
 	 	}
 	     

@@ -5,6 +5,7 @@
     
     <!-- Front page -->
     <string name="realtime">Realtime</string>
+    <string name="departures">Departures</string>
     <string name="route">Travel planner</string>
     <string name="now">Now</string>
     <string name="legacyMessage">Your version of android is unfortunatly too old. If you want to continue using Trafikanten\'s mobile application you will need to download "Trafikanten Android 1.5" from market. \n\nThe market page should open when you click ok.</string>
