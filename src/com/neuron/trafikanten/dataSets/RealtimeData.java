@@ -109,7 +109,6 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 			_cachedSpanned = null;
 		}
         if (_lastCacheUpdated == 0 || (System.currentTimeMillis() - _lastCacheUpdated) > (CACHE_INVALIDATETIME + (RandomGenerator.nextInt(15) * HelperFunctions.SECOND))) {
-            Log.d(TAG, "Invalidating cache for departure");
             _cachedSpanned = null;
         }
 
