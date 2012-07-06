@@ -105,6 +105,7 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 
 	
 	public void renderDepartures(TextView tv, Activity activity, Long currentTime) {
+		// TODO Performance : We can check if firstDeparture < 10 minutes, if it is recalculate, otherwise use cached.
 		if (_cachednextDepartures != nextDepartures.size()) {
 			_cachedSpanned = null;
 		}
