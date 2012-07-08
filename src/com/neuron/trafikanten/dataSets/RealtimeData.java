@@ -19,18 +19,16 @@
 package com.neuron.trafikanten.dataSets;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.nfc.Tag;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
+import android.util.SparseArray;
 import android.widget.TextView;
 
 import com.neuron.trafikanten.HelperFunctions;
@@ -131,7 +129,7 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	private static class ImageGetter implements Html.ImageGetter {
 		
 		Resources mResources;
-		static final HashMap<Integer, Drawable> mHashMap = new  HashMap<Integer, Drawable>();
+		static final SparseArray<Drawable> mHashMap = new  SparseArray<Drawable>();
 		
 		private Drawable getCachedDrawable(int id) {
 			Object o = mHashMap.get(id);
