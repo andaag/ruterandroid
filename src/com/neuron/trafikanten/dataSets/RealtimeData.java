@@ -19,7 +19,6 @@
 package com.neuron.trafikanten.dataSets;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -98,32 +97,37 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	private Spanned _cachedSpanned = null;
 	private int _cachednextDepartures = 0;
     private long _lastCacheUpdated = 0;
-    private static final long CACHE_INVALIDATETIME = HelperFunctions.SECOND * 30;
-    private static final Random RandomGenerator = new Random();
+    private static final long CACHE_INVALIDATETIME = HelperFunctions.SECOND * 10;
 
 	
 	public void renderDepartures(TextView tv, Activity activity, Long currentTime) {
-		// TODO Performance : We can check if firstDeparture < 10 minutes, if it is recalculate, otherwise use cached.
-		if (_cachednextDepartures != nextDepartures.size()) {
-			_cachedSpanned = null;
-		}
-        if (_lastCacheUpdated == 0 || (System.currentTimeMillis() - _lastCacheUpdated) > (CACHE_INVALIDATETIME)) {
-            _cachedSpanned = null;
-        }
-
-		
-		if (_cachedSpanned == null) 	{
-			StringBuffer content = new StringBuffer(" ");
-			renderToContainer(content, activity, currentTime);
-			for (RealtimeDataGeneric nextDeparture : nextDepartures) {
-				nextDeparture.renderToContainer(content, activity, currentTime);
+		if (_cachednextDepartures == nextDepartures.size()) {
+			if (expectedDeparture - System.currentTimeMillis() > (HelperFunctions.MINUTE * 9)) {
+				// We're not rendering a countdown, so lets not re render the same data.
+				//Log.d("DEBUG CODE", "Skipping rerender of > 10 minute data");
+				tv.setText(_cachedSpanned);
+				return;
 			}
-			_cachedSpanned = Html.fromHtml(content.toString(), new ImageGetter(activity), null);
-			_cachednextDepartures = nextDepartures.size();
+			if (_lastCacheUpdated != 0 && (System.currentTimeMillis() - _lastCacheUpdated) < (CACHE_INVALIDATETIME)) {
+				// We can use cached data
+				//Log.d("DEBUG CODE", "Using cached data");
+				tv.setText(_cachedSpanned);
+				return;				
+			}
 		}
+
+		//Log.d("DEBUG CODE", "Regenerating cache");
+		// Regenerate cache.
+		StringBuffer content = new StringBuffer(" ");
+		renderToContainer(content, activity, currentTime);
+		for (RealtimeDataGeneric nextDeparture : nextDepartures) {
+			nextDeparture.renderToContainer(content, activity, currentTime);
+		}
+		_cachedSpanned = Html.fromHtml(content.toString(), new ImageGetter(activity), null);
+		_cachednextDepartures = nextDepartures.size();
 		
 		tv.setText(_cachedSpanned);
-        _lastCacheUpdated = System.currentTimeMillis() + (RandomGenerator.nextInt(15) * HelperFunctions.SECOND);
+        _lastCacheUpdated = System.currentTimeMillis();
 	}
 	
 	private static class ImageGetter implements Html.ImageGetter {

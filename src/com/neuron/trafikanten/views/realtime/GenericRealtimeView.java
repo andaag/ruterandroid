@@ -135,7 +135,7 @@ public abstract class GenericRealtimeView extends ListActivity {
 		@Override
 		public boolean handleMessage(Message msg) {
 			refresh();
-			autoRefreshHandler.sendEmptyMessageDelayed(0, 10000);
+			autoRefreshHandler.sendEmptyMessageDelayed(0, 20000);
 			return true;
 		}
 	});   
