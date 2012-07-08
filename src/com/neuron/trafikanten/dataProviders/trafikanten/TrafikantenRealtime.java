@@ -82,7 +82,9 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 					realtimeData.departurePlatform = "";
 				}
 				try {
-					realtimeData.inCongestion = json.getBoolean("InCongestion");
+					if (json.has("InCongestion")) {
+						realtimeData.inCongestion = json.getBoolean("InCongestion");
+					}
 				} catch (org.json.JSONException e) {
 					// can happen when incongestion is empty string.
 				}
@@ -90,10 +92,11 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 					realtimeData.lowFloor = json.getString("VehicleFeatureRef").equals("lowFloor");
 				}
 				
-				try {
-					realtimeData.numberOfBlockParts = json.getJSONArray("TrainBlockPart").getJSONObject(0).getInt("NumberOfBlockParts");
-				} catch (org.json.JSONException e) {
-					// missing either trainblockpart or numberofblockparts
+				if (json.has("TrainBlockPart") && !json.isNull("TrainBlockPart")) {
+					JSONObject trainBlockPart = json.getJSONObject("TrainBlockPart");
+					if (trainBlockPart.has("NumberOfBlockParts")) {
+						realtimeData.numberOfBlockParts = trainBlockPart.getInt("NumberOfBlockParts");						
+					}
 				}
 				
 				ThreadHandlePostData(realtimeData);
