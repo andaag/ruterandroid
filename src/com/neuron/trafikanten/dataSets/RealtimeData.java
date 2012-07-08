@@ -109,7 +109,7 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 		if (_cachednextDepartures != nextDepartures.size()) {
 			_cachedSpanned = null;
 		}
-        if (_lastCacheUpdated == 0 || (System.currentTimeMillis() - _lastCacheUpdated) > (CACHE_INVALIDATETIME + (RandomGenerator.nextInt(15) * HelperFunctions.SECOND))) {
+        if (_lastCacheUpdated == 0 || (System.currentTimeMillis() - _lastCacheUpdated) > (CACHE_INVALIDATETIME)) {
             _cachedSpanned = null;
         }
 
@@ -125,7 +125,7 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 		}
 		
 		tv.setText(_cachedSpanned);
-        _lastCacheUpdated = System.currentTimeMillis();
+        _lastCacheUpdated = System.currentTimeMillis() + (RandomGenerator.nextInt(15) * HelperFunctions.SECOND);
 	}
 	
 	private static class ImageGetter implements Html.ImageGetter {
@@ -157,10 +157,10 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 	        if (source.equals("LF")) {
 	            id = R.drawable.departure_icon_lowfloor;
 	        }
-	        else if (source.equals("LF1")) {
+	        else if (source.equals("TL1")) {
 	            id = R.drawable.departure_icon_trainlength1;
 	        }
-	        else if (source.equals("LF2")) {
+	        else if (source.equals("TL2")) {
 	            id = R.drawable.departure_icon_trainlength2;
 	        }
 	        else {
