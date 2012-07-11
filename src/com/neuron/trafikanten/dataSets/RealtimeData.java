@@ -101,14 +101,14 @@ public class RealtimeData extends RealtimeDataGeneric implements Parcelable {
 
 	
 	public void renderDepartures(TextView tv, Activity activity, Long currentTime) {
-		if (_cachednextDepartures == nextDepartures.size()) {
+		if (_lastCacheUpdated != 0 && _cachednextDepartures == nextDepartures.size()) {
 			if (expectedDeparture - System.currentTimeMillis() > (HelperFunctions.MINUTE * 9)) {
 				// We're not rendering a countdown, so lets not re render the same data.
 				//Log.d("DEBUG CODE", "Skipping rerender of > 10 minute data");
 				tv.setText(_cachedSpanned);
 				return;
 			}
-			if (_lastCacheUpdated != 0 && (System.currentTimeMillis() - _lastCacheUpdated) < (CACHE_INVALIDATETIME)) {
+			if ((System.currentTimeMillis() - _lastCacheUpdated) < (CACHE_INVALIDATETIME)) {
 				// We can use cached data
 				//Log.d("DEBUG CODE", "Using cached data");
 				tv.setText(_cachedSpanned);
