@@ -71,32 +71,39 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				final JSONObject json = jsonArray.getJSONObject(i);
 				
 				RealtimeData realtimeData = new RealtimeData();
-				realtimeData.lineName = json.getString("PublishedLineName");
 				realtimeData.lineId = json.getInt("LineRef");
                 realtimeData.vehicleMode = json.getInt("VehicleMode");
 				realtimeData.destination = json.getString("DestinationName");
-				realtimeData.realtime = json.getBoolean("Monitored");
 				realtimeData.expectedDeparture = HelperFunctions.jsonToDate(json.getString("ExpectedDepartureTime"));
 				realtimeData.departurePlatform = json.getString("DeparturePlatformName");
-				if (realtimeData.departurePlatform.equals("null")) {
-					realtimeData.departurePlatform = "";
-				}
+				realtimeData.lineName = "";
+				realtimeData.realtime = false;
+				
 				try {
-					if (json.has("InCongestion")) {
-						realtimeData.inCongestion = json.getBoolean("InCongestion");
+					realtimeData.lineName = json.getString("PublishedLineName");
+					realtimeData.realtime = json.getBoolean("Monitored");
+					
+					if (realtimeData.departurePlatform.equals("null")) {
+						realtimeData.departurePlatform = "";
+					}
+					try {
+						if (json.has("InCongestion")) {
+							realtimeData.inCongestion = json.getBoolean("InCongestion");
+						}
+					} catch (org.json.JSONException e) {
+						// can happen when incongestion is empty string.
+					}
+					if (json.has("VehicleFeatureRef")) {
+						realtimeData.lowFloor = json.getString("VehicleFeatureRef").equals("lowFloor");
+					}
+					
+					if (json.has("TrainBlockPart") && !json.isNull("TrainBlockPart")) {
+						JSONObject trainBlockPart = json.getJSONObject("TrainBlockPart");
+						if (trainBlockPart.has("NumberOfBlockParts")) {
+							realtimeData.numberOfBlockParts = trainBlockPart.getInt("NumberOfBlockParts");						
+						}
 					}
 				} catch (org.json.JSONException e) {
-					// can happen when incongestion is empty string.
-				}
-				if (json.has("VehicleFeatureRef")) {
-					realtimeData.lowFloor = json.getString("VehicleFeatureRef").equals("lowFloor");
-				}
-				
-				if (json.has("TrainBlockPart") && !json.isNull("TrainBlockPart")) {
-					JSONObject trainBlockPart = json.getJSONObject("TrainBlockPart");
-					if (trainBlockPart.has("NumberOfBlockParts")) {
-						realtimeData.numberOfBlockParts = trainBlockPart.getInt("NumberOfBlockParts");						
-					}
 				}
 				
 				ThreadHandlePostData(realtimeData);
