@@ -369,8 +369,6 @@ public class SelectRouteView extends ListActivity {
 		refreshMenu();
 	}
 	
-	
-	
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch(id) {
@@ -418,35 +416,9 @@ public class SelectRouteView extends ListActivity {
 			
 			if (Build.VERSION.SDK_INT >= 11) {
 				// HACK, ref http://code.google.com/p/android/issues/detail?id=18982
-				View amPmView  = ((ViewGroup)timePicker.getChildAt(0)).getChildAt(2);
-				if(amPmView instanceof Button)
-				{
-					amPmView.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							Log.d("OnClickListener", "OnClickListener called");
-							if(v instanceof Button)
-							{
-								if(((Button) v).getText().equals("AM"))
-								{
-									((Button) v).setText("PM");
-									 if (timePicker.getCurrentHour() < 12) {
-										 timePicker.setCurrentHour(timePicker.getCurrentHour() + 12);
-						                }  
-									
-								}
-								else{
-									((Button) v).setText("AM");
-									 if (timePicker.getCurrentHour() >= 12) {
-										 timePicker.setCurrentHour(timePicker.getCurrentHour() - 12);
-						                }
-								}
-							}
-							
-						}
-					});
-				}
+				int hour = timePicker.getCurrentHour();
+				timePicker.setIs24HourView(true);
+				timePicker.setCurrentHour(hour);
 			} else {
 				timePicker.setIs24HourView(true);
 			}
