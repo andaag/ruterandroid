@@ -12,6 +12,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Window;
 
@@ -38,8 +39,9 @@ public class SplashScreen extends Activity {
     @Override 
     public void onCreate(Bundle savedInstanceState) { 
          super.onCreate(savedInstanceState);
-         
-         if (savedInstanceState == null) {
+
+         boolean splashscreenIsDisabled = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("splashscreen_disabled", false);
+         if (savedInstanceState == null && !splashscreenIsDisabled) {
 	         requestWindowFeature(Window.FEATURE_NO_TITLE);
 	         setContentView(R.layout.splashscreen); 
 	          
@@ -47,13 +49,10 @@ public class SplashScreen extends Activity {
 	          * and close this Splash-Screen after some seconds.*/ 
 	         new Handler().postDelayed(new Runnable(){ 
 	              @Override 
-	              public void run() { 
-	                   /* Create an Intent that will start the Menu-Activity. */ 
-	                   Intent mainIntent = new Intent(SplashScreen.this, Trafikanten.class);
-	                   mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
-	                   SplashScreen.this.startActivity(mainIntent); 
-	                   SplashScreen.this.finish(); 
-	              } 
+	              public void run() {
+                      removeSplashscreen();
+
+                  }
 	         }, SPLASH_DISPLAY_LENGHT); 
 	         
 	        
@@ -109,10 +108,15 @@ public class SplashScreen extends Activity {
 	         
          } else {
         	 // No splash screen needed.
-             Intent mainIntent = new Intent(this, Trafikanten.class);
-             mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
-             startActivity(mainIntent); 
-             finish(); 
+             removeSplashscreen();
          }
-    } 
+    }
+
+    private void removeSplashscreen() {
+        /* Create an Intent that will start the Menu-Activity. */
+        Intent mainIntent = new Intent(this, Trafikanten.class);
+        mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        this.startActivity(mainIntent);
+        this.finish();
+    }
 }

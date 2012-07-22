@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.database.Cursor;
 
+import android.preference.PreferenceManager;
 import com.neuron.trafikanten.dataSets.StationData;
 
 /*
@@ -106,7 +107,8 @@ public class HistoryDbAdapter extends GenericStationDbAdapter {
 		/*
 		 * Then delete entries too old from the list.
 		 */
-		db.delete(table, KEY_ROWID + " < (select min(_id) from (select _id from " + table + " order by _id desc limit 10))", null);
+        int historySize = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("history_size", "10"));
+        db.delete(table, KEY_ROWID + " < (select min(_id) from (select _id from " + table + " order by _id desc limit " + historySize + "))", null);
 	}
 
 }

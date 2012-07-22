@@ -52,6 +52,7 @@ import android.widget.Toast;
 
 import com.google.android.AnalyticsUtils;
 import com.neuron.trafikanten.R;
+import com.neuron.trafikanten.Settings;
 import com.neuron.trafikanten.dataProviders.IGenericProviderHandler;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
 import com.neuron.trafikanten.dataSets.StationData;
@@ -81,7 +82,8 @@ public abstract class GenericSelectStationView extends ListActivity {
 	private final static int ADDRESS_ID = Menu.FIRST + 3;
 	private final static int FAVORITES_ID = Menu.FIRST + 4;
 	private final static int HELP_ID = Menu.FIRST + 5;
-	
+    private final static int SETTINGS_ID = Menu.FIRST + 6;
+
 	/*
 	 * Database adapter
 	 */
@@ -338,6 +340,9 @@ public abstract class GenericSelectStationView extends ListActivity {
 		final MenuItem help = menu.add(0, HELP_ID, 0, R.string.help);
 		help.setIcon(android.R.drawable.ic_menu_help);
 		
+        final MenuItem settings = menu.add(0, SETTINGS_ID, 0, R.string.settings);
+        settings.setIcon(android.R.drawable.ic_menu_preferences);
+
 		return true;
 	}
 	
@@ -367,6 +372,10 @@ public abstract class GenericSelectStationView extends ListActivity {
         case HELP_ID:
         	new ShowHelpTask(this);
         	break;
+        case SETTINGS_ID:
+            Intent settings = new Intent(this, Settings.class);
+            startActivity(settings);
+            break;
         default:
         	Log.e(TAG, "onOptionsItemSelected unknown id " + item.getItemId());
         }

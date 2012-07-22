@@ -162,6 +162,7 @@ da er det tider fra rutetabellen som vises.</string>
         <string name="trafikantenErrorParse">Klarte ikke lese data fra Trafikanten.no\nDette blir somregel fikset raskt,\nprøv igjen senere.</string>
         <string name="trafikantenErrorOther">Klarte ikke hente data fra Trafikanten.no\nSjekk internet tilkoblingen din.</string>
         <string name="myLocation">Min posisjon</string>
+        <string name="settings">Innstillinger</string>
         <string name="reset">Tilbakestill</string>
         <string name="help">Hjelp</string>
         
@@ -171,4 +172,17 @@ da er det tider fra rutetabellen som vises.</string>
         <string name="tipSelectRoute">* Trykk menu for flere valg.\n\n* Trykk velg flere stasjoner for å f.eks. dra fra (Oslo S eller Oslo S [Tog]) til (Storo eller Grefsen [Tog])!</string>
         <string name="tipDetailedRoute">* Trykk en avgang for å se sanntid data.\n* Hold nede på en avgang for å sette alarmer!\n* Trykk menu for flere valg.</string>
         <!-- <string name="tipDetailedRouteRealtime">Informasjonen i braketter er plattform for avgang.</string>  -->
+
+        <!-- Settings -->
+        <string name="splashscreen_preference">Velkomstbilde</string>
+        <string name="title_splashscreen_preference">Ikke vis</string>
+        <string name="summary_splashscreen_preference">Ikke vis velkomstbildet når appen starter</string>
+        <string name="tracking_preference">Anonym statistikkinnsamling</string>
+        <string name="title_tracking_preference">Ikke delta</string>
+        <string name="summary_tracking_preference">Velg om du vil sende inn bruksstatistikk</string>
+        <string name="history_size_preference">Historikk</string>
+        <string name="title_history_size_preference">Historiestørrelse</string>
+        <string name="summary_history_size_preference">Antall holdeplasser å huske i lista</string>
+        <string name="dialog_title_history_size_preference">Antall holdeplasser</string>
+
 </resources>

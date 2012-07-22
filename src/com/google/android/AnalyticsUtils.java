@@ -83,6 +83,9 @@ public class AnalyticsUtils {
 
     public void trackEvent(final String category, final String action, final String label,
             final int value) {
+            if(PreferenceManager.getDefaultSharedPreferences(mApplicationContext).getBoolean("tracking_disabled", false)){
+                return; //no tracking please
+            }
         // We wrap the call in an AsyncTask since the Google Analytics library writes to disk
         // on its calling thread.
         new AsyncTask<Void, Void, Void>() {
@@ -105,6 +108,9 @@ public class AnalyticsUtils {
     public void trackPageView(final String path) {
         // We wrap the call in an AsyncTask since the Google Analytics library writes to disk
         // on its calling thread.
+        if(PreferenceManager.getDefaultSharedPreferences(mApplicationContext).getBoolean("tracking_disabled", false)){
+            return; //no tracking please
+        }
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
