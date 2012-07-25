@@ -18,25 +18,6 @@
 
 package com.neuron.trafikanten.tasks;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.database.Cursor;
-import android.location.Address;
-import android.location.Geocoder;
-import android.provider.Contacts;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.google.android.AnalyticsUtils;
-import com.neuron.trafikanten.R;
-import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 
 /*
  * This task takes no input, and outputs x,y coordinates for the contact.

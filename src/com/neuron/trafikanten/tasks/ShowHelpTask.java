@@ -18,26 +18,18 @@
 
 package com.neuron.trafikanten.tasks;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.AnalyticsUtils;
-import com.neuron.trafikanten.HelperFunctions;
 import com.neuron.trafikanten.R;
 
 public class ShowHelpTask implements GenericTask {
