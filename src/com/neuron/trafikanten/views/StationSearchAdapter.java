@@ -24,7 +24,6 @@ import com.neuron.trafikanten.dataProviders.trafikanten.Trafikanten;
 import com.neuron.trafikanten.dataProviders.trafikanten.TrafikantenSearch;
 import com.neuron.trafikanten.dataSets.StationData;
 
-
 //TODO PERFORMANCE :  LoaderManager/CursorLoader? (not needed when flags=0 with compat lib?)
 
 public class StationSearchAdapter extends SimpleCursorAdapter implements
@@ -32,24 +31,20 @@ public class StationSearchAdapter extends SimpleCursorAdapter implements
 	private static final String TAG = "Trafikanten-StationSearchAdapter";
 	private boolean mRealtime = false;
 	private Context mContext;
-	
+
 	public StationSearchAdapter(Context context) {
 		super(context, R.layout.autocomplete_station, null, from, to, 0);
 		mContext = context;
-		
-		
 	}
 
 	private final static String[] columns = { BaseColumns._ID,
 			SearchManager.SUGGEST_COLUMN_TEXT_1,
 			SearchManager.SUGGEST_COLUMN_TEXT_2,
-			SearchManager.SUGGEST_COLUMN_ICON_1};
+			SearchManager.SUGGEST_COLUMN_ICON_1 };
 	private final static String[] from = { SearchManager.SUGGEST_COLUMN_TEXT_1,
 			SearchManager.SUGGEST_COLUMN_TEXT_2,
 			SearchManager.SUGGEST_COLUMN_ICON_1 };
 	private final static int[] to = { R.id.stopname, R.id.address, R.id.icon };
-
-
 
 	@Override
 	public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
@@ -60,13 +55,13 @@ public class StationSearchAdapter extends SimpleCursorAdapter implements
 			return null;
 		}
 
-
 		// Setup content provider cursor for data:
 		MyMatrixCursor cursor = new MyMatrixCursor();
 
 		String urlString;
 		try {
-			urlString = Trafikanten.getApiUrl() + "/ReisRest/Place/Autocomplete/"
+			urlString = Trafikanten.getApiUrl()
+					+ "/ReisRest/Place/Autocomplete/"
 					+ HelperFunctions.properEncode(constraint.toString());
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
