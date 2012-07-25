@@ -74,6 +74,13 @@ public class StationData implements Parcelable {
 		devi = new ArrayList<DeviData>();
 	}
 	
+	public StationData(String stopName, String extra, int stationId) {
+		this.stopName = stopName;
+		this.extra = extra;
+		this.stationId = stationId;
+		devi = new ArrayList<DeviData>();
+	}
+	
 	/*
 	 * Functions for writing to a bundle, this writes a "simple" set without coordinates, this is used for shortcuts
 	 */
