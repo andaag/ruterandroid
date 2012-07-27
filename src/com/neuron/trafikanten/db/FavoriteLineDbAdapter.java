@@ -165,7 +165,7 @@ public class FavoriteLineDbAdapter {
 			/*
 			 * Load station
 			 */
-			StationData station = new StationData(cursor.getString(1), null, cursor.getInt(0), true, new int[] {cursor.getInt(4), cursor.getInt(5)});
+			StationData station = new StationData(cursor.getString(1), null, cursor.getInt(0), true, new int[] {cursor.getInt(4), cursor.getInt(5)}, StationData.TYPE_STATION);
 			station.latLongCoords = new double[] {cursor.getDouble(6), cursor.getDouble(7)};
 			
 			/*

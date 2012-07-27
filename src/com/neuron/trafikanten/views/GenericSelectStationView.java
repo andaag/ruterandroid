@@ -187,7 +187,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 				String stopname = cursor.getString(cursor.getColumnIndexOrThrow(SearchManager.SUGGEST_COLUMN_TEXT_1));
 				if (icon == android.R.drawable.ic_menu_directions) {
 					// Icon is station
-					StationData station = new StationData(stopname, (int)stationId);
+					StationData station = new StationData(stopname, (int)stationId, StationData.TYPE_STATION);
 					stationSelected(station);
 				} else {
 					//FIXME : Critical, clicking icons that are not stations

@@ -117,39 +117,35 @@ public class TrafikantenSearch extends GenericDataProviderThread<StationData> {
 			final int arraySize = jsonArray.length();
 			for (int i = 0; i < arraySize; i++) {
 				final JSONObject json = jsonArray.getJSONObject(i);
-				/*
-				 * We only care about normal stops for now, type 0.
-				 */
-				if (json.getInt("Type") == 0) {
-					StationData station = new StationData();
-					
-					// We parse realtimestop first for performance reason.
-					station.realtimeStop = json.getBoolean("RealTimeStop");
-					if (isRealtimeStopFiltered && !station.realtimeStop) {
-						continue;
-					}
-					
-					station.stationId = json.getInt("ID");
-					station.stopName = json.getString("Name");
-					searchForAddress(station);
-					
-					final String district = json.getString("District");
-					if (district.length() > 0) {
-				    	if (station.extra == null) {
-			    			station.extra = district;
-			    		} else {
-			    			station.extra = station.extra + ", " + district;
-			    		}
-					}
-					
-					if (json.has("WalkingDistance")) {
-						station.walkingDistance = json.getInt("WalkingDistance");
-					}
-					station.utmCoords[0] = json.getInt("X");
-					station.utmCoords[1] = json.getInt("Y");
-					
-					ThreadHandlePostData(station);
+				StationData station = new StationData();
+				
+				// We parse realtimestop first for performance reason.
+				station.realtimeStop = json.has("RealTimeStop") && json.getBoolean("RealTimeStop");
+				if (isRealtimeStopFiltered && !station.realtimeStop) {
+					continue;
 				}
+				
+				station.stationId = json.getInt("ID");
+				station.type = json.getInt("Type");
+				station.stopName = json.getString("Name");
+				searchForAddress(station);
+				
+				final String district = json.getString("District");
+				if (district.length() > 0) {
+			    	if (station.extra == null) {
+		    			station.extra = district;
+		    		} else {
+		    			station.extra = station.extra + ", " + district;
+		    		}
+				}
+				
+				if (json.has("WalkingDistance")) {
+					station.walkingDistance = json.getInt("WalkingDistance");
+				}
+				station.utmCoords[0] = json.getInt("X");
+				station.utmCoords[1] = json.getInt("Y");
+				
+				ThreadHandlePostData(station);
 			}
 		} catch(Exception e) {
 			if (e.getClass() == InterruptedException.class) {

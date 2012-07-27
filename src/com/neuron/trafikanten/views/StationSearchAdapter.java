@@ -88,7 +88,7 @@ public class StationSearchAdapter extends SimpleCursorAdapter implements
 				final String extra = json.getString("District");
 				final int type = json.getInt("Type");
 
-				StationData station = new StationData(name, extra, id);
+				StationData station = new StationData(name, extra, id, type);
 				TrafikantenSearch.searchForAddress(station);
 
 				cursor.addRow(station.stationId, station.stopName,
@@ -124,13 +124,13 @@ public class StationSearchAdapter extends SimpleCursorAdapter implements
 			String id = Integer.toString(stationId);
 			int icon = android.R.drawable.ic_menu_directions;
 			switch (type) {
-			case 1: // Reroute
+			case StationData.TYPE_REROUTE: // Reroute
 				icon = android.R.drawable.ic_menu_revert;
 				break;
-			case 2: // POI
+			case StationData.TYPE_POI: // POI
 				icon = android.R.drawable.ic_menu_view;
 				break;
-			case 3: // Address
+			case StationData.TYPE_ADDRESS: // Address
 				icon = android.R.drawable.ic_menu_mapmode;
 				break;
 			}
