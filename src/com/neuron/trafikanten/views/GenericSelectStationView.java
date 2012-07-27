@@ -30,12 +30,14 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -146,7 +148,7 @@ public abstract class GenericSelectStationView extends ListActivity {
          * Setup the search editbox to search on Enter.
          */
 		searchEdit = (AutoCompleteTextView) findViewById(R.id.search);
-		/*
+		//FIXME : This + the search button is .. less than optimal
 		searchEdit.setOnKeyListener(new OnKeyListener() {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() != KeyEvent.ACTION_DOWN) {
@@ -157,14 +159,14 @@ public abstract class GenericSelectStationView extends ListActivity {
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 	/*
                 	 * Perform search
-                	 *
+                	 */
                 	doSearch();
                 	return true;
                 }
 				return false;
 			}
-		});*/
-		
+		});
+	
 		
 		/*
 		 * Setup autocomplete
