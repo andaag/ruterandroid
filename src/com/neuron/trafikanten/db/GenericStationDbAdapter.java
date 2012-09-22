@@ -129,7 +129,11 @@ public abstract class GenericStationDbAdapter {
 	/*
 	 * Add new station to list.
 	 */
-    public long add(StationData station) {
+    public void add(StationData station) {
+    	if (station.type != StationData.TYPE_STATION) {
+    		// For now we dont put non station types in history/favorites 
+    		return;
+    	}
     	final ContentValues values = new ContentValues();
     	values.put(KEY_STATIONID, station.stationId);
     	values.put(KEY_STOPNAME, station.stopName);
@@ -141,7 +145,7 @@ public abstract class GenericStationDbAdapter {
     	values.put(KEY_LATITUDE, station.latLongCoords[0]);
     	values.put(KEY_LONGITUDE, station.latLongCoords[1]);
     	
-    	return db.insert(table, null, values);
+    	db.insert(table, null, values);
     }
     
     /*

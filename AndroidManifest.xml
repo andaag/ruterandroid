@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.neuron.trafikanten"
-    android:versionCode="80"
-    android:versionName="2.4.2-PC" >
+    android:versionCode="81"
+    android:versionName="2.4.3-PC" >
+    >
     <!-- REMEMBER TO UPDATE STRINGS -->
     
 
     <uses-sdk
         android:minSdkVersion="4"
-        android:targetSdkVersion="4" />
+        android:targetSdkVersion="13" />
 
     <!-- <uses-permission android:name="android.permission.READ_CONTACTS" >
     </uses-permission>  -->

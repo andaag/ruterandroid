@@ -98,7 +98,8 @@ public class FavoriteDbAdapter extends GenericStationDbAdapter {
     				cursor.getString(1), 
     				cursor.getInt(2),
     				cursor.getInt(4) == 1, 
-    				new int[] {cursor.getInt(5), cursor.getInt(6)});
+    				new int[] {cursor.getInt(5), cursor.getInt(6)},
+    				StationData.TYPE_STATION);
     		station.isFavorite = true;
     		if (isRealtimeSelector) {
     			if (station.realtimeStop) {

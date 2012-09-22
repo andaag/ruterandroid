@@ -69,18 +69,54 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 			final int arraySize = jsonArray.length();
 			for (int i = 0; i < arraySize; i++) {
 				final JSONObject json = jsonArray.getJSONObject(i);
-				
 				RealtimeData realtimeData = new RealtimeData();
-				realtimeData.lineName = json.getString("PublishedLineName");
-				realtimeData.lineId = json.getInt("LineRef");
-                realtimeData.vehicleMode = json.getInt("VehicleMode");
-				realtimeData.destination = json.getString("DestinationName");
-				realtimeData.realtime = json.getBoolean("Monitored");
-				realtimeData.expectedDeparture = HelperFunctions.jsonToDate(json.getString("ExpectedDepartureTime"));
-				realtimeData.departurePlatform = json.getString("DeparturePlatformName");
-				if (realtimeData.departurePlatform.equals("null")) {
+				try {
+					realtimeData.expectedDeparture = HelperFunctions.jsonToDate(json.getString("ExpectedDepartureTime"));
+				} catch (org.json.JSONException e) {
+					realtimeData.expectedDeparture = HelperFunctions.jsonToDate(json.getString("ExpectedArrivalTime"));
+				}
+
+				
+				try {
+					realtimeData.lineId = json.getInt("LineRef");					
+				} catch (org.json.JSONException e) {
+					realtimeData.lineId = -1;
+				}
+				
+				try {
+					realtimeData.vehicleMode = json.getInt("VehicleMode");
+				} catch (org.json.JSONException e) {
+					realtimeData.vehicleMode = 0; // default = bus
+				}
+                
+				
+				try {
+					realtimeData.destination = json.getString("DestinationName");
+				} catch (org.json.JSONException e) {
+					realtimeData.destination = "Ukjent";
+				}
+				
+				try {
+					realtimeData.departurePlatform = json.getString("DeparturePlatformName");
+					if (realtimeData.departurePlatform.equals("null")) {
+						realtimeData.departurePlatform = "";
+					}
+
+				} catch (org.json.JSONException e) {
 					realtimeData.departurePlatform = "";
 				}
+				
+				try {
+					realtimeData.realtime = json.getBoolean("Monitored");
+				} catch (org.json.JSONException e) {
+					realtimeData.realtime = false;
+				}
+				try {
+					realtimeData.lineName = json.getString("PublishedLineName");
+				} catch (org.json.JSONException e) {
+					realtimeData.lineName = "";
+				}
+				
 				try {
 					if (json.has("InCongestion")) {
 						realtimeData.inCongestion = json.getBoolean("InCongestion");
@@ -88,15 +124,24 @@ public class TrafikantenRealtime extends GenericDataProviderThread<RealtimeData>
 				} catch (org.json.JSONException e) {
 					// can happen when incongestion is empty string.
 				}
-				if (json.has("VehicleFeatureRef")) {
-					realtimeData.lowFloor = json.getString("VehicleFeatureRef").equals("lowFloor");
-				}
-				
-				if (json.has("TrainBlockPart") && !json.isNull("TrainBlockPart")) {
-					JSONObject trainBlockPart = json.getJSONObject("TrainBlockPart");
-					if (trainBlockPart.has("NumberOfBlockParts")) {
-						realtimeData.numberOfBlockParts = trainBlockPart.getInt("NumberOfBlockParts");						
+
+				try {
+					if (json.has("VehicleFeatureRef")) {
+						realtimeData.lowFloor = json.getString("VehicleFeatureRef").equals("lowFloor");
 					}
+				} catch (org.json.JSONException e) {
+					// lowfloor = false by default
+				}
+					
+				try {
+					if (json.has("TrainBlockPart") && !json.isNull("TrainBlockPart")) {
+						JSONObject trainBlockPart = json.getJSONObject("TrainBlockPart");
+						if (trainBlockPart.has("NumberOfBlockParts")) {
+							realtimeData.numberOfBlockParts = trainBlockPart.getInt("NumberOfBlockParts");						
+						}
+					}
+				} catch (org.json.JSONException e) {
+					// trainblockpart is initialized by default
 				}
 				
 				ThreadHandlePostData(realtimeData);

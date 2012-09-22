@@ -19,7 +19,7 @@
 	    android:layout_marginBottom="5dip"
     	android:background="@drawable/android_search_plate_browser">
     
-	    <EditText android:id="@+id/search"
+	    <AutoCompleteTextView android:id="@+id/search"
 	        android:singleLine="true"
 	        android:layout_width="0dip"
 	        android:layout_height="fill_parent"

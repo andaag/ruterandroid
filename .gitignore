@@ -8,6 +8,11 @@ res/values-en-rNO
 res/values-no
 res/values-sv
 res/values-en-rSE
+.idea
+out
+proguard_logs
+*sh
+*iml
 
 
 #Standard from github:

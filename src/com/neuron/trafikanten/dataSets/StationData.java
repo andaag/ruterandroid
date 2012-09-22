@@ -33,6 +33,13 @@ public class StationData implements Parcelable {
 	public int stationId;
 	public int walkingDistance = 0;
 	public boolean realtimeStop;
+	public int type = 0;
+	
+	
+	public static final int TYPE_STATION = 0;
+	public static final int TYPE_REROUTE = 1;
+	public static final int TYPE_POI = 2;
+	public static final int TYPE_ADDRESS = 3;
 
 	/*
 	 * List of devi data, used by RealtimeView/FavoritesView
@@ -59,18 +66,28 @@ public class StationData implements Parcelable {
 	}
 	
 	public StationData() { }
-	public StationData(String stopName, String extra, int stationId, boolean realtimeStop, int[] utmCoords) {
+	public StationData(String stopName, String extra, int stationId, boolean realtimeStop, int[] utmCoords, int type) {
 		this.stopName = stopName;
 		this.extra = extra;
 		this.realtimeStop = realtimeStop;
 		this.stationId = stationId;
 		this.utmCoords = utmCoords;
+		this.type = type;
 		devi = new ArrayList<DeviData>();
 	}
 	
-	public StationData(String stopName, int stationId) {
+	public StationData(String stopName, int stationId, int type) {
 		this.stopName = stopName;
 		this.stationId = stationId;
+		this.type = type;
+		devi = new ArrayList<DeviData>();
+	}
+	
+	public StationData(String stopName, String extra, int stationId, int type) {
+		this.stopName = stopName;
+		this.extra = extra;
+		this.stationId = stationId;
+		this.type = type;
 		devi = new ArrayList<DeviData>();
 	}
 	
@@ -88,7 +105,7 @@ public class StationData implements Parcelable {
 	 * Load the bundle back into a station set, this is used for shortcuts
 	 */
 	public static StationData readSimpleBundle(Bundle bundle) {
-		return new StationData(bundle.getString(BUNDLE_STOPNAME), bundle.getInt(BUNDLE_STATIONID));
+		return new StationData(bundle.getString(BUNDLE_STOPNAME), bundle.getInt(BUNDLE_STATIONID), TYPE_STATION);
 	}
 	
 	/*
@@ -114,6 +131,8 @@ public class StationData implements Parcelable {
 		latLongCoords[0] = in.readDouble();
 		latLongCoords[1] = in.readDouble();
 		
+		type = in.readInt();
+		
 		devi = new ArrayList<DeviData>();
 		in.readList(devi, DeviData.class.getClassLoader());
 
@@ -137,6 +156,8 @@ public class StationData implements Parcelable {
 		
 		out.writeDouble(latLongCoords[0]);
 		out.writeDouble(latLongCoords[1]);
+		
+		out.writeInt(type);
 		
 		out.writeList(devi);
 	}

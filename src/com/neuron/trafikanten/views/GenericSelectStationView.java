@@ -21,8 +21,10 @@ package com.neuron.trafikanten.views;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -41,6 +43,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -61,7 +65,6 @@ import com.neuron.trafikanten.db.HistoryDbAdapter;
 import com.neuron.trafikanten.tasks.GenericTask;
 import com.neuron.trafikanten.tasks.LocationTask;
 import com.neuron.trafikanten.tasks.SearchAddressTask;
-import com.neuron.trafikanten.tasks.SelectContactTask;
 import com.neuron.trafikanten.tasks.ShowHelpTask;
 import com.neuron.trafikanten.tasks.handlers.ReturnCoordinatesHandler;
 import com.neuron.trafikanten.views.map.GenericMap;
@@ -114,7 +117,7 @@ public abstract class GenericSelectStationView extends ListActivity {
 	/*
 	 * Other
 	 */
-	private EditText searchEdit;
+	private AutoCompleteTextView searchEdit;
 	
     /** Called when the activity is first created. */
     @Override
@@ -146,7 +149,8 @@ public abstract class GenericSelectStationView extends ListActivity {
         /*
          * Setup the search editbox to search on Enter.
          */
-		searchEdit = (EditText) findViewById(R.id.search);
+		searchEdit = (AutoCompleteTextView) findViewById(R.id.search);
+		//FIXME : This + the search button is .. less than optimal
 		searchEdit.setOnKeyListener(new OnKeyListener() {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() != KeyEvent.ACTION_DOWN) {
@@ -164,8 +168,36 @@ public abstract class GenericSelectStationView extends ListActivity {
 				return false;
 			}
 		});
-
+	
 		
+		/*
+		 * Setup autocomplete
+		 */
+		StationSearchAdapter adapter = new StationSearchAdapter(this);
+		/*StationSearchAdapter stationSearchAdapter = new StationSearchAdapter();
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, COUNTRIES);*/
+		searchEdit.setAdapter(adapter);
+		searchEdit.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View view, int position,
+					long stationId) {
+				searchEdit.getText().clear();
+				Cursor cursor = (Cursor) adapter.getItemAtPosition(position);
+				int icon = cursor.getInt(cursor.getColumnIndexOrThrow(SearchManager.SUGGEST_COLUMN_ICON_1));
+				String stopname = cursor.getString(cursor.getColumnIndexOrThrow(SearchManager.SUGGEST_COLUMN_TEXT_1));
+				if (icon == android.R.drawable.ic_menu_directions) {
+					// Icon is station
+					StationData station = new StationData(stopname, (int)stationId, StationData.TYPE_STATION);
+					stationSelected(station);
+				} else {
+					//FIXME : Critical, clicking icons that are not stations
+				}
+				
+			}
+			
+		});
 		
 		/*
 		 * Hack : Tweaks for devices with software keyboards, avoid keyboard in program start.
