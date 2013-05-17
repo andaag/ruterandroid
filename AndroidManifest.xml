@@ -2,13 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.neuron.trafikanten"
     android:versionCode="81"
-    android:versionName="2.4.3" >
+    android:versionName="2.4.3-PC" >
+    >
     <!-- REMEMBER TO UPDATE STRINGS -->
     
 
     <uses-sdk
         android:minSdkVersion="4"
-        android:targetSdkVersion="4" />
+        android:targetSdkVersion="13" />
 
     <!-- <uses-permission android:name="android.permission.READ_CONTACTS" >
     </uses-permission>  -->
@@ -29,7 +30,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" >
     </uses-permission>
     
-<!--   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />  -->  
+<!--   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />  -->
 
     <supports-screens
         largeScreens="true"
@@ -98,7 +99,8 @@
 
         <activity android:name=".views.route.OverviewRouteView" >
         </activity>
-        
+        <activity android:name=".Settings"/>
+
         <receiver
             android:name="com.google.android.apps.analytics.AnalyticsReceiver"
             android:exported="true" >

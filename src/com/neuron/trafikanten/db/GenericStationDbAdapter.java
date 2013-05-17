@@ -161,4 +161,8 @@ public abstract class GenericStationDbAdapter {
     public Cursor getIds() {
     	return db.query(table, new String[] { KEY_STATIONID }, null, null, null, null, null);
     }
+
+    protected Context getContext() {
+        return context;
+    }
 }

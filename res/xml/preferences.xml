@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:title="@string/splashscreen_preference">
+
+        <CheckBoxPreference
+                android:key="splashscreen_disabled"
+                android:title="@string/title_splashscreen_preference"
+                android:summary="@string/summary_splashscreen_preference"/>
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+            android:title="@string/tracking_preference">
+
+        <CheckBoxPreference
+                android:key="tracking_disabled"
+                android:title="@string/title_tracking_preference"
+                android:summary="@string/summary_tracking_preference"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            android:title="@string/history_size_preference">
+
+        <ListPreference
+                android:key="history_size"
+                android:title="@string/title_history_size_preference"
+                android:summary="@string/summary_history_size_preference"
+                android:entries="@array/entries_history_size_preference"
+                android:entryValues="@array/entryvalues_history_size_preference"
+                android:dialogTitle="@string/dialog_title_history_size_preference"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
